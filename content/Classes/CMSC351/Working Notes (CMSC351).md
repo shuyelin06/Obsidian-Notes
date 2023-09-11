@@ -19,10 +19,14 @@ We could use this table to compare the two algorithms based on their time values
 Is there a better way to formalize this comparison?
 
 Well, yes! Suppose we know these functions stay within the bounds
-$$ \begin{align}
+
+$$
+\begin{align*}
 	0.4n \le &A_1(n) \le 0.6 n \\
 	0.01n^2 \le &A_2(n) \le 0.02 n^2
-	\end{align} $$
+\end{align*}
+$$
+
 These bounds could be used to more formally compare the two algorithms! 
 
 The purpose of Big-O Notation is to provide a more formalized argument for performing these comparisons.
@@ -58,14 +62,18 @@ We call $O(g(x))$ the **Big-O** (upper bound) of $f(x)$.
 
 > [!Example]- Example: Big-O Proof (2)
 > Prove that 
-> $$ 4x^2 + x \log(x) - 1 = O(x^2) $$
+> $$
+> 4x^2 + x \log(x) - 1 = O(x^2)
+> $$
 > 
 > Observe that for all $x > 0$,
-> $$ \begin{align}
+> $$
+> \begin{align*}
 > 	4x^2 + &x \log(x) - 1 \\
 > 	&\le 4x^2 + x \log(x) \\
 > 	&\le 4x^2 + x^2 = 5x^2
-> 	\end{align} $$
+> \end{align*}
+> $$
 > Thus, we've found a Big-O function $O(x^2)$ with $C = 5$ and $x_0 = 1$.
 
 Note that this function is not unique! There are a multitude of functions that can satisfy the Big-O of $f(x)$.
@@ -160,7 +168,9 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 
 > [!Example]- Example: Big-O Misconceptions
 > Suppose we have two algorithms
-> $$ T_1(n) = \Theta(n) \qquad T_2(n) = \Theta(n^2) $$
+> $$
+> T_1(n) = \Theta(n) \qquad T_2(n) = \Theta(n^2)
+> $$
 > We may intuitively be led to think that $T_1$ is automatically better. However, this is not true - this only tells us that $T_1(n)$ is better for sufficiently large $n$, but does not tell us which is better for small values $n$.
 >
 > > We'll have algorithms later in the course where they may be efficient for large values $n$, but terribly inefficient for small values!
@@ -177,7 +187,7 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 > 3. **Conditionals**: We don't need ot include the time it takes for a conditional to evaluate, provided the conditional body takes time.
 
 
-> ![Example] Example: Algorithm Analysis
+> [!Example] Example: Algorithm Analysis
 >
 > Suppose we have the following, with each statement taking some amount of time:
 > 
@@ -193,3 +203,22 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 > 2. We can ignore $n \cdot b$, as the body of the loop takes time ($n \cdot c$).
 >
 > This gives us $T(n) = n \cdot c$.
+
+
+# Maximum Contiguous Sum
+> Hi Anna! :>
+
+Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum of contiguous elements in the array, otherwise known as a subarray.
+
+> [!Example] Example: Maximum Contiguous Sum
+> $$
+> A = [5, -100, 6, -1, 10, -5, 2]
+> $$
+>
+> We find the maximum contiguous sum of 15, given by the subarray $[6, -1, 10]$.
+
+## Solution 1: Brute Force
+
+## Solution 2: Divide and Conquer
+
+## Solution 3: Dynamic Programing (Kadane's Algorithm)

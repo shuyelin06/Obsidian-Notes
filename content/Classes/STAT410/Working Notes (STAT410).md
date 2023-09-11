@@ -374,3 +374,140 @@ Properties of conditional probability are given as follows:
 Let $A_1, \dots, A_2 \subseteq S$, where $P(A_1 \cap A_2 \dots A_n) > 0$ Then,
 $$ P(A_1 \cap A_2 \dots A_n) = P(A_1) P(A_2 \mid A_1) P(A_3 \mid A_1 \cap A_2) \dots $$
 This is known as the **multiplication rule**.
+
+Let $A$ and $B$ be events. We say $A$ and $B$ are **independent** if $P(A \cap B) = P(A) P(B)$. Otherwise the events are **dependent**.
+
+In particular, if $P(B) \ne 0$, then $A, B$ being independent implies
+$$
+P(A \mid B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)P(B)}{P(B)} = P(A)
+$$
+In other words, the conditioning of $B$ does not affect the probability of $A$.
+
+> [!Example] Example: Independence
+> We draw 2 cards from a deck of cards without replacement. If $A$ is the event of drawing a spade on the first draw, and $B$ is the event of drawing a spade on the second draw, are $A$ and $B$ independent?
+>
+> We find that
+> $$
+> P(A) = \frac{13}{52} = \frac{1}{4}
+> $$
+>
+> To find $P(B)$, we need to do a case analysis.
+> 1. If a spade was previously drawn, then we find probabiltiy $\frac{13}{52} \frac{12}{51}$.
+> 2. If a spade was not previously drawn, then we find probability $\frac{39}{52} \frac{13}{51}$.
+>
+> Adding these two cases together, we find $P(B) = 1/4$.
+>
+> Now, we find
+> $$
+> P(A \cap B) = P(A)P(B \mid A) = \frac{13}{52} \frac{12}{51} = \frac{1}{7}
+> $$
+>
+> Which is NOT equal to
+> 
+> $$
+> P(A)P(B) = \frac{1}{4} \frac{1}{4} = \frac{1}{16}
+> $$
+>
+> So these events are not independent (as expected)
+
+> [!Example] Example: Independence
+> We toss a coin 3 times. Let $A$ be the event a head ($H$) occurs on toss 1 and 2, and let $B$ be the event a tails ($T$) occurs on toss 3.
+>
+> Thus, $A = \{ HHT, HHH \}$ and $B = \{ HHT, HTT, THT, TTT \}$, and the total number of outcomes is $2^3 = 8$. This gives us probabilities
+> $$
+> P(A) = \frac{2}{8} = \frac{1}{4} \qquad P(B) = \frac{4}{8} = \frac{1}{2}
+> $$
+> Furthermore, we see that their intersection has one outcome, giving us
+> $$
+> P(A \cap B) = \frac{1}{8}
+> $$
+>
+> We see that despite having a common intersection, these events are actually independent of one another.
+> $$
+> P(A) P(B) = \frac{2}{8} \cdot \frac{4}{8} = \frac{1}{8} = P(A \cap B)
+> $$
+> > Mathematical independence is not the same as the independence we're commonly used to.
+
+We can generalize this concept of independence to multiple events. Say we have many events $A_1, A_2, \dots, A_k$. Then,
+
+Events $A_1, A_2, \dots, A_k$ are **independent** if
+$$
+P\left( \bigcap_{i \in J} A_i \right) = \prod_{i \in J} P(A_i) \text{ where J is any subset of } \{1,2,\dots,k\}
+$$
+Note that we have to check **every possible** combination of interactions of these sets.
+
+Alternatively, $A_1, A_2, \dots, A_k$ are **pairise independent** if
+$$
+P(A_i \cap A_j) = P(A_i) P(A_j) \text{ for all } 1 \le i \ne j \le k
+$$
+Note that independence of sets implies their pairwise independence, but pairwise independence cannot imply independence.
+
+> [!Example] Example
+> Conider 4 labeled balls, and pick one.
+>
+> Let $A_1 = \{ 1,2 \}$, $A_2 = \{ 1, 3 \}$, and $A_3 = \{ 1,4 \}$. Now, note that
+>
+> $$
+> \begin{align*}
+>	P(A_1 \cap A_2) = \frac{1}{4} = P(A_1) P(A_2) \\
+> 	P(A_1 \cap A_3) = \frac{1}{4} = P(A_1) P(A_3) \\
+> 	P(A_2 \cap A_3) = \frac{1}{4} = P(A_2) P(A_3) 
+> \end{align*}
+> $$
+> Thus, $A_1, A_2, A_3$ are pairwise independent.
+>
+> However, because
+> $$
+> P(A_1 \cap A_2 \cap A_3) = P(\{1\}) = \frac{1} \ne P(A_1) P(A_2) P(A_3) = \frac{1}{8}
+> $$
+> The events are not independent.
+
+> [!Abstract] Theorem: Independence of Complements
+> Let $A, B$ be events. Then $A, B$ are independent if and only if $A$ and $B^c$ are independent.
+>
+> > [!Note] Proof
+> >
+> > ##### **Proof $(\rightarrow)$**
+> > Suppose that $A$ and $B$ are independent. By definition, we know that $P(A \cap B) = P(A) P(B)$. Applying this definition, we see that
+> >
+> > $$
+> > \begin{align*}
+> > P(A \cap B^c) &= P(A) - P(A \cap B) \\
+> > 	&= P(A) - P(A) P(B) \\
+> > 	&= P(A) (1 - P(B)) \\
+> > 	&= P(A) P(B^c)
+> > \end{align*}
+> > $$
+
+> [!Example] Example: Appling Independence
+> Alice and Bob can solve 75% and 70% of the problems in a book, respectively. Assuming every event is independent, if a problem is selected at random from the book, whatis the probability it will be solved?
+>
+> Let $A$ be the event that Alice solves the problem, and $B$ be the event that Bob solves the problem. We want one of them to solve the problem - in other words, $P(A \cup B)$. Aplying our set identity, we find
+> $$
+> \begin{align*}
+>	P(A \cup B) &= P(A) + P(B) - P(A \cap B) \\
+>	    &= P(A) + P(B) - P(A) P(B) \\
+> 	    &= 0.75 + 0.7 - (0.75)(0.7) \\
+>	    &= 0.925
+> \end{align*}
+> $$
+
+# Section 3.2: Bayes' Formula
+*Goes along with conditional probability*
+
+Let $B_1, B_2, \dots B_n$ be events such that
+$$
+B_i \cap B_j = \varnothing \text{ for } 1 \le i \ne j \le n, \text{ and } \bigcup_{i=1}^n B_i = S
+$$
+in other words, no two events $B_i, B_j$ intersect, and the combination of all $B_i$'s forms our sample space $S$.
+
+Now say we have an event $A$ which has a subset of $S$. Then, because all of our $B_i$'s form a disjoint union of $S$,
+$$
+P(A) = P \left( \bigcup_{i=1}^n (A \cap B_i) \right) = P(A \cap B_1) + P(A \cap B_2) + \dots + P(A \cap B_n)
+$$
+> Because our $B_i$'s form $S$, we can think of this intuitively as $A$ "slicing" into multiple $B_i$'s. Thus, we can find $P(A)$ by totaling all places where $A$ intersects a $B_i$.
+
+Applying our definition for conditional probability, we find
+$$
+P(A) = P(A \cap B_1) + P(A \cap B_2) + \dots + P(A \cap B_n) = P(A \mid B_1) P(B_1) + P(A \mid B_2) P(B_2) + \dots + P(A \mid B_n) P(B_n) 
+$$

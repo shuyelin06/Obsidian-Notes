@@ -495,11 +495,11 @@ Note that independence of sets implies their pairwise independence, but pairwise
 # Section 3.2: Bayes' Formula
 *Goes along with conditional probability*
 
-Let $B_1, B_2, \dots B_n$ be events such that
+Let $B_1, B_2, \dots B_n$ be events that are a **partition** of sample space $S$. In other words, 
 $$
 B_i \cap B_j = \varnothing \text{ for } 1 \le i \ne j \le n, \text{ and } \bigcup_{i=1}^n B_i = S
 $$
-in other words, no two events $B_i, B_j$ intersect, and the combination of all $B_i$'s forms our sample space $S$.
+So, no two events $B_i, B_j$ intersect, and the combination of all $B_i$'s forms our sample space $S$.
 
 Now say we have an event $A$ which has a subset of $S$. Then, because all of our $B_i$'s form a disjoint union of $S$,
 $$
@@ -509,5 +509,235 @@ $$
 
 Applying our definition for conditional probability, we find
 $$
-P(A) = P(A \cap B_1) + P(A \cap B_2) + \dots + P(A \cap B_n) = P(A \mid B_1) P(B_1) + P(A \mid B_2) P(B_2) + \dots + P(A \mid B_n) P(B_n) 
+\begin{align*}
+P(A) &= P(A \cap B_1) + P(A \cap B_2) + \dots + P(A \cap B_n) \\
+     &= P(A \mid B_1) P(B_1) + P(A \mid B_2) P(B_2) + \dots + P(A \mid B_n) P(B_n) 
+\end{align*}
 $$
+
+Conceptually, we can think of it similarly as the below graph, where we're trying to find all outcomes $A$.
+
+```mermaid
+graph LR
+      E[Experiment];
+      B1[B1]; B2[B2]; B3[B3]; B4[B4];
+      A1[A]; A2[A]; A3[A]; A4[A];
+
+      E -.-> B1 & B2 & B3 & B4;
+      B1 -.-> A1;
+      B2 -.-> A2;
+      B3 -.-> A3;
+      B4 -.-> A4;
+```
+
+Using this, we can derive **Bayes' formula**.
+
+> [!Abstract] Theorem: Bayes' Formula
+> Let $B_1, \dots, B_n$ be a partition of $S$. Then,
+> 
+> $$
+> P(B_i \mid A) = \frac{P(B_i \cap A)}{P(A)} = \frac{P(A \mid B_i) P(B_i)}{ \sum_{k = 1}^n P(A \mid B_k) P(B_k)}
+> $$
+> > In other words, given we know $P(A \mid B_k)$ for all $k$, we can find $P(B_i \mid A)$.
+
+> [!Example]- Example: Bayes' Formula (1)
+> - If Alice plays, there is a 75% chance the team wins.
+> - If Bob plays, there is a 40% chance the team wins.
+> - The team doctor says there's a 70% chance Alice can play.
+> - Only Alice or Bob can play at a given time.
+>
+> Given that the team won, what's the chance that Bob played?
+>
+> Let $A$ denote the event that Alice plays, $B$ denote the event that Bob plays, and $W$ denote the event that the team wins. We know the following
+> $$
+> \begin{align*}
+>       &P(A) = 0.7 \\
+>       &P(B) = 1 - P(A) = 0.3 \\
+>       &P(W \mid A) = 0.75 \\
+>       &P(W \mid B) = 0.4
+> \end{align*}
+> $$ 
+>
+> We want to find $P(B \mid W)$.
+> $$
+> \begin{align*}
+>       P(B \mid W) &= \frac{P(W \cap B)}{P(W)} \\
+>       &= \frac{P(W \mid B) P(B)}{P(W \mid A) P(A) + P(W \mid B) P(B)} \\
+>       &= \frac{0.4 \cdot 0.3}{0.75 \cdot 0.7 + 0.4 \cdot 0.3}
+> \end{align*}
+> $$
+
+> [!Example]- Example: Bayes' Formula (2)
+> A multiple choice question has $m$ choices. Alice knows the answer with probability $p$. If she does not know, she instead guesses with probabiliy $1 - p$. What is the probability that Alice knew the answer, given she answered correctly?
+>
+> Let $K$ denote the event Alice knew the answer, and $C$ denote the event she answered correctly. Then,
+> $$
+> \begin{align*}
+>       &P(K) = p \\
+>       &P(K^c) = 1 - p \\
+>       &P(C \mid K) = 1 \\
+>       &P(C \mid K^c) = \frac{1}{m}
+> \end{align*}
+> $$
+>
+> We want to find $P(K \mid C)$.
+> $$
+> \begin{align*}
+>       P(K \mid C) &= \frac{P(K \cap C)}{P(C)} \\
+>       &= \frac{P(C \mid K) P(K)}{P(C \mid K) P(K) + P(C \mid K^c) P(K^c)} \\
+>       &= \frac{1 \cdot p}{1 \cdot p + (1 - p)} 
+> \end{align*}
+> $$
+> > Note that as $m$ gets large, this probability actually increases! This makes sense because with more choices, she's more likely to have known the answer if she got it correct.
+
+> [!Example]- Example: Bayes' Formula (3)
+> A rare disease affects 1% of a population. There is a test to check for this disease.
+> - If you have the disease, the probability you test negative is 1% (false negative).
+> - If you don't have the disease, the probability you test positive is 2% (false positive).
+>
+> What is the probability you have the disease, given you test positive? 
+>
+> Let $D$ denote the event that you have a disease, and $P$ denote the event you test positive. Then,
+> $$
+> \begin{align*}
+>       &P(P \mid D) = 1 - 0.01 = 0.99 \\
+>       &P(P \mid D^c) = 0.02 \\
+>       &P(P^c \mid D) = 0.01 \\
+>       &P(P^c \mid D^c) = 1 - 0.02 = 0.98
+> \end{align*}
+> $$
+>
+> We want to find $P(D \mid P)$.
+> $$
+> \begin{align*}
+>       P(D \mid P) &= \frac{P(P \cap D) P(D)}{P(P)} \\
+>       &= \frac{0.99 \cdot 0.01}{0.01 \cdot 0.99 + 0.99 \cdot 0.02} \\
+>       &\approx 0.33
+> \end{align*}
+> $$
+> > This may be a surprising result! One way to think about this intuitively is that the rareness of the disease holds more meaning than the accuracy of the test.
+
+> [!Example]- Example: Bayes' Formula (4)
+> In tennis, "deuce" is a score of 40-40. To win the game, 1 person more score 2 points in a row, and if both players score 1, it resets to deuce.
+>
+> Alice has 60% to win a point. What is the probability that Alice wins?
+>
+> Let $B_1$ be the event where Alice wins the next two points, $B_2$ be the event where Alice loses the next two points, and $B_3$ be the event where Alice only wins one point.
+> $$
+> \begin{align*}
+>       &P(B_1) = 0.6 \cdot 0.6 \\
+>       &P(B_2) = 0.4 \cdot 0.4 \\
+>       &P(B_3) = 0.6 \cdot 0.4 + 0.4 \cdot 0.6 
+> \end{align*}
+> $$
+>
+> Thus, the probability Alice wins the game (let's call $W$) is equal to
+> $$
+> \begin{align*}
+>       P(W) &= P(W \mid B_1) P(B_1) + P(W \mid B_2) P(B_2) + P(W \mid B_3) P(B_3) \\
+>       &= P(B_1) + 0 + P(W) P(B_3)
+> \end{align*}
+> $$
+> > Note that we know that $P(W) = P(W \mid B_3)$, because if Alice only wins one point, we return back to a deuce.
+
+
+# Section 4.1: Random Variables
+We define a **random variable** $X: S \to \mathbb{R}$ as a real-valued function, which maps from a sample space $S$ to real numbers $\mathbb{R}$).
+
+If $X$ takes on a finite or countable number of values, we say $X$ is a **discrete random variable**.
+
+> [!Example] Example: Discrete Random Variables
+> For example, suppose we have 100 red, 100 blue, and 100 white socks, and we choose 3 at once. Now suppose we define $X$ as the total number of red socks we can obtain, and note that $X$ can only be 0, 1, 2, or 3.
+
+For a discrete random variable $X$, the **probability mass function / distribution function (pdf)** of $X$ is a function $p: \mathbb{R} \to \mathbb{R}$ such that $p(x)$ is the probability that $X$ takes on a value $x$. So, for any possible value of $x_i$,
+$$
+\begin{align*}
+        &p(x_i) \ge 0 &i = 1, 2, \dots \\
+        &p(x) = 0 &\text{all other values}
+\end{align*}
+$$
+It naturally follows from this that
+$$
+        \sum_{i=1}^\infty p(x_i) = 1 
+$$
+In other words, the probabilities sum to 1.
+> Sometimes, resources will ask us to "verify" a function is a probability mass function. This simply means to check that all $p(x_i)$ sum to 1.
+
+> [!Example] Probability Mass Function
+> Say we toss a coin twice, and let $X$ be the number of tails we get. Then,
+> $$
+> \begin{align*}
+>       p(0) = P(\{HH\}) = \frac{1}{4} \\
+>       p(1) = P(\{HT, TH\}) = \frac{1}{2} \\
+>       p(2) = P(\{TT\}) = \frac{1}{4}
+> \end{align*}
+> $$
+
+> [!Example]
+> Let $S = [5] = \{1,2,3,4,5\}$, and assume one value is chosen with an equal chance.
+>
+> Let $X = X(i) = (i - 2)^2 - 1$, where $i$ denotes some element from the sample space. To find $p(x)$, we need to first evaluate the outputs of $X$, as by definition, $p(x)$ lists the probability of $X$'s **outputs**, not necessarily the elements from the sample space.
+> $$
+> \begin{align*}
+>       i = 1,3 &\to x = 0 \\
+>       i = 2 &\to x = -1 \\
+>       i = 4 &\to x = 3 \\
+>       i = 5 &\to x = 8
+> \end{align*}
+> $$
+>
+> Thus, our function $p(x)$ is a function such that
+> $$
+> \begin{align*}
+>       p(0) = 2 / 5 \\
+>       p(-1) = 1 / 5 \\
+>       p(3) = 1 / 5 \\
+>       p(8) = 1 / 5
+> \end{align*}
+> $$
+> Where all other $p(x_i) = 0$. We can plot this to see the distribution, which will simply just be 4 points on the $xy$-plane.
+
+A **cummulative distribution function (cdf)** of a random variable $X$, denoted $F_X (x) = p(X \le x)$. In other words, the value of $F_X$ is the cumulative probability of all values $p(x_i)$ such that $x_i \le x$.
+
+> [!Example] Last Example
+> From the last examle, for $-\infty < x < -1$, $F_X(x) = p(x < - 1) = 0$.
+>
+> For $-1 \le x < 0$, $F_X(x) = p(x < 0) = p(x = -1) = 1 / 5$
+>
+> For $0 \le x < 3$, $F_X(x) = p(x < 3) = p(x = 0) + p(x = -1) = 3 / 5$
+>
+> For $3 \le x < 8$, $F_X(x) = p(x < 8) = p(x = 3) + p(x = 0) + p(x = -1) = 4 / 5$
+>
+> For $x \ge 8$, $F_X(x) = 1$.
+>
+> Plotting our cdf, we obtain a step function.
+
+> [!Example] CDFs
+> Let the cdf of a discrete random variable be given as
+> $$
+> F_X(x) = \begin{cases}
+>          0 & x < 1 \\
+>          3 / 10 & 1 \le x < 2 \\
+>          6 / 10 & 2 \le x < 3 \\
+>          8 / 10 & 3 \le x < 5 \\
+>          1 & x \ge 5
+>        \end{cases}
+> $$
+>
+> Given this cdf, determine what $p(2 < x \le 3)$ and $p(3 \le x \le 5)$ are.
+> - $p(2 < x \le 3) = F_X(3) - F_X(2) = 2 / 10$
+> - $p(3 \le x \le 5) = F_X(5) - F_X(3) + p(x = 3)$. We have to re-add $x = 3$, as subtracting $F_X(3)$ removes that $3$ from our interval. Note that $p(x = 3) = F_X(3) - F_X(2)$, as this will get rid of everything right before $x = 3$.
+
+> [!Abstract] Theorem
+> If a discrete random variable takes on values $x_1, x_2, \dots, x_n$ such that
+> $$
+> x_1 < x_2 < x_3 < \dots < x_n
+> $$
+> Then $p(x = x_1) = F_X(x_1)$, and $p(x = x_i) = F_X(x_i) - F_X(x_{i-1})$ for $i = 2, \dots, n$.
+>
+> Moreover,
+> - $p(a < x \le b) = F_X(b) - F_X(a)$
+> - $p(a < x < b) = F_X(b) - F_X(a) - p(x = b)$
+> DO BELOW - NOT DONE
+> - $p(a \le x \le b) = F_X(b) - F_X(a) + p(a = b)$
+> - $p(a \le x < b) = F_X(b) - F_X(x = b)

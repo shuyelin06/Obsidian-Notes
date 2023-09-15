@@ -186,6 +186,10 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 > 2. **Loops**: We don't need to include the time it takes for a loop iteration to occur, provided the loop body takes time.
 > 3. **Conditionals**: We don't need ot include the time it takes for a conditional to evaluate, provided the conditional body takes time.
 
+> [!Info] Auxilliary Space
+> Oftentimes, alongside time complexity analysis, it may be helpful to analyze the amount of extra space (**auxilliary space**) the algorithm uses, in terms of the input size $n$.
+>
+> When calculating auxilliary space, we do not count the memory used by the input.
 
 > [!Example] Example: Algorithm Analysis
 >

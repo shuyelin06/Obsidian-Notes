@@ -75,8 +75,8 @@ def max_contiguous_sum(array, left, right):
                left_half_max = left_half_sum
         
         right_half_max = array[center + 1]
-	right_half_sum = 0
-	for i in range(center + 1, right + 1):
+        right_half_sum = 0
+        for i in range(center + 1, right + 1):
 	    right_half_sum = right_half_sum + array[i]
 	    if right_half_sum > right_half_max:
 	       right_half_max = right_half_sum
@@ -118,3 +118,31 @@ $$
 which is actually better than brute force!
 
 ## Solution 3: Dynamic Programing (Kadane's Algorithm)
+While our previous solution is more efficient, we can do even better using **dynamic programming**!
+
+By smartly grouping our subarrays together, we can define an array that can be used to solve this problem in $\Theta(n)$ time.
+
+Suppose we have an array $A$ which is the same length as our input. For every index $i$ in the array, the value stored will represent the maximum contiguous sum of all **subarrays ending at index $i$**.
+
+Now, say we have index $i$, and we want to find index $i + 1$. We can prove that $i + 1$ is either:
+1. $A[i] + A[i + 1]$
+2. $A[i + 1]$
+
+> All subarrays ending at index $i + 1$ must include the value $i + 1$ - so, we ask whether we can obtain a greater sum by adding the previous subarray to this value.
+
+Then, we can iterate through all of these subarrays, and find the subarray with the maximum contiguous sum! This can all be done in a single for loop.
+
+```python
+def max_contiguous_sum(array):
+    max_subarray = [None] * len(array)
+    max_subarray[0] = array[0]
+
+    # if all elements are negative, don't choose any subarray
+    output = max(0, max_subarray[0]) 
+    
+    for i in range(1, len(array)):
+        max_subarray[i] = max(array[i], array[i] + max_subarray[i - 1])
+        output = max(output, max_subarray[i])
+
+    return output
+```

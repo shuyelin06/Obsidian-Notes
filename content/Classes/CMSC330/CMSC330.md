@@ -18,3 +18,4 @@ An outline of notes for this course are given below.
 **Python**
 - [[Higher Order Programming]]
 - [[Regular Expressions]]
+- [[Automata Theory]]

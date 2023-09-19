@@ -741,3 +741,8 @@ A **cummulative distribution function (cdf)** of a random variable $X$, denoted 
 > DO BELOW - NOT DONE
 > - $p(a \le x \le b) = F_X(b) - F_X(a) + p(a = b)$
 > - $p(a \le x < b) = F_X(b) - F_X(x = b)
+
+> [!Theorem] Cumulative Distribution Functions
+> A function $F_X(x)$ is a cdf if and only if
+> 1. $0 \le F_X(x) \le 1$ for al $x$ that $X$ takes on.
+> 2. 

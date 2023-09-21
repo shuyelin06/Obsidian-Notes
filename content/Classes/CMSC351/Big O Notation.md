@@ -1,7 +1,11 @@
-# Coin Change...
+---
+title: Big O Notation
+tags:
+- work-in-progress
+- cmsc351
+---
 
-# Big-O Notation
-## Motivation
+# Motivation
 Suppose we have 2 different algorithms operating on a list of length $n$. Now suppose we run these algorithms on various size lists, and obtain the following:
 
 | $n$ | $A_1 (n)$ | $A_2(n)$ |
@@ -37,7 +41,9 @@ The purpose of Big-O Notation is to provide a more formalized argument for perfo
 Suppose we have a function $f(x)$. 
 
 We say $f(x) = O(g(x))$ to mean:
-$$ \exists x_0,C \text{ such that } x \ge x_0 \to f(x) \le C g(x)$$
+$$
+\exists x_0,C \text{ such that } x \ge x_0 \to f(x) \le C g(x)
+$$
 In other words, $O(g(x))$ is a function such that after some cutoff $x_0$, $f(x)$ is less than some multiple of $g(x)$ for all $x$!
 We call $O(g(x))$ the **Big-O** (upper bound) of $f(x)$.
 
@@ -53,10 +59,14 @@ We call $O(g(x))$ the **Big-O** (upper bound) of $f(x)$.
 > [!Example]- Example: Big-O Proof (1)
 >
 > Prove that
-> $$ 2x \log(x) - 1 = O(x \log(x)) $$
+> $$
+> 2x \log(x) - 1 = O(x \log(x))
+> $$
 > 
 > Observe that for all $x > 0$,
-> $$ 2x \log(x) - 1 \le 2x \log(x) $$
+> $$
+> 2x \log(x) - 1 \le 2x \log(x)
+> $$
 > Thus, we've found a Big-O function $O(x \log(x))$ with $C = 2$ and $x_0 = 1$. 
 
 
@@ -81,17 +91,21 @@ Note that this function is not unique! There are a multitude of functions that c
 > [!Example]- Example: Multiple Big-O Functions
 > 
 > Suppose $f(x) = O(x^2)$. If this is the case, then we can also say that 
-> $$ \begin{align}
+> $$
+> \begin{align}
 > 	f(x) &= O(x^3) \\ 
 > 	f(x) &= O(x^4) \\
 > 	&\vdots
-> 	\end{align} $$
+> \end{align}
+> $$
 > 
 > However, we often prefer to choose the upper bound that grows the slowest.
 
 
 Additionally, we can say $\Omega(g(x))$ to mean:
-$$ \exists x_0, B > 0 \text{ such that } \forall x \ge x_0 \to f(x) \ge B g(x) $$
+$$
+\exists x_0, B > 0 \text{ such that } \forall x \ge x_0 \to f(x) \ge B g(x)
+$$
 In other words, $\Omega(g(x))$ is a function such that after some cutoff $x_0$, $f(x)$ is greater than some multiple of $g(x)$ for all $x$!
 We call $\Omega(g(x))$ the **Big-Omega** (lower bound) of $f(x)$.
 
@@ -107,10 +121,12 @@ We call $\Omega(g(x))$ the **Big-Omega** (lower bound) of $f(x)$.
 > Prove that $5 x \lg(x) - x = \Omega(x \lg(x))$.
 > 
 > Observe that $x \le x \lg(x)$ when $\lg(x) \ge 1$ which occurs at $x \ge 2$. Then, for $x \ge 2$,
-> $$ \begin{align}
+> $$
+> \begin{align}
 > 	5x \lg(x) - x &\ge 5x \lg(x) - x \lg(x) \\
 > 	&\ge 4x \lg(x)
-> 	\end{align}  $$
+> \end{align}
+> $$
 > Thus, choosing $B = 4$ and $x_0 = 2$, we have shown that $5 x \lg(x) - x = \Omega(x \lg(x))$!
 
 Now note that while Big-O serves as an upper bound, and Big-Omega serves as a lower bound, a variety of functions can serve as these upper / lower bounds! 
@@ -122,18 +138,20 @@ In other words, $\Theta(g(x))$ is a function that can serve as an upper and lowe
 
 We should generally prefer to use Big-Theta when possible.
 
-## Limit Theorem (Alternative Proof)
+## Limit Theorem
 The previous section explicitly finds values $B$ (or $C$) and $x_0$ to find / prove a function for $O(g(x))$ and $\Omega(g(x))$. However, there is another method of proving using **limits**.
 
 > [!Abstract] Theorem: Big-O, Proof by Limits
 >
 > Let $f(x)$ and $g(x)$ be functions such that
-> $$ \lim_{x\to\infty}f(x) \qquad \lim_{x\to\infty}g(x) $$
+> $$
+> \lim_{x\to\infty}f(x) \qquad \lim_{x\to\infty}g(x)
+> $$
 > exist. 
 > 
 > The following cases are true.
-> 1. $$ \text{If } \lim_{x\to\infty} \frac{f(x)}{g(x)} \ne \infty \text{ then } f(x) = O(g(x)) $$
-> 2. $$ \text{If } \lim_{x\to\infty} \frac{f(x)}{g(x)} \ne 0 \text{ then } f(x) = \Omega(g(x)) $$
+> 1. If $\lim_{x\to\infty} \frac{f(x)}{g(x)} \ne \infty$, then $f(x) = O(g(x))$
+> 2. If $\lim_{x\to\infty} \frac{f(x)}{g(x)} \ne 0$, then $f(x) = \Omega(g(x))$
 > 
 > Thus, if both hold true, then $f(x) = \Theta(g(x))$!
 
@@ -141,10 +159,12 @@ Some examples are given below.
 
 > [!Example]- Big-O, Proof by Limits
 > Observe that
-> $$ \lim_{n\to\infty} \frac{n \ln(n)}{n^2} = \lim_{n\to\infty} \frac{\ln(n)}{n} = \lim_{n\to\infty} \frac{1/n}{1} = 0 $$
+> $$
+> \lim_{n\to\infty} \frac{n \ln(n)}{n^2} = \lim_{n\to\infty} \frac{\ln(n)}{n} = \lim_{n\to\infty} \frac{1/n}{1} = 0
+> $$
 > Thus, $n \ln(n) = O(n^2)$.
 
-## Code Analysis using Big-O Notation
+## Code Analysis with Big-O
 Big-O notation is especially important in computer science, as it serves as a benchmark for comparing algorithms with one another.
 
 Typically we'll have some algorithm that depends on some varying $n$, where $n$ can be the length of a list, loop iterations, etc. Based on this algorithm, we can form a function $T(n)$ representing its runtime complexity.
@@ -152,7 +172,9 @@ Typically we'll have some algorithm that depends on some varying $n$, where $n$ 
 What do we mean by nice functions?
 
 Well, computer scientists have settled on a collection of **nice functions** which easily be compared with one another. A non-comprehensive list of these functions is given below, in order of slowest to fastest growing:
-$$ 1, \lg(n), n, n \lg(n), n^2, n^2 \lg(n), \dots $$
+$$
+1, \lg(n), n, n \lg(n), n^2, n^2 \lg(n), \dots
+$$
 > Use of $n$ over $x$ does not typically matter, but we tend to prefer $n$ when we're restricted to integers.
 
 Choosing the respective Big-Theta function for our time function, $T(n) = \Theta(g(n))$, will give us an idea on how fast (or slow) our algorithm runs!
@@ -162,7 +184,9 @@ Choosing the respective Big-Theta function for our time function, $T(n) = \Theta
 > Apart from using definitions and limit theorems, we can often intuitively find a function's Big-Theta! For a given function $T(n)$, the $\Theta(g(n))$ is often the fastest growing term.
 >
 > For example,
-> $$ n^2 \lg(n) + n \lg(n) - n + \lg(n) - 7 = \Theta(n^2 \lg(n)) $$
+> $$
+> n^2 \lg(n) + n \lg(n) - n + \lg(n) - 7 = \Theta(n^2 \lg(n))
+> $$
 
 Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily mean its good for all values $n$!
 
@@ -195,11 +219,10 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 >
 > Suppose we have the following, with each statement taking some amount of time:
 > 
-> ```
+> ```python
 > sum = 0 # a time
 > for i to n: # b time for each iteration
 >     sum += i # c time
-> end for
 > ```
 > 
 > We would find total time $T(n) = n \cdot (b + c) + a$. However, if all we want is the most relevant time complexity, then
@@ -207,22 +230,3 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 > 2. We can ignore $n \cdot b$, as the body of the loop takes time ($n \cdot c$).
 >
 > This gives us $T(n) = n \cdot c$.
-
-
-# Maximum Contiguous Sum
-> Hi Anna! :>
-
-Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum of contiguous elements in the array, otherwise known as a subarray.
-
-> [!Example] Example: Maximum Contiguous Sum
-> $$
-> A = [5, -100, 6, -1, 10, -5, 2]
-> $$
->
-> We find the maximum contiguous sum of 15, given by the subarray $[6, -1, 10]$.
-
-## Solution 1: Brute Force
-
-## Solution 2: Divide and Conquer
-
-## Solution 3: Dynamic Programing (Kadane's Algorithm)

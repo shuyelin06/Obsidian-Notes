@@ -1,10 +1,10 @@
 ---
 title: Maximum Contiguous Sum
+tags:
+- up-to-date
 ---
 
 # Maximum Contiguous Sum
-> Hi Anna! :>
-
 Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum of contiguous elements in the array, otherwise known as a subarray.
 > The beauty of this problem comes with the number of different, distinct ways we can solve it! 
 

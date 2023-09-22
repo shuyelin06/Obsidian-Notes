@@ -4,8 +4,7 @@ tags:
 - up-to-date
 ---
 
-# Maximum Contiguous Sum
-Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum of contiguous elements in the array, otherwise known as a subarray.
+**Problem**: Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum of contiguous elements in the array, otherwise known as a subarray.
 > The beauty of this problem comes with the number of different, distinct ways we can solve it! 
 
 > [!Example] Example: Maximum Contiguous Sum
@@ -15,8 +14,10 @@ Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum
 >
 > We find the maximum contiguous sum of 15, given by the subarray $[6, -1, 10]$.
 
-## Solution 1: Brute Force
-Possibly the most intuitive way to solve this problem is to check **every possible sum**, and simply take the max. We do this by performing a nested for loop through our array.
+# Solution 1: Brute Force
+Possibly the most intuitive way to solve this problem is to **check every possible sum**, and take the max of the sums.
+
+We can do this using a nested for loop through our array.
 
 ```python
 def max_cont_sum(array):
@@ -34,59 +35,72 @@ def max_cont_sum(array):
 
 However, this algorithm has a time complexity of $\Theta(n^2)$, which is highly inefficient! Can we do better than this?
 
-## Solution 2: Divide and Conquer
-Another potential (more effecient) way of solving this problem is using the **divide and conquer** approach. In this approach, we take the problem, and divides it into subproblems, which can be solved and combined to form an answer.
+# Solution 2: Divide and Conquer
+A more efficient way of solving this problem is using the **divide and conquer** approach. In this approach, we divide the problem into subproblems, which can be independently solved and combined to form an answer.
 > Dynamic programming algorithms are often implemented recursively.
 
 How might this work?
 
-We could divide our list in half, and find the maximums for each half! However, this comes with a problem - we may split our array where the maximum sum occurs! Thus, we'll need to check for 3 cases when combining 2 arrays:
-1. **Case 1**: The left divided array has a greater sum
-2. **Case 2**: The right divided array has a greater sum
-3. **Case 3**: The maximum sums of the two arrays can be combined
+We could divide our list in half, and take the maximum subarray of either half! We can continue to split the array into smaller components, until our base case, a single array element.
 
-```python
-'''
+However, this comes with a problem - we may split our array where the maximum sum actually occurs! Thus, we'll need to check for this **straddle maximum** at the array split.
+
+```
 [5, -100, 6, -1, 10, -5, 2]
 
-Through divide and conquer, we split this in half
-[5, -100, 6] | [-1, 10, -5, 2]
-However, our maximum sum is cut down the middle!
-'''
+Split this in half. We find the following maxes:
+- Left: 5
+- Straddle: 15
+- Right: 7
 
+[5, -100, 6] | [-1, 10, -5, 2]
+
+Note how the straddle max has the largest sum!
+```
+
+Thus, for every subarray, we will split the subarray in half, and take the maximum of the following cases:
+1. Maximum contiguous sum of the **left divided array**
+2. Maximum contiguous sum of the **right divided array**
+3. Maximum contiguous sum of the **array straddling the split**
+
+Let's see an implementation of this algorithm below.
+```python
 def max_contiguous_sum(array, left, right):
     # base case: if list of length 1, there is only one possible sum
     if left == right:
        return array[left]
+    # otherwise, split the array in half and take the maximum
+    # of the sums
     else:
         center = (left + right) // 2 # find the center using integer division
 
-        # find the biggest sum we can find going left
+        # left array maximum sum
         left_max = max_contiguous_sum(array, left, center)
-        # find the biggest sum we can find going right
+        # right array maximum sum
         right_max = max_contiguous_sum(array, center + 1, right)
         
         # calculate the straddle max
-        left_half_max = array[center]
+        left_half_max = array[center] # left half max
         left_half_sum = 0
         for i in range(center, left - 1, -1):
             left_half_sum = left_half_sum + array[i]
             if left_half_sum > left_half_max:
                left_half_max = left_half_sum
         
-        right_half_max = array[center + 1]
+        right_half_max = array[center + 1] # right half max
         right_half_sum = 0
         for i in range(center + 1, right + 1):
-	    right_half_sum = right_half_sum + array[i]
-	    if right_half_sum > right_half_max:
-	       right_half_max = right_half_sum
+            right_half_sum = right_half_sum + array[i]
+            if right_half_sum > right_half_max:
+               right_half_max = right_half_sum
 
         straddle_max = left_half_max + right_half_max
 
+        # take maximum
         return max(left_max, right_max, straddle_max)
 ```
 
-While this code looks unnecessarily complex, we actually find it is more efficient than brute force! We can do a time analysis to see why.
+While this code looks unnecessarily complex, we actually find it is more efficient than brute force! Let's do a time analysis to see why.
 - In our `if` block, we are only returning an array value, which takes constant time, which we'll denote $t_{\text{if}}$.
 - In our `else` block, the only code block that has a significant contribution to the time are the for loops at line 24 and 31. These for loops run for
   $$
@@ -100,7 +114,7 @@ While this code looks unnecessarily complex, we actually find it is more efficie
 This is the runtime complexity of each function call! How many function calls are we making?
 - At the initial call, we have an array length of $n$, giving us a time of $t \cdot n$.
 - At level 1, we have length $n / 2$ but with 2 lists, giving us a time of $2 \cdot \frac{1}{2} t \cdot n = t \cdot n$.
-- At level 2, we have length $n / 4$ but with 4 lists, giving us a time of $4 \cdot \frac{1}{5} t \cdot n = t \cdot n$.
+- At level 2, we have length $n / 4$ but with 4 lists, giving us a time of $4 \cdot \frac{1}{4} t \cdot n = t \cdot n$.
 - ...
 
 Repeating this, we see that every recursive call, we use $t \cdot n$ time. Note that at recursive level $k$, our array length is $\frac{n}{2^k}$. Thus, our recursion stops at
@@ -117,7 +131,7 @@ $$
 
 which is actually better than brute force!
 
-## Solution 3: Dynamic Programing (Kadane's Algorithm)
+# Solution 3: Dynamic Programing (Kadane's Algorithm)
 While our previous solution is more efficient, we can do even better using **dynamic programming**!
 
 By smartly grouping our subarrays together, we can define an array that can be used to solve this problem in $\Theta(n)$ time.

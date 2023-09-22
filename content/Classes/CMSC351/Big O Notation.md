@@ -1,12 +1,12 @@
 ---
 title: Big O Notation
 tags:
-- work-in-progress
+- up-to-date
 - cmsc351
 ---
 
 # Motivation
-Suppose we have 2 different algorithms operating on a list of length $n$. Now suppose we run these algorithms on various size lists, and obtain the following:
+Suppose we have 2 different algorithms operating on a list of length $n$. Now suppose we run these algorithms on various size lists, and obtain the following runtime data:
 
 | $n$ | $A_1 (n)$ | $A_2(n)$ |
 | :-: | :-: | :-: |
@@ -37,84 +37,80 @@ The purpose of Big-O Notation is to provide a more formalized argument for perfo
 
 
 # Big-O Notation
-## Big-O, Big-Omega, Big-Theta 
-Suppose we have a function $f(x)$. 
+Suppose we have a function $f(x)$.
 
+## Big-O
 We say $f(x) = O(g(x))$ to mean:
 $$
-\exists x_0,C \text{ such that } x \ge x_0 \to f(x) \le C g(x)
+\exists x_0,C \; \text{such that} \; x \ge x_0 \to f(x) \le C g(x)
 $$
-In other words, $O(g(x))$ is a function such that after some cutoff $x_0$, $f(x)$ is less than some multiple of $g(x)$ for all $x$!
-We call $O(g(x))$ the **Big-O** (upper bound) of $f(x)$.
+In other words, $O(g(x))$ is a function such that for large values $x$ ($x > x_0$), $f(x)$ is less than some multiple of $g(x)$!
 
-> [!Example]- Example: Big-O
->
+We call $O(g(x))$ the **Big-O** of $f(x)$. We can intuitively think of $O(g(x))$ as an upper bound for $f(x)$.
+
+> [!Example]- Example: Big-O Intuition
 > Here, $f(x) = O(x^2)$ with $C = 2$ and $x_0$ as shown. 
 > 
 > Note that $f(x)$ does not necessarily have to be below $C x^2$ for all $x$ - only past some cutoff $x_0$.
 > 
 > ![[(Big-O) Example 1.png]]
 
+Given this definition, to prove that a function $f(x) = O(g(x))$, we need to find some $x_0$ and $C$ and explicitly show it satisfies this definition. See the below examples.
 
-> [!Example]- Example: Big-O Proof (1)
->
-> Prove that
-> $$
-> 2x \log(x) - 1 = O(x \log(x))
-> $$
+> [!Example]- Example: Proving Big-O Functions (1)
+> Prove that $2x \log(x) - 1 = O(x \log(x))$
 > 
 > Observe that for all $x > 0$,
 > $$
 > 2x \log(x) - 1 \le 2x \log(x)
 > $$
-> Thus, we've found a Big-O function $O(x \log(x))$ with $C = 2$ and $x_0 = 1$. 
-
-
-> [!Example]- Example: Big-O Proof (2)
-> Prove that 
+> Now, let $C = 2$ and $x_0 = 1$. Because for $x > x_0$,
 > $$
-> 4x^2 + x \log(x) - 1 = O(x^2)
+> 2x \log(x) - 1 \le C x \log(x)
 > $$
+> By definition, we've shown that $2x \log(x) - 1 = O(x \log(x))$.
+
+> [!Example]- Example: Proving Big-O Functions (2)
+> Prove that $4x^2 + x \log(x) - 1 = O(x^2)$
 > 
 > Observe that for all $x > 0$,
 > $$
 > \begin{align*}
-> 	4x^2 + &x \log(x) - 1 \\
-> 	&\le 4x^2 + x \log(x) \\
+> 	4x^2 + &x \log(x) - 1 &\le 4x^2 + x \log(x) \\
 > 	&\le 4x^2 + x^2 = 5x^2
 > \end{align*}
 > $$
 > Thus, we've found a Big-O function $O(x^2)$ with $C = 5$ and $x_0 = 1$.
 
-Note that this function is not unique! There are a multitude of functions that can satisfy the Big-O of $f(x)$.
-
-> [!Example]- Example: Multiple Big-O Functions
-> 
-> Suppose $f(x) = O(x^2)$. If this is the case, then we can also say that 
+> [!Warning] Non-Uniqueness of Big-O Functions
+> Note that Big-O functions are not unique! There are a multitude of functions that can satisfy the Big-O of $f(x)$.
+>
+> For example, suppose $f(x) = O(x^2)$. If this is the case, then we can also say that 
 > $$
-> \begin{align}
+> \begin{align*}
 > 	f(x) &= O(x^3) \\ 
 > 	f(x) &= O(x^4) \\
 > 	&\vdots
-> \end{align}
+> \end{align*}
 > $$
-> 
-> However, we often prefer to choose the upper bound that grows the slowest.
 
 
+## Big-Omega
 Additionally, we can say $\Omega(g(x))$ to mean:
 $$
 \exists x_0, B > 0 \text{ such that } \forall x \ge x_0 \to f(x) \ge B g(x)
 $$
-In other words, $\Omega(g(x))$ is a function such that after some cutoff $x_0$, $f(x)$ is greater than some multiple of $g(x)$ for all $x$!
-We call $\Omega(g(x))$ the **Big-Omega** (lower bound) of $f(x)$.
+In other words, $\Omega(g(x))$ is a function such for large values $x$ ($x > x_0$), $f(x)$ is greater than some multiple of $g(x)$ for all $x$!
 
-> [!Example]- Example: Big-Omega
+We call $\Omega(g(x))$ the **Big-Omega** of $f(x)$. We can intuitively think of $\Omega(g(x))$ as a lower bound for $f(x)$.
+
+> [!Example]- Example: Big-Omega Intuition
 >
 > Here, $f(x) = \Omega(x^2)$ with $B = \frac{1}{2}$ and $x_0$ as shown.
 > 
 > ![[(Big-O) Example 2.png]]
 
+Similar to Big-O, we can prove $f(x) = \Omega(g(x))$ by finding values $x_0, B$ satisfying our definition. See the example below.
 
 > [!Example]- Example: Big-Omega Proof (1)
 > 
@@ -129,47 +125,53 @@ We call $\Omega(g(x))$ the **Big-Omega** (lower bound) of $f(x)$.
 > $$
 > Thus, choosing $B = 4$ and $x_0 = 2$, we have shown that $5 x \lg(x) - x = \Omega(x \lg(x))$!
 
-Now note that while Big-O serves as an upper bound, and Big-Omega serves as a lower bound, a variety of functions can serve as these upper / lower bounds! 
+## Big-Theta
+Note that while Big-O provides an upper bound, and Big-Omega provides a lower bound, a variety of functions can serve as these upper / lower bounds! Thus, Big-O and Big-Theta may not necessarily provide a good benchmark for a function.
 
-We define $\Theta(g(x))$ to mean
-$$ \exists B > 0, C> 0, x_0 \text{ such that }x \ge x_0 \to Bg(x) \le f(x) \le Cg(x)$$
-In other words, $\Theta(g(x))$ is a function that can serve as an upper and lower bound for $f(x)$! We call $\Theta(g(x))$ the **Big-Theta** of $f(x)$.
-> To prove $\Theta(g(x))$, we prove $O(g(x))$ and $\Omega(g(x))$.
+To address this, we define $\Theta(g(x))$ to mean
+$$
+\exists B > 0, C> 0, x_0 \text{ such that }x \ge x_0 \to Bg(x) \le f(x) \le Cg(x)
+$$
+In other words, $\Theta(g(x))$ is a function that serves as both an upper and lower bound for $f(x)$!
 
-We should generally prefer to use Big-Theta when possible.
+We call $\Theta(g(x))$ the **Big-Theta** of $f(x)$. To prove $\Theta(g(x))$, we simply show that $f(x) = O(g(x))$ and $f(x) = \Omega(g(x))$.
+> We should generally prefer to use Big-Theta when possible.
 
-## Limit Theorem
-The previous section explicitly finds values $B$ (or $C$) and $x_0$ to find / prove a function for $O(g(x))$ and $\Omega(g(x))$. However, there is another method of proving using **limits**.
+If we cannot easily find explicit values $x_0, B, C$ satisfying our definition, we can also employ **limits** to prove $\Theta(g(x))$.
 
-> [!Abstract] Theorem: Big-O, Proof by Limits
->
+> [!Abstract] Theorem: Limit Theorem, Big-O
 > Let $f(x)$ and $g(x)$ be functions such that
 > $$
 > \lim_{x\to\infty}f(x) \qquad \lim_{x\to\infty}g(x)
 > $$
 > exist. 
 > 
-> The following cases are true.
-> 1. If $\lim_{x\to\infty} \frac{f(x)}{g(x)} \ne \infty$, then $f(x) = O(g(x))$
-> 2. If $\lim_{x\to\infty} \frac{f(x)}{g(x)} \ne 0$, then $f(x) = \Omega(g(x))$
+> Then, the following are true.
+> $$
+> \begin{align*}
+>       &\lim_{x\to\infty} \frac{f(x)}{g(x)} \ne \infty \to f(x) = O(g(x)) \\
+>       &\lim_{x\to\infty} \frac{f(x)}{g(x)} \ne 0 \to f(x) = \Omega(g(x))
+> \end{align*}
+> $$
 > 
 > Thus, if both hold true, then $f(x) = \Theta(g(x))$!
 
-Some examples are given below.
+We apply the limit theorem in an example below.
 
-> [!Example]- Big-O, Proof by Limits
+> [!Example]- Example: Big-O, Proof by Limits
 > Observe that
 > $$
 > \lim_{n\to\infty} \frac{n \ln(n)}{n^2} = \lim_{n\to\infty} \frac{\ln(n)}{n} = \lim_{n\to\infty} \frac{1/n}{1} = 0
 > $$
 > Thus, $n \ln(n) = O(n^2)$.
 
-## Code Analysis with Big-O
+# Code Analysis with Big-O
+## Nice Functions
 Big-O notation is especially important in computer science, as it serves as a benchmark for comparing algorithms with one another.
 
 Typically we'll have some algorithm that depends on some varying $n$, where $n$ can be the length of a list, loop iterations, etc. Based on this algorithm, we can form a function $T(n)$ representing its runtime complexity.
 
-What do we mean by nice functions?
+How can we compare these functions, when there are potentially limitless $T(n)$ functions to compare? 
 
 Well, computer scientists have settled on a collection of **nice functions** which easily be compared with one another. A non-comprehensive list of these functions is given below, in order of slowest to fastest growing:
 $$
@@ -180,7 +182,6 @@ $$
 Choosing the respective Big-Theta function for our time function, $T(n) = \Theta(g(n))$, will give us an idea on how fast (or slow) our algorithm runs!
 
 > [!Info] Big-O Algorithm Analysis: Intuition
->
 > Apart from using definitions and limit theorems, we can often intuitively find a function's Big-Theta! For a given function $T(n)$, the $\Theta(g(n))$ is often the fastest growing term.
 >
 > For example,
@@ -199,21 +200,17 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 >
 > > We'll have algorithms later in the course where they may be efficient for large values $n$, but terribly inefficient for small values!
 
-> [!Info] Time Complexity Analysis with Algorithms
->
-> Say we have a block of code with some input whose size is $n$, and we want to know $T(n) = \Theta(g(n))$.
->
-> Note that every statement in a block of code has overhead, and takes time. However, some statements "matter more" than others, as they have more meaningful contributions to the time complexity than others.
->
-> We can generalize this in the following rules:
-> 1. **Precedence**: We don't need to include a time function ($n, n^2, \dots$) provided there is a faster growing function in the analysis.
-> 2. **Loops**: We don't need to include the time it takes for a loop iteration to occur, provided the loop body takes time.
-> 3. **Conditionals**: We don't need ot include the time it takes for a conditional to evaluate, provided the conditional body takes time.
+## Determining $T(n)$
+Say we have a block of code with some input whose size is $n$, and we want to know $T(n) = \Theta(g(n))$.
 
-> [!Info] Auxilliary Space
-> Oftentimes, alongside time complexity analysis, it may be helpful to analyze the amount of extra space (**auxilliary space**) the algorithm uses, in terms of the input size $n$.
->
-> When calculating auxilliary space, we do not count the memory used by the input.
+Note that every statement in a block of code has overhead, and takes time. However, some statements "matter more" than others, as they have more meaningful contributions to the time complexity than others.
+
+We can generalize this in the following rules:
+1. **Precedence**: We don't need to include a time function ($n, n^2, \dots$) provided there is a faster growing function in the analysis.
+2. **Loops**: We don't need to include the time it takes for a loop iteration to occur, provided the loop body takes time.
+3. **Conditionals**: We don't need ot include the time it takes for a conditional to evaluate, provided the conditional body takes time.
+
+See the below example.
 
 > [!Example] Example: Algorithm Analysis
 >
@@ -230,3 +227,9 @@ Note that a slow-growing $\Theta(g(n))$ for an algorithm does not necessarily me
 > 2. We can ignore $n \cdot b$, as the body of the loop takes time ($n \cdot c$).
 >
 > This gives us $T(n) = n \cdot c$.
+
+> [!Info] Auxilliary Space
+> Oftentimes, alongside time complexity analysis, it may be helpful to analyze the amount of extra space (**auxilliary space**) the algorithm uses, in terms of the input size $n$.
+>
+> When calculating auxilliary space, we do not count the memory used by the input.
+

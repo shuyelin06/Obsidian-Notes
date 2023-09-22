@@ -1,8 +1,8 @@
 ---
 title: Random Variables
 tags:
-- work-in-progress
 - stat410
+- work-in-progress
 ---
 
 # Section 4.1: Random Variables
@@ -351,3 +351,120 @@ We have the following properties:
   $$
   p \frac{d}{dx} \sum_{x=1}^\infty q^x = p \frac{d}{dx} \frac{1}{1-q} = p \frac{1}{(1-q)^2} = \frac{1}{p^2}
   $$
+
+- We now find our variance $V(X) = E(X^2) - E(X)^2$.
+  $$
+  \begin{align*}
+  E(X^2) &= \sum_x x^2 p(x) \\
+         &= \sum_{x=1}^\infty x^2 p q^{x-1} \\
+         &= \sum_{x=1}^\infty (x(x-1) + x) q^{x-1} p \\
+         &= \sum_{x=1}^\infty x(x-1)q^{x-1} p + \sum_{x=1}^\infty x q^{x-1} p \\
+         &= pq \sum_{x=1}^\infty x(x-1)q^{x-2} + E(X) \\
+         &= pq \left( \frac{d^2}{dq^2} \sum q^x \right) + \frac{1}{p} \\
+         &= pq \left( \frac{2}{(1-q)^3} \right) + \frac{1}{p} = \frac{2-p}{p^2}
+  \end{align*}
+  $$
+  Thus, $V(X) = E(X^2) - E(X)^2 = \frac{2-p}{p^2} - \frac{1}{p^2} = \frac{1-p}{p^2}$
+
+
+## Binomial Distribution
+The **Binomial Distribution**, denoted $X\sim\text{Binom}(n,p)$, tracks the probability of $x$ successes given $n$ trials, each with a probability of $p$. Each trial is independent of one another, so the success/failure of one does not influence the success/failure of another.
+
+The pmf of the Binomial Distribution is given as follows:
+$$
+p(x) = \binom{n}{x} p^x (1-p)^{n-x}
+$$
+
+We find the expected value as
+$$
+\begin{align*}
+        E(X) = \sum_{x=0}^n x \frac{n}{x} p^x (1-p)^{n-x} &= \sum_{x=1}^n x \frac{n!}{x!(n-x)!} p^x (1-p)^{n-x} \\
+        &= np \sum_{x=1}^n \frac{(n-1)!}{(x-1)!(n-x)!} p^{x-1} (1-p)^{n-x}
+\end{align*}
+$$
+Let $y = x-1$. Then,
+$$
+\begin{align*}
+        E(X) = \dots &= np \sum_{x=1}^n \frac{(n-1)!}{(x-1)! ((n-1) - y))!} p^y (1-p)^{(n-1) - y)} \\
+             &=np \sum_{y=0}^{n-1} \binom{n-1}{y} p^y (1-p)^{n-1-y} = np (p + (1-p))^{n-1} = np
+\end{align*}
+$$
+
+We now find the variance, by finding $E(X^2)$.
+$$
+\begin{align*}
+        E(X^2) &= \sum_{x=0}^n x^2 \binom{n}{x} p^x (1-p)^{n-x} \\
+        &= \sum_{x=0}^n x \frac{n!}{(x-1)! (n-x)!} p^x (1-p)^{n-x}
+\end{align*}
+$$
+Let $x = k + 1$. Then,
+$$
+\begin{align*}
+        E(X^2) = \dots &= \sum_{k=0}^{n-1} np (k+1) \frac{(n-1)!}{k! (n-1-k)!} p^k (1-p)^{n-k-1} \\
+        &= np \left[ \sum_{k=0}^{n-1} k \binom{n-1}{k} p^k (1-p)^{n-k-1} + \sum_{k=0}^{n-1} \binom{n-1}{k} p^k (1-p)^{n-k-1} \right] \\
+        &= np ((n-1)p) + np
+\end{align*}
+$$
+> Note the left side is $E(X)$ on $X\sim(n-1,p)$, and the right side evaluates to 1.
+
+We use this to find $V(X)$ as
+$$
+        V(X) = np(1-p)
+$$
+
+
+## Hypergeometric Distribution
+The **Hypergeometric Distribution**, denoted $X\sim\text{Hypergeometric}(n,m,k)$, tracks the probability of $x$ successes, given $k$ trials from total sample of $n$ elements with $m$ successes (no replacement).
+
+> [!Example] Example: Hypergeometric Distribution
+> 6 trucks of 100 are inspected. We know 4 of the 100 have issues. What is the probablility that 5 trucks pass?
+>
+> Given this scenario, we have
+> $$
+> \begin{cases} n = 100 \\ m = 96 \\ k = 6 \end{cases}
+> $$
+>
+> Note that $m = 96$, because we want to know the number of trucks that **pass**, not fail.
+
+The pmf of the Hypergeometric Distribution is given as follows:
+$$
+p(x) = \frac{\binom{m}{x} \binom{n-m}{k-x}}{\binom{n}{k}}
+$$
+
+We now find our expected value and variance. To aid us in this, we use the following lemma:
+
+> [!Abstract] Lemma
+> $$
+> \sum_{i=0}^k \binom{a}{i} \binom{b}{k-i} = \binom{a+b}{k} 
+> $$
+
+We find our expected value as
+$$
+\begin{align*}
+        E(X) &= \sum_{x=0}^k x \frac{\binom{m}{x} \binom{n-m}{k-x}}{\binom{n}{x}} \\
+        &= m \sum_{x=1}^k \frac{(m-1)!}{(x-1)!(m-x)!} \frac{\binom{n-m}{k-x}}{\binom{n}{k}} \\
+        &= \frac{m}{\binom{n}{k}} \sum_{x=1}^k \binom{m-1}{x-1} \binom{n-m}{k-x} = \frac{m}{\binom{n}{k}} \binom{n-1}{k-1} = \frac{km}{n}
+\end{align*}
+$$
+
+We find the variance as
+$$
+V(X) = \frac{km (n-m) (n-k) }{n^2 (n-1) }
+$$
+The proof is ommitted due to how complex the calculation is.
+
+> [!Info] Remark
+> Let $p,q$ be the proportions of the successes and failures, respectively. In other words,
+> $$
+> p = \frac{m}{n} \qquad q = 1 - p
+> $$
+>
+> Then, the pmf is
+> $$
+> p(x) = \binom{np}{x} \binom{nq}{k - x} = \binom{k}{x} p(p - \frac{1}{n}) (p - \frac{2}{n}) \dots (p - \frac{x-1}{n}) q (q - \frac{1}{n})
+> $$
+> Note that as $n \to \infty$, (the population gets larger), we find
+> $$
+> p(x) = \binom{k}{x} p^x q^{k-x}
+> $$
+> In other words, the binomial distribution! So, for large $n$, even though we're drawing without replacements, we'll get about the same answer as if we treated everything as independent!

@@ -468,3 +468,134 @@ The proof is ommitted due to how complex the calculation is.
 > p(x) = \binom{k}{x} p^x q^{k-x}
 > $$
 > In other words, the binomial distribution! So, for large $n$, even though we're drawing without replacements, we'll get about the same answer as if we treated everything as independent!
+
+## Negative Binomial
+The **Negative Binomial Distribution**, denoted $X\sim\text{Negative Binomial}(r,p)$, tracks the probability of obtaining the $r^{th}$ success after $x$ trials, given that every trial has a probability of success $p$.
+
+$$
+p(x) = \binom{x-1}{r-1} p^r (1-p)^{x-r} \qquad x=r, r+1, \dots
+$$
+
+> [!Example] Negative Binomial Distribution
+> If a person is exposed to a disease, 30% show symptoms, What is the probability that the $100^{th}$ person exposed is the $7^{th}$ person to show symptoms?
+>
+> We have a negative binomial distribution with $r = 7$ and $p = 0.3$. To find our probability, we check for $x = 100$.
+
+
+Let's verify the pmf.
+> Let $k = x - r$ be the number of failures. We find the probability of $k$ to be
+> $$
+> p(k) = \binom{k+r-1}{r-1} (1-p)^k p^r
+> $$
+> We can expand the following
+> $$
+> \binom{k+r-1}{r-1} = \frac{(k+r-1)(k+r-2) \dots (r)}{k!} = \frac{(-1)^k (-r) (-r-1) (-r-2) \dots (-r-k+1)}{(-1)^k \binom{-r}{k} k!}
+> $$
+>
+> We have
+> $$
+> p^{-r} = (1 - q)^{-r} = \sum_{k=0}^\infty \binom{-r}{k} (-q)^k (1)^{-r-k} = \sum_{k=0}^\infty q^k  (-1)^k \binom{-r}{k} = \sum_{k=0}^\infty q^k \binom{r+k-1}{r-1}
+> $$
+
+We then have
+$$
+\sum_{k=0}^\infty p(k) = \sum_{k=0}^\infty \binom{k+r-1}{r-1} (1-p)^k p^r
+$$
+$$
+\sum_{k=0}^\infty = p^{-r} p^{r} = 1
+$$
+> confirming we have a pmf?
+
+
+---
+
+We find our expected value and variance as
+$$
+E(X) = \frac{r}{p} \qquad V(X) = r \frac{1-p}{p^2}
+$$
+
+If our pmf is expressed in terms of $k = x - r$ the number of failures, we have
+$$
+E(X) = \frac{r}{p} - r \qquad V(X) = r \frac{1-p}{p^2} 
+$$
+
+## Poisson Distribution
+> [!Info] Intuition
+
+Consider a time period of 1 week, and $X$ is the number of car accidents.
+
+We can break up this time interval into $n$ subintervals, so that for any subinterval, at most 1 accident occurs. In other words, in any subinterval, there is a probability $p$ of exactly 1 accident happening.
+
+If each subinterval is independent, this is basically just the binomial distribution!
+
+Thus, we can expect that as the number of subintervals increase ($n$ increases), our probability of seeing an accident in a subinterval gets smaller.
+
+We assume here that the ratio of subintervals to probability, $np = \lambda$ is constant. Because for sufficient size $n$, we have a binomial distribution, we find $p(x)$ using the binomial distribution's pmf.
+
+Observe the binomial distribution has pmf
+$$
+p(x) = \binom{n}{x} p^x (1-p)^{n-x}
+$$
+Subbing in $p = \lambda / n$, we find
+$$
+p(x) = \binom{n}{x} \left( \frac{\lambda}{n} \right)^x \left( 1 - \frac{\lambda}{n} \right)^{n-x} = \frac{n(n-1)\dots(n-x+1)}{x!} \left( \frac{\lambda}{n} \right)^x \left( 1 - \frac{\lambda}{n} \right)^{n-x}
+$$
+Taking the $n^x$ in the denominator, we divide every term in the binomial coefficient to find
+$$
+= \frac{1 (1 - 1/n) \dots (1 - \frac{x-1}{n}}{x!} \lambda^x \left[ (1 - \frac{\lambda}{n})^{\frac{-n}{\lambda}} \right]^{-\lambda} (1 - \frac{\lambda}{n})^{-x}
+$$
+Observe now that as $n \to \infty$,
+$$
+\lim_{n \to \infty} p(x) = \frac{1}{x!} \lambda^x e^{-\lambda} (1)
+$$
+> Remember that
+> $$
+> \lim_{x \to \infty} (1 - 1 /x)^{-x} = e
+> $$
+
+Thus, the Poisson distribution, denoted $X \sim \text{Poisson}(\lambda)$ has a pmf given as
+$$
+p(x) = \frac{\lambda^x}{x!} e^{-\lambda} \qquad x = 0, 1, \dots
+$$
+> We don't really apply this distribution too much, though for sufficiently large values $n$ its a good approximation of the binomial distribution.
+
+We now find the expected value and variance as
+$$
+E(X) = \sum_x x p(x) = \sum_{x=0}^\infty x \frac{\lambda^x}{x!} e^{-\lambda} = \sum_{x=1}^\infty \frac{\lambda^x}{(x-1)!} e^{-\lambda} = \lambda e^{-\lambda} \sum_{x=1}^\infty \frac{\lambda^{x-1}}{(x-1)!} = \lambda e^{-\lambda} e^\lambda = \lambda
+$$
+> Note that
+> $$
+> \sum_{n=0}^\infty x^n / n! = e^x
+> $$
+
+We now find $E(X^2)$
+$$
+E(X^2) = \sum_{x=0}^\infty x^2 \frac{\lambda^x}{x!} e^{-\lambda} = \lambda e^{-\lambda} \sum_{x=1}^\infty x \frac{\lambda^{x-1}}{(x-1)!}
+$$
+Let $x = i + 1$.
+$$
+= \lambda e^{-\lambda} \sum_{i=0}^\infty (i+1) \frac{\lambda^i}{(i)!} = \lambda e^{-\lambda} \left[ \sum_{i=1}^\infty \frac{\lambda^i}{(i-1)!} + \sum_{i=0}^\infty \frac{\lambda^i}{(i)!} \right] = \lambda e^{-\lambda} (\lambda e^\lambda + e^\lambda) = \lambda^2 + \lambda
+$$
+> Note we bring the summation to $i = 1$ bc we don't want to deal with negative factorials.
+
+We find our variance as
+$$
+V(X) = E(X^2) - E(X)^2 = \lambda^2 + \lambda - \lambda^2 = \lambda
+$$
+
+END OF DISCRETE RANDOM VARIABLES
+
+above is ALL discrete random variables.
+
+
+
+---
+
+# Continuous Random Variables
+A **continuous random variable** $X: S \to \mathbb{R}$ is a function that takes on uncountably many elements. In other words, we say $X$ is continuous if there is a non-negative function $f(x)$ such that $f(x)$ is defined for all $\mathbb{R}$ and
+$$
+P(X \in B) = \int_B f(x) dx
+$$
+where $B$ is a set of values in $\mathbb{R}$.
+
+This gives us smooth probability curves, which can be integrated along to find probabilities.

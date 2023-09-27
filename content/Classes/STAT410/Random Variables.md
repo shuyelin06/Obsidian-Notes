@@ -582,12 +582,16 @@ $$
 ### Poisson Distribution
 Consider a period of time, with occurrences of some event over that period of time.
 
-We can break this time interval up into $n$ subintervals, so that for any subinterval, the event occurs at most once. We can alternatively think of this as the event occurring for any subinterval with a probability of $p$. Thus, we can expect that as the number of subintervals increase ($n$ increases), our probability of seeing an accident in a subinterval gets smaller.
+We can break this time interval up into $n$ subintervals, so that for any subinterval, the event occurs at most once. Averaging the occurrences of the event for every subinterval, we can find a probability of the event occurring for any subinterval $p$.
 
-To account for this, we assume here that the ratio of subintervals to probability, $np = \lambda$ is constant. Because for sufficient size $n$, we have a binomial distribution, we find $p(x)$ using the binomial distribution's pmf.
+Notice that if our subintervals are independent, we essentially have a binomial distribution!
 
-If each subinterval is independent, this is basically just the binomial distribution!
+We can expect that as the number of subintervals increase ($n$ increases), our probability of seeing an accident in a subinterval gets smaller. To account for this, we assume here that the ratio of subintervals to probability, $\lambda$, is constant.
+$$
+np = \lambda
+$$
 
+Now, assuming independent subintervals, we can derive the pmf for the Poisson Distribution using the Binomial Distribution. 
 
 Observe the binomial distribution has pmf
 $$
@@ -640,19 +644,142 @@ $$
 V(X) = E(X^2) - E(X)^2 = \lambda^2 + \lambda - \lambda^2 = \lambda
 $$
 
-END OF DISCRETE RANDOM VARIABLES
-
-above is ALL discrete random variables.
-
-
-
----
 
 # Continuous Random Variables
+## Introduction to Continuous Random Variables
 A **continuous random variable** $X: S \to \mathbb{R}$ is a function that takes on uncountably many elements. In other words, we say $X$ is continuous if there is a non-negative function $f(x)$ such that $f(x)$ is defined for all $\mathbb{R}$ and
 $$
 P(X \in B) = \int_B f(x) dx
 $$
 where $B$ is a set of values in $\mathbb{R}$.
 
-This gives us smooth probability curves, which can be integrated along to find probabilities.
+This gives us smooth probability curves, which can be integrated along to find probabilities along an interval. 
+
+The probability mass function of a contiuous random variable has the following properties:
+1. $f(x) \ge 0$ for all $x$
+2. $\int_{-\infty}^\infty f(x) = 1$
+3. $P(a \le x \le b) = \int_a^b f(x) dx$
+4. $P(X = a) = 0$
+5. $P(a \le x \le b) = P(a < x < b)$.
+
+Property (4) occurs because as we have uncountably many values, we cannot examine the probability of any singular value. (5) naturally follows from this fact.
+> To "verify" the pdf, we check that property (2) holds.
+
+> [!Example]+ Example: PDFs of Contiuous Random Variables
+> Let $X$ have pdf given by
+> $$
+> f(x) = \begin{cases}
+>               k e^{-3x} & x > 0 \\
+>               0 & x \le 0
+>      \end{cases}
+> $$
+>
+> Find $k$.
+>
+> We find $k$ by choosing a value such that we have a valid pdf.
+> $$
+> 1 = \int_{-\infty}^\infty f(x) dx = \int_0^\infty ke^{-3x} = k \lim_{t \to \infty} \frac{e^{-3x}}{-3x} \bigg\vert^t_0 = \frac{k}{3} \to k = 3
+> $$
+
+If $X$ is a contiuous random variable with pdf $f(x)$, then the **cummulative distribution function (cdf)** is
+$$
+F_X(x) = P(X \le x) = \int_{-\infty}^x f(t) dt
+$$
+> We can intuitively understand this as summing (integrating) all values up to some point $x$ - just like our discrete case!
+
+The properties of cummulative distribution functions follow similarly to that of the discrete case.
+$$
+F(\infty) = 1 \qquad F(-\infty) = 0
+$$
+
+Just like in the discrete case, we can find the pdf from the cdf, and vice versa.
+
+> [!Abstract] Theorem: CDF and PDF Conversions
+> If $f(x)$, $F(x)$ are the pdf and cdf of a contiuous random variable $X$, then
+> $$
+> P(a \le X \le b) = F(b) - F(a)
+> $$
+>
+> Moreover, we can find our pdf by taking the derivative of the cdf, assuming $F(x)$ is differentiable.
+> $$
+> f(x) = \frac{d}{dx} F(x)
+> $$
+
+> [!Example]+ Example: CDF and PDF Conversions
+> Consider the last example, with pdf given as
+> $$
+> f(x) = \begin{cases}
+>               k e^{-3x} & x > 0 \\
+>               0 & x \le 0
+>      \end{cases}
+> $$
+>
+> We find the cdf as
+> $$
+> F(x) = \begin{cases}
+>               \int_{0}^t f(t) dt = 1 - e^{-3x} & x > 0 \\
+>               0 & x \le 0
+>        \end{cases}
+> $$
+
+## Expectation and Variance
+If $X$ is a continuous random variable with pdf given by $f(x)$, then the expected value is
+$$
+E(X) = \int_{-\infty}^\infty x f(x) dx
+$$
+and the variance is given as
+$$
+V(X) = E( (X - E(X))^2 ) = \int_{-\infty}^\infty \left( x - E(X) \right)^2 f(x) dx 
+$$
+
+However, just like in the discrete case, we will often just use the form
+$$
+V(X) = E(X^2) - (E(X))^2 = \int_{-\infty}^\infty x^2 f(x) dx - \left( \int_{-\infty}^\infty x f(x) dx \right)^2
+$$
+> All of this is directly analogous to the discrete case.
+
+The properties of expected value and variance are given below. Note that they are virtually the same (and can be proven the same) as the discrete case.
+1. $E(aX + b) = a E(X) + b$
+2. $V(aX + b) = a^2 V(X)$
+3. $E(g(x)) = \int_{-\infty}^\infty g(x) f(x) dx$
+
+> [!Example]+ Example: Expectation and Variance
+> If $X$ has pdf given by
+> $$
+> f(x) = \begin{cases}
+>      e^{-x} & x > 0 \\
+>      0 & x < 0 \\
+>      \end{cases}
+> $$
+> 
+> Then we can find $E(e^{3x/4})$ as
+> $$
+> E(e^{\frac{3x}{4}}) = \int_{-\infty}^\infty g(x) f(x) dx = \int_0^\infty e^{3x}{4} e^{-x} dx = \int_0^\infty e^{\frac{-x}{4}}
+> $$
+
+End of Exam 1 Content
+---
+
+## Common Continuous Random Variables
+In this section, we discuss some common continuous random variables.
+
+### Uniform Distribution
+The **Continuous Uniform Distribution**, denoted $X \sim u(\alpha, \beta)$, is the random variable over interval $(\alpha, \beta)$, with a uniform probability throughout.
+
+The pdf of the Uniform Distribution is given as follows:
+$$
+f(x) = \begin{cases}
+     \frac{1}{\beta - \alpha} & \alpha < x < \beta \\
+     0 & \text{Otherwise}
+     \end{cases}
+$$
+
+Moreover, we have a cdf which can easily be derived as
+$$
+F(x) = \begin{cases}
+                0 & x \le \alpha \\
+                \frac{x-\alpha}{\beta - \alpha} & \alpha < x > \beta \\
+                0 & x \ge \beta
+     \end{cases}
+$$
+> While this looks scary, the cdf is really just a line.

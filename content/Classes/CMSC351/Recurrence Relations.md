@@ -33,7 +33,8 @@ Given these recurrence relations, we can solve for specific values of $T(n)$! We
 > $$
 > > Note that recurrence relations often will need ceilings or floors to ensure that our values remain as integers (otherwise things don't make sense).
 
-More importantly, we can use these recurrence relations to determine $\Theta$ of a function!
+## Technique 1: Digging Down
+We can use these recurrence relations to determine $\Theta$ of a function!
 1. Using the relation to expand itself, we can continuously expand it until we find some general pattern.
 2. Then, we solve for when this pattern ends with regard to the base case.
 3. Finally, we sub in this base case to find our final time complexity.
@@ -91,3 +92,47 @@ This technique is known as **digging down**.
 > $$
 > T(n) = 2^{\lg(n)} T(1) + \lg(n) (5n) = n \cdot 7 + 5n \lg(n)
 > $$
+
+## Technique 2: Recurrence Trees
+Another method of solving recurrence relations involves the use of a **recurrence tree**.
+
+Consider the recurrence relation given by
+$$
+T(n) = 2T(n/2) + n \qquad T(1) = 3
+$$
+
+Say we want to find some value $T(n)$. We can do this by drawing a tree to represent our summation, where every level $i$ (and its leaves) represents the result of $T(n / 2^i)$. The combination of all the nodes in this tree will therefore sum to $T(n)$.
+
+```mermaid
+graph TD
+      r[n] -.-> t1[n/2] & t2[n/2];
+
+      t1 -.-> t3[n/4] & t4[n/4];
+      t2 -.-> t5[n/4] & t6[n/4];
+      
+      t3 -.-> t7[n/8] & t8[n/8];
+      t4 -.-> t9[n/8] & t10[n/8];
+      t5 -.-> t11[n/8] & t12[n/8];
+      t6 -.-> t13[n/8] & t14[n/8];
+```
+
+Note that every level represents the result of $T(n/2^i)$. Thus, we can find when our levels end by finding when
+$$
+n/2^i = 1 \to i = \lg(n)
+$$
+
+We can then sum up all our results to find our total time. We make a table to represent this for us.
+
+| Level | Num Nodes | Time / Node | Level Total |
+| - | - | - | - |
+| $0$ | $1$ | $n$ | $n$ |
+| $1$ | $2$ | $n/2$ | $n$ |
+| $2$ | $4$ | $n/4$ | $n$ |
+| $\vdots$ | | | |
+| $\lg(n) - 1$ | $2^{\lg(n) - 1}$ | $n / 2^{\lg(n)-1}$ | $n$ |
+| $\lg(n)$ | $2^{\lg(n)}$ | $7$ | $7 n$ |
+
+Using this table, we find total sum as the sum of the level totals (rightmost column).
+$$
+T(n) = \sum_{i=0}^{\lg(n)-1} n + 7n = n \lg(n) + 7n
+$$

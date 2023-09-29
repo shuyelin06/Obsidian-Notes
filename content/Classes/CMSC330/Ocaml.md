@@ -171,7 +171,7 @@ g 2 (* 7 *)
 > For example, `*., /., +.`.
 
 
-Some operators are generic and support a wide variety of operands, given both arguments are the same type (`>, <, =`)
+Some operators are generic and support a wide variety of operands, given both arguments are the same type (`>, <, =`). We call these operators **generics**.
 ```ocaml
 (e1:t > e2:t): bool
 (e1:t < e2:t): bool
@@ -180,6 +180,62 @@ Some operators are generic and support a wide variety of operands, given both ar
 (e1:t >= e2:t): bool
 ```
 > note that `=` is equality. `==` is **physical equality**, meaning we compare the memory addresses.
+>
+> Using a generic in a function will return `'[char]` as the type, signifying some type that must match with any others whose type is also `'[char]`.
+> ```ocaml
+> (* 'a -> 'a -> 'b -> 'b -> bool = <fun> *)
+> let f w x y z = x > w || y < z in f ;;
+> ```
+> > Note that there is nothing saying `w x` and `y z` need to be the same type, hence the different characters for their type. 
+
+
+Other operators have very strict typing.
+```ocaml
+(e1:int + e2:int):int (* adds two ints *)
+(e1:int - e2:int):int (* subtracts two ints *)
+(e1:int / e2:int):int (* divides two ints *)
+(e1:int * e2:int):int (* multiplies two ints *)
+
+(e1:float +. e2:float):float (* adds two floats *)
+(e1:float -. e2:float):float (* subtracts two floats *)
+(e1:float /. e2:float):float (* divides two floats *)
+(e1:float *. e2:float):float (* multiplies two floats *)
+
+(e1:bool && e2:bool): bool (* logical and *)
+(e1:bool || e2:bool): bool (* logical or *)
+(not e1:bool):bool (* logical negate *)
+
+(e1:string ^ e2:string):string (* concatenates two strings *)
+```
+
+In ocaml, type inference depends on the types of the operators we are using!! Ocaml will infer what the types of our expressions are, given the operands being used.
+
+```ocaml
+(* int -> int -> int = <fun> *)
+let f x y = x - y in f ;;
+
+(* notice how when we change the operator, ocaml
+   knows that our type changes *)
+(* float -> float -> float = <fun> *)
+let f x y = x -. y in f ;;
+```
+
+> [!Example] Type Inference in Ocaml
+> Because Ocaml supports rigid type inference, we can deduce the types of expressions (and parameters) purely based on their operands.
+> 
+> ```ocaml
+> (* 'a -> 'a -> bool = <fun> *)
+> let ex1 = fun a b -> b < a ;;
+>
+> (* int -> int -> bool = <fun> *)
+> let ex2 = fun a b -> b + a > b - a ;;
+>
+> (* int -> int -> string -> int = <fun> *)
+> let ex3 = fun a b c = -> (int_of_string c) * (b + a) ;;
+>
+> (* int -> int -> bool -> int list = <fun> *)
+> let ex4 = fun a b c = [a + b ; if c then a else a + b]
+> ```
 
 # tpyes to Ocaml
 ## Functional Programming
@@ -187,3 +243,166 @@ Some operators are generic and support a wide variety of operands, given both ar
 ## Ocaml Environment
 
 ## Functions and Expressions
+```ocaml
+(* function syntax *)
+let [name] [arg1] [arg2] [...] = [expression]
+(* anonymous function *)
+fun [arg1] [arg2] [...] -> [expression]
+
+(* equivalent *)
+let f x t = x - y ;;
+let f = fun x -> fun y -> x - y ;;
+```
+
+To make a function recursive, we need to use the `rec` keyword.
+```ocaml
+(* simple gaussian sum function, assuming x is greater than 0 *)
+(* the recursive call would not be allowed without the rec keyword *)
+let rec sum x = if x = 0 then 0 else x + sum (x - 1) ;;
+```
+> Note that we can add the `rec` keyword even if our function is not actually recursive.
+
+## Data Structures in Ocaml
+Lists are built into ocaml and are the default data structure.
+
+To define a list, we use `[ ]`, and separate each item with a semicolon. Note that the empty list, sometimes called `nil`, is of type `'a list` (generic type).
+```ocaml
+[e1:t ; e2:t ; ... en:t]:t ;;
+
+(* int list = [1; 2; 3; 4] *)
+[1 ; 2 ; 3 ; 4] ;;
+```
+Lists must be homogeneous - in other words, all elements in the list must be the same type.
+> In the backend, ocaml implements these lists as LinkedLists. Note that we can nest lists within one another (sizes don't matter in lists).
+
+Note that because functions are just like any other type, we can have lists of functions as well! If this occurs, **all functions in our list must have the same type**.
+```ocaml
+let f = fun x -> x + 1 ;;
+let g = fun y -> y - 1 ;;
+[f ; g] ;;
+```
+
+To operate on list, we have the `cons` operator (`::`), which will add an item to the front of the list (not in place - returns a new list as all data types are immutable).
+```ocaml
+(e1:t :: e2:t list): t list
+
+(* adds 1 to list [2;3;4] to yield [1;2;3;4] *)
+1::[2 ; 3 ; 4] ;;
+```
+
+We can also concatenate two lists together using the append operator (`@`).
+```ocaml
+(e1:t list @ e2:t list):t list
+[1;2;3]@[2;3;4] (* [1;2;3;2;3;4] *)
+```
+
+Ocaml treats lists as being recursive in nature. All lists are equal to an item `cons` with a list. Thus, to work with lists, we have the `head` of a list representing the first element of the list, and the `tail` representing the other elements.
+
+We can use this with **pattern matching**, using a `match` keyword to specify which expressions we need to match with. `match` returns the result of whatever expression is matched with.
+```ocaml
+(match e1:'a with
+       p1 -> e2: 'b
+       | p2 -> e3: 'b
+       | p3 -> e4: 'b
+       ...):'b
+
+(* matches with 3, returning string "nom" *)
+match 3 with
+      1 -> "hi"
+      | 2 -> "bye"
+      | 3 -> "nom" 
+      | 4 -> "agga" ;;
+
+(* use x to specify a default case *)
+(* no match, defaults to x to give us string "x" *)
+match 3 with
+      1 -> "hi"
+      | 2 -> "bye"
+      | x -> "x" ;;
+```
+> We can think of `match` like the `switch` statement! Note that our element to match `e1` can be an expression, which will be evaluated first before matching with anything.
+
+Match attempts to match patterns top-down - so, order of patterns we give is important.
+
+> [!Info]
+> The `in` operator limits the scope of a definition (variable or function) to the following expression.
+>
+> `let x = e1 in e2 ;;`
+> > `x` is only bound in expression `e2`. Without in, `x` has global scope.
+
+We can use `match` with lists, and use the `cons` operator for pattern matching
+```ocaml
+match [1;2;3] with
+      [] -> -1
+      | h::t -> h;; (* matches a list with a head and a tail (returns 1 here) *)
+```
+
+This works because of our recursive definition of a list.
+```ocaml
+(* all equivalent *)
+[1;2;3]
+1::[2;3]
+1::2::[3]
+1::2::3::[]
+```
+
+We can use this to do things with lists!
+```ocaml
+(* returns the length of a list using pattern matching
+    and recursion *)
+let rec len lst = match lst with
+    [] -> 0
+    | h::t -> 1 + len t ;;
+```
+> We can use the wildcard character `_` to specify we aren't going to use the variable.
+
+---
+
+To create a **tuple** in ocaml, we use the `( )` operators. Tuples are defined by their type, AS WELL AS THEIR SIZE.
+
+Tuples can be heterogenenous - they can have varying types inside them.
+```ocaml
+(e1:'a , e2:'b , ... en:'x): 'a * 'b * ... * 'x
+
+(* not the same types!! *)
+
+(* string * int *)
+("hiya", 2)
+
+(* int * int *)
+(1, 2)
+
+(* int * int * int *)
+(1,2,3) 
+```
+
+We can use pattern matching to break down a tuple as well! Tuples will match if the types and length of the patterns are the same
+```ocaml
+(* int * int -> int = <fun> *)
+let f = match f with
+      (x,y) -> x + y ;;
+```
+
+---
+
+We can also define **variants**, which are analogous to enums. Variants let us define custom data types.
+
+The syntax of a variant is as so:
+```ocaml
+type [name] = Value1 | Value2 | ... | ValueX
+
+type coin = Heads | Tails
+
+(* we can use the `of` keyword to associate a datatype with a value! *)
+(* Red, Blue, Green must all be ints *)
+type color = Red of int | Blue of int | Green of int ;;
+type rbg = Hue of color * color * color ;;
+```
+
+We can pattern match with variants! From before,
+```ocaml
+match Red(255) with
+Red(x) -> x
+| Green(y) -> y
+| Blue(z) -> z ;; (* 255 *)
+```

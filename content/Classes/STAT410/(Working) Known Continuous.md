@@ -115,6 +115,7 @@ $$
 > has the standard normal distribution.
 > > This has the effect of essentially shifting our $X$ by $\mu$, then constraining our variance to bring our values closer together / further apart. We can prove this with $z$-sub.
 >
+> Note that the cdf of the standard normal distribution is often denoted $\Phi(x)$. 
 
 Using this standardization, the probability of obtaining any value between $x_1$, $x_2$ can be found as
 $$
@@ -123,4 +124,77 @@ $$
 
 Which can easily be evaluated, as many books / resources have common tables of values for the standard distribution.
 > These books may represent tables of values for $x$ for both $-\infty \to x$, or $0 \to x$! Be sure you know which type of table you're using.
+
+> [!Example]+ Example: Applying Normal Distributions (1)
+> The height of students obey a normal distribution with $\mu = 67$ inches, $\sigma = 3$ inchdes.
+>
+> What percent of students have heights between 64 and 70 inches?
+>
+> We first standardize this distribution - let $z = (x - \mu) / \sigma$. Then,
+> $$
+> P(64 < X < 70) = P\left( \frac{64 - 67}{3} < z < \frac{70 - 67}{3}  \right) = P(-1 < z < 1)
+> $$
+>
+> We can calculate this to be
+> $$
+> \int_{-\infty}^1 p(x) - \int_{-\infty}^{-1} = F(1) - F(-1)
+> $$
+> and use a table of values (or a calculator) to find our result.
+> > Note that if we have a table that only tells us $F(1)$, we can find $F(-1) = 1 - F(1)$ by virtue of the normal distribution's symmetry.
+
+> [!Example]- Example: Applying Normal Distributions (2)
+> Radiation Exposure in an area takes on a normal distribution with mean $\mu = 4.35$ mrem and standard distribution $\sigma = 0.59$ mrem. What is the probability a person is exposed to more than $5.2 mrem$?
+>
+> Using our standardization $z = (X - \mu) / \sigma$, we want
+> $$
+> \begin{align*}
+>       P(X > 5.2) &= 1 - P(X < 5.2) \\
+>           &= 1 - P\left( z < \frac{5.2 - 4.35}{0.59} \right) \\
+>           &= 1 - \Phi(1.44) = 0.0749 
+> \end{align*}
+> $$
+
+### Gamma Distribution
+The **Gamma Distribution**, denoted $X \sim \Gamma(\alpha, \beta)$ is the distribution whose pdf is given as follows:
+$$
+f(x, \alpha, \beta) = \frac{\beta^\alpha x^{\alpha - 1} e^{-\beta x}}{\Gamma(\alpha)} \qquad x, \alpha, \beta > 0
+$$
+
+where $\Gamma(\alpha)$ is the **gamma function**.
+$$
+\Gamma(\alpha) = \int_0^\infty t^{\alpha - 1} e^{-t} dt
+$$
+
+> [!Abstract] Theorem: Gamma Function
+> Given the Gamma function, we have the following properties.
+> 1. For $\alpha \ge 2$, $\Gamma(\alpha) = (\alpha - 1) \Gamma(\alpha - 1)$. If $\alpha$ is a positive integer, then $\Gamma(\alpha) = (\alpha - 1)!$
+> 2. We have $\Gamma(1/2) = \sqrt{\pi}$.
+>
+> > [!Note]- Proof (Property 1)
+> >
+> > We can easily prove (1) by applying integration by parts on $u = e^{-t}, dv = t^{\alpha - 1}$. We can then use this to find
+> > 
+> > $$
+> > \Gamma(\alpha) = (\alpha - 1) \Gamma(\alpha - 1) = (\alpha - 1)(\alpha - 2) \Gamma(\alpha - 2) = (\alpha - 1) \dots 2 \cdot \Gamma(1)
+> > $$
+> >
+> > We furthermore see that
+> > $$
+> > \Gamma(1) = \int_0^\infty e^{-t} dt = 1
+> > $$
+>
+> > [!Note]- Proof (Property 2)
+> >
+> > $$
+> > \begin{align*}
+> >     \Gamma(1/2) &= \int_0^\infty t^{1/2 - 1} e^{-t} dt \\
+> >                 &= \int_0^\infty t^{-1/2} e^{-t} dt \\
+> >                 &= \int_0^\infty u^{-1} e^{u^2} 2u du &\leftarrow t = u^2 \\
+> >                 &= \int_0^\infty e^{-u^2} du \\
+> >                 &= \sqrt{\pi}
+> > \end{align*}
+> > $$
+
+In this function, $\alpha$ generally defines the shape, and $\beta$ defines the rate.
+> This is often used to scale a function $x^t e^{-t}$ so that it becomes a valid pdf.
 

@@ -164,6 +164,9 @@ where $\Gamma(\alpha)$ is the **gamma function**.
 $$
 \Gamma(\alpha) = \int_0^\infty t^{\alpha - 1} e^{-t} dt
 $$
+> This complicated looking expression is essentially just scaling a function $x^t e^{-t}$ so that it becomes a valid pdf.
+
+Conceptually, we can relate the Gamma distribution to the Poisson distribution. If the Poisson distribution measures the probability of $x$ successes in some time interval $t$, then the Gamma distribution is measuring the probability of "waiting" a certain amount of time $x$ for $\alpha$ successes, where $\beta$ is our average rate of success.
 
 > [!Abstract] Theorem: Gamma Function
 > Given the Gamma function, we have the following properties.
@@ -195,6 +198,36 @@ $$
 > > \end{align*}
 > > $$
 
-In this function, $\alpha$ generally defines the shape, and $\beta$ defines the rate.
-> This is often used to scale a function $x^t e^{-t}$ so that it becomes a valid pdf.
+We have the following properties of the Gamma Distribution.
 
+> [!Abstract] Theorem: Gamma Function Expectation
+> If $X \sim \Gamma (\alpha, \beta)$, then
+> $$
+> E(X) = \frac{\alpha}{\beta} \qquad V(X) = \frac{\alpha}{\beta}
+> $$
+>
+> > [!Note]- Proof (Expected Value)
+> > $$
+> > \begin{align*}
+> >     E(X) &= \frac{1}{\Gamma(\alpha)} \int_0^\infty \beta^\alpha x^\alpha e^{-\beta x} dx \\
+> >          &= \frac{1}{\Gamma(\alpha)} \int_0^\infty y^\alpha e^{-y} \frac{1}{\beta} dx &y = \beta x \\
+> >          &= \frac{1}{\beta} \frac{\Gamma(\alpha + 1)}{\Gamma(\alpha)} &\Gamma(\alpha + 1) = \int_0^\infty t^\alpha e^{-t} dt\\
+> >          &= \frac{\alpha}{\beta} \frac{\Gamma(\alpha)}{\Gamma(\alpha)} &\Gamma(\alpha + 1) = \alpha \Gamma(\alpha) \\
+> >          &= \frac{\alpha}{\beta}
+> > \end{align*}
+> > $$
+> > The proof for variance follows similarly.
+
+The Gamma distribution has many use cases. Below, we list one of the most common special cases of $X \sim \Gamma(\alpha, \beta)$, the **exponential distribution**.
+
+If random variable has pdf $f(x, \beta) = \beta e^{-\beta x}$, known as the **exponential distribution**, we really just have $\Gamma(1, \beta)$ (probability of time until the first success).
+
+> [!Example] Example: Exponential and Gamma Distribution
+> Suppose the total cars exceeding the speed limit in half an hour is a random variable with a Poisson distribution with $\lambda = 8.4$.
+>
+> What is the probability the wait time is at most 5 minutes between cars exceeding the speed limit?
+>
+> Here, we define $t = 1$ as "one unit of 30 min". So, we can expect an average of $\lambda \cdot t = 8.4$ cars exceeding the speed limit in a 30 minute period. We find the probability that our wait time is at most 5 minutes using the Gamma distribution, with $\alpha = 1, \beta = 8.4$.
+> $$
+> \int_0^{5/30} 8.4^1 e^{-8.4 x} x^0 dx \approx 0.75
+> $$

@@ -1,6 +1,10 @@
 ---
 title: Ocaml Programming Language
+tags:
+- work-in-progress
 ---
+
+*Note*: Ocaml does not need `;;`, though we will use it for clarity.
 
 A **programming paradigm** is a classification of programming approaches baed on behavior of code. They represent ways of thinking.
 > Typically, we use paradigms interchangeably with language features.
@@ -145,6 +149,26 @@ The `in` keyword to define the return value of the expression.  When using this 
 ```ocaml
 let f x = x + 1 in f 5 (* 6 *)
 ```
+
+> [!Example]
+> ```ocaml
+> let x = 4 in let y = 3 in x + y ;;
+> (*           ------------------ Scope of X *)
+> (*                     -------- Scope of Y *)
+> ```
+>
+> There is also the concept of shadowing in Ocaml.
+> ```ocaml
+> let x = 4 in let x = 5 in x + x ;;
+> (*
+> Gives us this:
+> x = 4
+> { x = 5
+>   x + x
+> }
+> Note that this shadowing does not remove our original definition of x.
+> *)
+> ```
 
 We can also define functions with multiple parameters!
 ```ocaml
@@ -406,3 +430,54 @@ Red(x) -> x
 | Green(y) -> y
 | Blue(z) -> z ;; (* 255 *)
 ```
+
+> [!Example] Functions in Ocaml
+> Write a function that will calculate the $n^{th}$ fibonacci number.
+> ```ocaml
+> (* Naive Recursive Solution *)
+> let rec fib x =
+>     if (x == 0) || (x == 1) then x else fib (x - 1) + fib (x - 2) ;;
+> 
+> let fast_fib x =
+>     let rec helper first second num =
+>         if (num == 0) then second else helper second (first + second) (num - 1)
+>            in helper 0 1 (x - 1) ;;
+> ```
+
+---
+
+### Higher Order Functions in Ocaml
+Map function in ocaml!
+```ocaml
+(* 'a list -> ('a -> 'b fun) -> 'b list = <fun> *)
+let rec map lst f = 
+    match lst with
+          [] -> [] 
+          | h::t -> (f h)::(map t f) ;;
+```
+
+Fold (reduce) function in Ocaml.
+```ocaml
+(* 'a list -> ('b -> 'a -> 'b fun) -> 'b -> 'b = <fun> *)
+let rec reduce lst f init =
+    match lst with
+          [] -> init 
+          | h::t -> reduce t f (f init h) ;;
+
+let rec map_with_reduce lst f = 
+    reduce lst (fun x y -> (f y)::x) [] ;;
+```
+
+> ```ocaml
+> type 'a tree =
+>  | Leaf
+>  | Node of 'a tree * 'a * 'a tree ;;
+>
+> let rec fold_tree f init tree = 
+>     match tree with
+>     | Leaf -> init
+>     | Node (left, n, right) -> f (fold_tree f init left) n (fold_tree f init right) ;;
+>
+> let tree_a = Node(Node(Leaf, "Hello", Leaf), " World", Node(Leaf, "!", Leaf)) ;;
+> fold_tree (fun l s r -> l ^ s ^ r) "" tree_a = "Hello World!" ;;
+> ```

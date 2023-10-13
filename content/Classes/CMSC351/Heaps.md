@@ -26,7 +26,7 @@ With this indexing scheme, we have the following properties of node parents and 
 
 Additionally, we have the following properties of levels in the complete binary tree:
 - The leftmost node on level $k$ has index $2^k$.
-- A node with index $i$ is on level $\lg(i)$
+- A node with index $i$ is on level $\lfloor \lg(i) \rfloor$.
 - If we have $n$ nodes, then the max level is level $\lfloor \lg(n) \rfloor$
 - Given a node with index $i$, the number of levels below that node's level and the max level (inclusive) is $\lfloor \lg(n) \rfloor - \lfloor \lg(i) \rfloor + 1$
 

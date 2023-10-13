@@ -580,70 +580,64 @@ E(X) = \frac{r}{p} - r \qquad V(X) = r \frac{1-p}{p^2}
 $$
 
 ### Poisson Distribution
-Consider a period of time, with occurrences of some event over that period of time.
-
-We can break this time interval up into $n$ subintervals, so that for any subinterval, the event occurs at most once. Averaging the occurrences of the event for every subinterval, we can find a probability of the event occurring for any subinterval $p$.
-
-Notice that if our subintervals are independent, we essentially have a binomial distribution!
-
-We can expect that as the number of subintervals increase ($n$ increases), our probability of seeing an accident in a subinterval gets smaller. To account for this, we assume here that the ratio of subintervals to probability, $\lambda$, is constant.
+The **Poisson Distribution**, denoted $X\sim\text{Poisson}(\lambda)$, tracks the probability of some event occurring $x$ times, over some period of time, where $\lambda$ is the expected occurrence of the event over this time.
 $$
-np = \lambda
+p(x) = \frac{\lambda^x}{x!} e^{-\lambda}
 $$
-
-Now, assuming independent subintervals, we can derive the pmf for the Poisson Distribution using the Binomial Distribution. 
-
-Observe the binomial distribution has pmf
-$$
-p(x) = \binom{n}{x} p^x (1-p)^{n-x}
-$$
-Subbing in $p = \lambda / n$, we find
-$$
-p(x) = \binom{n}{x} \left( \frac{\lambda}{n} \right)^x \left( 1 - \frac{\lambda}{n} \right)^{n-x} = \frac{n(n-1)\dots(n-x+1)}{x!} \left( \frac{\lambda}{n} \right)^x \left( 1 - \frac{\lambda}{n} \right)^{n-x}
-$$
-Taking the $n^x$ in the denominator, we divide every term in the binomial coefficient to find
-$$
-= \frac{1 (1 - 1/n) \dots (1 - \frac{x-1}{n}}{x!} \lambda^x \left[ (1 - \frac{\lambda}{n})^{\frac{-n}{\lambda}} \right]^{-\lambda} (1 - \frac{\lambda}{n})^{-x}
-$$
-Observe now that as $n \to \infty$,
-$$
-\lim_{n \to \infty} p(x) = \frac{1}{x!} \lambda^x e^{-\lambda} (1)
-$$
-> Remember that
-> $$
-> \lim_{x \to \infty} (1 - 1 /x)^{-x} = e
-> $$
-
-Thus, the Poisson distribution, denoted $X \sim \text{Poisson}(\lambda)$ has a pmf given as
+Thus, the Poisson distribution, denoted has a pmf given as
 $$
 p(x) = \frac{\lambda^x}{x!} e^{-\lambda} \qquad x = 0, 1, \dots
 $$
 > We don't really apply this distribution too much, though for sufficiently large values $n$ its a good approximation of the binomial distribution.
 
-We now find the expected value and variance as
+
+> [!Note]- PDF Derivation
+> Consider a fixed period of time, with occurrences of some event $E$ over that period of time. How can we find the probability of $E$ occurring $x$ times?
+>
+> To do this, we can break the time interval up $n$ subintervals small enoguh such that for any subinterval, $E$ occurs at most once. We can then average the occurrences of the event for every subinterval to find a probability of $E$ occurring for any subinterval $p$. 
+>
+> Now, assuming our subintervals are independent, we can find the occurrences of $E$ using a binomial distribution! However, note that as our number of subintervals $n$ increases, our average and thus probability $p$ will decrease, giving us inconsistent results. Thus, we will assume that the ratio of subintervals to probability, $\lambda$, is constant.
+> $$
+> np = \lambda
+> $$
+>
+> Now, recall that the binomial distribution has pdf given by
+> $$
+> p(x) = \binom{n}{x} p^x (1 - p)^{n-x}
+> $$
+>
+> We can use this pdf to find the probability of our event $E$ occurring. Letting $p = \lambda / n$, we find
+> $$
+> \begin{align*}
+>       p(x) &= \binom{n}{x} \left( \frac{\lambda}{n} \right)^x \left( 1 - \frac{\lambda}{n} \right)^{n-x} \\
+>       &= \frac{n!}{x! (n-x)!} \left( \frac{\lambda}{n} \right)^x \left(1 - \frac{\lambda}{n} \right)^{n-x} \\
+>       &= \frac{n(n-1)\dots(n-x+1)}{x!} \left( \frac{1}{n^x} \right) \lambda^x \left( 1 - \frac{\lambda}{n} \right)^{n-x} \\
+>       &= \frac{1 (1 - 1/n) \dots (1 - (x-1)/n )}{x!} \lambda^x \left( 1 - \frac{\lambda}{n} \right)^{n} \left( 1 - \frac{\lambda}{n} \right)^{-x}
+> \end{align*}
+> $$
+>
+> Now observe that the number of subintervals $n \to \infty$, we find
+>
+> $$
+> \lim_{n \to \infty} p(x) = \frac{1}{x!} \lambda^x e^{-\lambda} (1)
+> $$
+>
+> Giving us our pdf.
+
+We now find the expected value as
 $$
-E(X) = \sum_x x p(x) = \sum_{x=0}^\infty x \frac{\lambda^x}{x!} e^{-\lambda} = \sum_{x=1}^\infty \frac{\lambda^x}{(x-1)!} e^{-\lambda} = \lambda e^{-\lambda} \sum_{x=1}^\infty \frac{\lambda^{x-1}}{(x-1)!} = \lambda e^{-\lambda} e^\lambda = \lambda
+E(X) = \lambda
 $$
-> Note that
+
+and variance as
+$$
+V(X) = \lambda
+$$
+
+> The proof is omitted, though to do it, note that
 > $$
 > \sum_{n=0}^\infty x^n / n! = e^x
 > $$
-
-We now find $E(X^2)$
-$$
-E(X^2) = \sum_{x=0}^\infty x^2 \frac{\lambda^x}{x!} e^{-\lambda} = \lambda e^{-\lambda} \sum_{x=1}^\infty x \frac{\lambda^{x-1}}{(x-1)!}
-$$
-Let $x = i + 1$.
-$$
-= \lambda e^{-\lambda} \sum_{i=0}^\infty (i+1) \frac{\lambda^i}{(i)!} = \lambda e^{-\lambda} \left[ \sum_{i=1}^\infty \frac{\lambda^i}{(i-1)!} + \sum_{i=0}^\infty \frac{\lambda^i}{(i)!} \right] = \lambda e^{-\lambda} (\lambda e^\lambda + e^\lambda) = \lambda^2 + \lambda
-$$
-> Note we bring the summation to $i = 1$ bc we don't want to deal with negative factorials.
-
-We find our variance as
-$$
-V(X) = E(X^2) - E(X)^2 = \lambda^2 + \lambda - \lambda^2 = \lambda
-$$
-
 
 # Continuous Random Variables
 ## Introduction to Continuous Random Variables

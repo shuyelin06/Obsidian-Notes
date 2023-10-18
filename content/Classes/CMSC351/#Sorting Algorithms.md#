@@ -167,7 +167,7 @@ def insertion_sort(array):
 
 Let's find the time complexity of Insertion Sort. However, note that the `while` loop will run differently depending on different conditions in the array.
 - If the array is **sorted**, `while`'s body will not execute at all - the algorithm will run the fastest.
-- If the array is **reverse sorted**, `while`'s body will always execute - the algorithm will run the slowest.
+- If the array is **unsorted**, `while`'s body will always execute - the algorithm will run the slowest.
 
 Because of this, we will analyze the time complexity of Insertion Sort based on these **best** and **worst** case executions. Let $t_{i}$ indicate the runtime cost of line $i$.
 - For the **best case scenario** (sorted array), we know that the while loop doesn't execute - so, only lines $t_3, t_6, t_7, t_{11}$ contribute to the runtime (the while loop check at line 7 only occurs once).

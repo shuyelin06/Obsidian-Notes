@@ -124,4 +124,100 @@ $$
 \end{align*}
 $$
 
+
 # Pushdown Automata
+Context free grammars also have an alaogous machie, known as a PDA
+
+
+^ Context Free Grammars o.o
+
+*Later, there is also recursively enumerable grammar, which can be implemented with a turing machine.*
+
+
+To make meaning from a written language, we must do the following:
+
+1. **Lexing (Tokenizing)**: The proces of taking a string ocharacters, and making sure the string contains valid words.
+  > We can do that with regular expressions.
+
+2. **Parsing**: The process of ensuring that the structure of the words are valid - in other words, ensuring that words are in the correct order.
+> We can do this with CFGs
+
+3. **Evaluator**: We need to evaluate the semantics of words, in other words, derive meaning from it. We can do this either using an interpreter or compiler.
+
+For our purposes, we will:
+- With lexing, we will take a string and return a token list.
+- With parsing, we wil take a token list and return a parsing tree, otherwise known as an **abstract syntax tree**.
+- With evaluation, we will evaluate the syntax tree and either translate it into a value, or code (such as assembly).
+
+Let's start with lexing. How do we build a lexer in Python?
+
+Suppose we want to lex a mathetmatical expression, given with definition
+
+$$
+\begin{align*}
+        &E \to M + E | M - E | M \\
+        &M \to N * M | N / M | N \\
+        &N \to n | (E)
+\end{align*}
+$$
+
+Let's start by determining our terminals. As we're pasing a mathematical expression, we know that any number $n$ is valid, and any operator $+, -, *, /, ()$ is valid.
+
+```python
+import re
+
+# first, check that all of our words are valid.
+# we easily do this by building a regular expression
+# which can that a word is valid in our language match.
+def lex(in_string):
+
+    valid_words = re.compile(r"^([+-/*()]|-?[0-9]+)")
+
+    token_list = []
+    pos = 0
+    
+    while pos < len(in_string):
+          match = re.match(valid_words, in_string[pos:])
+
+          if match:
+             token_list.append(match.group(1))
+             pos += len(match.group(1))
+          else:
+             raise Exception("Invalid Character Detected")
+            
+    return token_list
+```
+
+Now that we have a list of tokens, we need to parse it to ensure that the structure of the tokens is correct. A common way to do this is by using an **abstract syntax tree**.
+
+There are a variety of different parsers that exist.
+- Left leaning and right leaning parsers
+- Look ahead parsers
+- Backtracking parsers
+- Recursive Descent
+- Bottom-Up Parsers
+
+In this course, we will only talk about the left leaning parser, look ahead by 1 (LL1) parser (via recursive descent). Howeer, LL1 parsers have some restrictions:
+1. Cannot parse ambiguous grammars. However, ambiguous grammars can be converted to non-ambiguous grammars, if you are restrained to LL1 parsers.
+
+```python
+# takes a token list, and returns an abstract
+# syntax tree!
+def parser(token_list):
+    # some important edge cases
+    # 1) 1 + 2 - (we check for remainders after getting a valid sequence)
+    # 2) 1 - 2 * 4 (order of operations is followed)
+    # Note that our non-terminals E,M,N all represent a specific sub-expression in our token list.
+
+
+def parse_E(token_list):
+    # The grammar allows M + E, M - E, M
+    mparse = parse_M(token_list) # after parsing m, our token list should have nothing, or a (+ E) or a (- E).
+
+    # process the remaining tokens after M is parsed, which should be [], [+, ...], or [-, ...]
+    
+    
+def parse_M(token_list):
+
+def parse_N(token_list):
+```

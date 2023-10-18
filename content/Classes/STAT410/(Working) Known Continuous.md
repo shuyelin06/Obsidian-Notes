@@ -487,3 +487,231 @@ Properties of the joint cdf are given as follows:
 > F(1,1) = P(X \le 1, Y \le 1) = f(0,0) + f(0,1) + f(1,0) + f(1,1) = \frac{8}{9}
 > $$
 
+In the continuous case, if $X$ and $Y$ are random variables and $f(x,y)$ is defined over $\mathbb{R}^2$, then $f(x,y)$ is the **joint probability density function** over $X$ and $Y$ if
+$$
+P(X,Y) \in \mathbb{R} = \int\int_R f(x,y) dA
+$$
+where $R$ is a region on the $xy$-plane.
+
+Properties of the cumulative pdf are given below.
+1. $f(x,y) \ge 0$ for all $x,y \in \mathbb{R}$.
+2. $\int_{-\infty}^\infty  \int_{-\infty}^\infty f(x,y) dy dx = 1$
+
+If $X,Y$ are continuous random variables, then
+$$
+F(x,y) = P(X \le x, Y \le y) = \int_{-\infty}^y \int_{-\infty}^x f(s,t) ds dt
+$$
+where $f(s,t)$ is the joint pdf of $X$ and $Y$ is the **joint distribution function (cumulative)** of $X$ and $Y$.
+
+Similar to the idea of the one-varibale case, we now have
+$$
+f(x,y) = \frac{\partial^2}{\partial x \partial y} F(x,y) = F_{yx} = \frac{\partial^2}{\partial x \partial y} F(x,y) = F_{xy}
+$$
+
+> [!Example] Example: Calculating the CDF (Continuous Case)
+> $$
+> f(x,y) = \begin{cases}
+>               x + y & 0 < x < 1, 0 < y < 1 \\
+>               0 & \text{else} 
+>        \end{cases}
+> $$
+> Given the above pdf, find the cdf of $X$ and $Y$.
+>
+> Clearly, if $x,y \le 0$, then $F(x,y) = 0$. Furthermore, if $x,y \ge 1$, then $F(x,y) = 1$, and for $0 < x,y < 1$,
+> $$
+> F(x,y) = \int_0^y \int_0^x (s + t) ds dt = \frac{1}{2} xy (x + y)
+> $$
+>
+> And for $x > 1, 0 < y < 1$, we have
+> $$
+> F(x,y) = \int_0^y \int_0^1 (s + t) ds dt = \frac{1}{2} (y) (y + 1)
+> $$
+> 
+> Similarly, for $y > 1$, $0 < x < 1$ we have
+> $$
+> F(x,y) = \frac{1}{2} (x) (x + 1)
+> $$
+>
+> This gives us cdf
+> $$
+> F(x,y) = \begin{cases}
+>               0 & x,y \le 0 \\
+>               \frac{1}{2} xy (x + y) & 0 < x, y < 1 \\
+>               \frac{1}{2} y (y + 1) & 0 < y < 1, x > 1 \\
+>               \frac{1}{2} x (x + 1) & 0 < x < 1, y > 1 \\
+>               1 & 1 \le x,y
+>        \end{cases}
+> $$
+
+> [!Example] Transformations on Random Variables (Continuous Case)
+> $$
+> f(x,y) = \begin{cases}
+>               x^2 + y & 0 \le x \le 3, 0 \le y \le 4 \\
+>               0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $P( \vert X - 1 \vert \le 1/2)$.
+>
+> $$
+> P( \vert X - 1 \vert \le 1/2) = P(1/2 \le X \le 3/2) = \int_0^4 \int_{1/2}^{3/2} x^2 + y \; dx dy = \frac{37}{180}
+> $$
+
+> [!Example]
+> Given the joint CDF
+> $$
+> F(x,y) = \begin{cases}
+>          (1 - e^{-x}) (1 - e^{-y}) & x,y > 0 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $P(1 < X < 3, 1 < Y < 2)$. To find this, we need $f(x,y)$, so we need to take the partial derivative twice.
+> $$
+> f(x,y) = F_{xy} (x,y) = e^{-(x+y)} = F_{yx}
+> $$
+>
+> $$
+> \to P(1 < X < 3, 1 < Y < 2) = \int_1^2 \int_1^3 e^{-(x+y)} \; dx dy = 0.074
+> $$
+
+> [!Example]
+> In a study, the houss $X$ spent using their phones, andthe hours $Y$ spent on their job is approximated by the joint pdf
+>
+> $$
+> f(x,y) = xy e^{-(x+y)} \qquad x,y > 0
+> $$
+>
+> What is the probability a person spends at least twice as much time on their phone than doing their job?
+>
+> We want $P(X \ge 2Y)$.
+> $$
+> P(X \ge 2Y) = \int_0^\infty \int_0^{X/2} xy e^{-(x+y)} \; dy dx
+> $$
+
+Note that these techniques generalize to $n$ variable functions.
+
+# Section 6.2: Conditional Distributions and Independence
+If $f(x,y)$ is the joint pmf of a discrete random variable, then the function $g_X (x) = \sum_y f(x,y)$ for each $x$ that $X$ takes on is the **marginal distribution** of $X$.
+> We have an analogoue on $Y$ as well.
+
+In other words, the total probability of $x$ occurring over all possible cases.
+
+Similarly for the continuous case, we have
+$$
+g_X (x) = \int_{-\infty}^\infty f(x,y) dy
+$$
+> note that for the marginal distributions, we sum or integrate over the other variable.
+
+If $f(x,y)$ is the joint pmf of discrete random variable $X$ and $Y$, and $g_Y (y)$ is the marginal distribution (pmf) of $Y$, then
+$$
+f(x | y) = \frac{f(x,y)}{g_Y (y)} \qquad y_Y (y) \ne 0
+$$
+for each $x$ in $X$, is the **conditional distribution (pmf)** of $X$, given $Y = y$.
+> This is exactly analogous to the definition of conditionla probability.
+
+Similarly, the conditional cdf of $X$ given $Y = y$ is
+$$
+f(x | y) = P( X \le x | Y =y ) = \sum_{a\le x} f(a | y)
+$$
+
+For the continuous case, everything follows naturally with the pmf replaced with pdf.
+
+> [!Example]
+> Let the joint pdf of $X$ and $Y$ be
+> $$
+> f(x,y) = \begin{cases}
+>          \frac{2}{3} (x + 2y) & 0 < x, y < 1 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $P(X \le 1/2 | Y = 1/2)$. In other words, we want the cdf $F(1/2, 1/2)$.
+>
+> We want
+> $$
+> \int_0^{1/2} f(x | y = 1/2) \; dx
+> $$
+>
+> We do this by first finding the marginal pdf as
+> $$
+> g_Y (y) = \int_{-\infty}^\infty f(x,y) dx = \int_0^1 f(x,y) dx = \frac{1}{3} (1 + 4y)
+> $$
+> Then
+> $$
+> \begin{align*}
+>       f(x|y) &= \frac{f(x,y)}{g_Y(y)} \\ 
+>       &= \frac{\frac{2}{3} (x + 2y)}{\frac{1}{3} (1 + 4y)} \\
+>       \to f(x | 1/2) &= \frac{2x + 2}{3}
+> \end{align*}
+> $$
+>
+> Letting us find our answer as
+> $$
+> P(X \le 1/2 | Y = 1/2) = \int_0^{1/2} \frac{2x + 2}{3} dx = \frac{5}{12} 
+> $$
+
+Lt $g_i (x)$ be the marginal distribution of random variable $X_i$. We say random variables $X_1, X_2, \dots, X_n$ are **independent** if and only if for all $(x_1, \dots, x_n)$ that $X_1, \dots, X_n$ take on, we have that
+$$
+f(x_1, \dots, x_n) = g_1 (x_1) g_2 (x_2) \dots g_n (x_n)
+$$
+
+Thus, we see that if $X$ and $Y$ are independent,
+$$
+f(x | y) = \frac{f(x,y)}{g_Y (y)} = \frac{g_X (x) g_Y (y)}{g_Y (y)} = g_X (x)
+$$
+> Given that $Y$ is something, we still get the same probability of $X$ - our probability of $X$ is not affected.
+
+> [!Example]
+> Given the joint pdf of $X,Y$
+> $$
+> \begin{align*}
+> f(x,y) = \begin{cases}
+>          12xy (1-y) & 0 < x,y < 1 \\
+>          0 & \text{else}
+>        \end{cases}
+> \end{align*}
+> $$
+>
+> We find that
+> $$
+> \begin{align*}
+>       g_X (x) = \int_0^1 f(x,y) dy = 2x \\
+>       g_Y (y) = \int_0^1 f(x,y) dx = 6 (1-y) y
+> \end{align*}
+> $$
+> 
+> Because the product $g_X (x) g_Y (y) = f(x,y)$ our random variables $X,Y$ are independent.
+
+> [!Example]
+> Let $X \sim \text{Binom} (n,p)$ and $Y \sim \text{Binom} (m,p)$.
+>
+> Assume $X$ and $Y$ are independent. Define $Z = X + Y$ to get random variable $Z \sim \text{Binom} (n+m, p)$. Determine the pmf of $X|Z$.
+>
+> Now
+> $$
+> f(x|z) = \frac{P(X = x | z = x + y)}{g_Z (z)} = \frac{P(X = x | Y = z - x)}{g_Z (z)}
+> $$
+> Because we know $X$ and $Y$ are independent,
+> $$
+> \frac{P(X = x | Y = z - x)}{g_Z (z)} = \frac{P(X = x) P(Y = z - x)}{g_Z (z)} = \frac{g_X (x) g_Y (y)}{g_Z (z)}
+> $$
+> $$
+> = \frac{\binom{n}{x} p^x (1-p)^{n-x} \binom{m}{z-x} p^{z-x} (1-p)^{m-z+x} }{\binom{n+m}{z} p^z (1-p)^{n+m-z}}
+> $$
+>
+> $X|Z$ turns out to be the hypergeometric distribution!
+> $$
+> \frac{\binom{n}{x} \binom{m}{z-x}}{\binom{n+m}{z}}
+> $$
+>
+> So, $X$ and $Z$ are not independent, as the conditioning of $Z$ yielded a completely different distribution from $X$.
+
+> [!Abstract]
+> Let $X, Y$ be independent random variables with pmf/pdfs given as $f_X (x), f_Y (y)$. Define $Z = X + Y$.
+>
+> Then, for the continuous case,
+> $$
+> f_Z (z) = \int_{-\infty}^\infty f_X (x) f_Y (z - x) dx
+> $$
+> Called the convolution of the two functions.

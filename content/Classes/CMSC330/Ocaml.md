@@ -4,87 +4,73 @@ tags:
 - work-in-progress
 ---
 
-*Note*: Ocaml does not need `;;`, though we will use it for clarity.
+This document serves as a brief documentation for the **Ocaml Programming Language**.
 
-A **programming paradigm** is a classification of programming approaches baed on behavior of code. They represent ways of thinking.
-> Typically, we use paradigms interchangeably with language features.
+# Introduction to Ocaml
+## My First Ocaml Program
+To create an ocaml program, we first need to create a file with the `.ml` extension. Below, we create a hello world program, which prints `Hello World!`.
 
-**Functional programming** is a programming paradigm focused around functions. 
-
-In these notes, we discuss functional programming, and implement it with **Ocaml**.
-> Note that while Ocaml supports object-orientated programming, we only focus on its functional uses.
-
-# Features of Functional Languages
-All functional languages find their derivation from **lambda calculus**, and often can have their origins traced back to **Lisp**, one of the most major functional languages.
-
-Properties of functional languages are given below.
-- **Immutable State**: States are always immutable in functional languages. We cannot reassign a state upon
-- **Declarative Programming**: Must declare what we're going to do?
-- **Referential Transparency**: Lets us inductively prove that our algorithm is doing what its doing correctly, allowing us to minimize side effects and guarantee a program works.
-- **Realistic about the Machine**: ?
-
-## Immutable State
-**Program state** represents the state of the machine at any given time. This is typically described as the contents of variables.
-
-In **imperative languages**, state is mutable, and can be destroyed / changed in some way (ex. variable reassignment). This can cause many side effects - in other words, reliances on data outside the program which can make it difficult to reason about the machine.
-> These side effects have no **referential transparency**, as we cannot treat functions as normal mathematical functions.
-> 
-> For example, in imperative languages, we cannot ensure `f(x) + f(x) == 2 * f(x)` due to side effects.
-
-Thus, immutable state will let us minimize side effects.
-
-## Declarative Programming
-In **declarative programming**, it is up to us as a programmer to tell the computer what we need. However, instead of telling the machine exactly what to do, we just tell it what we want and let the machine decide how to do it itself.
-> We tell the machine what we want to do, and the machine will figure out the rest.
-
-
-# Our first Ocaml Program
-To create an ocaml program, we create a file with the `.ml` extension.
-
-The below program prints hello world to the console.
 ```ocaml
 (* hello_world.ml *)
-print_string "Hello World!\n"
+let _ = print_string "Hello World!"
 ```
-> Note that there is no main function, function calls do not need parentheses.
 
-To run this program, we need to compile our file before running it. Ocaml is a compiled language.
+Ocaml is a **compiled language**. This means that to run the program, we need to first  **compile** our file into something we can execute and run. To do this, we use the command `ocamlc`.
 
 ```bash
 ocamlc hello_world.ml
 ```
 > Include option `-o` to specify the name of the output file. Without this option, the output defaults to `a.out`.
 
-Compiling the program wil give us the following:
-- `.cmo`: Compiled Object (like `.c` file)
-- `.cmi`: Compiled INterface (like a header file)
+Compiling the program will produce the following files, alongside our executable:
+- A `.cmo` file, representing a compiled object file (like a `.o` file in C)
+- A `.cmi` file, representing a interface file (like a `.h` file in C)
 
-Ocaml also has a read-eval-loop in the terminal, which we can use to run statements in the terminal.
+Alternatively, we can test Ocaml commands in it's terminal read-eval-loop, using the command `utop`. Note that while in `utop`, you need to end every expression with `;;` to run it.
 
 ```bash
-ocaml
-
-utop # ocaml but better
-dune # like makefiles
-opam # package manager for ocaml
+utop
 ```
-> In utop, we need `;;` to end expressions.
+
+Apart from these commands, the following commands may also be quite useful:
+- `dune`: A makefile equivalent for Ocaml
+- `opam`: The Ocaml package manage
+
+## Typing and Expressions
+Note how in the above example, our `hello_world.ml` program lacked a main function. Indeed, Ocaml programs lack a concept of a main function, and will just run  any expressions written, from simple algebra to function definitions!
+
+In Ocaml, everything is treated as an **expression** which will always evaluate to some value (which is returned). Ocaml lacks the concept of a statement, as all data is immutable.
+
+```ocaml
+x + 2 + 1       (* valid, expression *)
+1 + 3           (* valid, expression *)
+x = x + 1       (* invalid, statement - variables are immutable*)
+```
+
+In an Ocaml program, our goal is to combine expressions with one another, to form complex behaviors.
+
+All expressions in Ocaml have a **type**. Ocaml is a **statically implicitly typed language**, meaning that all types are evaluated at compiled type, but do not need to be explicitly specified. This works because all expressions in Ocaml have rigidly fixed types, which must be followed less a compile error occurs.
+> Because of this, we can infer what the types of expressions are from what makes them up!
+
+> [!Example]+ Example: Rigid Typing in Ocaml
+> The expression `1 + 2.0` fails, because the `+` operator expects two integer types, and will fail if not supplied these types.
+
+For our purposes, we will be using the syntax `e:t` to denote that an Ocaml expression `e` has type `t`. 
+
+### Logical and Arithemtic Operators
+Arithmetic operators in Ocaml are given below.
+
+| Expression | Type | Description |
+| :-: | :-: | - |
+| `+` | `(e1:int + e2:int):int` | Adds two integers |
+| `-` | `(e1:int - e2:int):int` | Subtracts two integers |
+| `*` | `(e1:int * e2:int):int` | Multiplies two integers |
+| `+.` | `(e1:float +. e2:float):float` | Adds two floats |
+| `-.` | `(e1:float -. e2:float):float` | Subtracts two floats |
+| `*.` | `(e1:float *. e2:float):float` | Multiplies two floats |
+| `/.` | `(e1:float /. e2:float):float` | Divides two floats |
 
 ---
-
-Recall the difference between syntax and semantics...
-
-In ocaml, everything is an **expression**, which will always evaluate to or return a value. All values are expressions, but not vice versa. Ocaml does not have statements 
-> Our goal in ocaml, is to combine expressions into larger expressions.
-
-```
-x + 2 + 1 # expression
-1 + 3 # expression
-x = x + 1 # statement, not allowed
-```
-
-All expressions have a **type**. Ocaml is a statically typed language (types evaluated at compile time) and is also implicitly typed (don't need to explicitly specify a type).
-> For clarity, we will use syntax `e: t` to denote that expression `e` has type `t`.
 
 ```ocaml
 4: int
@@ -554,3 +540,42 @@ We can use the `when` keyword to make pattern matching even more complex.
 match ...
 | Node(v,left,right) when left = Leaf -> ...
 ```
+
+# Functional Programming Languages
+While Ocaml does support a wide variety of features, we will only be focusing 
+Note that while Ocaml does support a wide range of features, we will only be focusing on its use as a functional programming language.
+
+
+
+*Note*: Ocaml does not need `;;`, though we will use it for clarity.
+
+A **programming paradigm** is a classification of programming approaches baed on behavior of code. They represent ways of thinking.
+> Typically, we use paradigms interchangeably with language features.
+
+**Functional programming** is a programming paradigm focused around functions. 
+
+In these notes, we discuss functional programming, and implement it with **Ocaml**.
+> Note that while Ocaml supports object-orientated programming, we only focus on its functional uses.
+
+# Features of Functional Languages
+All functional languages find their derivation from **lambda calculus**, and often can have their origins traced back to **Lisp**, one of the most major functional languages.
+
+Properties of functional languages are given below.
+- **Immutable State**: States are always immutable in functional languages. We cannot reassign a state upon
+- **Declarative Programming**: Must declare what we're going to do?
+- **Referential Transparency**: Lets us inductively prove that our algorithm is doing what its doing correctly, allowing us to minimize side effects and guarantee a program works.
+- **Realistic about the Machine**: ?
+
+## Immutable State
+**Program state** represents the state of the machine at any given time. This is typically described as the contents of variables.
+
+In **imperative languages**, state is mutable, and can be destroyed / changed in some way (ex. variable reassignment). This can cause many side effects - in other words, reliances on data outside the program which can make it difficult to reason about the machine.
+> These side effects have no **referential transparency**, as we cannot treat functions as normal mathematical functions.
+> 
+> For example, in imperative languages, we cannot ensure `f(x) + f(x) == 2 * f(x)` due to side effects.
+
+Thus, immutable state will let us minimize side effects.
+
+## Declarative Programming
+In **declarative programming**, it is up to us as a programmer to tell the computer what we need. However, instead of telling the machine exactly what to do, we just tell it what we want and let the machine decide how to do it itself.
+> We tell the machine what we want to do, and the machine will figure out the rest.

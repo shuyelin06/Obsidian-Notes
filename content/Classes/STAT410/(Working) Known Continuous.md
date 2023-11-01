@@ -23,68 +23,48 @@ F(x) = \begin{cases}
 $$
 > While this looks scary, the cdf is really just a line.
 
-We have expected value
+Finally, we have expected value and variance given as 
 $$
-E(X) = \frac{\alpha + \beta}{2}
-$$
-
-> $$
-> \begin{align*}
->       E(X) &= \int_{-\infty}^\infty x f(x) dx \\
->            &= \int_\alpha^\beta \frac{x}{\beta - \alpha} dx \\
->            &= \frac{\alpha + \beta}{2}
-> \end{align*}
-> $$
-
-We additionally have variance given by
-$$
-V(X) = \frac{(\beta - \alpha)^2}{12}
+E(X) = \frac{\alpha + \beta}{2} \qquad V(X) = \frac{(\beta - \alpha)^2}{12}
 $$
 
-> $$
-> \begin{align*}
->       E(X^2) &= \int_{-\infty}^\infty x^2 f(x) dx \\
->              &= \int_\alpha^\beta \frac{x^2}{\beta - \alpha} dx \\
->              &= \frac{\alpha^2 + 2 \alpha \beta + \beta^2}{3}
-> \end{align*}
-> $$
->
-> $$
-> V(X) = E(X^2) - E(X)^2 = \frac{(\beta - \alpha)^2}{12}
-> $$
+These can easily be derived using the definitions for $E(X)$ and $V(X)$, so we omit the derivations below.
+
 
 ### Normal Distribution
 The **Normal Distribution**, denoted $X \sim N(\mu, \sigma)$ is the distribution with pdf given as follows:
 $$
-f(x, \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left( \frac{x - \mu}{\sigma} \right)^2} = \frac{1}{\sigma \sqrt{2 \pi}} \exp\left( -\frac{1}{2} \left( \frac{x - \mu}{\sigma} \right) \right)
+f(x, \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left( \frac{x - \mu}{\sigma} \right)^2}
 $$
-> The curve created by this pdf is sometiems referred to as the **bell curve**.
+> The curve created by this pdf is sometimes referred to as the **bell curve**.
 
 > [!Note]- PDF Verification
-> Let
+> Let us verify the pdf of the normal distribution below. In other words, we must show that
+>
 > $$
-> k = \int_{-\infty}^\infty f(x) dx \qquad z = \frac{x - \mu}{\sigma}
-> $$
-> We find
-> $$
-> dz = \frac{1}{\sigma} dx
+> \int_{-\infty}^\infty f(x) dx = 1
 > $$
 >
-> Using this, we can convert our integral into a double integral as so
+> Now, let 
+> $$
+> k = \int_{-\infty}^\infty f(x) dx \qquad z = \frac{x - \mu}{\sigma} \to dz = \frac{1}{\sigma} dx
+> $$
+>
+> Using these variables, we can convert our integral to a double integral as so:
 > $$
 > \begin{align*}
->       k &= \int_{-\infty}^\infty \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2} z^2} dz \\
+>       k &= \int_{-\infty}^\infty f(x) dx = \int_{-\infty}^\infty \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2} z^2} dz \\
 >       k \sqrt{2\pi} &= \int_{-\infty}^\infty e^{-\frac{1}{2} z^2} dz \\
 >       k^2 2 \pi &= \int_{-\infty}^\infty e^{-\frac{1}{2} w^2} dw \int_{-\infty}^\infty e^{-\frac{1}{2} z^2} dz = \int_{-\infty}^\infty \int_{-\infty}^\infty e^{-\frac{1}{2} (z^2 + w^2)} dw dz      
 > \end{align*}
 > $$
 > 
-> If we treat $w = x$ and $z = y$, we see we have a double integral spanning the entire $xy$-plane. We convert to polar coordinates to simplify the integral.
+> Now, if we let $w = x$ and $z = y$, we find that we have a double integral spanning the entire $xy$-plane. Furthermore, as our $x$ and $y$ terms in the integral are given in the form ($x^2 + y^2$), we will convert to polar coordinates to simplify our integral.
 > $$
-> w = r \cos(\theta) \qquad z = r \sin(\theta)
+> w = r \cos(\theta) \qquad z = r \sin(\theta) \quad \to \quad w^2 + z^2 = 1
 > $$
-> > When converting to polar, don't forget about the Jacobian!
 >
+> Accounting for the Jacobian as well, we perform a change of variables to obtain the integral 
 > $$
 > \begin{align*}
 >       k^2 2 \pi &= \int_0^\infty \int_0^{2\pi} e^{\frac{-r^2}{2}} r d\theta dr \\
@@ -95,9 +75,15 @@ $$
 > $$
 > Thus, we find $k^2 2 \pi = 2 \pi \to k = 1$. We have verified our pdf.
 
-If can be shown that $\mu = E(X)$ and $\sigma = \sqrt{V(X)}$, called the **standard deviation**.
+The expected value and variance for the normal distribution are given as
+$$
+E(X) = \mu \qquad V(X) = \sigma^2 
+$$
+> Note that $\sigma = \sqrt{V(X)}$ is often called the **standard deviation**, whereas $\mu = E(X)$ is often called the **mean**.
 
-For $X \sim N(0,1)$, we can this the **standard normal distribution**. In this case, our pdf simplifies to
+---
+
+The normal distribution on $X \sim N(0,1)$ is called the **standard normal distribution**. In this special case, our pdf simplifies down to
 $$
 f(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2} 
 $$
@@ -105,57 +91,65 @@ And we find the expected value and variance as
 $$
 E(X) = 0 \qquad V(X) = 1
 $$
-> We can find the expected value by the fact that the function we're integrating is odd! We can additionally find $E(X^2) = 0$ to find our variance.
+> To find the expected value, we can use the fact that the function we're integrating is odd. 
+
+Given a random variable representing a normal distribution, we can perform a transformation on the random variable to obtain the standard normal distribution. This transformation is known as **standardization**.
 
 > [!Abstract] Theorem: Standardizing Normal Distributions
-> If $X \sim N(\mu, \sigma)$, then the random variable
+> If $X \sim N(\mu, \sigma)$, then the transformation
 > $$
 > z = \frac{X - \mu}{\sigma}
 > $$
-> has the standard normal distribution.
-> > This has the effect of essentially shifting our $X$ by $\mu$, then constraining our variance to bring our values closer together / further apart. We can prove this with $z$-sub.
+> will yield the standard normal distribution.
 >
-> Note that the cdf of the standard normal distribution is often denoted $\Phi(x)$. 
+> This transformation essentially has the effect of shifting our values by $\mu$, then bringing them closer together / further apart by dividing by $\sigma$. 
+>
+> Note that the cdf of the standard normal distribution is often denoted $\Phi(x)$.
 
-Using this standardization, the probability of obtaining any value between $x_1$, $x_2$ can be found as
+Standardizing normal distributions is often helpful in the real world, as the standard normal distribution is much easier to use in data analysis! Using the standard normal distribution, we can find the probability of obtaining any value between $x_1$, $x_2$ as
 $$
 P(x_1 \le X \le x_2) = P\left( \frac{x_1 - \mu}{\sigma} \le z \le \frac{x_2 - \mu}{\sigma} \right)
 $$
 
-Which can easily be evaluated, as many books / resources have common tables of values for the standard distribution.
+Which can easily be evaluated using commonly known tables for the standard distribution. 
 > These books may represent tables of values for $x$ for both $-\infty \to x$, or $0 \to x$! Be sure you know which type of table you're using.
 
-> [!Example]+ Example: Applying Normal Distributions (1)
-> The height of students obey a normal distribution with $\mu = 67$ inches, $\sigma = 3$ inchdes.
->
-> What percent of students have heights between 64 and 70 inches?
->
-> We first standardize this distribution - let $z = (x - \mu) / \sigma$. Then,
-> $$
-> P(64 < X < 70) = P\left( \frac{64 - 67}{3} < z < \frac{70 - 67}{3}  \right) = P(-1 < z < 1)
-> $$
->
-> We can calculate this to be
-> $$
-> \int_{-\infty}^1 p(x) - \int_{-\infty}^{-1} = F(1) - F(-1)
-> $$
-> and use a table of values (or a calculator) to find our result.
-> > Note that if we have a table that only tells us $F(1)$, we can find $F(-1) = 1 - F(1)$ by virtue of the normal distribution's symmetry.
+Some examples of this are given below.
 
-> [!Example]- Example: Applying Normal Distributions (2)
-> Radiation Exposure in an area takes on a normal distribution with mean $\mu = 4.35$ mrem and standard distribution $\sigma = 0.59$ mrem. What is the probability a person is exposed to more than $5.2 mrem$?
+> [!Example]+ Example: Standardizing Normal Distributions (1)
+> The height of students obey a normal distribution with $\mu = 67$ inches, $\sigma = 3$ inches. What percent of students have heights between 64 and 70 inches?
 >
-> Using our standardization $z = (X - \mu) / \sigma$, we want
+> To calculate this, we will first standardize this distribution. Let's define $Z$ as
+> $$
+> Z = \frac{X - \mu}{\sigma}
+> $$
+>
+> Then, we can calculate the probability as
+> $$
+> \begin{align*} 
+> P(64 < X < 70) &= P\left( \frac{64 - 67}{3} < z < \frac{70 - 67}{3}  \right) \\
+>      &= P(-1 < z < 1) = \int_{-\infty}^1 p(x) - \int_{-\infty}^{-1} \\
+>      &= F(1) - F(-1)
+> \end{align*}
+> $$
+>
+> We can then use a table of values (or a calculator) to find our result. Note that if we have a table that only tells us $F(1)$, we can find $F(-1) = 1 - F(1)$ by virtue of the normal distribution's symmetry.
+
+> [!Example]- Example: Standardizing Normal Distributions (2)
+> Radiation Exposure in an area takes on a normal distribution with mean $\mu = 4.35$ mrem and standard distribution $\sigma = 0.59$ mrem. What is the probability a person is exposed to more than $5.2$ mrem?
+>
+> Using our standardization of $z = (X - \mu) / \sigma$, we want
 > $$
 > \begin{align*}
 >       P(X > 5.2) &= 1 - P(X < 5.2) \\
 >           &= 1 - P\left( z < \frac{5.2 - 4.35}{0.59} \right) \\
->           &= 1 - \Phi(1.44) = 0.0749 
+>           &= 1 - F(1.44) = 0.0749 
 > \end{align*}
 > $$
 
+
 ### Gamma Distribution
-The **Gamma Distribution**, denoted $X \sim \Gamma(\alpha, \beta)$ is the distribution whose pdf is given as follows:
+The **Gamma Distribution**, denoted $X \sim \Gamma(\alpha, \beta)$ is the distribution whose pdf is given as
 $$
 f(x, \alpha, \beta) = \frac{\beta^\alpha x^{\alpha - 1} e^{-\beta x}}{\Gamma(\alpha)} \qquad x, \alpha, \beta > 0
 $$
@@ -165,8 +159,6 @@ $$
 \Gamma(\alpha) = \int_0^\infty t^{\alpha - 1} e^{-t} dt
 $$
 > This complicated looking expression is essentially just scaling a function $x^t e^{-t}$ so that it becomes a valid pdf.
-
-Conceptually, we can relate the Gamma distribution to the Poisson distribution. If the Poisson distribution measures the probability of $x$ successes in some time interval $t$, then the Gamma distribution is measuring the probability of "waiting" a certain amount of time $x$ for $\alpha$ successes, where $\beta$ is our average rate of success.
 
 > [!Abstract] Theorem: Gamma Function
 > Given the Gamma function, we have the following properties.
@@ -181,7 +173,7 @@ Conceptually, we can relate the Gamma distribution to the Poisson distribution. 
 > > \Gamma(\alpha) = (\alpha - 1) \Gamma(\alpha - 1) = (\alpha - 1)(\alpha - 2) \Gamma(\alpha - 2) = (\alpha - 1) \dots 2 \cdot \Gamma(1)
 > > $$
 > >
-> > We furthermore see that
+> > Furthermore, we see that
 > > $$
 > > \Gamma(1) = \int_0^\infty e^{-t} dt = 1
 > > $$
@@ -198,33 +190,37 @@ Conceptually, we can relate the Gamma distribution to the Poisson distribution. 
 > > \end{align*}
 > > $$
 
-We have the following properties of the Gamma Distribution.
+Conceptually, the Gamma distribution is fairly similar to the Poisson distribution in the discrete case.
 
-> [!Abstract] Theorem: Gamma Function Expectation
-> If $X \sim \Gamma (\alpha, \beta)$, then
+If the Poisson distribution measures the probability of $x$ successes in some time interval $t$, then the Gamma distribution is measuring the probability of "waiting" a certain amount of time $x$ for $\alpha$ successes, where $\beta$ is our average rate of success.
+
+We can find the expected value and variance of the Gamma Distribution as so:
+$$
+E(X) = \frac{\alpha}{\beta} \qquad V(X) = \frac{\alpha}{\beta}
+$$
+
+> [!Note]- Derivation for Expected Value
 > $$
-> E(X) = \frac{\alpha}{\beta} \qquad V(X) = \frac{\alpha}{\beta}
+> \begin{align*}
+>     E(X) &= \frac{1}{\Gamma(\alpha)} \int_0^\infty \beta^\alpha x^\alpha e^{-\beta x} dx \\
+>          &= \frac{1}{\Gamma(\alpha)} \int_0^\infty y^\alpha e^{-y} \frac{1}{\beta} dx &y = \beta x \\
+>          &= \frac{1}{\beta} \frac{\Gamma(\alpha + 1)}{\Gamma(\alpha)} &\Gamma(\alpha + 1) = \int_0^\infty t^\alpha e^{-t} dt\\
+>          &= \frac{\alpha}{\beta} \frac{\Gamma(\alpha)}{\Gamma(\alpha)} &\Gamma(\alpha + 1) = \alpha \Gamma(\alpha) \\
+>          &= \frac{\alpha}{\beta}
+> \end{align*}
 > $$
->
-> > [!Note]- Proof (Expected Value)
-> > $$
-> > \begin{align*}
-> >     E(X) &= \frac{1}{\Gamma(\alpha)} \int_0^\infty \beta^\alpha x^\alpha e^{-\beta x} dx \\
-> >          &= \frac{1}{\Gamma(\alpha)} \int_0^\infty y^\alpha e^{-y} \frac{1}{\beta} dx &y = \beta x \\
-> >          &= \frac{1}{\beta} \frac{\Gamma(\alpha + 1)}{\Gamma(\alpha)} &\Gamma(\alpha + 1) = \int_0^\infty t^\alpha e^{-t} dt\\
-> >          &= \frac{\alpha}{\beta} \frac{\Gamma(\alpha)}{\Gamma(\alpha)} &\Gamma(\alpha + 1) = \alpha \Gamma(\alpha) \\
-> >          &= \frac{\alpha}{\beta}
-> > \end{align*}
-> > $$
-> > The proof for variance follows similarly.
+> The derivation for variance follows similarly.
 
 ---
 
-The Gamma distribution has many use cases. Below, we list one of the most common special cases of $X \sim \Gamma(\alpha, \beta)$, the **exponential distribution**.
+The Gamma distribution has many use cases. Below, we list some of the of most common cases.
 
-If random variable has pdf $f(x, \beta) = \beta e^{-\beta x}$, known as the **exponential distribution**, we really just have $\Gamma(1, \beta)$ (probability of time until the first success).
+The Gamma distribution on $X \sim \Gamma(1, \beta)$ is known as the **exponential distribution**. In this distribution, we're measuring the probability of the first success at some time.
+$$
+f(x, \beta) = \beta e^{-\beta x}
+$$
 
-> [!Example] Example: Exponential and Gamma Distribution
+> [!Example]+ Example: Exponential Distribution
 > Suppose the total cars exceeding the speed limit in half an hour is a random variable with a Poisson distribution with $\lambda = 8.4$.
 >
 > What is the probability the wait time is at most 5 minutes between cars exceeding the speed limit?
@@ -234,9 +230,7 @@ If random variable has pdf $f(x, \beta) = \beta e^{-\beta x}$, known as the **ex
 > \int_0^{5/30} 8.4^1 e^{-8.4 x} x^0 dx \approx 0.75
 > $$
 
----
-
-If Random Variable $X$ has pdf
+The Gamma Distribution with pdf
 $$
 f(x, v) = \frac{1}{2^{v/2} \Gamma(v/2)} x^{\frac{v-2}{2}} e^{-\frac{x}{2}}
 $$
@@ -715,3 +709,540 @@ $$
 > f_Z (z) = \int_{-\infty}^\infty f_X (x) f_Y (z - x) dx
 > $$
 > Called the convolution of the two functions.
+
+> [!Example]
+> Let $X \sim \text{Binom}(n,p)$ and $Y \sim \text{Binom} (m,p)$.
+? 
+> Let $X,Y$ be independent and assume
+> $$
+> f_X (t) = f_Y (t) = \begin{cases}
+>         e^{-t} & t > 0 \\
+>         0 & \text{else}
+>     \end{cases}
+> $$
+>
+> Take random variable $Z = X + Y$. Then, its pdf is
+> $$
+> \begin{align}
+>       f_Z (z) &= \int_{-\infty}^\infty f_X (x) f_Y (z - x) dx \
+>       &= \int_0^z e^{-x} e^{-(z-x)} dx \\
+>       &= z e^{-z}
+> \end{align}
+> $$
+> This gives us the same exponential distributions as $X$ and $Y$, though note that this generally does not happen.
+> 
+> Note that we can only do this because our random variables are independent of one another.
+
+
+# Section 6.3: Transforming Random Variables of Joint Distribution
+Recall that if $f_X (x)$ is the pdf, $y = g(x)$, the pdf for $Y = g(x)$ is
+$$
+f_Y (y) = f_X ( g^{-1} (y) ) \cdot \frac{d}{dy} g^{-1} (y)
+$$
+
+Now given $f_{X,Y} (x,y)$ and $u = h_1 (x,y), v = h_2 (x,y)$, what is the joint pdf of $u$ and $v$?
+
+We assume that or partial derivatives exist, and that they're one-to-one. We can then solve $x,y$ in terms of $u,v$ (change of variables in multi-variable calculus).
+
+> [!Abstract] Theorem: Transforming Joint Distributions
+> Suppose we have random variables $X,Y$ with joint pdf $F_{X,Y} (x,y)$ and
+> $$
+> U = h_1 (X,Y) \qquad V = h_2 (X,Y)
+> $$
+>
+> Then, the joint pdf of $U$ and $V$ is given as
+> $$
+> f_{U,V} (u,v) = f_{X,Y} (x (u,v), y(u,v)) \bigg\vert J(u,v) \bigg\vert
+> $$
+> Where the Jacobian, $J$ (provided $J \ne 0$) is given as
+> $$
+> J = \text{det} \begin{bmatrix}
+>     \partial x / \partial u & \partial x / \partial v \\
+>     \partial y / \partial u & \partial y / \partial v
+>   \end{bmatrix}
+> $$
+> 
+> > **Note**: One can show that with $U = h_1(X,Y), V = h_2 (X,Y)$,
+> > $$
+> > J^{-1} = \frac{1}{ \text{det} \begin{bmatrix}
+> >          \partial h_1 / \partial x & \partial h_1 / \partial y \\
+> >          \partial h_2 / \partial x & \partial h_2 / \partial y
+> >        \end{bmatrix} }
+> > $$
+> > Which can be helpful if $J^{-1}$ yields a constant result (if it does not, we'll have to convert $X,Y$ into $U,V$ which can be painful).
+
+> [!Example]
+> Let the joint pdf of $X,Y$ be given as
+> $$
+> f(x,y) = \begin{cases}
+>          e^{-(x+y)} & x,y > 0 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find the joint density of $U = X + Y, V = \frac{X}{X + Y}$.
+>
+> We first solve for $x,y$ in terms of $u,v$ to perform our change of variables.
+> $$
+> x = uv \qquad y = u - uv
+> $$
+> We can use this to find our Jacobian as
+> $$
+> J(u,v) = \begin{vmatrix}
+>        v & u \\ 1-v & -u
+>        \end{vmatrix} = -u
+> $$ 
+>
+> Now, we can apply our theorem.
+> $$
+> f_{U,V} (u,v) = f_{X,Y} (uv, u - uv) \vert -u \vert = u e^{-u} 
+> $$
+> With bounds $0 < u, 0 < v < 1$.
+
+> [!Example]
+> Let $X \sim N(\mu_1, \sigma_1^2)$, $Y \sim N(\mu_2, \sigma_2^2)$
+>
+> Assume $X$ and $Y$ are independent. Find the joint pdf of $U = X + Y, V = X - Y$.
+>
+> Being independent, we know that $f_{X,Y} (x,y) = f_X (x) * f_Y (y)$.
+>
+> Then,
+> $$
+> x = \frac{u + v}{2} \qquad y = \frac{u - v}{2} 
+> $$
+> We can find the Jacobian as $- 1/2$, and find our joint pdf as
+>
+> $$
+> \begin{align*}
+> f_{U,V} (u,v) = f_{X,Y} ( \frac{u+v}{2}, \frac{u-v}{2} ) \vert \frac{1}{-2} \vert
+> \end{align*}
+> $$
+
+> [!Example]
+> Let $X,Y$ have joint pdf
+> $$
+> f(x,y) = \begin{cases}
+>          xy / 96 & 0 < x < 4, 0 < y < 5 \\
+>          y & \text{else}       
+>        \end{cases}
+> $$
+> Find the pdf of $U = X + 2Y$.
+>
+> We find the joint distribution of $U$ by finding the joint distribution of $U$ and $V$ first. Let $u = x + 2y$, and $v = x$. Then, $x = v$, and $y = (u - v) / 2$
+>
+> ... YOu need to find the new region between $0 < v < 4, v  + 2 < u < v + 10$ after transforming
+>
+> Then, we need to find the marginal distribution to find the distribution of $U$.
+
+
+---
+
+
+...
+
+
+---
+
+The **covariance** of $X$ and $Y$ is given as
+$$
+Cov(X,Y) = E((X - E(X)) (Y - E(Y))) = E( (X - \mu_x) (Y - \mu_y) )
+$$
+
+> [!Abstract]
+> $$
+> Cov(X,Y) = E(XY) - E(X) E(Y)
+> $$
+>
+> > [!Note] Proof
+> > $$
+> > E(XY - E(X) Y - X E(Y) + E(X) E(Y) ) = E(XY) - E(X) E(Y) - E(X) E(Y) + E(X) E(Y)
+> > $$
+
+> [!Info] Corollary
+> If $X$ and $Y$ are independent, then $Cov(X,Y) = 0$ (they are uncorrelated).
+
+Properties are given below:
+- $Cov(X,X) = V(X)$
+- $Cov(X,Y) = Cov(Y,X)$
+- $Cov(kX, Y) = kCov(X,Y)$
+
+> $Cov(X,Y)$ is seen as a measure of the linear relationship of $X$ and $Y$.
+
+The **correlation coefficient** of $X$ and $Y$ is
+$$
+\mathcal{P}_{X,Y} = \frac{Cov(X,Y)}{\sqrt{V(X)V(Y)}}
+$$
+
+> [!Abstract] Theorem
+> For random variables $X,Y$,
+> 1. $-1 \le \mathcal{P}_{X,Y} \le 1$
+> 2. $\mathcal{P}_{X,Y} = \pm 1$ if and only if $Y = \alpha X + \beta$, for some $\alpha, \beta \in \mathbb{R}$.
+
+> [!Example]
+> Let the pdf of $X,Y$ be
+> $$
+> f(x,y) = \begin{cases}
+>          2 & x > 0, y > 0, x + y < 1 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $Cov(X,Y)$.
+>
+> We find
+> $$
+> \begin{align*}
+>       &E(X) = \dots = 1/3 \\
+>       &E(Y) = \dots = 1/3 \\
+>       &E(XY) = \dots = 1/12 \\
+>       &Cov(XY) = E(XY) - E(X) E(Y) = -1/36
+> \end{align*}
+> $$
+>
+> Furthermore, we can find the correlation coefficient as
+> $$
+> \begin{align*}
+>       &V(X) = E(X^2) - E(X)^2 = 1/18
+>       &V(Y) = E(Y^2) - E(Y)^2 = 1/18
+>       &\mathcal{P}_{X,Y} = -1/2
+> \end{align*}
+> $$
+
+> [!Abstract] Theorem
+> Let $X_1, \dots, X_n$ be random variables, and assume
+> $$
+> Y_1 = \sum_{i=1}^n a_i X_i \qquad Y_2 = \sum_{i=1}^n b_i X_i
+> $$
+>
+> Then,
+> $$
+> Cov(Y_1, Y_2) = \sum_{i=1}^n a_i b_i V(X_i) + 2 \sum_{i < j} a_i b_j Cov(X_i, Y_j)
+> $$
+>
+> > [!Info] Corollary
+> > If $Y = X_1 + X_2 + \dots + X_n$, then
+> > $$
+> > Cov(Y,Y) = V(Y) = \sum_{i=1}^n V(X_i) + 2 \sum_{i < j} Cov(X_i, X_j)
+> > $$
+> > In particular, if $X_1, \dots, X_n$ are independent, then
+> > $$
+> > V(Y) = \sum_{i=1}^n V(X_i)
+> > $$
+
+> [!Example]
+> Let the pdf of $X,Y$ be
+> $$
+> f(x,y) = \begin{cases}
+>          \frac{1}{3} (x + y) & 0 < x < 1, 0 < y < 2 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $V(Z)$, where $Z = 3X + 4Y - 5$.
+> 
+> Since the variance of a constant is 0, and $Cov(X,5) = Cov(Y,5) = 0$, we want
+> $$
+> V(3X + 4Y) = V(3X) + V(4Y) + 2 Cov(X,Y) = 9 V(X) + 16 V(X) + 2(3)(4) Cov(X,Y)
+> $$
+>
+> We find $V(X) = 13/162$, $V(Y) = 23/81$, and $Cov(X,Y) = -1/81$ to find $V(3X + 9Y) = 805 / 162$.
+
+> [!Example]
+> Suppose we have 10 chips, 4 red, 6 blue. Let $Y$ be the number of successes, where each draw of equal chance of gettinng a red chip, without replacement.
+>
+> Find $E(Y)$ in 3 trials.
+>
+> Let $X_i$ be the random variable denoting 1 if we get a red chip on trial $i$, and 0 if we do not. We want
+> $$
+> \begin{align*}
+> E(Y) = E( \sum_{i=1}^3 X_i ) = \sum_{i=1}^3 E(X_i) = \dots = 12/10 \\
+> V(Y) = V( \sum X_i ) = \frac{18}{25}
+> \end{align*}
+> $$
+>
+> Recall that $Y \sim \text{Hypergeometric} (n,m,k)$ on $n$.
+>
+> In our example, $n = 10, m = 4, k = 3$. Let
+> $$
+> X_i = \begin{cases}
+>       1 & \text{chip i drawn is red} \\
+>       0 & \text{else}
+>     \end{cases}
+> $$
+>
+> What is $E (X_1)$? We find it to be $\frac{4}{10}$.
+>
+> What about $E (X_2)$? We find it to be
+> $$
+> E(X_2) = 1 P(X_2 = 1) + 0 P(X_2 = 0) = P (X_2 = 1) = (4/10) (3/9) + (6/10) (4/9) = 4/10
+> $$
+> > We find $E(X_3)$ to be the same.
+>
+> Key observation: expected values are the same with or without replacement!
+
+
+# Section 7.2: Moment Generating Functions (Univariate)
+Let $X$ be a random variable. The **$r^{th}$ moment of $X$ about the origin** is
+$$
+\mu_r' = E(X^r) = \begin{cases}
+              \sum_x x^r f(x) & \text{Discrete Case} \\
+              \int_{-\infty}^\infty x^r f(x) dx & \text{Continuous Case}
+       \end{cases}
+$$
+for any non-negative integer $r$.
+> Clearly, $\mu_1' = E(X)$.
+
+Furthermore, the **$r^{th}$ moment around the mean $\mu$** is defined as
+$$
+\mu_r = E( (x - \mu)^r ) = \begin{cases}
+           \sum_x (x - \mu)^r f(x) & \text{Discrete Case} \\
+           \int_{-\infty}^\infty (x - \mu)^r f(x) dx & \text{Continuous Case}
+        \end{cases}
+$$
+> Clearly, $\mu_2 = E( (x - \mu)^2 ) = V(X)$.
+
+The **moment generating function (mgf)** of random variable $X$ is
+$$
+M_x (t) = E(e^{tx}) = \begin{cases}
+            \sum_x e^{tx} f(x) & \text{Discrete Case} \\
+            \int_{-\infty}^\infty e^{tx} f(x) dx & \text{Continuous Case}
+        \end{cases}
+$$
+
+Expanding $e^{tx}$ as a series, we find that
+$$
+\begin{align*}
+        e^{tx} = 1 + tx + \frac{(tx)^2}{2!} + \frac{(tx)^3}{3!} + \dots \\
+        \to \sum_x e^{tx} f(x) = M_x (t) = \sum_x \left(1 + tx + \frac{t^2 x^2}{2!} + \frac{t^3 x^3}{3!} \right) f(x) \\
+            = \sum_x f(x) + t \sum_x x f(x) + \frac{t^2}{2!} \sum_x x^2 f(x) + \dots \\
+            = 1 + t u_1' + \frac{t^2}{2!} u_2' + \frac{t^3}{3!} u_3' \dots \frac{t^r}{r!} u_r'
+\end{align*}
+$$
+
+Thus, the coefficient of $\frac{t^n}{n!}$ is simply $u_n'$, the $n^{th}$ moment! We can use this fact to find the moments.
+
+With
+$$
+M_x (t) = \sum_{n=0}^\infty u_n' \frac{t^n}{n!}
+$$
+we can find $u_n'$ by taking the $n^{th}$ derivative and subbing in $t = 0$.
+
+> [!Abstract] Theorem
+> $$
+> M_x^(n) (0) = \frac{d^n}{dt^n} (M_x (t)) \bigg\vert_{t=0} = u_n'
+> $$
+
+> [!Example]
+> $$
+> f(x) = \begin{cases}
+>        e^{-x} & x > 0 \\
+>        0 & \text{else}
+>      \end{cases}
+> $$
+>
+> Find the mgf of $f(x)$, and a simple expression for $u_r'$.
+>
+> $$
+> \begin{align*}
+> M_x (t) = E(e^{tx}) &= \int_0^\infty e^{tx} e^{-x} dx \\
+>     &= \int_0^\infty e^{-x (1 - t)} dx \\
+>     &= \frac{1}{1 - t}
+> \end{align*}
+> $$
+>
+> We can now expand this as a series to find the coefficient of $x^r / r!$.
+> $$
+> 1 + t + t^2 + t^3 + \dots = 1 + \frac{1}{1!} t + \frac{2!}{2!} t^2 + \dots
+> $$
+> We find the rth moment as $\mu_r' = r!$.
+>
+> Alternatively, we can differentiate $M_x (t)$ $r$ times to find $\mu_r'$.
+>
+> $$
+> \begin{align*}
+>       M_x'(t) &= \frac{1}{(1 - t)^2} \\
+>       M_x''(t) &= \frac{2}{(1 - t)^3} \\
+>       &\vdots \\
+>       M_x^r (t) &= \frac{(2)(3)(4) \dots (r)}{(1 - t)^{r + 1}} \\
+>       M_x^n (0) &= \frac{(2)(3)(4) \dots (n)}{(1 - 0)^{n + 1}} = n!
+> \end{align*}
+> $$
+
+> [!Example]
+> Let $X$ have pmf given by
+> $$
+> f(x) = \begin{cases}
+>        \frac{1}{8} \binom{3}{x} & x = 0,1,2,3 \\
+>        0 & \text{else}
+>      \end{cases}
+> $$
+> Find the moment generating function of $X$, and determine the second moment about the origin.
+> 
+> $$
+> \begin{align*}
+>         M_x(t) = E(e^{tx}) &= \frac{1}{8} \sum_{x=0}^3 e^{tx} \binom{3}{x} \\
+>                &= \frac{1}{8} ( 1 + 3e^t + 3e^{2t} + e^{3t} ) \\
+> \end{align*}
+> $$
+> 
+> Given $M_x(t)$, we can easily find the second moment about the origin by differentiating twice.
+> $$
+> M_x''(0) = \frac{1}{8} ( 3 + 12 + 9 ) = 3
+> $$
+
+Below, we provide the moment generating functions for discrete distributions.
+
+| Distribution | Moment Generating Function |
+| :-: | :-: |
+| Uniform | $\frac{e^t}{n} \left( \frac{1 - e^{tn}}{1 - e^t} \right)$  |
+| Binomial | $\left( pe^t + (1-p) \right)^n$ |
+| Geometric | $p \frac{1}{1 - (1-p) e^t}$ |
+| Negative Binomial | $\frac{(pe^t)^r}{(1 - (1-p)e^t)^r}$ |
+| Poisson | $e^{\lambda (e^t - 1)}$ |
+
+> [!Note]- Uniform Distribution: Derivation for MGF
+> $$
+> \begin{align*}
+>       M_x(t) = E(e^{tx})
+>              &= \sum_{x=1}^n e^{tx} \frac{1}{n} \\
+>              &= \sum_{x=0}^{n-1} e^{t(x+1)} \frac{1}{n} \\
+>              &= \frac{e^t}{n} \sum_{x=0}^{n-1} (e^t)^x &\text{Ratio Sum} \\
+>              &= \frac{e^t}{n} \left( \frac{1 - e^{tn}}{1 - e^t} \right) 
+> \end{align*}
+> $$
+
+> [!Note]- Binomial Distribution: Derivation for MGF
+> $$
+> \begin{align*}
+>         M_x(t) = E(e^{tx})
+>                &= \sum_{x=0}^n e^{tx} \binom{n}{x} p^x (1 - p)^{n-x} \\
+>                &= \sum_{x=0}^n \binom{n}{x} (pe^t)^x (1-p)^{n-x} &\text{Binomial Theorem} \\
+>                &= \left( pe^t + (1-p) \right)^n
+> \end{align*}
+> $$
+
+> [!Note]- Geometric Distribution: Derivation for MGF
+> $$
+> \begin{align*}
+>         M_x(t) = E(e^{tx})
+>                &= \sum_{x=0}^\infty e^{tx} (1-p)^x p \\
+>                &= p \sum_{x=0}^\infty \left( (1-p) e^t \right)^x &\text{Ratio Sum} \\
+>                &= p \frac{1}{1 - (1-p) e^t} &t < - \ln (1 - p)
+> \end{align*}
+> $$
+>
+> The derivation for negative binomial follows similarly.
+
+> [!Note]- Poisson Distribution: Derivation for MGF
+> $$
+> \begin{align*}
+>         M_x(t) = E(e^{tx})
+>                &= \sum_{x=0}^\infty e^{tx} \frac{\lambda^x e^{-\lambda}}{x!} \\
+>                &= \sum_{x=0}^\infty \frac{(e^t \lambda)^x e^{\lambda}}{x!} \\
+>                &= e^{-\lambda} (e^{e^t \lambda}) = e^{\lambda (e^t - 1)}
+> \end{align*}
+> $$
+
+Observe how we can use the moment generating functions to find the expected value and variances of distributions.
+$$
+M_x'(0) = E(X) \qquad M_x''(0) = E(X^2) \qquad V(X) = (M_x'(0))^2 - M_x''(0)
+$$
+
+> [!Info] Remark
+> If $Y = aX + b$, then
+> $$
+> M_Y (t) = e^{bt} M_X (at)
+> $$
+
+> [!Note] Uniform Distribution (Continuous): Derivation for MGF
+> $$
+> \begin{align*}
+>         M_x(t) = E(e^{tx})
+>                &= \int_\alpha^\beta e^{tx} \frac{1}{\beta - \alpha} dx \\
+>                &= \frac{1}{t(\beta - \alpha)} (e^{\beta t} - e^{\alpha t})
+> \end{align*}
+> $$
+
+> [!Note] Normal Distribution: Derivation for MGF
+> Suppose we know if $Z \sim N(0,1)$, and $X = \mu + \sigma Z$, then $X \sim N(\mu, \sigma^2)$.
+>
+> First, we find our mgf for $Z$.
+> $$
+> \begin{align*}
+>       M_Z(t) = E(e^{tz})
+>              &= \int_{-\infty}^\infty \frac{1}{\sqrt{2\pi}} e^{tx} e^{-x^2 / 2} dx \\
+>              &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty e^{tx - x^2 / 2} dx \\
+>              &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty e^{(2tx - x^2)/2} dx \\
+>              &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty e^{t^2/2 - (x-t)^2 / 2} dx &\text{Complete the Square} \\
+>              &= e^{t^2/2} \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty e^{- (x-t)^2 / 2} dx \\
+>              &= e^{t^2 / 2} & \text{PDF for } N(\mu = t, \sigma^2 = 1)
+> \end{align*}
+> $$
+>
+> Using this fact, and knowing that $X = \mu + \sigma Z$, we apply our previous remark to find that the moment generating function of $X$ is
+> $$
+> M_X(t) = e^{\mu t} M_Z(\sigma t) = e^{\mu t} e^{(\sigma t)^2 / 2}
+> $$
+
+> [!Note] Gamma Distribution: Derivation for MGF
+> $$
+> \begin{align*}
+>       M_x(t) &= \int_0^\infty e^{tx} f(x) dx \\
+>              &= \int_0^\infty \frac{\beta^\alpha x^{\alpha - 1}}{\Gamma(\alpha)} e^{- (\beta - t) x} dx \\
+>              &= \frac{\beta^\alpha}{\Gamma(\alpha) (\beta - t)} \int_0^\infty \left( \frac{u}{\beta - t} \right)^{\alpha - 1} e^{-u} du \\
+>              &= \frac{\beta^\alpha}{\Gamma(\alpha) (\beta - t)} \int_0^\infty u^{\alpha - 1} e^{-u} du \\
+>              &= \frac{\beta^\alpha}{\Gamma(\alpha) (\beta - t)} \Gamma(\alpha) \\
+>              &= \left( \frac{\beta}{\beta - t} \right)^\alpha \\
+>              &= \left( 1 - \frac{t}{\beta} \right)^{-\alpha}
+> \end{align*}
+> $$
+
+# Section 7.3: Sum of Random Variables and Moment Generating Functions (Multivariate)
+Let $X_1, \dots, X_n$ be random variables and defined the vectors $\vec{X} = (X_1, \dots, X_n)$ and $\vec{t} = (t_1, \dots, t_n)$. Then, the function
+$$
+M (t_1, \dots, t_n) = M (\vec{t}) = E(e^{t_1 X_1 + \dots t_n X_n}) = E(e^{\vec{t} \cdot \vec{X}})
+$$
+is the **joint moment generating function** fof $X_1 \dots X_n$.
+
+> [!Info]
+> Let $\vec{a} = (a_1, \dots, a_n)$ and $\vec{b} = (b_1, \dots, b_n)$. Then, if $\vec{Y} = \vec{a} \cdot \vec{X} + \vec{b}$, then
+> $$
+> M_Y (\vec{t}) = e^{\vec{t} \cdot \vec{b}} M_x(\vec{a} \cdot \vec{t})
+> $$
+
+Note that $M(0,\dots, 0, t_i, 0, \dots, 0) = E(e{t_i X_i}) = M_{X_i} (t_i)$.
+
+> [!Abstract] Theorem
+> 1. Uniqueness: Random variable $X$ and $Y$ have the same distribution if and only if $M_X(t) = M_Y(t)$.
+>
+> 2. If $X_1 \dots X_n$ are independent, then the joint mgf is given as
+> $$
+> M(\vec{t}) = \prod_{i=1}^n M_{x_i} (t_i)
+> $$
+>
+> 3.
+> $$
+> \frac{\partial^2}{\partial t_i \partial t_j} M(\vec{t}) \bigg\vert_{t_1=\dots=t_n=0} = E(X_i X_j)
+> $$
+>
+> > Note that from (2) (assuming independence), if we look at the univariate case, say
+> > $$
+> > Z = X + Y
+> > $$
+> > Then
+> > $M_Z (t) = E(e^{tz}) = E(e^{t(X+Y)})$
+> >
+> > So, if RV are independent, then our MGF of the sum of random variables is the product of the MGFs.
+
+> [!Example]
+> Suppose $X$ and $Y \sim U(-1,1)$.
+>
+> From earlier, we find
+> $$
+> M_X(t) =\frac{1}{2t} (e^t - e^{-t})
+> $$
+>
+> So,
+> $$
+> M_{X+Y} (t) = \left( \frac{e^t - e^{-t}}{2t} \right)^2
+> $$

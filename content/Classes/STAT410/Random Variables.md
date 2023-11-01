@@ -675,7 +675,7 @@ Property (4) occurs because as we have uncountably many values, we cannot examin
 > 1 = \int_{-\infty}^\infty f(x) dx = \int_0^\infty ke^{-3x} = k \lim_{t \to \infty} \frac{e^{-3x}}{-3x} \bigg\vert^t_0 = \frac{k}{3} \to k = 3
 > $$
 
-If $X$ is a contiuous random variable with pdf $f(x)$, then the **cummulative distribution function (cdf)** is
+If $X$ is a continuous random variable with pdf $f(x)$, then the **cummulative distribution function (cdf)** is
 $$
 F_X(x) = P(X \le x) = \int_{-\infty}^x f(t) dt
 $$
@@ -751,11 +751,9 @@ The properties of expected value and variance are given below. Note that they ar
 > E(e^{\frac{3x}{4}}) = \int_{-\infty}^\infty g(x) f(x) dx = \int_0^\infty e^{3x}{4} e^{-x} dx = \int_0^\infty e^{\frac{-x}{4}}
 > $$
 
-End of Exam 1 Content
----
 
 ## Common Continuous Random Variables
-In this section, we discuss some common continuous random variables.
+In this section, we discuss some common continuous random variables below.
 
 ### Uniform Distribution
 The **Continuous Uniform Distribution**, denoted $X \sim u(\alpha, \beta)$, is the random variable over interval $(\alpha, \beta)$, with a uniform probability throughout.

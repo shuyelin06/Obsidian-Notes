@@ -1,6 +1,7 @@
 ---
 title: Ocaml Programming Language
 tags:
+- cmsc330
 - work-in-progress
 ---
 
@@ -55,7 +56,14 @@ All expressions in Ocaml have a **type**. Ocaml is a **statically implicitly typ
 > [!Example]+ Example: Rigid Typing in Ocaml
 > The expression `1 + 2.0` fails, because the `+` operator expects two integer types, and will fail if not supplied these types.
 
-For our purposes, we will be using the syntax `e:t` to denote that an Ocaml expression `e` has type `t`. 
+For our purposes, we will be using the syntax `e:t` to denote that an Ocaml expression `e` has type `t`.
+
+For the following logical / arithmetic operations, `t` can take on the following base types:
+- `int`: Integer value
+- `float`: Floating-point value
+- `bool`: Boolean value
+
+Additionally, `t` take on the **generic type** `a'`, where `a` is any character.This type can  - can be any value, but must match other generics of the same character.
 
 ### Logical and Arithemtic Operators
 Arithmetic operators in Ocaml are given below.
@@ -70,6 +78,11 @@ Arithmetic operators in Ocaml are given below.
 | `*.` | `(e1:float *. e2:float):float` | Multiplies two floats |
 | `/.` | `(e1:float /. e2:float):float` | Divides two floats |
 
+Logical operators in Ocaml are given below
+
+| Expression | Type | Description |
+| :-: | :-: | - |
+| `If` | `(if e1:bool then e2:a' else e3:` | 
 ---
 
 ```ocaml

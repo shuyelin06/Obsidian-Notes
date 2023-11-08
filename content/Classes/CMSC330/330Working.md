@@ -98,3 +98,151 @@ $$
 Basically, this say aht we will extend our existing environment $A,x:v_1$ by adding the binding to it, then evaluating our expression $e_2 \to v_2$.
 
 > Given rules, draw a proof...
+
+---
+
+Consider the expression
+
+```python
+A; Let x = 3 in x + 4 = _
+```
+
+Our argument form then would be
+$$
+A;3 \to 3_{v_1} \quad \frac{A,x:3; x \to 3_{n_1} \quad A,x:3; 4 \to 4_{n_2} \quad 7 \; \text{is} \; 3 + 4}{A,x:3;x+4 \to 7}
+$$
+
+We have the following axioms
+$$
+\begin{align*}
+        &A;e_1 + e_2 \to n_3            &\equiv A; e_1 \to n_1 \quad A; e_2 \to n_2 \quad n_3 \; \text{is} \; n_1 + n_2 \\
+        &A;\text{Let } x = n \text{ in } e       &\equiv A,x=n; e \\
+        &A;x \to v                      &\equiv A(x) \to v
+\end{align*}
+$$
+> For variable bindings, always look at the most recent binding. THe `,` operator adds a variable binding to our environment.
+
+---
+
+Let's talk about Lambda Calculus. Recall that the grammar is given as
+$$
+\begin{align*}
+        e \to \; &x \\
+              \mid &\lambda x.e \\
+              \mid &e \; e
+\end{align*}
+$$
+
+What are the operational semantic rules for lambda calculus?
+$$
+\begin{align*}
+        
+\end{align*}
+$$
+
+Prof K's description
+$$
+\lambda x.e \to \lambda x . e
+$$
+
+Compiler Optimization (you could evaluate $e$)
+$$
+\frac
+{e \to e'}
+{\lambda x . e \to \lambda x . e'}
+$$
+
+$$
+\frac
+{e_1 \to e_1' \quad e_2 \to e_2'}
+{(e_1 \; e_2) \to (e_1' \; e_2')}
+$$
+
+OR
+
+EAGER EVALUATION
+$$
+\frac
+{e_2 \to e_2'}
+{(e_1 \; e_2) \to (e_1 \; e_2')}
+$$
+
+LAZY EVALUATION
+$$
+\frac
+{e_1 \to e_1'}
+{(e_1 \; e_2) \to (e_1' \; e_2)}
+$$
+
+EAGER
+$$
+\frac
+{e_2 \to e_2' \quad e_2 \ne e_2'}
+{(\lambda x . e_1) e_2 \to (\lambda x . e_1) (e_2')}
+$$
+> Does NOT account for any infinite looping
+
+LAZY
+$$
+\frac
+{A,x:e_2 ; e_1 \to e_1'}
+{A; (\lambda x. e_1) e_2 \to e_1'}
+$$
+
+
+$$
+(\lambda x.y) \left[ (\lambda x.x) [ (\lambda x . xx) (\lambda x . xx) ] \right]
+$$
+
+LOLCODE example
+
+Our rules are:
+
+AXIOM
+$$
+\frac
+{}
+{A; n \to n}
+$$
+
+$$
+\frac
+{A; e_1 \to v_1 \quad A; e_2 \to v_2 \quad v_3 \; \text{ is } v_1 + v_2  }
+{\text{SUM of} \; e_1 \; \text{AN} \; e_2}
+$$
+
+$$
+\frac
+{A; e_1 \to v_1 \quad A, \text{var} \; : v_1 ; e_2 \to v_2 }
+{\text{I has a var itz} \; e_1 \; \backslash n \; e_2}
+$$
+
+$$
+\frac
+{A ( \text{var} ) = v}
+{A; \text{var} \; \to v}
+$$
+
+> [!Example]
+Using the rules given below, show that $1 + (2 + 3) \to 6$
+
+$$
+\frac{}{n \to n} \qquad \frac{e_1 \to n_1 \quad e_2 \to n_2 \quad n_3 \; \text{is} \; n_1 + n_2}{e_1 + e_2 \to n_3}
+$$
+
+We can prove this as follows:
+$$
+\frac{1 \to 1 \quad \frac{2 \to 2 \quad 3 \to 3 \to 5 \; \text{is} \; 2 + 3}{(2 + 3) \to 5} \quad 6 \; \text{is} \; 1 + 5}{1 + (2 + 3) \to 6}
+$$
+
+---
+
+*Operational Semantics will be very useful in building an evaluator!*
+> We can follow operational semantic rules to write evaluators for our code! Each hypothesis in our operational semantic can be parsed through to build our evaluator.
+
+
+Lexing (REGEX) -> Parsing (CFGs) -> Evaluating (OpSem)
+
+
+# Building a Programming Language
+This article details the process of building a programming language, from reading its syntax, to making meaning from it. Note that there are far more complex ideas with 

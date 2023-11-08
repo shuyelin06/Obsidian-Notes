@@ -59,3 +59,30 @@ for x in vertices:
 ```
 
 If we have an adjacency matrix, we'll take $n$ to find adjacencies as we must scan through every 0 and 1. In an adjacency list, however, we have "immediate" access to vertices, which gives us $1$ in the best case, and $n$ in the worst case.. However, if we be sneaky, we can see that the inner loop will take $2E$ time, giving us time $\Theta(V + 2E)$.
+
+# Shortest Path Algorithm
+WIP
+
+Gives us
+$$
+\Theta(V + E)
+$$
+
+Take the shortest path algorithm. Notice that if we remove the return, and return pred, we still get $\Theta(V + E)$, and pred will contain ALL predecessors necessary to construct shortest paths!
+
+# Breadth First Search
+Given a graph and a starting vertex $S$, we wish to visit ALL vertices, but visit those closest to $S$ first.
+
+We need to make the changes:
+- Remove the distance list, and replace it with a visited list of ooleans whic store if we've visited a vertex or not.
+- Remove the predecessor list.
+- Introduce a list order which stores the order in which we visit / traverse the nodes.
+
+# Depth First Search
+Given a graph and a starting vertex $S$, we want to visit ALL vertices, by going as far as possible, then backing up to a junction where we can go deep again if we cannot go any further.
+
+Some sources say the time complexity of depth first search is $\Theta(V + E)$. They're wrong! Consider the following example:
+
+Consider a graph with $V$ vertices, where every vertex is connected to one another (a complete graph). For every vertex we visit, notice that we push $n-1, n-2, n-3, \dots$ vertices onto our stack. Thus, we will have to inevitably pop $\Theta(v^2)$ from our stack. This gives us $\Theta(V^2 + E)$
+
+The problem with this is that we're allowing more than one thing on the stack. Thus, we need a hashset or something!

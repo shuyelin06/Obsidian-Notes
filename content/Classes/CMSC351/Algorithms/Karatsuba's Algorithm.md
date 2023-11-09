@@ -4,9 +4,9 @@ tag:
 - cmsc351
 ---
 
-# Introduction
-Say we have two integer values $N_1$ and $N_2$. How can we multiply these numbers together, while minimizing the number of single-digit multiplications needed?
+**Problem**: Given two integer numbers $N_1$ and $N_2$, how can we multiply these numbers together while minimizing the number of single-digit multiplications?
 
+# Introduction
 Suppose we're multiplying two base 10 numbers $a_1 a_0$, $b_1 b_0$ where $a_i, b_i$ are digits. Note that what these digits are actually representing the following product:
 $$
 \begin{align*}

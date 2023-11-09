@@ -86,3 +86,13 @@ Some sources say the time complexity of depth first search is $\Theta(V + E)$. T
 Consider a graph with $V$ vertices, where every vertex is connected to one another (a complete graph). For every vertex we visit, notice that we push $n-1, n-2, n-3, \dots$ vertices onto our stack. Thus, we will have to inevitably pop $\Theta(v^2)$ from our stack. This gives us $\Theta(V^2 + E)$
 
 The problem with this is that we're allowing more than one thing on the stack. Thus, we need a hashset or something!
+
+We want to get around this - so, let's say we're about to put something on the stack. If it is, then we remove earlier occurrences! How do we do this in $\Theta(1)$ time?
+
+We can modify the stack to also be a doubly-linked list, so we can delete from the stack in $\Theta(1)$ time. Then, we create a list of pointers indexed by vertex, such that the pointers will point to the FIRST occurrence of the vertex. They're initially NULL, but after their respective vertex, they point to this vertex.
+> This way, we can easily check if some vertex is on the stack, and delete it if we have a duplicate.
+
+> Note that while we could do a hashmap, this is better as hashmaps have a worst case of $\Theta(n)$ on conflict! (Also the hashing can take time)
+
+This will give us our desired $\Theta(V + E)$ time, as now our outer look will iterate exactly $V$ times, and the inner loop will iterate $2E$ times.
+

@@ -625,3 +625,126 @@ $$
 > $$
 >
 > Solving for $E(X)$, we find $E(X) = \frac{p+1}{p^2}$.
+
+# Section 8.1: Holder and Minkowski's Inequality
+In practice, we may not know the distribution.
+
+However, sometimes, given what we have, we can still make estimations for various parameters, such as $E(X)$.
+
+Moreover, what if we do NOT know the joint distribution, but we do know the distributions of $X$ and $Y$?
+
+> [!Abstract] Theorem: Holder's Inequality
+> Let $X$ and $Y$ be random variables, and $p > 1$ such that
+> $$
+> \frac{1}{p} + \frac{1}{q} = 1
+> $$
+>
+> Then
+> $$
+> \begin{align*}
+> \vert E(XY) \vert \le E( \vert X Y \vert ) \le \left( E( \vert X \vert^p ) \right)^{\frac{1}{p}}  \left( E ( \vert Y \vert^q) \right)^{\frac{1}{q}}
+> \end{align*}
+> $$
+
+> [!Info] Holder's Inequality and Cauchy-Schwarz Inequality
+> Let $p = 2$. Then we get
+> $$
+> \vert E(XY) \vert \le \left( E(\vert X \vert^2) \right)^{\frac{1}{2}} \left( E(\vert Y \vert^2) \right)^{\frac{1}{2}}
+> $$
+> which is known as the Cauchy-Schwarz Inequality!
+>
+> If $X = \vert Z \vert^r$, $1 < r < p$, and $Y = 1$, then
+> $$
+> \vert E(XY) \vert \le E( \vert Z \vert^r ) \le \left( E( \vert Z \vert^{rp} ) \right)^\frac{1}{p}
+> $$
+> Letting $s = pr$, we find
+> $$
+> E( \vert Z \vert^r ) \le ( E(\vert Z \vert^s) )^{\frac{r}{s}}
+> $$
+> Finally, raising both sides to the rth power, we find that
+> $$
+> E( \vert Z \vert^r )^{\frac{1}{r}} \le ( E(\vert Z \vert^s) )^{\frac{1}{s}} \qquad 1 < r < s
+> $$
+> Which is called **Lyapunov's Inequality**.
+
+> [!Example]
+Suppose $Z_1 = X - E(X)$, and $Z_2 = Y - E(Y)$.
+
+By the Cauchy-Scwarz Inequality,
+$$
+\begin{align*}
+        \vert E(z_1 z_2) \vert
+        &= \vert E( (X - E(X)) (Y - E(Y)) ) \vert = \vert \text{Cov}(x,y) \vert \\
+        &\le E( \vert X - E(X) \vert^2 )^\frac{1}{2} E( \vert Y - E(Y) \vert^2 )^{\frac{1}{2}} = \sqrt{ V(X) } \sqrt{ V(Y) } \\
+        &\left\vert \frac{\text{Cov}(X,Y)}{\sqrt{V(X)} \sqrt{V(Y)}} \right\vert \le 1 
+\end{align*}
+$$
+
+Which proves that our correlation coefficient satisfies
+$$
+\vert \mathcal{P}_{X,Y} \vert \le 1
+$$
+
+---
+
+> [!Example]
+Let $X \sim N(\mu_1, 1)$ and $Y \sim N(\mu_2, 1)$. Assume that we know what $E(X), V(X), E(Y), V(Y)$ are.
+
+What is $E(XY)$?
+> Note that as we do not know $f_{X,Y} (x,y)$, and we do not know if $X$ and $Y$ are independnet, we cannot calculate $E(XY)$!
+
+We do know, however, that
+$$
+V(X) = E(X^2) - E(X)^2 \to E(X^2) = V(X) + E(X)^2 = 1 + E(X)^2
+$$
+> Standard deviation is 1, so variance is 1.
+
+Using the Cauchy-Schwarz Inequality, we find that
+$$
+\begin{align*}
+        \vert E(XY) \vert
+              &\le E(X^2)^\frac{1}{2} E(Y^2)^\frac{1}{2} \\
+              &\le (1 + E(X)^2)^\frac{1}{2} (1 + E(Y)^2)^\frac{1}{2}
+\end{align*}
+$$
+
+So we can at least find an upper bound on $E(XY)$ without knowing the joint pdf!
+
+---
+
+> [!Abstract] Theorem: Minkowksi's Inequality
+> Let $p \ge 1$.
+>
+> Then,
+> $$
+> E( \vert X + Y \vert^p)^\frac{1}{p} \le E(|X|^p)^\frac{1}{p} + E(|Y|^p)^\frac{1}{p}
+> $$
+>
+> > [!Note] Proof
+> > We know that the LHS without the $1 / p$ power is
+> > $$
+> > \begin{align*}
+> >     E(|X+Y|^p)
+> >     &= E(|X+Y| \cdot |X+Y|^{p-1}) \le E( (|X| + |Y| ) \cdot |X + Y|^{p-1} ) \\
+> >     &= E(|X| \cdot |X+Y|^{p-1} + |Y| \cdot |X+Y|^{p-1} ) \\
+> >     &= E(|X| \cdot |X+Y|^{p-1}) + E(|Y| \cdot |X+Y|^{p-1})
+> > \end{align*}
+> > $$
+> >
+> > We see that in both terms of the summation, we have an expected value of a product, meaning we can apply Holder's Inequality to obtain
+> > $$
+> > \begin{align*}
+> >     E(|X| \cdot |X+Y|^{p-1}) \le E(|X|^p)^\frac{1}{p} E(|X+Y|^{q(p-1)} )^\frac{1}{q} \\
+> >     E(|Y| \cdot |X+Y|^{p-1}) \le E(|Y|^p)^\frac{1}{p} E(|X+Y|^{q(p-1)} )^\frac{1}{q}
+> > \end{align*}
+> > $$
+> >
+> > We apply this back to our initial expression to find
+> > $$
+> > \begin{align*}
+> > E(|X+Y|^p) \le \left[ E(|X|^p)^\frac{1}{p} + E(|Y|^p)^\frac{1}{p} \right] E(|X+Y|^{q(p-1)})^\frac{1}{q}
+> > \end{align*}
+> > $$
+> >
+> > Dividing by $E(|X+Y|^{q(p-1)})^\frac{1}{q}$ yields the result ?
+> > ... WIP ...

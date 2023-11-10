@@ -1,5 +1,5 @@
 ---
-title: Floyd's Algorithm
+title: Floyds Algorithm
 tags:
 - cmsc351
 ---

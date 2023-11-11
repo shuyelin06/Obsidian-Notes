@@ -746,5 +746,140 @@ So we can at least find an upper bound on $E(XY)$ without knowing the joint pdf!
 > > \end{align*}
 > > $$
 > >
-> > Dividing by $E(|X+Y|^{q(p-1)})^\frac{1}{q}$ yields the result ?
-> > ... WIP ...
+> > Since $\frac{1}{p} + \frac{1}{q} = 1$, we have
+> > $$
+> > q = \frac{p}{p-1}
+> > $$
+> >
+> > Subbing this in, we get
+> > $$
+> > E(|X+Y|^p) \le \left[ E(|X|^p)^\frac{1}{p} + E(|Y|^p)^\frac{1}{p} \right] E(|X+Y|^{p})^\frac{1}{q}
+> > $$
+> >
+> > Now, dividing by $E( \vert X + Y \vert^p )^\frac{1}{q}$, we get
+> > $$
+> > E(\vert X + Y \vert^p)^{1 - \frac{1}{q}} = E( \vert X + Y \vert^p )^\frac{1}{p} \le E(|X|^p)^\frac{1}{p} + E(|Y|^p)^\frac{1}{p}
+> > $$
+
+---
+
+> [!Example]
+> Let $X,Y \sim \text{Gamma}(\alpha,\beta)$. We know that for this distribution
+> $$
+> V(X) = \alpha \beta^2 \qquad E(X) = (\alpha \beta)^2 \quad \to \quad E(X^2) = V(X) + E(X)^2
+> $$
+> 
+> For $p = 2$ in Monkowski's Inequality, the left hand side would normally yield
+> $$
+> E(|X+Y|^2)^\frac{1}{2} = E(|X|^2 + 2|XY| + |Y|^2)
+> $$
+> But this requires we know the joint distribution! Instead, we can apply our inequality to at least gain an idea of what our expected value evaluates to be.
+> $$
+> E(|X+Y|^2)^\frac{1}{2} \le 2 (\alpha \beta^2 + (\alpha \beta)^2)^\frac{1}{2}
+> $$
+
+---
+
+# Section 8.2: Markov and Chebyshev's Inequality
+
+> [!Abstract] Theorem: Markov's Inequality
+> Let $X$ be a random variable that takes on non-negative values. Then for any $a > 0$,
+> $$
+> P(X \ge a) \le \frac{E(X)}{a}
+> $$
+>
+> > [!Note] Proof
+> >
+> > $$
+> > \begin{align*}
+> >         E(X)
+> >         &= \sum_{x \ge a} x P(X = x) + \sum_{x < a} x P(X = x) \\
+> >         &\ge \sum_{x \ge a} x P(X = x) + 0 \\
+> >         &\ge \sum_{x \ge a} a P(X = x) = a P(X \ge a) \\
+> >         \to P(X \ge a) &= \frac{E(X)}{a}
+> > \end{align*}
+> > $$
+
+> [!Example] Example: Markov's Inequality
+> An exam average is 75%. If we let $a = 80$, and $X$ is the random variable denoting the score on the exam, then
+> $$
+> P(X \ge 80) \le \frac{75}{80} \approx 0.9375
+> $$
+> telling us that the proportion of students scoring less than 80% can be at most 93.75%.
+
+Not very useful in practice... if we know the distribution, why don't we just calculate the probability ourselves?
+
+> [!Example]
+> Let $X \sim \text{Binomial} (10, \frac{1}{2})$, giving us $E(X) = 5$.
+> 
+> If $a = 11$, we get $P(X \ge 11) \le \frac{5}{11}$, even though the probability is clearly 0.
+
+---
+
+> [!Abstract] Theorem: Chebyshev's Inequality
+> Let $X$ be a random variable, and define
+> $$
+> \mu = E(X) \qquad \sigma^2 = V(X)
+> $$
+> where $\sigma$ is called the **standard deviation**.
+> 
+> Then, for any $k > 0$,
+> $$
+> P(|X - \mu| \ge k) \le \frac{\sigma^2}{k^2}
+> $$
+> 
+> In the case that $k = c \sigma$ where $c$ is a positive constant, then we can write this as
+> $$
+> P(|X - \mu| < c \sigma) \ge 1 - \frac{1}{c^2}
+> $$
+> 
+> This establishes a bound for the proportion of values in our distribution within some number of standard deviations from the mean.
+>
+> > [!Note] Proof
+> >
+> > We have
+> > $$
+> > \begin{align*}
+> >         \sigma^2
+> >         &= V(X) = E( (X - \mu)^2 ) \\
+> >         &= \int_{-\infty}^\infty (x - \mu)^2 f(x) \; dx \\
+> >         &= \int_{-\infty}^{\mu - k} (x - \mu)^2 f(x) \; dx + \int_{\mu - k}{\mu + k} (x - \mu)^2 f(x) \; dx + \int_{\mu + k}^\infty (x - \mu)^2 f(x) \; dx \\
+> >         &\ge \int_{-\infty}^{\mu - k} (x - \mu)^2 f(x) \; dx + 0 + \int_{\mu + k}^\infty (x - \mu)^2 f(x) \; dx 
+> > \end{align*}
+> > $$
+> > 
+> > We know that if $x - \mu \le -k$ or $x - \mu \ge k$, then $(x - \mu)^2 \ge k^2$. So, given our integral bounds, we have
+> > $$
+> > \begin{align*}
+> >         &\ge \int_{-\infty}^{\mu - k} (x - \mu)^2 f(x) \; dx + \int_{\mu + k}^\infty (x - \mu)^2 f(x) \; dx \\
+> >         &\ge \int_{-\infty}^{\mu - k} k^2 f(x) \; dx + \int_{\mu + k}^\infty k^2 f(x) \; dx \\
+> >         &\ge k^2 \left( \int_{-\infty}^{\mu - k} f(x) \; dx + \int_{\mu + k}^\infty f(x) \; dx \right) \\
+> >         &\ge k^2 P(|X - \mu| \ge k)
+> > \end{align*}
+> > $$
+> > 
+> > Giving us
+> > $$
+> > P(|X - \mu| \ge k) \le \frac{\sigma^2}{k^2}
+> > $$
+
+
+> [!Example]
+> Let the pdf of $X$ be given as
+> $$
+> f(x) =
+> \begin{cases}
+>         630x^4 (1 - x)^4 & 0 < x < 1 \\
+>         0 & \text{else}
+> \end{cases}
+> $$
+> 
+> Integrating yields the following values.
+> $$
+> \mu = E(X) = \frac{1}{2} \qquad \sigma = \sqrt{\frac{1}{44}} \approx 0.15
+> $$
+> 
+> Using these values, by Chebyshev's Inequality, the probability that $X$ will take on values within 2 standard deviations of the mean is 
+> $$
+> P(|X - \mu| < 2\sigma) \ge 1 - \frac{1}{4}
+> $$

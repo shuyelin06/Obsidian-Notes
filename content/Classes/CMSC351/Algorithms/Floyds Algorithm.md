@@ -4,7 +4,7 @@ tags:
 - cmsc351
 ---
 
-Given a directed, weighted, simple, and connected graph, how can we find the shortest path between **any two pairs of vertices**?
+**Problem**: Given a directed, weighted, simple, and connected graph, how can we find the shortest path between **any two pairs of vertices**?
 
 # Intuition
 Consider the following graph.
@@ -95,10 +95,14 @@ p[u,v] =
 \end{cases}
 $$
 
-We can alternative think of this matrix as telling us what the direct predecessor of $j$ is in the shortest path from $i \to j$, allowing no intermediate vertices.
+We will use this matrix to tell us the direct predecessor of $j$ in the shortest path from $i \to j$. Currently, it allows no intermediate vertices.
 
 We'll process this graph in a similar way to $A$.
-1. Allowing 1 to be an intermediate vertex, we see that the shortest path from $3 \to 2$ changes because instead of taking the path $3 \to 2$, we can instead take $3 \to 1 \to 2$. In other words, our shortest path from $3 \to 2$ should have a predecessor of 1, because we now need to take the intermediate vertex 1.
+1. Let 1 be an intermediate vertex. Then, we see that the shortest path from $3 \to 2$ changes because instead of taking the path $3 \to 2$, we can instead take $3 \to 1 \to 2$. In other words,
+   $$
+   d[3,1] + d[1,2] < d[3,2]
+   $$
+   So $p[3,2] = 1$, because the direct predecessor of 2 in this path is now 1.
    $$
    P = 
    \begin{bmatrix}
@@ -107,7 +111,11 @@ We'll process this graph in a similar way to $A$.
         3 & 1 & 3 \\
    \end{bmatrix}
    $$
-2. We repeat this process, now allowing 2 to be an intermediate vertex as well. Now, we have path $1 \to 3$, meaning the shortest path from $1 \to 3$ should have a predecessor of 2, as we now need to take the intermediate vertex 2.
+2. Let 2 be an intermediate vertex. Then, we see that the path $1 \to 3$ opens because we can take the path $1 \to 2 \to 3$. In other words, becaus $d[1,3] = \infty$,
+   $$
+   d[1,2] + d[2,3] < d[1,3]
+   $$
+   So $p[1,3] = 2$ as we now need to take the intermediate vertex 2.
    $$
    P = 
    \begin{bmatrix}
@@ -116,7 +124,11 @@ We'll process this graph in a similar way to $A$.
         3 & 1 & 3 \\
    \end{bmatrix}
    $$
-3. We repeat this process, now allowing 3 to be an intermediate vertex as well. Now, we have a path $2 \to 1$, meaning the shortest path from $2 \to 1$ should have a predecessor of 3, as we now need to take the intermediate vertex 3.
+3. Let 3 be an intermediate vertex. THen, we see that the shortest path from $2 \to 1$ changes as instead of taking the path $2 \to 1$, we can instead take path $2 \to 3 \to 1$. In other words,
+   $$
+   d[2,3] + d[3,1] < d[2,1]
+   $$
+   So $p[2,1] = 3$, because the direct predecessor of 1 in this path is now 3. 
    $$
    P = 
    \begin{bmatrix}
@@ -126,6 +138,16 @@ We'll process this graph in a similar way to $A$.
    \end{bmatrix}
    $$
 
-Thus, $P$ now stores the direct predecessor of $j$ in the shortest path from $i \to j$, allowing all intermediate vertices!
+We are done! Now, our $P$ stores the direct predecessor of $j$ in the shortest path from $i \to j$, allowing all intermediate vertices! To reconstruct a path, we start at a cell, and work backwards.
+
+For example, suppose we wanted to know the path from 2 to 1. Then, we see that because $p[2,1] = 3$, the shortest path from 2 to 1 has direct predecessor 3. Then, we see that $p[2,3] = 2$, meaning the there are no other nodes in our shortest path (as our starting node is equal to our predecessor). This gives us shortest path
+$$
+2 \to 3 \to 1
+$$
+
+# Code
+Let's now implement this algorithm in code.
+
+#WIP
 
 --- Continued on monday --- how do we use $P$ to get all of the ACTUAL paths!

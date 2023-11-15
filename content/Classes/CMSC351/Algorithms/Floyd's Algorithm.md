@@ -2,6 +2,7 @@
 title: Floyds Algorithm
 tags:
 - cmsc351
+- wip
 ---
 
 **Problem**: Given a directed, weighted, simple, and connected graph, how can we find the shortest path between **any two pairs of vertices**?

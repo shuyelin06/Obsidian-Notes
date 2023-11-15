@@ -477,42 +477,4 @@ Thus, any decision-based sorting algorithm must make $\lg(n!) \to n\lg(n)$ decis
 
 Now the question is, can we come up with a sorting algorithm which is NOT based upon comparisons, and takes under $n\lg(n)$ time?
 
-# Counting Sort
-...
 
-Counting sort works for integers between $0$ and $k$. It's stable, not in-place, and has time complexity $\Theta( n + k )$
-> $n$ is the number of items in the list, and $k$ is the maximum in the list. The time complexity is best when $k$ is independent of $n$, as this makes it a constant giving us time complexity $\Theta(n)$.
-
-However, sorting lists of length $n$ where all entries are below $n^2$ would give us $\Theta(n^2)$! So, counting sort depends on the entries in the list.
-
-Furthermore, we know that the auxiliary space is $\Theta(n+k)$ as ANEW is length $n$, and POS is length $k+1$, with some constants.
-> This can make counting sort extremely wasteful! For example, sorting lists of length $n$ where all entries are between 1 million and 1 million + 3.
-
-We could also modify counting sort to work on other inputs!
-- For example, we could sort a list of fractions following the form $1/a$ where $a$ is a positive integer, by inverting every fraction before sorting.
-- For, we could sort a list of integers between $-10$ and $10$ inclusive, by adding $10$ to all integers before sorting, then reverting this change.
-
-
-# Radix Sort
-Radix sort is defined as an algorithm able to sort elements with a specific "base" (radix), ideally where the number of digits in the base has a limit.
-- Sort decimal numbers between 000 and 999 (base 10)
-- Sort binary numbers between 000000 and 111111 (base 2)
-- Sort strings of 5 letters each, $A-Z$
-
-Basically, what we will do is stable sort with respect to the least significant digit, and continue doing this all the way up to the most significant digit. Technically, any stable sorting algorithm will do, but with a very predefined base, counting sort is often used the most!
-> It's temptig to think we want to do the most significant digit first, but this would fail!
->
-> Note that all expressions MUST have the same number of digits for Radix Sort to work.
-
-In each case, each counting sort is $\Theta(n + (b-1))$, where $b$ is our base. Then, we do this $d$ times, once for every digit. This gives us
-$$
-\Theta( d (n + (b - 1)) ) 
-$$
-Assuming $b$ is fixed, this is $\Theta(dn)$. In the most likely case, $d$ does not depend on $n$ to give us $\Theta(n)$, though this may not necessarily be the case.
-
-> [!Example]
-> Let's sort a list of $n$ nonzero ints between 0 and $2^n - 1$, each represented in binary. What's the time complexity?
->
-> It takes $n$ binary digits to represent out elements in the list, giving us time complexity $\Theta(n \cdot n) = \Theta(n^2)$.
-
-We have auxiliary space $\Theta(n + (b-1))$, as we take this much space at any time due to counting sort.

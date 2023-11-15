@@ -7,7 +7,7 @@ tags:
 **Problem**: Given a weighted, undirected, simple graph with a starting vertex $S$, how do we get from $S$ to every other vertex using paths of minimum cumulative weight?
 
 # Intuition
-Say we have a graph given as follows with starting vertex 2. 
+Say we have a graph given as follows.
 
 ```mermaid
 graph LR
@@ -18,44 +18,71 @@ graph LR
       1 -. 40 .- 5;
 ```
 
-Notice that while we have a total weight of 30 when moving from $2 \to 4$, we have a more efficient route of 25 along $2 \to 1 \to 4$! How do we guarantee we always find the path of least weight?
+Now supppose we have starting vertex 2. Notice that while we can take a total weight of 30 when moving from $2 \to 4$, we can actually find a more efficient route of 25 along $2 \to 1 \to 4$!
 
-Suppose we have a vertex $V_0$, and we know the path of minimum weight to this vertex is $m_0$. Now suppose that this vertex has neighbors $N_1, \dots N_k$ with respective edge weights $w_1, \dots w_k$. Given this, then for any neighbor $N_i$, we know that the path of minimum weight to this neighbor as **at most** the sum of
+How do we guarantee we always find the paths of least weight from 2?
+
+Let's start from our starting vertex 2.
+- Consider all vertices we can reach from 2, which are 1 and 4.
+
+  Because the edge from $2 \to 1$ is shorter than $2 \to 4$, we know that the path from $2 \to 1$ **must** be the shortest path from 2 to 1, as if we took another path to 1, our cumulative edge weight would immediately exceed 10.
+
+  So, we know that from 2 to 1, we have shortest path $2 \to 1$.
+
+- Now, consider all vertices we can reach from both 2 and 1, which are 4 and 5.
+
+  Because the edge from $1 \to 4$ is shorter than any other edge we can take, we know that the path from $2 \to 1 \to 4$ **must** be the shortest path from 2 to 4, as if we took another path to 4, our cumulative weight would immediately exceed 25.
+
+  So, we know that from 2 to 4, we have shortest path $2 \to 1 \to 4$.
+
+Repeating this process, we see that for every vertex we know we have the shortest path to, if we always select the next shortest edge, we guarantee we will always have the shortest path from 2!
+
+This is the idea behind Dijkstra's Algorithm, formalized in the next section.
+
+
+# Dijkstra's Algorithm
+## Pseudocode
+To find the shortest path to all vertices in a graph from some start $S$, we will do the following:
+- We'll create an array to store the direct predecessor of any vertex in the path from $S$ to that vertex. This array will later be used to recover our shortest path.
+- Then, we'll create another array to store the minimum cumulative weight to that vertex.
+
+Then, we'll let the weight of the path to all nodes be a large number, save the weight of the path to $S$ as 0, and do the following:
+1. Select the next unvisited node $N$ with the lowest cumulative weight.
+2. Traverse every edge $N \to D$ where $D$ is some destination, and if the weight of the edge plus the minimum cumulative weight to $N$ is less than the currently saved weight for $D$:
+   - Save $N$ as the predecessor to $D$.
+   - Update the minimum cumulative weight to $D$.
+3. Finally, mark $N$ as visited. Repeat!
+
+Pseudocode for this algorithm is given below. Let `graph` have $V$ vertices.
+
+```python
+def dijkstra(graph, start):
+    dist = [inf, ..., inf] # length V
+    pred = [NULL, ..., NULL] # length V
+    visited = []
+
+    dist[start] = 0
+
+    while length(visited) != size(graph):
+          x = unvisited vertex in S with smallest distance
+          for each vertex y connected to x:
+              if dist[x] + edge_weight(x,y) < dist[y]:
+                 dist[y] = dist[x] + edge_weight(x,y)
+                 pred[y] = x
+          visited.append(x)
+
+    return pred
+```
+
+## Time Complexity
+Let's now analyze Dijkstra's for its time complexity.
+
+We see that our while loop on line $L_8$ will run $V$ times, and to find the next vertex `x` to process on line $L_9$, we will have to check all $V$ vertices as well.
+
+Furthermore, our inner for loop will run the number of times that there are edges in our graph, and as our graph is undirected, this will amount to $2E$ edges.
+
+This gives us total time complexity
 $$
-m_0 + w_i
+\Theta(V^2 + E)
 $$
-As unless there is a faster path, we know we can take our known route to $V_0$, and then traverse the edge with weight $w_i$ to get to $N_i$. 
-
-Furthermore, from the starting vertex $S$, if we only repeat this process on only the **next** (unvisited) vertex with minimum cumulative weight, we guarantee we know the minimum cumulative weight to $V_0$. 
-
----
-
-Given $N_i$ therefore, if we were to repeat this process with one of it's neighbors reachable from the start $S$, we can guarantee that we'll end with the minimum path to $N_i$!
-
----
-
-
-Given this, then we know that for all of its neighbors $N_1, \dots N_k$, the distance $c_i$ to some neighbor $N_i$ is **at most** the sum of the path 
-
-
-Say we have a vertex $V$, that we know the path with minimum cumulative weight to. If this is the case, then we know that the 
-
-
-Starting from 2, we know we can traverse to 1 and 4, with cumulative weights 10 and 30, respectively. However, knowing that we can move to 1 with cumulative weight 10, we can move from $2 \to 1 \to 4$ to have a shorter total 
-
-and say we have starting vertex $S$. 
-
-1. Given a graph, adn starting vertex $S$.
-2. Create a set $S = \{ \}$.
-3. Assign each vertex a distance of $\infty$ except $d[S] = 0$.
-4. Create a list of predecessors of size $V$ of all NULL.
-5. Choose the vertex of minimum distance that is NOT already visited (in the set).
-6. Process the vertex, updating the minimum distance to all its neighbors and its predecessors.
-
-
-Time complexity: $\Theta(V)$ (run process through total $V$ nodes), and $\Theta(V)$ (if set is a list, to find the next node with minimum path), and $\Theta(2E)$ (traversing every edge, but in a undirected graph).
-$$
-\Theta(V^2 + 2E) = \Theta(V^2 + E)
-$$
-
-This can be modified using a minheap to yield a different time complexity.
+> Note that we can modify this algorithm and the data structures we're using to obtain a different time complexity.

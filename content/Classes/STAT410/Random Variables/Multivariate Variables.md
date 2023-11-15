@@ -461,95 +461,64 @@ We also have the following properties:
 > The following two equalities are true.
 > $$
 > \begin{align*}
->       &E(X^i) = E( E(X^i \mid Y = y) ) \\
+>       &E(X^i) = E( E(X^i \mid Y) ) \\
 >       &V(X) = V(E(X \mid Y)) + E(V(X \mid Y)) \\
 > \end{align*}
 > $$
 >
 > We prove them below.
+>
 > 
-
-#wip
-
----
-
-> [!Note] Proof (1)
-First, we find that
-$$
-\begin{align*}
-        E(X^i \mid Y = y)
-        &= \int_{-\infty}^\infty x^i f(x \mid y) dx \\
-        &= \int_{-\infty}^\infty x^i \frac{f(x,y)}{g_Y(y)} dx = h(Y)
-\end{align*}
-$$
-where $h(Y)$ is some function on $Y$. We can then use this to obtain
-$$
-\begin{align*}
-        E(X^i) = E( h(Y) )
-        &= \int_{-\infty}^\infty h(y) g_Y (y) dy \\
-        &= \int_{-\infty}^\infty \left[ \int_{-\infty}^\infty x^i \frac{f(x,y)}{g_Y(y)} dx \right] g_Y (y) dy \\
-        &= \int_{-\infty}^\infty \left[ \int_{-\infty}^\infty x^i f(x,y) dx \right] dy \\
-        &= \int_{-\infty}^\infty \int_{-\infty}^\infty x^i g_X(x) f(y \mid x) dx dy \\
-        &= \int_{-\infty}^\infty \int_{-\infty}^\infty x^i g_X(x) f(y \mid x) dy dx \\
-        &= \int_{-\infty}^\infty x^i g_X(x) \left[ \int_{-\infty}^\infty f(y \mid x) dy \right] dx \\
-        &= \int_{-\infty}^\infty x^i g_X(x) (1) dx = E(X^i)
-\end{align*}
-$$
-
-> [!Note] Proof (2)
-> Taking the right-hand side expression, we find
-> $$
-> \begin{align*}
->         V(E (X \mid Y)) + E(V(X \mid Y))
->             &= E( E(X \mid Y)^2  - E ( E(X \mid Y) ))^2 + E(E(X^2 \mid Y) - (E(X \mid Y))^2) \\
->             &= E( E(X \mid Y)^2 ) - [ E(X) ]^2 + E( E(X^2 \mid Y)) - E (E (X \mid Y) )^2 \\
->             &= E(X^2) - (E(X))^2 = V(X)
-> \end{align*}
-> $$
-
-> [!Example]
-Suppose
-$$
-P(y = 1) = \frac{1}{8} \qquad P(y = 2) = \frac{7}{8}
-$$
-
-Let $Z = X \mid Y$, and define
-$$
-P(z = 2y) = \frac{3}{4} \qquad P(z = 3y) = \frac{1}{4}
-$$
-
-If $y = 1$, then
-$$
-X \mid (Y = 1) =
-  \begin{cases}
-        2 & P = \frac{3}{4} \\
-        3 & P = \frac{1}{4}
-  \end{cases}
-$$
-
-This can give us expected value
-$$
-E(X \mid Y = 1) = 2 \frac{3}{4} + 3 \frac{1}{4} = \frac{9}{4}
-$$
-Similarly,
-$$
-E(X \mid Y = 2) = 4 \frac{3}{4} + 6 \frac{1}{4} = \frac{18}{4}
-$$
-
-Giving us
-$$
-E(X \mid Y) =
-    \begin{cases}
-        \frac{9}{4} & y = 1 \\
-        \frac{18}{4} & y = 2
-    \end{cases}
-$$
-Thus, with this, we can even find $E (E(X \mid Y))$, giving us the expectation with respect to various values $Y$.
-$$
-E(E (X \mid Y)) = \frac{9}{4} P(y = 1) + \frac{18}{4} \frac{7}{8} = \frac{9}{4} \cdot \frac{1}{8} + \frac{18}{4} \cdot \frac{7}{8}
-$$
-
----
+> > [!Note]- Proof (1)
+> > 
+> > First, define function $h(Y)$ as
+> > $$
+> > \begin{align*}
+> >         h(Y)
+> >         &= E(X^i \mid Y = y) \\
+> >         &= \int_{-\infty}^\infty x^i f(x \mid y) dx \\
+> >         &= \int_{-\infty}^\infty x^i \frac{f(x,y)}{g_Y(y)} dx
+> > \end{align*}
+> > $$
+> > 
+> > We want to use this to show that $E(X^i) = E(h(Y))$.
+> > $$
+> > \begin{align*}
+> >         E( h(Y) )
+> >         &= \int_{-\infty}^\infty h(y) g_Y (y) dy \\
+> >         &= \int_{-\infty}^\infty \left[ \int_{-\infty}^\infty x^i \frac{f(x,y)}{g_Y(y)} dx \right] g_Y (y) dy \\
+> >         &= \int_{-\infty}^\infty \left[ \int_{-\infty}^\infty x^i f(x,y) dx \right] dy
+> > \end{align*}
+> > $$
+> > 
+> > Here, we apply the definition of conditional probability (multivariate case)
+> > $$
+> > f(y \mid x) = \frac{f(x,y)}{g_X (x)}
+> > $$
+> > 
+> > $$
+> > \begin{align*}
+> >         &\int_{-\infty}^\infty \left[ \int_{-\infty}^\infty x^i f(x,y) dx \right] dy \\
+> >         &= \int_{-\infty}^\infty \int_{-\infty}^\infty x^i g_X(x) f(y \mid x) dx dy \\
+> >         &= \int_{-\infty}^\infty \int_{-\infty}^\infty x^i g_X(x) f(y \mid x) dy dx \\
+> >         &= \int_{-\infty}^\infty x^i g_X(x) \left[ \int_{-\infty}^\infty f(y \mid x) dy \right] dx \\
+> >         &= \int_{-\infty}^\infty x^i g_X(x) (1) dx = E(X^i)
+> > \end{align*}
+> > $$
+>
+> > [!Note]- Proof (2)
+> >
+> > We start from the right-hand side expression, and find that
+> > $$
+> > \begin{align*}
+> >         V(E (X \mid Y)) + E(V(X \mid y))
+> >             &= E( E(X \mid Y)^2  - E ( E(X \mid Y) ))^2 \\
+> >                &\quad + E(E(X^2 \mid Y) - (E(X \mid Y))^2) \\
+> >             &= E( E(X \mid Y)^2 ) - [ E(X) ]^2 \\
+> >                &\quad + E( E(X^2 \mid Y)) - E (E (X \mid Y) )^2 \\
+> >             &= E(X^2) - (E(X))^2 = V(X)
+> > \end{align*}
+> > $$
 
 > [!Abstract] Theorem: Law of Total Expectation
 > We have
@@ -562,7 +531,58 @@ $$
 > E(X) = \sum_{i=1}^n E(X \mid A_i) P(A_i)
 > $$
 
-> [!Example]
+> [!Example]+ Example: Conditional Expectation
+> Suppose that
+> $$
+> P(y = 1) = \frac{1}{8} \qquad P(y = 2) = \frac{7}{8}
+> $$
+> 
+> Now suppose we have random variable $Z = X \mid Y$, and define
+> $$
+> P(z = 2y) = \frac{3}{4} \qquad P(z = 3y) = \frac{1}{4}
+> $$
+> 
+> On the cases $y = 1, 2$, then
+> $$
+> Z = X \mid (Y = 1) =
+>   \begin{cases}
+>         2(1) & P = 3/4 \\
+>         3(1) & P = 1/4 \\
+>   \end{cases}
+> \qquad
+> Z = X \mid (Y = 2) =
+>   \begin{cases}
+>         2(2) & P = 3/4 \\
+>         3(2) & P = 1/4 \\
+>   \end{cases}
+> $$
+> 
+> We use this to find expected values
+> $$
+> \begin{align*}
+>     &E(X \mid Y = 1) = 2 \cdot \frac{3}{4} + 3 \cdot \frac{1}{4} = \frac{9}{4} \\
+>     &E(X \mid Y = 2) = 4 \cdot \frac{3}{4} + 6 \cdot \frac{1}{4} = \frac{18}{4}
+> \end{align*}
+> $$
+> 
+> This gives us the expected value distribution
+> $$
+> E(X \mid Y) =
+>     \begin{cases}
+>         9/4 & y = 1 \\
+>         18/4 & y = 2
+>     \end{cases}
+> $$
+> 
+> We can then use this to find $E (E(X \mid Y)) = E(X)$!
+> $$
+> \begin{align*}
+>         E(X) &= E(E (X \mid Y)) \\
+>         &= \frac{9}{4} P(y = 1) + \frac{18}{4} P(y = 2) = \frac{9}{4} \cdot \frac{1}{8} + \frac{18}{4} \cdot \frac{7}{8}
+> \end{align*}
+> $$
+
+> [!Example]- Example: Conditional Expectation (2)
 > Let
 > $$
 > f_{X,Y} (x,y) =
@@ -572,8 +592,13 @@ $$
 >         \end{cases}
 > $$
 > Find $E(X \mid Y)$.
+>
+> Given that
+> $$
+> g_Y (y) = \frac{2}{(y + 1)^3}
+> $$
 > 
-> We can do this by finding
+> We can find $E(X \mid Y)$ by finding
 > $$
 > \begin{align*}
 >         E(X \mid Y)
@@ -582,19 +607,15 @@ $$
 >             &= \int_0^\infty \frac{1}{2} (y + 1)^3 x^3 e^{-x (y + 1)} dx
 > \end{align*}
 > $$
-> Given that
-> $$
-> g_Y (y) = \frac{2}{(y + 1)^3}
-> $$
 > 
 > Let $u = x (y + 1) \to du = y + 1$. We find
 > $$
 > E(X \mid Y) = \frac{1}{2 (y+1)} \int_0^\infty u^3 e^{-u} du = \frac{1}{2(y+1)} \Gamma(4) = \frac{3!}{2(y+1)}
 > $$
 
----
+Sometimes, we can use conditional expectation to find expected values that are recursively defined in terms of themselves. See the following examples.
 
-> [!Example]
+> [!Example]+ Example: Conditional Expectation (3)
 > A man is stuck in a cave. There are 3 tunnel exits:
 > 1. Tunnel 1 takes 2 hours to get out.
 > 2. Tunnel 2 takes 5 hours, but returns to the starting point.
@@ -611,9 +632,11 @@ $$
 >         &= 2 \frac{1}{3} + (5 + E(X)) \frac{1}{3} + (7 + E(X)) \frac{1}{3} 
 > \end{align*}
 > $$
-> Solving for $E(X)$, we find $E(X) = 14$. Note that we express $E(X)$ recursively in terms of itself, as if the man enters tunnel 2 or 3, he ends up back where he started but with additional time spent.
+> Note that we express $E(X)$ recursively in terms of itself, as if the man enters tunnel 2 or 3, he ends up back where he started but with additional time spent.
+>
+> Solving for $E(X)$, we find $E(X) = 14$. 
 
-> [!Example]
+> [!Example]- Example: Conditional Expectation (4)
 > A biased coin has $P(\text{Heads}) = p$. We toss the coin until we get 2 consecutive heads. What is the number of expected tosses?
 > 
 > Let:
@@ -621,12 +644,14 @@ $$
 > 2. $A_2$ be the event of the sequence $H,T$.
 > 3. $A_3$ be the event of the sequence of just $T$.
 > 
-> As $A_1, A_2, A_3$ partition the sample space of the toss sequences, we can find our expected value by breaking it up across these different sequences. Define $X$ as the total number of tosses needed until we get 2 consecutive heads. Then,
+> As $A_1, A_2, A_3$ partition the sample space of the toss sequences, we can find our expected value by breaking it up across these different sequences.
+>
+> Define $X$ as the total number of tosses needed until we get 2 consecutive heads. Then,
 > $$
 > \begin{align*}
 >         E(X)
 >         &= E(X \mid A_1) P(A_1) + E(X \mid A_2) P(A_2) + E(X \mid A_3) P(A_3) \\
->         &= 2 p^2 + (2 + E(X)) p (1 - p) + (1 + E(X)) (1 - p)
+>         &= 2 \cdot p^2 + (2 + E(X)) \cdot p (1 - p) + (1 + E(X)) \cdot (1 - p)
 > \end{align*}
 > $$
 >

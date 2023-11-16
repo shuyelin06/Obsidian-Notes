@@ -97,33 +97,155 @@ To avoid these issues and ensure a secure program, the Rust compiler adds constr
 To ensure memory secure programs, Rust adheres to two key concepts: **ownership** and **lifetimes**, described below.
 
 ## Ownership
-In Rust, values have owners, and each value can only have one owner at a time. When the owner goes out of scope, the value will automatically be dropped. This is known as **ownership**.
+### Ownership in Rust
+To implement proper memory management, higher level languages will typically utilize some form of garbage collection in order to manage memory. However, this creates overhead, and can significantly slow down a program!
 
-Only the owner of a value can be used to refer to it! Consider the following example, where we bind `x` to a string allocated from the heap.
+To work around this, Rust adheres to an idea called **ownership**. Ownership in Rust follows 3 rules:
+1. Every value has an "owner".
+2. Only one owner is allowed at any given time, though ownership can be transferred.
+2. When a value's owner goes out of scope, the value will automatically be dropped (freed).
+
+These rules apply to both memory on the stack and heap, though it really only impacts memory on the heap (as stack memory is already automatically freed).
+
+See the below example of ownership.
+
+> [!Example]+ Example: Ownership in Rust
+> Because only one owner is allowed at a time, only one variable may be used to refer to variables on the heap at any given time. Consider the following example, where we bind `x` to a string allocated from the heap.
+> 
+> ```rust
+> fn main() {
+>    let x = String::from("hello"); // Allocate space on the heap for a string
+> ```
+> 
+> After this binding, we say that `x` has ownership of the memory allocated by the string `hello`. However, if we follow this with another `let` binding
+> 
+> ```rust
+>    let y = x; // Move ownership of the string to y
+> ```
+> 
+> Rust will perform a shallow copy on `x` (by default), and **move the ownership of `x`** to `y`, meaning we can no longer use `x` to refer to the string `hello`, as it no longer "owns" the memory!
+> > If we instead perform a deep copy via `.clone()`, we won't have this issue, as `y` will point to a completely new copy of `hello`, and ownership of the original `hello` will not transfer!
+> 
+> Note that we have to perform a `let` binding to transfer ownership.
+> 
+> ```rust
+>    println!("{}", x); // ERROR, x no longer has ownership of "hello"
+>    println!("{}", y); // OKAY, y has ownership of "hello"
+> }
+> ```
+
+By guaranteeing that a value will always only have one owner, ownership ensures that that invalid frees never occur, and prevents undefined memory accesses during runtime!
+
+### References
+While ownership can ensure safe programs, this constraint also severely limits the variety of safe programs we can write, and can cause unexpected behavior, like in the below example.
+
+> [!Example]+ Example: Ownership in Rust - Unexpected Behavior
+> Consider the following code.
+> 
+> ```rust
+> fn main() {
+>    let x = String::from("hello");
+>    {
+>       let c = x; // transfer ownership of "hello" to c
+>    }
+>    println!("x is {}", x);
+> }
+> ```
+>
+> Because we move ownership of `hello` from `x` to `c` in the code block, yet do not transfer this ownership back to any other variable, `hello` is freed inside the code block! Thus, the print statement on `x` (line $L_6$) is invalid, as the memory of `hello` was already freed.
+
+To prevent unexpected behavior like the one above, we have the concept of **references** in Rust. Rules of references are given as follows:
+1. Every reference must be valid.
+2. One of the following, but not both must be true:
+   - There can be infinitely many immutable references to a value.
+   - There can be only one mutable reference to a value.
+
+References let us temporarily transfer ownership to other variable(s)! Consider the following example.
+
+> [!Example]+ Example: References in Rust
+> ```rust
+> fn main() {
+>    let a = String::from("hello");
+>    {
+>         let c = &a;
+>         println!("c is {}", c);
+>    }
+>    println!("a is {}", a);
+> }
+> ```
+> 
+> Note that before, this example would be invalid as we never pass ownership back to `a`. However, with references, this is okay as ownership will automatically be transferred back!
+>
+> This would have equivalent output to the code
+> ```rust
+> fn main() {
+>    let a = String::from("hello");
+>    let b = {
+>         let c = &a;
+>         println!("c is {}", c);
+>         c
+>    }
+>    println!("b is {}", b);
+> }
+> ```
+> As in this code, we explicitly transfer ownership back out of the code block! References let us do this in a much cleaner way.
+
+
+Validity of references is determined by a concept known as **lifetimes**. We will not cover this topic in depth, though intuitively, it means that **references will only be valid for as long as they need to be**.
+
+Invalid references are determined by an overlap of lifetimes such that there is a mutable lifetime active, and any other lifetime to the same value active at the same time.
+
+Consider the following example.
+
+> [!Example]+ Example: Lifetimes of References
+> Consider the following code block.
+> 
+> ```rust
+> fn main() {
+>    let mut a = String::from("hello");
+>    {
+>         let c = &mut a;
+>         println!("c is {}", c);
+>         println!("a is {}", a);
+>    };
+>    println!("a is {}", a);
+> }
+> ```
+>
+> Because `c` only needs to be valid for lines $L_5$ and $L_6$, and `a` only needs to be valid after that, this code is valid as the two mutable references' lifetimes do not overlap!
+>
+> However, if we swapped the prints on lines $L_5$ and $L_6$, our code would now be invalid, as `c` must stay valid while `a` is valid (their lifetimes overlap), meaning we have two mutable references at the same time!
+
+Because of this concept of lifetimes, note that it is possible to have immutable references to a mutable reference, so long as their lifetimes do not overlap. Consider the following example.
+
+> [!Example]+ Example: Lifetimes of References (2)
+> Consider the following program
+> ```rust
+> fn main() {
+>    let mut a = String::from("hello");
+>    {
+>         let c = &a;
+>         let d = &a;
+>         println!("{} and {} are the same", c, d);
+>    }
+>    println!("a is {}", a);
+> }
+> ```
+>
+> Even though `c` and `d` are immutable references to mutable reference `a`, the code is valid, as `a` does not need to be valid at the same time `c` and `d` are! Thus, their lifetimes do not overlap.
+
+---
 
 ```rust
-fn main() {
-   let x = String::from("hello");
-}
+let v = "hello"
+v -> [];
 ```
 
-After this binding, we say that `x` has ownership of the memory allocated by the string `hello`. However, if we follow this with the binding
-
-```rust
-let y = x;
-```
-
-Then, we say that the ownership of `x` has **moved** to `y`, meaning that we can no longer use `x` to refer to the string `hello`, as it no longer "owns" the memory!
-
-```rust
-println!("{}", x); // ERROR, x no longer has ownership of "hello"
-println!("{}", y); // OKAY, y has ownership of "hello"
-```
-
-To do this, the Rust compiler will track the ownership of all values in the program at any given time. This can quickly become quite complex, and the ownership of a variable can be passed between multiple owners.
-
-However, by guaranteeing that a value will always only have one owner, we ensure that only one free can occur, and undefined memory accesses are not possible!
+slices are segments of memory that are known at compile time.
 
 ## Lifetime
 --- WIP
 
+If Rust CANNOT guarantee that a program is safe, it simply will not compile that program.
+
+note that when Rust does a copy, it will always try to do a shallow copy as deep copies are expensive. To force a deep copy,  use the `.clone()` method.

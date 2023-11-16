@@ -1,8 +1,7 @@
 ---
-title: Floyds Algorithm
+title: Floyd's Algorithm
 tags:
 - cmsc351
-- wip
 ---
 
 **Problem**: Given a directed, weighted, simple, and connected graph, how can we find the shortest path between **any two pairs of vertices**?
@@ -18,7 +17,9 @@ graph LR
 3 -. 40 .-> 1;
 ```
 
-First, we're going to build our adjacency matrix for the graph
+We can find the shortest path between any two pairs of vertices, by starting from all known edges, and working our way to our shortest path by allowing "intermediate" vertices one by one! See below to see what we mean.
+
+First, we build adjacency matrix $A$ for our graph, defined as
 $$
 A =
 \begin{bmatrix}
@@ -36,12 +37,11 @@ d[i,j] =
         \infty & \text{No edge}
 \end{cases}
 $$
-> Vertices in this graph are 1-indexed.
 
-We can alternatively think of $d[i,j]$ as the length of the shortest path from $i \to j$, allowing **no immediate vertices** (paths of only 1 edge).
+While this matrix stores the edges and their weights in the graph, we can alternatively think of $d[i,j]$ it as storing the weight of the shortest path from $i \to j$, **allowing no intermediate vertices** (i.e. paths of only 1 edge). We can then let each vertex $1,2,3$ be intermediate vertices, and build our matrix to obtain the shortest paths between any two pairs of nodes. 
 
 Now, let's do the following:
-1. Allow 1 to be an intermediate vertex. Then, this changes the shortest path from $3 \to 2$ to 60, because we can traverse through 1. More formally, we update $d[3,2]$ because
+1. Let 1 be an intermediate vertex. Then, this changes the shortest path from $3 \to 2$ to 60, because we can traverse through 1. More formally, we update $d[3,2]$ because
    $$
    d[3,1] + d[1,2] < d[3,2]
    $$
@@ -78,7 +78,7 @@ Now, let's do the following:
    \end{bmatrix}
    $$
 
-Now, notice that because we've allowed all vertices as intermediate vertices, our matrix yields the lengths of all shortest paths! We can use this matrix to find the actual shortest path between vertices.
+Now, because we've allowed all vertices as intermediate vertices, our matrix yields the lengths of all shortest paths! We now define another matrix to find the actual shortest path between vertices.
 
 Define matrix $P$ such that
 $$
@@ -103,7 +103,7 @@ We'll process this graph in a similar way to $A$.
    $$
    d[3,1] + d[1,2] < d[3,2]
    $$
-   So $p[3,2] = 1$, because the direct predecessor of 2 in this path is now 1.
+   So $p[3,2] = p[1,2] = 1$, because the direct predecessor in this path is the same as the direct predecessor in the path $1 \to 2$, which is 1. While this process may seem redundant, it paves the way for an algorithm later!
    $$
    P = 
    \begin{bmatrix}
@@ -116,7 +116,7 @@ We'll process this graph in a similar way to $A$.
    $$
    d[1,2] + d[2,3] < d[1,3]
    $$
-   So $p[1,3] = 2$ as we now need to take the intermediate vertex 2.
+   So $p[1,3] = p[2,3] = 2$ as the direct predecessor of $3$ in our new path is intermediate vertex 2.
    $$
    P = 
    \begin{bmatrix}
@@ -129,7 +129,7 @@ We'll process this graph in a similar way to $A$.
    $$
    d[2,3] + d[3,1] < d[2,1]
    $$
-   So $p[2,1] = 3$, because the direct predecessor of 1 in this path is now 3. 
+   So $p[2,1] = p[3,1] = 3$, because the direct predecessor of 1 in this new path is now intermediate vertex 3. 
    $$
    P = 
    \begin{bmatrix}
@@ -141,14 +141,47 @@ We'll process this graph in a similar way to $A$.
 
 We are done! Now, our $P$ stores the direct predecessor of $j$ in the shortest path from $i \to j$, allowing all intermediate vertices! To reconstruct a path, we start at a cell, and work backwards.
 
-For example, suppose we wanted to know the path from 2 to 1. Then, we see that because $p[2,1] = 3$, the shortest path from 2 to 1 has direct predecessor 3. Then, we see that $p[2,3] = 2$, meaning the there are no other nodes in our shortest path (as our starting node is equal to our predecessor). This gives us shortest path
+For example, suppose we wanted to know the path from 2 to 1. Then, we see that:
+- Because $p[2,1] = 3$, the shortest path from 2 to 1 has direct predecessor 3.
+- Furthermore, because $p[2,3] = 2$ we know that there are no other nodes in shortest path, because our starting node is equal to our predecessor.
+
+This gives us shortest path
 $$
 2 \to 3 \to 1
 $$
 
-# Code
-Let's now implement this algorithm in code.
+# Floyd's Algorithm
+## Pseudocode
+Let's now implement this algorithm in code. While we defined and created two arrays separately above, we can actually create both of them at the same time in code!
 
-#WIP
+Let `graph` have $V$ vertices. Then, we have the following pseudocode:
 
---- Continued on monday --- how do we use $P$ to get all of the ACTUAL paths!
+```python
+def floyds(graph):
+    A = adjacency_matrix(graph) # V x V
+    P = predecessor_matrix(graph) # V x V
+
+    # iterate through all intermediate vertices
+    for intermediate in vertices(graph): 
+        # iterate through all possible paths
+        for start in vertices(graph): # choose start of path
+            for end in vertices(graph): # choose end of path
+                # see if taking the intermediate yields a shorter path
+                if A[start][intermediate] + A[end][intermediate] < A[start][end]:
+                   # update weight
+                   A[start][end] = A[start][intermediate] + A[end][intermediate]
+                   # update predecessor
+                   P[start][end] = P[intermediate][end] 
+
+    return P
+```
+
+## Time Complexity
+Let's analyze this algorithm for its time complexity.
+- We see that our array initialization on lines $L_2$ and $L_3$ both take $V \times V$ time.
+- Furthermore, the loops on lines $L_6, L_8, L_9$ all take $V$ time, giving us complexity $V^3$.
+
+This gives us total time complexity
+$$
+\Theta(V^3)
+$$

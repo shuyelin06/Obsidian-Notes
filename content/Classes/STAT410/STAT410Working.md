@@ -209,3 +209,207 @@ which is different.
 
 We will show that $\bar{X}_n \to^P \mu$. In other words, the sequence should converge to the mean?
 > Weak law of large numbers
+
+---
+Big Picture: The observed mean ("sample mean") converges to the expected value as the number of trials increase.
+
+> [!Example]
+> Flip a coin. If it has heads, place a blue chip in a box. Otherwise, place a red chip in the box. Let $X_i$ be the random variable of the number of blue chips added to the box for trial $i$, namely,
+> $$
+> X_i =
+> \begin{cases}
+>         1 & \text{heads} \\
+>         0 & \text{tails}
+> \end{cases} 
+> $$
+> 
+> Clearly, we know that $\mu = 1/2$. However, if we test, say 4 times, we may not get this expected value! As we increase the number of tests, we should naturally expect this average to converge to the expected value.
+
+The law of large number is broken up into two distinct cases - the **weak law** and the **strong law** of large numbers.
+
+> [!Abstract] Theorem: Weak Law of Large Numbers (WLLN)
+> If $X_1, X_2, \dots X_n$ are independent, identically distributed random variables, then
+> $$
+> \lim_{n\to\infty} P( |\bar{X}_n - \mu | < \epsilon) = 1
+> $$
+> 
+> In other words, $X_n$ converges in probability to $\mu$.
+>
+> > [!Note] Proof
+> >
+> > We will show that
+> > $$
+> > \lim_{n\to\infty} P(|\bar{X}_n - \mu| > \epsilon) = 0
+> > $$
+> > to show that the contrapositive is true.
+> > 
+> > $$
+> > \lim_{n\to\infty} P(|\bar{X}_n - \mu| > \epsilon) = \lim_{n\to\infty} P(|\bar{X}_n - \mu|^2 > \epsilon^2)
+> > $$
+> > 
+> > Applying Markov's Inequality, we obtain
+> > $$
+> > \begin{align*}
+> >         \lim_{n\to\infty} P(|\bar{X}_n - \mu|^2 > \epsilon^2)
+> >         &\le \lim_{n\to\infty} \frac{E(|\bar{X}_n - \mu|^2)}{\epsilon^2} \\
+> >         &\le \lim_{n\to\infty} \frac{V(\bar{X}_n)}{\epsilon^2} \\
+> >         &\le \lim_{n\to\infty} \frac{\sigma^2}{n} \frac{1}{\epsilon^2} = 0
+> > \end{align*}
+> > $$
+
+> [!Example]
+> Let $X$ be the Bernoulli random variable
+> $$
+> X =
+> \begin{cases}
+>         1 & \text{Success} \\
+>         0 & \text{Failure}
+> \end{cases}
+> $$
+> 
+> Let $X_i$ be the value of $X$ at trial $i$, and $\bar{X}_n$ be the "average successes".
+> $$
+> \bar{X}_n = \frac{X_1 + X_2 + \dots + X_n}{n}
+> $$
+> 
+> By the Weak Law of Large Numbers, we know that $\bar{X}_n \to^P E(X)$, and we know by the Bernoulli Distribution, $E(X) = p$. Thus, the rate at which we see a success will gradually approach the probability of a success (which makes sense!).
+
+> [!Example]
+> Using the Weak Law of Large Numbers, we can prove the following theorem.
+> 
+> > [!Abstract] Theorem: Bernstein's Theorem
+> > 
+> > If $f(x)$ is continuous on $[a,b]$, then for any $\epsilon > 0$, there exists a polynomial $h(x)$ such that
+> > $$
+> > |f(t) - h(t)| < \epsilon 
+> > $$
+> > for all $t \in [a,b]$.
+> >
+> > In other words, we can approximate any continuous function (on an interval) with a polynomial.
+
+
+> [!Abstract] Theorem: Strong Law of Large Numbers (SLLN)
+> If $X_1, X_2, \dots X_n$ are independent, identically distributed random variables, then
+> $$
+> P \left( \lim_{n\to\infty} | \bar{X}_n - \mu | < \epsilon \right) = 1
+> $$
+>
+> In other words, $\bar{X}_n$ converges almost surely to $\mu$.
+> > Note that the Strong Law of Large Numbers also implies the Weak Law!
+
+
+# 8.4: Sampling and the Central Limit Theorem
+A sequence of random variables $X_1, X_2 \dots X_n$ **converges in distribution** to random variable $X$, denoted $X_n \to^d X$, if the cdfs satisfy
+$$
+\lim_{n\to\infty} F_{X_n} (x) = F_X (x)
+$$
+for all $x$ where $x$ is continuous.
+
+> [!Example] Example: Convergence of Distributions
+> $$
+> X_n =
+> \begin{cases}
+>         1 & s = 1 \\
+>         0 & s = 0
+> \end{cases} \qquad
+> X =
+> \begin{cases}
+>         1 & s = 0 \\
+>         0 & s = 1
+> \end{cases}
+> $$
+> 
+> Now, because
+> $$
+> \lim_{n\to\infty} P( |X_n - X| < \epsilon ) \ne 1
+> $$
+> we know that $X_n \not\to^P X$.
+> 
+> However, assuming that the probability of $s$ occurring is uniformly distributed, we see that
+> $$
+> F_{X_n} =
+> \begin{cases}
+>         1/2 & 0 \le x < 1 \\
+>         1 & x \ge 1
+> \end{cases} = F_X
+> $$
+> Thus, $X_n \to^d X$.
+
+If $X_1, X_2, \dots X_n$ are independent, identically distributed random variables, we say they constitute a **random sample** from an **infinite** population.
+
+A **statistic** is a value calculated using this random sample (not the population). The process of calculating these statistics is known as **statistical inference**!
+
+If $X_1, X_2, \dots X_n$ is a random sample, the **sample mean** and **sample variance** are respectively defined as
+$$
+\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i \qquad s^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2
+$$
+> The unintuitive $n - 1$ in the sample variance is known as **Bessel's Correction**, and occurs as a sort of a "correction" as $X_i - \bar{X}$ is smaller than $X_i - \mu$.
+
+
+> [!Abstract] Theorem:
+> If $X_1, X_2 \dots X_n$ is a random sample from an infinite population with mean $\mu$ and variance $\sigma^2$, then
+> $$
+> E(\bar{X}) = \mu \qquad V(\bar{X}) = \frac{\sigma^2}{n}
+> $$
+
+Now, given a statistic from a sample of size $n$, we are essentially defining a function for it given the random variables $X_1, \dots X_n$. 
+$$
+Y = g(X_1, \dots X_n)
+$$
+We can thus think of this function $Y$ as its own random variable!
+
+We then ask, what is the distribution of $Y$?
+
+> [!Example]
+> Let $X_i \sim \text{Gamma}(\alpha, \beta)$, and consider the statistic
+> $$
+> T = \sum_{i=1}^n X_i
+> $$
+>
+> We showed in a previous example that $T \sim \text{Gamma}(n\alpha, \beta)$. Moreover, to find the distribution of $\bar{X} = \frac{T}{n}$, we find
+> $$
+> M_{\bar{X}} (t) = M_T \left( \frac{T}{n} \right) = \left( \frac{\beta}{1 - \beta t / \alpha} \right)^{n\alpha} \to \bar{X} \sim \text{Gamma}(n \alpha, \beta / n)
+> $$
+> But given a small manipulation in this random variable, our distribution quickly becomes a mess! For example, it's difficult to find the distribution of $Y = \bar{X} + a$, as its moment generating function doesn't match any commonly known distribution!
+
+The **Central Limit Theorem** provides a convenient way to approximate some of the above distributions!
+
+> [!Abstract] Theorem: Central Limit Theorem
+> Let $X_1, X_2, \dots X_n$ be a sequence of independent, identically distributed random variables with mean $\mu$, variance $\sigma^2$ and moment generating function $M_x (t)$.
+> 
+> Then, if we define the distribution of their averages $\bar{X}$,
+> $$
+> \bar{X} = \frac{X_1 + X_2 + \dots + X_n}{n}
+> $$
+> Then the distribution $\bar{X}$ converges in distribution to the standard normal distribution! 
+> $$
+> \frac{(\bar{X} - \mu)}{\sigma / \sqrt{n}} \to^d N(0,1)
+> $$
+>
+> Equivalently,
+> $$
+> \lim_{n\to\infty} P \left( \frac{\bar{X} - \mu}{\sigma / \sqrt{n}} < a \right) = \int_{-\infty}^a \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2} \; dx
+> $$
+> Or in other words, 
+> $$
+> \lim_{n\to\infty} P \left( \frac{X_1 + X_2 + \dots + X_n - n \mu}{\sigma \sqrt{n}} < a \right) = \int_{-\infty}^a \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2} \; dx
+> $$
+>
+> > [!Note] Proof
+> >
+> > For the sake of simplicity, we will assume the variance is finite and use moment generating functions - however, there exist generalizations for non-fininte variances too!
+> > ...
+
+Given a statistic, the Central Limit Theorem tells us that its averages (given our sample size is sufficiently large) will become the normal distribution!
+
+> [!Example]
+> From the earlier example, $Y = \bar{X} + a$ had a moment generating function given as
+> $$
+> M_Y (t) = e^{at} \left( \frac{1}{1 - \beta t / n} \right)^{n \alpha}
+> $$
+> If we know that $\bar{X}$ is approximately the normal distribution, then we can find that $\bar{X} + a$ is approximately
+> $$
+> N \left(\mu + a, \frac{\sigma^2}{n} \right)
+> $$
+
+

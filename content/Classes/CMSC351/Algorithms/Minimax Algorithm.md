@@ -2,7 +2,6 @@
 title: Minimax Algorithm
 tags:
 - cmsc351
-- wip
 ---
 
 The minimax algorithm is an algorithm that can help us make the best choice in a situation involving worst case scenarios.

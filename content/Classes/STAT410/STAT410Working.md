@@ -390,15 +390,102 @@ The **Central Limit Theorem** provides a convenient way to approximate some of t
 > $$
 > \lim_{n\to\infty} P \left( \frac{\bar{X} - \mu}{\sigma / \sqrt{n}} < a \right) = \int_{-\infty}^a \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2} \; dx
 > $$
-> Or in other words, 
+> Or in other words, multiplying both top and bottom by $n$, we obtain
 > $$
 > \lim_{n\to\infty} P \left( \frac{X_1 + X_2 + \dots + X_n - n \mu}{\sigma \sqrt{n}} < a \right) = \int_{-\infty}^a \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2} \; dx
 > $$
+> > This is often more useful, as we are often more interested in some probability from the summation $X_1 \dots X_n$ itself, rather than their average.
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > >
 > > For the sake of simplicity, we will assume the variance is finite and use moment generating functions - however, there exist generalizations for non-fininte variances too!
-> > ...
+> > 
+> > > [!Abstract] Theorem
+> > >
+> > > Let $F(x), F_1 (x), F_2 (x), \dots$ be the cdfs of random variables $X, X_1, X_2, \dots$ (respectively) with moment generating functions given by $M(t), M_1 (t), M_2(t), \dots$. Then, if
+> > > $$
+> > > \lim_{n\to\infty} M_{X_n} (t) = M_X (t)
+> > > $$
+> > > then $X_n \to^d X$.
+> > 
+> > > [!Abstract] Theorem (Taylor)
+> > >
+> > > Let $P_n (x)$ be the $n^{th}$ degree Taylor polynomial centered around "a". Then,
+> > > $$
+> > > P_n (x) = \sum_{k=0}^n \frac{f^k (a)}{k!} (x - a)^k
+> > > $$
+> > > Furthermore, there is a $c \in (a,x)$ such that
+> > > $$
+> > > f(x) = P_n(x) + \frac{f^{n+1} (c)}{(n+1)!} (x - c)^{n+1}
+> > > $$
+> > 
+> > To prove the Central Limit Theorem, if $Z_n = \frac{\bar{X} - \mu}{\sigma / \sqrt{n}}$, it suffices to show that $M_{Z_n} (t) \to e^{-t^2 / 2}$, the mgf of the standard normal distribution.
+> > 
+> > We have
+> > $$
+> > \begin{align*}
+> >         Z_n
+> >         &= \frac{\bar{X} - \mu}{\sigma / \sqrt{n}} \\
+> >         &= \frac{\frac{1}{n} \sum X_i - \mu}{\sigma / \sqrt{n}} \\
+> >         &= \frac{1}{n} \sum_{i=1}^n \frac{X_i - \mu}{\sigma} \\
+> >         &= \frac{1}{n} \sum_{i=1}^n Y_i
+> > \end{align*}
+> > $$
+> > 
+> > Now observe that
+> > $$
+> > \begin{align*}
+> >         E(Y_i)
+> >         &= E \left( \frac{X_i - \mu}{\sigma} \right) \\
+> >         &= \frac{1}{\sigma} E(X_i - \mu) = 0 \\
+> >         V(Y_i)
+> >         &= V \left( \frac{X_i - \mu}{\sigma} \right) \\
+> >         &= \frac{1}{\sigma^2} V(X_i) = 1
+> > \end{align*}
+> > $$
+> > 
+> > Recall that if $M_X (t)$ is an mgf, then $M_X^r (0) = \mu_r' = E(X^r)$. Above, we just found that
+> > $$
+> > \begin{align*}
+> >         M_{Y_i} (0) = E(1) = 1 \\
+> >         M_{Y_i}' (0) = E(Y_i) = 0 \\
+> >         M_{Y_i}'' (0) = V(Y_i) = 1
+> > \end{align*}
+> > $$
+> > 
+> > Now, applying Taylor's theorem, we can approximate the mgf $M_{Y_i} (t)$ as
+> > $$
+> > \begin{align*}
+> >         M_{Y_i} (t)
+> >         &= M_{Y_i} (0) + M_{Y_i}' (0) \frac{t}{1} + M_{Y_i}'' (c) \frac{t^2}{2!} \qquad 0<c<t \\
+> >         &= 1 + M_{Y_i}'' (c) \frac{t^2}{2} \\
+> >         &= 1 + \frac{t^2}{2} + \frac{1}{2} (M_{Y_i}'' (c) - 1) t^2
+> > \end{align*}
+> > $$
+> > 
+> > Recall the following properties of mgfs
+> > 1. $M_{bX} (t) = M_X (tb)$
+> > 2. The mgf of the sum of random variables equals the product of the mgfs
+> > 
+> > $$
+> > \begin{align*}
+> >         M_{Z_n} (t)
+> >         &= M_{\frac{1}{\sqrt{n}} Y_i} (t)^n \\
+> >         &= M_{Y_i} (t / \sqrt{n})^n \\
+> >         &= \left[ 1 + \frac{1}{2} \left( \frac{t}{\sqrt{n}} \right)^2 + \frac{1}{2} (M_{Y_i}'' (c) - 1) \left( \frac{t}{\sqrt{n}} \right)^2 \right]^n \quad 0 < c < \frac{t}{\sqrt{n}} \\
+> > \end{align*}
+> > $$
+> > 
+> > Now, notices that as $n \to \infty$, $\frac{t}{\sqrt{n}} \to 0$ forcing $c \to 0$. Thus, we obtain
+> > $$
+> > \begin{align*}
+> > &\lim_{n\to\infty} \left[ 1 + \frac{1}{2} \left( \frac{t}{\sqrt{n}} \right)^2 + \frac{1}{2} (M_{Y_i}'' (c) - 1) \left( \frac{t}{\sqrt{n}} \right)^2 \right]^n \\
+> > &= \lim_{n\to\infty} \left[ 1 + \frac{t^2 / 2}{n} \right]^n \\
+> > &= e^{t^2/2}
+> > \end{align*}
+> > $$
+> > 
+> > Which is the moment generating function of $N(0,1)$! Thus, $Z_n$ converges in distribution to the standard normal distribution.
 
 Given a statistic, the Central Limit Theorem tells us that its averages (given our sample size is sufficiently large) will become the normal distribution!
 
@@ -412,4 +499,326 @@ Given a statistic, the Central Limit Theorem tells us that its averages (given o
 > N \left(\mu + a, \frac{\sigma^2}{n} \right)
 > $$
 
+> [!Example]
+> The amount of nicotine in a cigarette can be expressed by a random variable  with mean $\mu = 0.8$ mg, and standard deviation $\sigma = 0.1$ mg. Suppose there are 20 cigarettes in one pack. 
+> 
+> If a person smokes 5 packs of cigarettes a week, what is the probability the total nicotine consumed in a week is at least 82 mg?
+> 
+> Because we have 20 cigarettes over 5 packs, we'll have 100 total cigarettes. Let $X_i$ denote the amount of nicotine in cigarette $i$. If
+> $$
+> X = \sum_{i=1}^{100} X_i
+> $$
+> 
+> We want $P(X \ge 82)$. Applying our theorem, we find
+> $$
+> \begin{align*}
+>         P(X \ge 82)
+>         &= P \left( \frac{X - 100(0.8)}{0.1 \sqrt{100}} \ge \frac{82 - 100(0.8)}{0.1 \sqrt{100}} \right) \\
+>         &= P(z \ge 2) \\
+>         &= 1 - \Phi(2)
+> \end{align*}
+> $$
 
+> [!Example]
+> In a sample of 25 people, their height is measured. We find $\bar{X} = 67.64$ inches (note that this is the sample mean). Now suppose the population variance is $\sigma^2 = 9$.
+> 
+> Use the Central Limit Theorem to find the probability that $\mu$ exceeds 70 inches.
+> 
+> Here, if $\mu = 70$, we see that
+> $$
+> Z = \frac{\bar{X} - \mu}{\sigma / \sqrt{n}} = \frac{67.64 - 70}{3 / \sqrt{25}} \approx -3.266
+> $$
+> As $\mu$ increases, this will only become more negative, so we want to know the probability that $P(Z < -3.266) = \Phi(-3.266) = 0.00056$.
+
+Observe that in many situations, we start with a discrete random variable, and approximate it with $N(0,1)$, a continuous random variable. Under this conversion from discrete to continuous, it's most ideal to use a **continuity correction** to account for any error from conversions, where
+$$
+P(X = i) \approx P(i - 1/2 < X < i + 1/2)
+$$
+> Note that this correction is applied on $X$, and is most particularly effective for integers. 
+
+> [!Example] 
+> 10 dice are rolled. Determine the probability the sum is between 30 and 40, inclusive.
+> 
+> Let's use the Central Limit Theorem. Let $X_i$ e the value rolled on die $i$, with mean $\frac{7}{2}$, and variance $\sigma^2 = \frac{35}{12}$. Define $X$ as the sum of all $X_i$'s,
+> $$
+> X = \sum_{i=1}^{10} X_i
+> $$
+> 
+> As we are attempting to convert a discrete random variable into the continuous normal distribution, we will use a continuity correction and check for the probabilty
+> $$
+> \begin{align*}
+>         P (29.5 \le X \le 40.5)
+>         &= P \left( \frac{29.5 - 35}{\sqrt{\frac{35}{12}} \sqrt{10}} \le \frac{X - 35}{\sqrt{\frac{35}{12}} \sqrt{10}} \le \frac{40.5 - 35}{\sqrt{\frac{35}{12}} \sqrt{10}} \right) \\
+>         &= P(-1.014 \le Z \le 1.014) \\
+>         &= \Phi(1.014) - \Phi(-1.014) \approx 0.7
+> \end{align*}
+> $$
+
+# 8.5: Contelli and Jensen's Inequality
+Recall Markov's Inequality
+$$
+P(X \ge a) \le \frac{E(X)}{a}
+$$
+
+Using this inequality, we can derive another known as **Contelli's Inequality**.
+
+> [!Abstract] Theorem: Contelli's Inequality (One-Sided Chebyshev)
+> If $a > 0$, then
+> $$
+> P(X - E(X) \ge a) \le \frac{\sigma^2}{\sigma^2 + a^2}
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > Let $b > 0$. Then,
+> > $$
+> > \begin{align*}
+> > P(X - E(X) \ge a
+> > &= P(X \ge a + E(X)) \\
+> > &= P(X + b \ge (a + b) + E(X) \\
+> > &= P( (X + b)^2 \ge ( (a + b) + E(X) )^2 ) \\
+> > &\le \frac{E ((X + b)^2)}{(a + b + E(X))^2} &\text{Markov's Inequality} \\
+> > &\le \frac{\sigma^2 + (b + \mu)^2}{(a + b + \mu)^2} &b = \frac{\sigma^2}{a} - \mu \\
+> > &\le \frac{\sigma^2}{\sigma^2 + a^2}
+> > \end{align*}
+> > $$
+
+ > [!Example]
+ An exam had average 75% and a variance of 8%. Find an upper bound on the probability a student had at least an 80%.
+> 
+> Using Contelli's Inequality, we have that
+> $$
+> \begin{align*}
+>         P(X \ge 80)
+>         &= P(X - 75 \ge 5) \\
+>         &\le \frac{8^2}{8^2 + 5^2} \approx 0.72
+> \end{align*}
+> $$
+
+A twice differentiable function $g(x)$ is **convex** if $g''(x) > 0$. Equivalently for all $t$, $0 \le t \le 1$, and $x_1, x_2$, we have
+$$
+g(tx_1 + (1 - t)x_2) \le tg(x_1) + (1-t) g(x_2)
+$$
+> This is essentially saying, all values between $x_1$ and $x_2$ are at most the line formed between $g(x_1)$ and $g(x_2)$.
+
+We say $g(x)$ is **concave** if $-g(x)$ is convex.
+
+> [!Abstract] Theorem: Jensen's Inequality
+> If $g(x)$ is a convex function, then
+> $$
+> E(g(X)) \ge g(E(X))
+> $$
+>
+> > [!Note] Proof
+> >
+> > Let $g(x)$ be a convex function. We use Taylor's theorem, centered at $\mu = E(X)$
+> > $$
+> > g(X) = g(\mu) + g'(u) (x - \mu) + \frac{1}{2} g''(c) (x - \mu)^2 \quad c \in (\mu, x)
+> > $$
+> > 
+> > By assumption, we know that $g''(c)$ is convex. So, it's term must be non-negative.
+> > $$
+> >         g(\mu) + g'(u) (x - \mu) + \frac{1}{2} g''(c) (x - \mu)^2 \ge g(\mu) + g'(\mu) (x - \mu)
+> > $$
+> > 
+> > Applying the expected value on both sides, we get
+> > $$
+> > \begin{align*}
+> >         &E(g(X)) \ge E(g(\mu) + g'(\mu) (x - \mu)) \\
+> >         &E(g(X)) \ge E(g(\mu)) + E( g'(\mu) (x - \mu)) \\
+> >         &E(g(X)) \ge g(\mu) + g'(\mu) E(x - \mu) \\
+> >         &E(g(X)) \ge g(\mu) + g'(\mu) ( E(X) - \mu ) \\
+> >         &E(g(X)) \ge g(\mu) + 0 \\
+> >         &E(g(X)) \ge g(E(X))
+> > \end{align*}
+> > $$
+
+
+> [!Example]
+> Let $g(x) = \sqrt{x}$. Notice how $g''(x) = - \frac{1}{4} x^{-3/2} < 0$ for all $x > 0$, telling us that this function is concave.
+>
+> Thus, we know that $h(x) = \sqrt{x}$ is convex. By Jensen's Inequality,
+> $$
+> E( -\sqrt{x} ) \ge - \sqrt{ E(X) } \quad \Longrightarrow \quad E(\sqrt{x}) \le \sqrt{E(X)}
+> $$
+>
+> Thus, in general, if $g(X)$ is concave, then $E(g(x)) \le g(E(X))$.
+
+> [!Example]
+> Let $g(x) = x^2$.
+>
+> By Jensen's Inequality, $E(X^2) \ge (E(X))^2$, so
+> $$
+> V(X) = E(X^2) - (E(X))^2 \ge 0
+> $$
+
+Let $a_i > 0$. Then, we have the following
+$$
+\begin{align}
+        &\frac{1}{n} \sum_{i=1}^n a_i &\text{Arithmetic Mean} \\
+        &\sqrt[n]{\prod_{i=1}^n a_i} &\text{Geometric Mean} \\
+        &\frac{n}{\sum_{i=1}^n \frac{1}{a_i}} &\text{Harmonic Mean}
+\end{align}
+$$
+
+> [!Example]
+> A car drives 60 mph for 3 hours one way, and 20 mph for 3 hours. What is its average speed?
+> 
+> Intuitively, we calculate the average speed as
+> $$
+> \frac{3 \cdot 60 + 3 \cdot 20}{3 + 3} = 40
+> $$
+> which is the arithmetic mean.
+> 
+> Now suppose that this car travels 60 miles each way. On the way there, it goes 60 mph, and on the way back, it goes 20 mph. Now,  we are instead calculating the harmonic mean.
+> $$
+> \frac{2 \cdot 60}{\frac{60}{60} + \frac{60}{60}} = 30
+> $$
+
+> [!Abstract] Theorem
+> It is always the case that
+> $$
+> \text{Harmonic Mean} \le \text{Geometric Mean} \le \text{Arithmetic Mean}
+> $$
+>
+> > [!Note] Proof
+> >
+> > Define the pmf $p(x)$ as
+> > $$
+> > p(x) =
+> > \begin{cases}
+> >         \frac{1}{n} & x = a_1, a_2, \dots \\
+> >         0 & \text{else}
+> > \end{cases}
+> > $$
+> > 
+> > Let $g(x) = \ln(x)$. We see that $g''(x) = - \frac{1}{x^2} < 0$ for $x > 0$. Then, we find the arithmetic mean as
+> > $$
+> > E(X) = \frac{1}{n} \sum_{i=1}^n a_i
+> > $$
+> > 
+> > And we find the geometric mean as
+> > $$
+> > \begin{align*}
+> >         &E(g(x)) = E(\ln{x}) \\
+> >         &= \frac{1}{n} \ln{a_1} + \frac{1}{n} \ln{a_2} + \dots + \frac{1}{n} \ln{a_n} \\
+> >         &= \frac{1}{n} \ln( \prod a_i ) \\
+> >         &= \ln( \prod a_i ^{\frac{1}{n}} ) = \ln(GM)
+> > \end{align*}
+> > $$
+> > 
+> > By Jensen's Inequality,
+> > $$
+> > \ln(GM) = E(g(x)) \le g(E(x)) = \ln(AM) \Longrightarrow GM \le AM
+> > $$
+> > 
+> > Now to show that $HM \le GM$, we define the pmf
+> > $$
+> > p(y) =
+> > \begin{cases}
+> >         \frac{1}{n} & \frac{1}{a_1}, \frac{1}{a_2}, \dots \frac{1}{a_n} \\
+> >         0 & \text{else}
+> > \end{cases}
+> > $$
+> > 
+> > Again, let $g(y) = \ln(y)$. Then,
+> > $$
+> > E(Y) = \frac{1}{n} \sum_{i=1}^n \frac{1}{a_i} = \frac{1}{HM} \Longrightarrow g(E(Y)) = \ln(1/HM)
+> > $$
+> > 
+> > And
+> > $$
+> > E(g(Y)) = E(\ln(Y)) = \frac{1}{n} \sum_{i=1}^n \ln(1/a_i) = \ln( \prod (\frac{1}{a_i})^\frac{1}{n} ) = \ln(1 / GM)
+> > $$
+> > 
+> > From this, using Jensen's Inequality, it falls naturally that
+> > $$
+> > \ln(1/GM) = E(g(Y)) \le g(E(Y)) = \ln(1 / HM) \Longrightarrow HM \le GM
+> > $$
+
+
+> [!Example]
+> Let $X$ be a random variable taking on values greater than -1. Assume $E(X) = 100$. Apply Jensen's Inequality to obtain a bound on $E(\frac{1}{1 + X})$.
+>
+> Let $g(x) = \frac{1}{1 + x}$. We know that $g''(x) = \frac{2}{(x + 1)^3} > 0$ for all $x > -1$.
+>
+> Then, applying Jensen's Inequality, it must be true that
+> $$
+> E \left( \frac{1}{1 + X} \right) \ge \frac{1}{1 + (100)}
+> $$
+
+Now, consider any non-uniform pmf
+$$
+p(x) =
+\begin{cases}
+        P_i & x = a_i, 1 \le i \le n \\
+        0 & \text{else}
+\end{cases}
+\qquad
+\sum P_i = 1
+$$
+
+Applying the proof for Jenson's Inequality with $g(x) = \ln(x)$ (refer to proof), we obtain the following.
+$$
+a_1^{p_1} a_2^{p_2} \dots a_n^{p_n} \le p_1 a_1 + p_2 a_2 + \dots p_n a_n
+$$
+
+This is oftentimes considered a generalization of Jenson's Inequality.
+
+---
+
+Now say we have $n = 2$, with
+$$
+p_1 = \frac{1}{p} \quad p_2 = \frac{1}{q} \quad p_1 + p_2 = 1
+$$
+and
+$$
+a_1 = c^p \qquad a_2 = d^q
+$$
+where $c,d$ are non-negative. We apply our above findings and obtain
+
+$$
+\begin{align*}
+        c^{p/p} d^{q/q} &\le \frac{1}{p} c^p + \frac{1}{q} d^q \\
+        c \cdot d &\le \frac{c^p}{p} + \frac{d^q}{q}
+\end{align*}
+$$
+
+Which is known as **Young's Inequality**.
+
+Now choose
+$$
+c = \frac{|x|}{E(|X|^p)^{\frac{1}{p}}} \qquad d = \frac{|y|}{E(|Y|^q)^{\frac{1}{q}}}
+$$
+Subbing this into Young's Inequality, we find
+$$
+c \cdot d = \frac{|x| \cdot |y|}{E(|X|^p)^\frac{1}{p} \cdot E(|y|^q)^\frac{1}{q}} \le \frac{|x|^p}{p \cdot E(|x|^p)} + \frac{|y|^q}{q \cdot E(|y|^q)}
+$$
+Applying the expectation of both sides, we obtain
+$$
+\begin{align*}
+\frac{E(|x| \cdot |y|)}{E(|X|^p)^\frac{1}{p} \cdot E(|y|^q)^\frac{1}{q}} &\le \frac{E(|x|^p)}{p \cdot E(|x|^p)} + \frac{E(|y|^q)}{q \cdot E(|y|^q)} \\
+\frac{E(|x| \cdot |y|)}{E(|X|^p)^\frac{1}{p} \cdot E(|y|^q)^\frac{1}{q}} &\le \frac{1}{p} + \frac{1}{q} \\
+E(|x| \cdot |y|) &\le E(|X|^p)^\frac{1}{p} \cdot E(|y|^q)^\frac{1}{q}
+\end{align*}
+$$
+Which is Holder's Inequality!
+
+
+---
+
+Final Exam Content to Know:
+- Markov's Inequality
+- Chebyshev's Inequality (both cases $k = c \sigma$)
+- Definition of convergence in probability and in distribution
+- Central Limit Theorem (don't need anything leading up to it, just the theorem itself, NO TAYLORS THEOREM NEEDED, NO CONTINUITY CORRECTION)
+- Jensen's Inequality
+
+No need to know pdfs for discrete / continuous, expectation / variance for these.
+
+Defo have 1,2,4,5 deeply memorized.
+
+Larger part of the 1st half of the final is joint distributions.
+
+Main Focus of the final will be on (5.3) transformations in 1 Variable, and on joint distributions, the next section. Before 5.3, know counting (1.1), Bayes' Theorem (3.2), properties of E(X) and V(X). Know geometric series formula, series expansion for $e^x$.
+> Like only 25% of the final will be on material before 5.3 (transformations in 1 variable).

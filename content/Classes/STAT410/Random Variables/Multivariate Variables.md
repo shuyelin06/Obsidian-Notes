@@ -424,6 +424,76 @@ It follows from this theorem that if $X$ and $Y$ are independent, then $Cov(X,Y)
 - $Cov(X,Y) = Cov(Y,X)$
 - $Cov(kX, Y) = kCov(X,Y)$
 
+> [!Example]+ Example: Covariance
+> Let the pdf of $X,Y$ be given as
+> $$
+> f(x,y) = \begin{cases}
+>          2 & x > 0, y > 0, x + y < 1 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $Cov(X,Y)$.
+>
+> We find
+> $$
+> \begin{align*}
+>       &E(X) = \int_0^1 \int_0^{1-y} x \cdot 2 \; dx \; dy = \int_0^1 (1-y)^2 \; dy = \frac{1}{3} \\
+>       &E(Y) = \int_0^1 \int_0^{1-y} y \cdot 2 \; dx \; dy = \int_0^1 2y (1 - y) \; dy = \frac{1}{3} \\
+>       &E(XY) = \int_0^1 \int_0^{1-y} xy \cdot 2 \; dx \; dy = \int_0^1 y (1 - y)^2 \; dy = \frac{1}{12} \\
+>       &Cov(XY) = E(XY) - E(X) E(Y) = \frac{1}{12} - \frac{1}{3} \cdot \frac{1}{3} = -1/36
+> \end{align*}
+> $$
+
+Note that using the definition of covariance, we can derive expressions for the covariance of sums of random variables. This is given in the following theorem.
+
+> [!Abstract] Theorem: Covariance of Sums
+> Let $X_1, \dots, X_n$ be random variables, and assume
+> $$
+> Y_1 = \sum_{i=1}^n a_i X_i \qquad Y_2 = \sum_{i=1}^n b_i X_i
+> $$
+>
+> Then,
+> $$
+> Cov(Y_1, Y_2) = \sum_{i=1}^n a_i b_i V(X_i) + 2 \sum_{i < j} a_i b_j Cov(X_i, X_j)
+> $$
+>
+> > [!Info] Corollary
+> > 
+> > If $Y = X_1 + X_2 + \dots + X_n$, then
+> > $$
+> > Cov(Y,Y) = V(Y) = \sum_{i=1}^n V(X_i) + 2 \sum_{i < j} Cov(X_i, X_j)
+> > $$
+> > In particular, if $X_1, \dots, X_n$ are independent, then **$V(Y)$ is the sum of the variances of $X_i$**!
+> > $$
+> > V(Y) = \sum_{i=1}^n V(X_i)
+> > $$
+
+> [!Example]+ Example: Variance of Sums
+> Let the joint pdf of $X,Y$ be given as
+> $$
+> f(x,y) = \begin{cases}
+>          \frac{1}{3} (x + y) & 0 < x < 1, 0 < y < 2 \\
+>          0 & \text{else}
+>        \end{cases}
+> $$
+>
+> Find $V(Z)$, where $Z = 3X + 4Y - 5$.
+>
+> We can apply our theorem for $Z = 3X + 4Y - 5$. Note that because the variance of a constant is 0, we see that
+> $$
+> Cov(X,5) = Cov(Y,5) = 0
+> $$
+>
+> We can now calculate
+> $$
+> \begin{align*}
+>       V(3X + 4Y)
+>       &= V(3X) + V(4Y) + 2 Cov(X,Y) \\
+>       &= 9 V(X) + 16 V(X) + 2(3)(4) Cov(X,Y)
+> \end{align*}
+> $$
+
 We can further use covariance to define **correlation coefficient** of $X$ and $Y$ as
 $$
 \mathcal{P}_{X,Y} = \frac{Cov(X,Y)}{\sqrt{V(X)V(Y)}}

@@ -12,3 +12,4 @@ In these notes, we discuss random variables, how to use them, and commonly known
 - [[Univariate Variables | Random Variables (Univariate)]]
 - [[Multivariate Variables | Random Variables (Multivariate)]]
 - [[Moment Generating Functions]]
+- [[Approximations | Approximations on Random Variables]]

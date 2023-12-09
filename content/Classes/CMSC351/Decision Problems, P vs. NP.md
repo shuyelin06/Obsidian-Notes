@@ -79,3 +79,59 @@ This brings us to a major question in Computer Science:
 $$
 \text{Is} \; NP = P \; ?
 $$
+
+
+# Polynomial Reducibility
+Part of the problem in the question $NP = P$ relates to a concept known as **polynomial reducibility**. If one problem is **polynomially reducible** to another, then there exists a polynomial function that can transform one problem into the other.
+
+This means that if we have two problems that are polynomially reducible, then we can show that by using some theoretical algorithm solving one of them, we can solve the other problem in polynomial time. Consider the following example. 
+
+> [!Example]+ Example: Polynomially Reducible Problems
+> Consider the two problems:
+> - `ORACLE(S,x)`: Is there a subset of $S - \{x\}$ whose sum is $-x$?
+> - `SUMZERO(S)`: Does $S$ have a nonempty subset which adds to 0?
+>
+> We can use the `ORACLE` function to solve `SUMZERO` as follows:
+> ```python
+> def sumzero(S):
+>     for x in S:
+>         if ORACLE(S, x):
+>            return True
+>     return False
+> ```
+>
+> As we can solve `SUMZERO` in a polynomial time algorithm using `ORACLE`, we've shown that the two problems are polynomially reducible to each other!
+
+Polynomial reduction is especially important in $NP = P$, as if we can show that two problems are polynomially reducible to each other, then if one can be solved in polynomial time, so can the other! This is an extremely vital argument for showing that problems in $NP$ are also in $P$.
+
+Though not commonly done, we can also use polynomial reducibility with sets! Given two sets $A$ and $B$, we can say that $A$ is polynomially reducible to $B$ if there exists a polynomial time function $f(x)$ such that
+$$
+x \in A \iff f(x) \in B
+$$
+So, given some value $a$, if we know that $p(a)$ is in set $B$, then it also must be in set $A$. In other words, there exists a function that can map one set to the other.
+
+Consider some examples.
+
+> [!Example]+ Example: Polynomial Reducibility with Sets
+> Suppose we have sets $A,B$ such that
+> $$
+> \begin{align*}
+>       A &= \{ 3x : x \in \mathbb{Z} \} \\
+>       B &= \{ 5x + 1 : x \in \mathbb{Z} \}
+> \end{align*}
+> $$
+>
+> To show that these sets are polynomially reducible, we define function $f(x)$ as so:
+> $$
+> f(x) = 5 * \frac{x}{3} + 1
+> $$
+>
+> We use this function to show that these sets are polynomially reducible to each other.
+> - We know that if $x \in A$, then $x = 3j$ where $j \in \mathbb{Z}$. Plugging this into $f(x), we can see that
+>   $$
+>   f(x) = 5 \frac{3j}{3} + 1 = 5j + 1 \in B
+>   $$
+> - If $f(x) \in B$, then $f(x) = 5k + 1$ for some $k \in \mathbb{Z}$. But $f(x) = 5 \frac{x}{3} + 1$, so
+>   $$
+>   5k + 1 = 5 \frac{x}{3} + 1 \Longrightarrow x = 3k \in A
+>   $$

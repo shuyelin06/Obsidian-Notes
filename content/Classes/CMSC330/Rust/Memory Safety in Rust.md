@@ -2,7 +2,6 @@
 title: Memory Safety in Rust
 tags:
 - cmsc330
-- wip
 ---
 
 In lower-level langauges such as C, the low level accesses to memory that we can do can provide a lot of versatility and flexibility. However, at the same time, this allows for lots of unsafe code! In particular, there are a variety of **unsafe memory operations** that we can do, and these operations can cause undefined behavior!
@@ -34,7 +33,7 @@ let b = y; // No ownership transfer, b just gets value 5
 ```
 > Intuitively, we can think of this as if the value of a "pointer type" gets copied on the stack, then the ownership will transfer.
 
-Transfer of ownership can be avoided through use of deep copies (through the `.clone()` method, see #needs_link), which will duplicate memory allocated on the heap! Instead of transferring ownership of a value on the heap, we can instead assign an owner to a newly allocated value instead.
+Transfer of ownership can be avoided through use of deep copies (through the `.clone()` method, see [[User-Defined Types in Rust | Traits]]), which will duplicate memory allocated on the heap! Instead of transferring ownership of a value on the heap, we can instead assign an owner to a newly allocated value instead.
 
 ```rust
 let x = String::from("hello");
@@ -91,10 +90,15 @@ To prevent unexpected behavior like the one above, Rust provides a convenience c
 1. A **mutable reference**, obtained by prepending a (mutable) variable with `&mut`, which can be used to read from and write to a variable's value.
 2. An **immutable reference**, obtained by prepending a variable with `&`, which can only be used to read from a variable's value.
 
+To access a reference (to read from or write to), we need to dereference it with the `*` operator. This is very similar to C!
+
 ```rust
 let mut x = String::from("hello");
-let b = &mut x;         // mutable reference
-let c = &x;             // immutable reference
+let b = &mut x;                 // mutable reference
+(*b).push_str(" world!");       // modify x
+
+let c = &x;                     // immutable reference
+println!("{}", *c);             // read from x
 ```
 
 References for any variable must follow the below rules:

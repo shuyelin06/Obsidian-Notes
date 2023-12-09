@@ -2,7 +2,6 @@
 title: User-Defined Types in Rust
 tags:
 - cmsc330
-- wip
 ---
 
 While Rust has numerous base types, we can create types of our own for our programs!

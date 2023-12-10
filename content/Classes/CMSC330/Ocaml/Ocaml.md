@@ -88,6 +88,7 @@ Because of these rigid typing guidelines, it's possible to infer what the types 
 
 ## Ocaml Types and Operations
 In this section, we describe Ocaml's base types and operators. Like many other languages, Ocaml has many distinct types.
+> To create our own custom user types, refer to [[User-Defined Types in Ocaml]]
 
 ### Scalar Types
 Some of Ocaml's **scalar types** (single-value types) are given as follows:
@@ -279,6 +280,7 @@ let rec print_list lst =
        | [] -> print_string ""
        | h::t -> let _ = print_int h in (print_list t)
 ```
+> When writing recursive functions, note that it's possible to optimize their runtime through [[Tail Call Optimization]].
 
 Consider some examples of type inference in Ocaml, now using functions.
 

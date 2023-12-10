@@ -1,5 +1,5 @@
 ---
-title: Algorithm Analysis
+title: Analysis of Algorithms
 tags:
 - cmsc351
 ---

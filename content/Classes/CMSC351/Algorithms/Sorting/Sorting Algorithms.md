@@ -2,7 +2,6 @@
 title: Sorting Algorithms
 tags:
 - cmsc351
-- wip
 ---
 
 **Problem**: Given an array of elements, how can we **sort** this array of elements?
@@ -32,15 +31,17 @@ We will be analyzing each sorting algorithm based on their time and space comple
 In this section, we discuss various algorithms we can use to sort our array, which use comparisons to achieve our objective.
 
 These algorithms are given below.
+- [[Bubble Sort]]
+- [[Selection Sort]]
+- [[Insertion Sort]]
+- [[Merge Sort]]
+- [[Heap Sort]]
+- [[Quick Sort]]
 
-#wip
-
-## Limitations of Comparison Based Sorting Algorithms
-
-#wip
+However, regardless of how we choose to sort with comparisons, the use of comparisons limit the algorithms! We discuss this more in [[Limitations of Comparison-Based Sorting Algorithms]].
 
 ## Non-Comparison Based Sorting Algorithms
-In this section, we discuss alternative algorithms we can use to sort our array, which do not use comparisons to achieve our objective. Because of this, these algorithms can achieve time complexities faster than $\Theta(n)$ in specific cases!
+In this section, we discuss alternative algorithms we can use to sort our array, which do not use comparisons to achieve our objective. Because of this, under certain conditions, these algorithms can achieve worst case time complexities faster than $\Theta(n \lg(n))$!
 
 These algorithms are given below.
 - [[Counting Sort]]

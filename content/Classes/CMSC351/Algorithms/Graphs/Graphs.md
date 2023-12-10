@@ -1,5 +1,8 @@
 ---
 title: Graphs
+tags:
+- cmsc351
+- wip
 ---
 
 # Introduction to Graphs

@@ -817,7 +817,7 @@ We say $g(x)$ is **concave** if $-g(x)$ is convex.
 We use this property of convex functions to define a really powerful inequality known as **Jensen's Inequality**.
 
 > [!Abstract] Theorem: Jensen's Inequality
-> If $g(x)$ is a convex function, then
+> Let $X$ be a random variable. If $g(x)$ is a convex function over the entire interval that $X$ takes on, then
 > $$
 > E(g(X)) \ge g(E(X))
 > $$

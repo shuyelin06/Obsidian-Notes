@@ -2,7 +2,6 @@
 title: The Rust Programming Language
 tags:
 - cmsc330
-- wip
 ---
 
 This article serves as brief documentation for the **Rust Programming Language**. It is by no means comprehensive; for full documentation, refer to the official documentation [here](https://doc.rust-lang.org/book/title-page.html).

@@ -2,7 +2,6 @@
 title: Random Variables
 tags:
 - stat410
-- wip
 ---
 
 We define a **random variable** $X: S \to \mathbb{R}$ as a real-valued function, which maps from a sample space $S$ to real numbers $\mathbb{R}$. We can use random variables to derive meaning from probability functions!

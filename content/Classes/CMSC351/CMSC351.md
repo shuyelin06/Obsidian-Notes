@@ -19,7 +19,7 @@ Then, we discuss some common algorithms in the field of Computer Science.
   - [[Graph Traversal]]
   - [[Dijkstra's Algorithm]]
   - [[Floyd's Algorithm]]
-- **Minimal Spanning Trees**: [[Minimal Spanning Trees]]
+  - [[Minimal Spanning Trees]]
 - **Huffman Encodings**: [[Huffman Algorithm]]
 - **Minimax Algorithm**: [[Minimax Algorithm]]
 

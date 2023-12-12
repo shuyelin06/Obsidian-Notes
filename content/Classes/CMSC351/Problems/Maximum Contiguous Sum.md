@@ -1,7 +1,7 @@
 ---
 title: Maximum Contiguous Sum
 tags:
-- up-to-date
+- cmsc351
 ---
 
 **Problem**: Given a list $A$, find the maximum contiguous sum. A **contiguous sum** is a sum of contiguous elements in the array, otherwise known as a subarray.

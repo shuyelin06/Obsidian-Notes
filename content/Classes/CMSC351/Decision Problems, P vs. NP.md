@@ -2,7 +2,6 @@
 title: Decision Problems, P vs. NP
 tags:
 - cmsc351
-- wip
 ---
 
 In this section, we discuss some time complexity ideas at a higher, more abstract level.
@@ -82,9 +81,14 @@ $$
 
 
 # Polynomial Reducibility
-Part of the problem in the question $NP = P$ relates to a concept known as **polynomial reducibility**. If one problem is **polynomially reducible** to another, then there exists a polynomial function that can transform one problem into the other.
+Part of the problem in the question $NP = P$ relates to a concept known as **polynomial reducibility**.
 
-This means that if we have two problems that are polynomially reducible, then we can show that by using some theoretical algorithm solving one of them, we can solve the other problem in polynomial time. Consider the following example. 
+Let us have two decision problems, denoted $Q_1$ and $Q_2$. We say that $Q_1$ is  **polynomially reducible** to $Q_2$, if there exists a polynomial-time function that can transform instances of $Q_1$ into $Q_2$. In the case that $Q_1$ is polynomially reducible to $Q_2$, we denote this as
+$$
+Q_1 \le_P Q_2
+$$
+
+Given two problems that are polynomial reducible, we can show that by using some theoretical algorithm solving one of them, we can solve the other problem in polynomial time. Consider the following example. 
 
 > [!Example]+ Example: Polynomially Reducible Problems
 > Consider the two problems:
@@ -127,7 +131,7 @@ Consider some examples.
 > $$
 >
 > We use this function to show that these sets are polynomially reducible to each other.
-> - We know that if $x \in A$, then $x = 3j$ where $j \in \mathbb{Z}$. Plugging this into $f(x), we can see that
+> - We know that if $x \in A$, then $x = 3j$ where $j \in \mathbb{Z}$. Plugging this into $f(x)$, we can see that
 >   $$
 >   f(x) = 5 \frac{3j}{3} + 1 = 5j + 1 \in B
 >   $$

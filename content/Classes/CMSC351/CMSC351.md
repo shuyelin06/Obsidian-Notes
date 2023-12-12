@@ -1,5 +1,7 @@
 ---
 title: CMSC351
+tags:
+- cmsc351
 ---
 
 # Introduction

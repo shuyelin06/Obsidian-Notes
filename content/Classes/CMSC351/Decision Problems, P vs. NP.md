@@ -83,7 +83,7 @@ $$
 # Polynomial Reducibility
 Part of the problem in the question $NP = P$ relates to a concept known as **polynomial reducibility**.
 
-Let us have two decision problems, denoted $Q_1$ and $Q_2$. We say that $Q_1$ is  **polynomially reducible** to $Q_2$, if there exists a polynomial-time function that can transform instances of $Q_1$ into $Q_2$. In the case that $Q_1$ is polynomially reducible to $Q_2$, we denote this as
+Let us have two decision problems, denoted $Q_1$ and $Q_2$. We say that $Q_1$ is  **polynomially reducible** to $Q_2$, if there exists a polynomial-time function that can transform instances of $Q_1$ into $Q_2$ - more forally, $Q_1(I) = \text{YES} \iff Q_2 (p(I)) = \text{YES}$. In the case that $Q_1$ is polynomially reducible to $Q_2$, we denote this as
 $$
 Q_1 \le_P Q_2
 $$

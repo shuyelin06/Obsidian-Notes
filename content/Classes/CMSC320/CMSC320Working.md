@@ -27,9 +27,9 @@ In Data Science, data will go through (approximately) the following 5 stages, wh
 graph LR
       1[Collection];
       2[Processing];
-      3[Exploratory Analysis & Visualization];
-      4[Analysis, Hypothesis, Testing, & Machine Learning];
-      5[Insight & Policy Decisions];
+      3[Exploratory Analysis];
+      4[Analysis & Model Building];
+      5[Insight & Decisions];
 
       1 -.-> 2 -.-> 3 -.-> 4 -.-> 5;   
 ```
@@ -54,8 +54,8 @@ While collecting and processing our data, we will want to perform **exploratory 
 
 Exploratory analysis often goes hand-in-hand with **data visualization**, as such visualizations of data often can yield interesting results.
 
-### Analysis, Testing, Machine Learning
+### Analysis & Model Building
 We can then **analyze our data**, which refers to the building of a model which uses the data, and makes predictions about hypothetical scenarios. With a good dataset, such models can serve as effective predictors which can guide decision making.
 
-### Decision Making
+### Insights & Decisions
 Finally, equipped with a model we will **interpret** our data, using the models to derive useful insights and make policy decisions. A model is often useful when working with non-technical people, as it provides a more streamlined way to convey meaningful inforomation to them.

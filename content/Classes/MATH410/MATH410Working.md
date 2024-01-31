@@ -5,163 +5,114 @@ tags:
 - wip
 ---
 
-*We define what the Real Numbers are*
+*We discuss series and sequences*
 
----
+# Sequences and Series
+A **sequence** is a function $f: \mathbb{N} \to \mathbb{R}$ that takes in a natural number $n \in \mathbb{N}$ as input, and returns a real number.
 
-We first begin by introducing some common notations for sets of numbers.
-
+Letting $n \in \mathbb{N}$, we typically write a sequence in one of the following ways:
 $$
 \begin{align*}
-        &\mathbb{N} = \{ 1, 2, 3, \dots \} \\
-        &\mathbb{Z} = \{ \dots, -2, -1, 0, 1, 2, \dots \} \\
-        &\mathbb{Q} = \{ p / q : p,q \in \mathbb{Z}, q \ne 0 \}
+        &a_n = f(n) \\
+        &\{ a_n \}_{n=1}^\infty \\
+        &\{ a_n \}
 \end{align*}
 $$
 
-# The Real Number System
-We define the Real Numbers, $\mathbb{R}$, as the number system satisfying the following 3 groups of axioms: **field axioms**, **positivity axioms**, and **completeness axioms**.
-
-## Field Axioms
-Part of the definition of the Real Numbers $\mathbb{R}$ is that it is a **field**.
-
-A **field** is a set of numbers with two binary operations, called **addition ($+$)** and **multiplication ($\times$)**, that satisfy rules known as **field axioms**. These axioms are split into addition, multiplication, and distributive axioms, and are described below.
-> Addition and multiplication don't necessarily have to stand for the addition and multiplication we're used to, though in the purposes of real numbers they do.
-
-### Addition Axioms
-The addition axioms include properties of **commutativity**, **associativity**, **identity**, and **invertibility**.
-
-$$
-\begin{align}
-        \forall x,y \in \mathbb{F} \qquad &x + y = y + x &\text{Commutativity} \\
-        \forall x,y,z \in \mathbb{F} \qquad &(x + y) + z = x + (y + z) &\text{Associativity} \\
-        \exists 0 \in \mathbb{F} : \forall x \in \mathbb{F} \qquad &x + 0 = x &\text{Identity} \\
-        \forall x \in \mathbb{F}, \exists (-x) \in \mathbb{F} \qquad &x + (-x) = 0 &\text{Invertibility}
-\end{align}
-$$
-
-### Multiplication Axioms
-Just like the addition axioms, the multiplication axioms include properties of **commutativity**, **associativity**, **identity**, and **invertibility**.
-
-$$
-\begin{align}
-        \forall x,y \in \mathbb{F} \qquad &x \cdot y = y \cdot x &\text{Commutativity} \\
-        \forall x,y,z \in \mathbb{F} \qquad &(x \cdot y) \cdot z = x \cdot (y \cdot z) &\text{Associativity} \\
-        \exists 1 \in \mathbb{F} : 1 \ne 0 \land \forall x \in \mathbb{F} \qquad &x \cdot 1 = x &\text{Identity} \\
-        \forall x \in \mathbb{F}, x \ne 0, \exists x^{-1} \in \mathbb{F} \qquad &x \cdot x^{-1} = 1 &\text{Invertibility}
-\end{align}
-$$
-
-### Distributivity and Nontriviality
-Additionally, a field relates the addition and multiplication operation through a property known as **distributivity**, defined below.
-
-$$
-\begin{align}
-        \forall x,y,z \in \mathbb{F} \qquad &x \cdot (y + z) = x \cdot y + x \cdot z &\text{Distributivity}
-\end{align}
-$$
-
-Finally, a field has the property of **nontriviality**, which states that $0 \ne 1$.
-
-$$
-\begin{align}
-        &0 \ne 1 &\text{Nontriviality}
-\end{align}
-$$
-
-From these base axioms, we can derive all of the rules for standard algebraic manipulations which we can perform in the Real Numbers.
-
-
-## Positivity Axioms
-Let $P$ be the subset of $\mathbb{R}$ containing positive numbers. Then, as $\mathbb{R}$ satisfies the **positivity axioms**, the following hold:
-
-$$
-\begin{align}
-        \forall a,b \in P \qquad &ab \in P, a + b \in P &\text{Closure} \\
-        \forall a \in \mathbb{R} \qquad &a \in P \lor -a \in P \lor a = 0 &\text{Trichotomy}
-\end{align}
-$$
-
-These axioms can be used to define the inequality operations, which we often use in the real numbers.
-
-
-## Completeness Axioms
-### Bounds
-We say that a subset of the real numbers, $S \in \mathbb{R}$, is **bounded above** if
-$$
-\exists \beta \in \mathbb{R} : \forall x \in S, x \le \beta
-$$
-Where $\beta$ is known as an **upper bound**. In other words, there exists some $\beta$ that is greater than or equal to all elements in the set $S$.
-
-Similarly, we say that $S$ is **bounded below** if
-$$
-\exists \beta \in \mathbb{R} : \forall x \in S, x \ge \beta
-$$
-Where $\beta$ is known as a **lower bound**. In other words, there exists some $\beta$ that is less than or equal to all elements in the set $S$.
-
-### Supremum and Infimum
-Suppose we have a subset of the real numbers, $S \in \mathbb{R}$.
-
-Then, a value $x \in S$ is a **least upper bound (supremum)** of $S$, denoted $\text{sup} (S)$, when:
-1. $x$ is an upper bound of $S$.
-2. If $y \in X$ is also an upper bound of $S$, then $x \le y$.
-
-Similarly, a value $s \in S$ is a **greatest lower bound (infumum)** of $S$, denoted $\text{inf} (S)$, when:
-1. $x$ is a lower bound of $S$.
-2. If $y \in X$ is also a lower bound of $S$, then $y \le x$.
-
-We can think of supremum and infimum as the "closest" value in $X$ that serves as an upper (or lower) bound for $S$! However, they are not necessarily maximums or minimums, as supremums and infimums do not have to be in $S$!
-
-> [!Abstract] Theorem: Alternative Definition of Supremum and Infimum
-> Let $S \subseteq \mathbb{R}$, and bounded above (by $M$). Then,
+> [!Example]+ Example: Fibonacci Sequence
+> An example of a sequence is the **Fibonacci Sequence**, defined as $a_n = a_{n-1} + a_{n-2}$.
 > $$
-> M = \text{sup}(S) \iff \forall \epsilon > 0, \exists x_\epsilon \in S : x_\epsilon > M - \epsilon
+> 1,1,2,3,5,8,\dots
 > $$
-> In other words, $M$ is a supremum if and only if for all positive epsilon, there exists some point in the set that is greater than the supremum minus epsilon.
+
+Given a sequence $a_n$, we say that the $a_n \to a$ as $n \to \infty$, alternatively denoted as $\lim_{n\to\infty} a_n = a$, if
+$$
+\forall \epsilon > 0, \exists N \in \mathbb{N} : \forall n \ge N, (|a_n - a| < \epsilon)
+$$
+Intuitively, this is saying that for all epsilon values, we can find a term in the sequence such that all terms after are within some range around $a$ (the range $(a - \epsilon, a + \epsilon)$.
+> By this definition, you need to find an $N$ given $a$ and $\epsilon$ that satisfies our definition. Note that by this definition, we need to know what $a$ is.
+
+> [!Example]+ Example: Convergence of Sequences
+> Let $a_n = 1 / n$. Prove that $a_n \to 0$.
 >
-> Similarly, let $S$ be bounded below (by $m$). Then,
-> $$
-> m = \text{inf}(S) \iff \forall \epsilon > 0, \exists x_\epsilon \in S : x_\epsilon < m + \epsilon
-> $$
+> Let $\epsilon > 0$ and $a = 0$.
 >
-> > These statements are basically saying that there is no such smaller upper bound, or no such smaller lower bound.\, as we can find an $x \in S$ which fails to satisfy the bound definition.
-
-
-> [!Example]- Example: Supremums
-> 1. Suppose $S = (0,1)$. Then, $\text{sup} (S) = 1$.
-> 2. Suppose $S = \{ -1/x : x > 0 \}$. Then, $\text{sup} (S) = 0$.
-> 3. Suppose $S = \mathbb{N}$. Then, $\text{sup} (S)$ does not exist, as the naturals aren't bounded above.
-
-> [!Example]+ Example: Infimum Proof
-> Suppose $S = (0,1)$. Prove that $\text{inf} (S) = 0$. We need to show that:
-> 1. 0 is a lower bound of $S$.
+> **Scratch Work**: We want
+> $$
+> \left| \frac{1}{n} - 0 \right| < \epsilon \Longrightarrow \frac{1}{n} < \epsilon
+> $$
+> So we can choose a $N \in \mathbb{N}$ such that $1 / N < \epsilon$ to satisfy our definition, and this $N$'s existence is guaranteed by the Archimedian property.
 >
-> As $0 \le 0 < x < 1$ for all $x \in S$, 0 is a lower bound for $S$.
+> **Formal Proof**: Fix any $\epsilon > 0$, and let $N \in \mathbb{N}$ such that $1 / N < \epsilon$. Then, $\forall n \ge \mathbb{N}$, we have
+> $$
+> \left| \frac{1}{n} - 0 \right| = \frac{1}{n} \le \frac{1}{N} < \epsilon
+> $$
+
+> [!Example]- Example: Convergence of Sequences (2)
+> Prove that
+> $$
+> \frac{1}{a_n} \to \frac{1}{2}
+> $$
+> if $a_n \to 2$ as $n \to \infty$.
 > 
-> 2. For any other arbitrary lower bound $y$, $y \le 0$.
->
-> Let $y$ be any lower bound of $S$, and suppose by way of contradiction that $y > 0$. We do a case analysis to show that no value $y > 0$ can possibly be a lower bound.
-> - If $0 < y < 1$, we can pick an element in $S$ that is smaller than $y$, by choosing $y / 2$. This yields a contradiction!
-> - If $y \ge 1$, we can simply pick any element in $S$, as it will be smaller than $y$. Choosing 0.5, we get a contraditiction!
->
-> Thus, if $y$ is a lower bound of $S$, it must be $\le 0$.
+> **Scratch Work**: Let $\epsilon > 0$. We want
+> $$
+> \left| \frac{1}{a_n} - \frac{1}{2} \right| = \frac{|2 - a_n|}{2 |a_n|} < \epsilon \\
+> $$
+> 1. Using the limit definition, we know that provided that $n \ge N_1$ for some $N_1 \in \mathbb{N}$,
+>    $$
+>    |2 - a_n| < 2 \epsilon
+>    $$
+>    So, we know that
+>    $$
+>    \frac{|2 - a_n|}{2 |a_n|} < \frac{2 \epsilon}{2 |a_n|}
+>    $$
+>    Provided that $n \ge N_1$.
+> 2. Furthermore, using the limit definition, we know that provided we choose $N_2 \in \mathbb{N}$ such that $\forall n \in \mathbb{N}$,
+>    $$
+>    |a_n - 2| < 1 \Longrightarrow
+>    $$
+>    So for $n \ge N_2$, we bound $a_n$ by $1 < a_n < 3$, which forces $1 / a_n < 1$. So,
+>    $$
+>    \frac{2 \epsilon}{2 |a_n|} < \epsilon
+>    $$
+>    Provided that $n \ge N_2$.
+> 
+> **Proof**: Fix any $\epsilon > 0$.
+> - Let $N_1 \in \mathbb{N}$ such that $|a_2 - 2| < 2 \epsilon$, $\forall n \ge N_1$.
+> - Let $N_2 \in \mathbb{N}$ such that $|a_2 - 2| < 1$, $\forall n \ge \mathbb{N_2}$.
+> 
+> Choose $N = \max(N_1, N_2)$. Then, $\forall n \ge N_1$,
+> $$
+> \left| \frac{1}{a_n} - \frac{1}{2} \right| = \frac{|2 - a_n|}{2 |a_n|} < \frac{2 \epsilon}{2} = \epsilon
+> $$
 
-### Completeness Axiom
-Suppose we have any subset of the real numbers $S \in \mathbb{R}$ that is bounded above. Then, $S$ is guaranteed to have a supremum, which is a property known as the **least upper bound property (completeness axiom)** of $\mathbb{R}$.
 
-We can use this property to prove the existence of infimums as well.
+> [!Abstract] Theorem: Limit Rules
+> If $a_n$ and $b_n$ are sequences such that $a_n \to a$, $b_n \to b$, then
+> $$
+> \begin{align}
+> a_n \pm b_n &\to a \pm b \\
+> a_n b_n &\to ab \\
+> \frac{a_n}{b_n} &\to \frac{a}{b}
+> \end{align}
+> $$
 
-> [!Abstract] Theorem: Existence of Infimum
-> Suppose $X$ is a set with the least upper bound property. THen, every subset of $X$ with a lower bound has a greatest lower bound.
->
-> By virtue of this theorem, all subsets $S \in \mathbb{R}$ must have infimums
->
-> > [!Note]- Proof (Sketch)
+> [!Abstract] Theorem: Comparison Lemma; Squeeze Theorem
+> Let $a_n$ be a sequence such that $a_n \to a$, and assume there exists some $C \in \mathbb{R}^+$ and $N_1 \in \mathbb{N}$ such that
+> $$
+> |b_n - b| \le C |a_n - a|, \forall n \ge N
+> $$
+> Then, $b_n \to b$.
+> 
+> > [!Note]- Proof (Scratch)
 > >
-> > Suppose we have a subset $S$ whose existence of a supremum is guaranteed. Then, if we form a new set $T$ by multiplying the subset $S$ by -1 (reflecting it), the lower bounds of $S$ becomes the upper bounds of $T$. We thus show that there exists a supremum for $T$, and this supremum is the inverse of the infimum of $S$.
-
-
-> [!Example]
-> Prove $\text{sup}(S)$ is unique. We do this by assuming $\text{sup} (S) = a, \text{sup} (s) = b, a \ne b$, and getting a contradiction.
-
-
+> > **Scratch Work**: Fix any $\epsilon > 0$.
+> > Choose some $N_1$ such that $\forall n \ge N_1$, $|a_n - a| < \epsilon$ so that our convergence applies. We have
+> > $$
+> > |b_n - b| \le C |a_n - a|
+> > $$
+> > Choose some $N_2$ such that $\forall n \ge N_2$, $|a_n - a| < \frac{\epsilon}{C}$. We have
+> > $$
+> > C |a_n - a| < \epsilon
+> > $$

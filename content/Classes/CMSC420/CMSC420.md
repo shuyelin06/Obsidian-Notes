@@ -13,4 +13,4 @@ Here in CMSC420, we discuss a variety of these types, henceforth referred to as 
 
 A list of notes regarding each data structure covered is given below.
 
-- 
+- [[Binary Search Trees]]

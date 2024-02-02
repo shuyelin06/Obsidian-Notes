@@ -508,3 +508,265 @@ Note that by the structure of 2-3 Trees, deleting a single key $k$ can cause a c
 
 > [!Info] Mark-and-Sweep
 > Many implementations of 2-3 Trees use a **Mark-and-Sweep** method for deletion, where nodes are marked for deletion and ignored in searching, and deletions are combined in batches for efficiency gains.
+
+
+# Red-Black Trees
+Recall 2-3 Trees. How could we implement such trees?
+
+One implementation of 2-3 Trees is **Red-Black BSTs**. In this section, we discuss Red-Black BSTs, and more particularly, left-leaning Red-Black BSTs. 
+> We discuss left-leaning Red-Black BSTs, as they are a bit easier to implement than the traditional Red-Black BST (but are the same theoretically). 
+
+## Structure
+The term **Red-Black BST** comes from its usage of different "color" links between nodes to represent the 2-3 Tree structure. In particular, we will use **red links**, and **black links**.
+- We use **black links** to represent the links that 2-nodes have with other nodes (parents and children)
+- To represent a 3-node, we will use **red links** to connect two 2-nodes together.
+
+> [!Info] Example Link Colors
+> In all following Red-Black tree examples, red links in the tree will be represented as the solid yellow arrows, and black links in the tree will be represented as the gray arrows.
+
+For a 3-node with keys $K_1, K_2$ such that $K_1 < K_2$, we will represent it in the Red-Black tree as two 2-nodes, where $K_1$ is the left child of $K_2$. It will always be the left child, hence the **left-leaning** property of the Red-Black BST we are implementing.
+```mermaid
+graph TD
+    subgraph Red-Black Node
+        5[K<sub>2</sub>] -.-> 6[K<sub>1</sub>] & 7[c];
+        6 -.-> 8[/a\] & 9[/b\];
+    end
+    
+    subgraph 3-Node
+        1[K<sub>1</sub>, K<sub>2</sub>] -.-> 2[/a\] & 3[/b\] & 4[/c\];
+    end
+    
+    linkStyle 0 color:#ff0000,stroke:#ff3,stroke-width:4px;
+```
+
+For example, the below 2-3 Tree would be correspondingly represented as the following Red-Black Tree:
+
+```mermaid
+graph TD
+    subgraph Red-Black Tree
+    5[30] -.-> 6[15] & 7[39];
+    6 -.-> 8[10] & 9[20];
+    7 -.-> 10[32] & 11[ ];
+    end
+    
+    subgraph 2-3 Tree
+    1[15,30] -.-> 2[10] & 3[20] & 4[32,39];
+    end
+    
+    linkStyle 0,4 color:#ff0000,stroke:#ff3,stroke-width:4px;
+```
+> Note that because black links represent our 2-3 Tree links, the number of black links in our Red-Black tree should equal the number of links in the corresponding 2-3 Tree. 
+> 
+> Furthermore, by property of 2-3 Tree, all leafs will be the same number of black links from the root (a property known a **perfect black link balance**).
+
+> [!Example]- Example: Implementing a Red-Black Node
+> To account for the "color" of links, implementations of Red-Black nodes will typically store the color of the link **from the parent**.
+> ```java
+> protected enum Color {
+>     RED, BLACK;
+> }
+> 
+> protected class Node {
+>     Node left, right;
+>     T data;
+>     Color color; // Color of the link from the parent
+> }
+> ```
+
+> [!Info] Pros and Cons
+> By this representation, the Red-Black tree has many pros and cons.
+> - **Pros**: A 2-node representation lets use use all pre-existing BST searching algorithms without modification, for fairly good efficiency!
+> - **Cons**: The red links force taller trees, which can be inefficient. In fact in the worst case scenario (only 3-nodes), Red-Black trees can be more inefficient than AVL trees!
+> 
+>   However, this case is typically quite rare, and more often than not the tree is (generally) fairly balanced.
+
+## Red-Black Tree Operations
+### Handling Right-Leaning Red Links
+When working with Red-Black trees, we occasionally may see **right-leaning red links**, meaning that the red link represents a link between a parent and a right child. By our implementation of Red-Black trees, this is not allowed, so we'll have to fix this!
+> Note that other implementations of Red-Black trees may allow this - just not ours.
+
+There are two particular cases of right-leaning red links that we'll have to address:
+1. **Case 1**: There exists a right-leaning red link, with the other link being a black link. In this case, we left rotate the tree.
+   ```mermaid
+   graph LR
+       subgraph After
+           8[30] -.-> 9[15] & 10[/d\];
+           9 -.-> 11[1] & 12[/c\];
+           11 -.-> 13[/a\] & 14[/b\];
+       end
+       
+       subgraph Before
+           1[15] -.-> 2[1] & 3[30];
+           2 -.-> 4[/a\] & 5[/b\];
+           3 -.-> 6[/c\] & 7[/d\];
+       end
+       
+       linkStyle 0,7 color:#ff0000,stroke:#ff3,stroke-width:4px;
+       Before -.-> After;
+   ```
+2. **Case 2**: There exists both left-leaning and right-leaning red links from a node. In this case, we make the parent link a red link (doesn't matter if the root is a left or right child). We will call this `flipColors()` for later convenience.
+   ```mermaid
+   graph LR
+       subgraph After
+           8[ ] -.-> 9;
+           9[15] -.-> 10[1] & 11[30];
+           10 -.-> 12[/a\] & 13[/b\];
+           11 -.-> 14[/c\] & 15[/d\];
+       end
+       
+       subgraph Before
+           0[ ] -.-> 1;
+           1[15] -.-> 2[1] & 3[30];
+           2 -.-> 4[/a\] & 5[/b\];
+           3 -.-> 6[/c\] & 7[/d\];
+       end
+       
+       linkStyle 0,8,9 color:#ff0000,stroke:#ff3,stroke-width:4px;
+       Before -.-> After;
+   ```
+
+> [!Warning] Left-Leaning Inefficiencies
+> Note that our left-leaning constraint, while simpler, also forces us to imbalance the tree in these cases, which is more inefficient.
+
+### Inserting into Red-Black Trees
+When inserting into a Red-Black Tree, we will insert top-down, in a similar way to how we insert into a BSTs. However, to maintain the 2-3 Tree property, **we will always insert with a red link**, and handle the right-leaning cases as well as use rotations to maintain the tree.
+
+Thus, to insert a key $k$ into the tree, we do the following:
+1. Like a standard BST, search for $k$ in the tree, and take the deepest node $n$.
+2. Insert $k$ **with a red link** as a left or right child of $n$, depending on how their values compare. 
+3. Propagate back up the tree from the point of insertion, checking for one of the two cases:
+   1. **Case 1**: If we have a node whose childre are both connected with red links, we run `flipColors()` on $n$, removing the red links and push a red link upwards (described in the previous section).
+   2. **Case 2**: If we have a node $n$ whose child $c_1$ is connected with a red link, and one of $c_1$'s children ($c_2$) is also connected with a red link, rotate on the nodes to obtain case 1 (then, run `flipColors()`).
+      - **Case i**: If $c_1$ and $c_2$ are both left children, rotate right once on $n$.
+      - **Case ii**: If $c_1$ and $c_2$ are both right children, rotate left once on $n$.
+      - **Case iii**: If $c_1$ is a left child, and $c_2$ is a right child, then rotate left on $c_1$, then rotate right on $n$.
+      - **Case iv**: If $c_1$ is a right child, and $c_2$ is a left child, then rotate right on $c_1$, then rotate left on $n$.
+      > This is very similar to how we rotate in AVL trees!
+4. Finally, once at the root, set the root's link (to its parent, which doesn't exist) to black.
+
+An example of Case 2 is given below. Below, we have sequential red links, so we left rotate on $a$ right rotate on $b$ to get Case 1, and then run `flipColors()`.
+```mermaid
+graph LR
+    subgraph One
+    0[ ] -.-> 1[b] -.-> 2[a] & 3[ ];
+    2 -.-> 4[ ] & 5[c];
+    end
+    
+    subgraph Two
+    6[ ] -.-> 7[b] -.-> 8[a] & 9[ ];
+    8 -.-> 10[c] & 11[ ];
+    end
+    
+    subgraph Three
+    12[ ] -.-> 13[b] -.-> 14[a] & 15[c];
+    end
+    
+    subgraph Four
+    16[ ] -.-> 17[b] -.-> 18[a] & 19[c];
+    end
+    
+    One -.-> Two -.-> Three -.-> Four;
+    
+    linkStyle 1,4,6,8,11,12,13 color:#ff0000,stroke:#ff3,stroke-width:4px;
+    
+```
+
+### Deleting from Red-Black Trees
+Performing **hard deletion**, the process of removing a node from the tree, is **extremely difficult (perhaps even impractical)** with Red-Black trees, even conceptually. Thus, to "delete" from a Red-Black tree, we will opt for a soft deletion instead.
+
+To implement deletion, we will use a **mark-and-sweep** method. To "delete" a key $k$ from a Red-Black tree, we will mark its node to indicate that it's to be deleted, and then periodically, sweep through all the nodes and create a new tree without any marked nodes.
+> This is a fairly standard thing to do for automated garbage collection!
+
+It may also be possible to replace a marked node with a newly inserted one, if we find that the new key to insert satisfies the BST property if inserted at the node (we need to compare it with the node's children).
+
+
+# B-Trees
+## Structure
+Recall 2-3 Trees. The idea underlying 2-3 Trees was that we could allow larger nodes in a tree, in order to minimize its height.
+
+**B-Trees** is a generalization of this, based on a parameter $p$, called the **fan-out** of each node! In a B-Tree, the following must hold: 
+- Every node has a maximum of up to $p$ children. A corollary of this is that every node has a maximum number of $p - 1$ keys.
+- Every node has a minimum of at least $\lceil \frac{p}{2} \rceil - 1$ keys, except the root, which has a minimum of 1 key.
+
+> Note that as nodes can now support up to $p - 1$ keys, performing a search will now take $O(\log_2 (p - 1))$ time.
+
+This can make things fairly complicated! Now, we'll have to deal with not only **overflows**, where a node has too many keys, but also **underflows**, where there's just not enough keys at a node!
+
+> [!Info] Implementing B-Trees
+> To implement this in code, we'll typically use arrays of size $p - 1$ to hold node keys, and arrays of size $p$ to hold a node's children.
+> 
+> While this does introduce significant costs, it really useful for large datasets, due to how slow its height grows! 
+>
+> Oftentimes, it's the case where a B-Tree is stored in memory, except for leaf ndoes, which can be (for example) blocks on a disk. This could be used to let us easily search through a large file system!
+> > In this implementation, it's often the case that we want to access sequential blocks, so we can add pointers from one leaf to the next. This implementation is called a $B^+$-Tree.
+
+## B-Tree Operations
+### Inserting into B-Trees
+To insert into a B-Tree, we follow a similar process to 2-3 Trees. We first find where we want to insert, insert the key into the node, and then adjust the tree accordingly.
+
+Thus, to insert a key $k$ into the tree, we do the following:
+1. First, we search for the node where we want to insert the key. Starting from the root, choose the child which is bounded by keys $K_1$ and $K_2$ such that $K_1 \le k \le K_2$. Repeat until we have a leaf node.
+2. Insert the key $k$ into the node's keys.
+3. If the node has less than $p - 1$ keys, terminate. We are done.
+4. Otherwise, we have an **overflow**, where a node has more than $p - 1$ keys. Perform one of the following cases:
+   - If a sibling in the same layer as the node does not have $p - 1$ keys, perform key rotations until all nodes have $p - 1$ keys or less.
+      - We will prefer to rotate towards closer siblings than those further.
+      - We will prefer to rotate towards the right over rotating to the left.
+   - Otherwise, perform a node split.
+      1. Take the median of the keys, $K_m$. If we have to choose 2 nodes for the median, take the greater of the two for convention.
+      2. Make 2 new children nodes of the parent with keys $k < K_m$ and keys $k > K_m$.
+      3. Push $K_m$ to the parent's keys, and repeat step 3 on the parent.
+      > By doing this, we guarantee that there is enough keys in the parent (+1 keys), and enough children (+1 children), to satisfy the BST property.
+
+
+Rotations in B-Trees are virtually the same as that of 2-3 Trees (refer to key rotations in 2-3 Trees), where we:
+1. Push a node $n$'s rightmost (or leftmost) key, $k$, up to the parent.
+2. Push the key in the parent immediately right $k$ downwards, to the right (or left) sibling of the node.
+3. Move the rightmost (or leftmost) child of $n$ to be a child of its right (or left) sibling. 
+
+See the below example.
+
+```mermaid
+graph TD
+    subgraph After
+    5[<mark>60</mark>,132] -.-> 6[6,10,17,40] & 7[<mark>62</mark>,87,117,125] & 8[135,145,197];
+    end
+    
+        subgraph Before
+    1[<mark>62</mark,132] -.-> 2[6,10,17,40,<mark>60</mark>] & 3[87,117,125] & 4[135,145,197];
+    end
+```
+
+We typically prefer to rotate instead of split, as creating new nodes requires large allocations of contiguous memory. However, in when $p$ is large, it sometimes may actually be more expensive to rotate than to split! So, many B-Trees have what's called a **hop limit** $h$, specifying how far we're willing to rotate.
+- If a sibling with capacity to take the overflowed key is $h$ or less rotations away, then we rotate.
+- Otherwise, we split instead.
+
+### Deleting from B-Trees
+Again, deleting from a B-Tree follows similarly 2-3 Trees. We find our target key, swap it until it is at a leaf, then remove it and fix the tree.
+
+To delete a key $k$ from a B-Tree, we do the following:
+1. First, we search for the node with the key. Starting from the root, choose the child which is bounded by keys $K_1$ and $K_2$ such that $K_1 \le k \le K_2$. Repeat until we find the node with key $k$.
+2. Then, check if the node is a leaf or an interior node:
+   - If the node is a leaf, remove $k$ from the node and move on to step 3.
+   - Find the inorder successor of $k$, and replace $k$ with this successor. Repeat step 2. 
+3. After removing our key $k$, we need to check for **underflow**, where our node no longer satisfies the B-Tree property of having at least $\lceil \frac{p}{2} \rceil - 1$ keys (or 1 if root). If satisfied, terminate.
+4. Otherwise, we need to correct our tree to maintain the node key property.
+   - If there exist siblings with $\lceil \frac{p}{2} \rceil$ or more keys, perform rotations to move the excess keys to our node. Terminate.
+   - Otherwise, perform a **merge**, where an adjacent parent key, and the node's closest sibling, are combined into a singular node. Repeat step 4 on the parent. 
+   > By convention, prefer to merge with the right sibling (if it exists).
+5. Finally, if we merged with the root such that the root no longer has any keys, shorten the tree height by 1 (replace the old parent root with its child).
+
+Rotations are the same as that of insertion. An example merge can be seen below. Let $p = 5$, and say we deleted from the node with key $103$.
+
+```mermaid
+graph LR
+    subgraph After
+        6[100,120] -.-> 7[92,98] & 8[<mark>103,109,110,114</mark>] & 9[124,150]
+    end
+    
+    subgraph Before
+        1[100,<mark>109</mark>,120] -.-> 2[92,98] & 3[<mark>103</mark>] & 4[<mark>110</mark>,<mark>114</mark>] & 5[124,150];
+    end
+    
+    Before -. Merge .-> After;
+```

@@ -9,6 +9,9 @@ This Quartz space really just serves as a place to host my notes publicly, so I 
 If curious as to what Quartz is, I encourage you to look at its [documentation](https://quartz.jzhao.xyz)!
 
 # Notes
+Notes for the Spring 2023 semester are given below
+- [[Classes/MATH341/MATH341]]
+
 Notes for the Fall 2023 semester are given below
 - [[Classes/CMSC330/CMSC330]]
 - [[Classes/CMSC351/CMSC351]]

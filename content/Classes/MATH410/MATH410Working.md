@@ -7,7 +7,7 @@ tags:
 
 *We discuss series and sequences*
 
-# Sequences and Series
+# Sequences
 A **sequence** is a function $f: \mathbb{N} \to \mathbb{R}$ that takes in a natural number $n \in \mathbb{N}$ as input, and returns a real number.
 
 Letting $n \in \mathbb{N}$, we typically write a sequence in one of the following ways:
@@ -19,12 +19,16 @@ $$
 \end{align*}
 $$
 
+Sequences can really be anything we want - they don't necessarily have to follow a pattern.
+
 > [!Example]+ Example: Fibonacci Sequence
 > An example of a sequence is the **Fibonacci Sequence**, defined as $a_n = a_{n-1} + a_{n-2}$.
 > $$
 > 1,1,2,3,5,8,\dots
 > $$
 
+## Properties of Sequences
+### Convergence of Sequences
 Given a sequence $a_n$, we say that the $a_n \to a$ as $n \to \infty$, alternatively denoted as $\lim_{n\to\infty} a_n = a$, if
 $$
 \forall \epsilon > 0, \exists N \in \mathbb{N} : \forall n \ge N, (|a_n - a| < \epsilon)
@@ -87,6 +91,14 @@ Intuitively, this is saying that for all epsilon values, we can find a term in t
 > \left| \frac{1}{a_n} - \frac{1}{2} \right| = \frac{|2 - a_n|}{2 |a_n|} < \frac{2 \epsilon}{2} = \epsilon
 > $$
 
+> [!Example]- Example: Divergence of a Sequence
+> Consider the sequence $\{(-1)^n\}$. Does it converge?
+>
+> No! Choose $\epsilon = 1/10$. Then, $\forall n \ge N$, 
+> $$
+> |x_n - x| \le \frac{1}{10}
+> $$
+> But this isn't possible, as the -1 and 1 elements are distance 2 apart!
 
 > [!Abstract] Theorem: Limit Rules
 > If $a_n$ and $b_n$ are sequences such that $a_n \to a$, $b_n \to b$, then
@@ -116,3 +128,80 @@ Intuitively, this is saying that for all epsilon values, we can find a term in t
 > > $$
 > > C |a_n - a| < \epsilon
 > > $$
+
+### Sequence Bounds
+We say that a sequence $\{x_n\}$ is **bounded** if
+$$
+\exists M \in \mathbb{R} : \forall n \in \mathbb{N}, |x_n| \le M
+$$
+
+> [!Abstract] Theorem: Convergence and Bounds
+> Let $\{a_n\}$ be a sequence. If $\{a_n\}$ converges, then $\{a_n\}$ is bounded.
+> 
+> > [!Note]- Proof
+> > 
+> > Suppose $a_n \to a$. Then,
+> > 
+> > $$
+> > \begin{align*}
+> >     |a_n| &= |a_n (- a + a)| \\
+> >         &\le |a_n - a| + |a| \\
+> >         &\le \epsilon + |a| &\text{Provided} \; n \ge N \\
+> > \end{align*}
+> > $$
+> > This doesn't show a bound for all $n$, only $n \ge N$! However, we note that before $N$, we only have a finite number of terms. So, we can just take the max of all possible terms as a bound!
+> > 
+> > Let $M = \max(|a_1|, |a_2|, \dots |a_{N-1}|, \epsilon + |a|)$. Now, $\forall n \in \mathbb{N}$, we have $|a_n| \le M$.
+
+### Sequential Density
+A set $S$ is **sequentially dense in $\mathbb{R}$** if $\forall x \in \mathbb{R}$, 
+$$
+\exists \{x_n\} \in S : x_n \to x
+$$
+In other words, a set is sequentially dense if we can find a sequence in our set that converges to any real number we choose. 
+> Note that density and sequential density mean the same thing.
+
+> [!Abstract] Theorem: Density and Sequentially Density
+> A set $S$ is dense if any only if $S$ is sequentially dense.
+>
+> > [!Note]- Proof
+> > 
+> > We will only prove one direction for the sake of example.
+> > 
+> > #### **Proof ($\to$)**
+> > Consider a set $S$, and assume it is dense. We want to show that $S$ is sequentially dense.
+> > 
+> > Fix any $x$ in $\mathbb{R}$. Choose the interval $\left( x, x + \frac{1}{n} \right)$. By the definition of density, $\exists s_n \in S$ such that 
+> > $$
+> > s_n \in \left( x, x + \frac{1}{n} \right)
+> > $$
+> > For any $n \in \mathbb{N}$.
+> > 
+> > So, $|s_n - x| < \frac{1}{n}$, making $s_n \to x$ as $n \to \infty$ by the Comparison Lemma.
+
+### Closed Sets
+We say a set $S \subseteq \mathbb{R}$ is **closed** if for all sequences $x_n \in S$ converge to $x$ with $x_n \to x$, then the limit exists in $S$ ($x \in S$).
+
+> [!Example]+ Example: Closed Sets Disproof
+> Let $S = \mathbb{Q}$. This is not closed, as we could choose the sequence
+> $$
+> 3.1, 3.14, \dots \to \pi \not\in \mathbb{Q}
+> $$
+
+> [!Example]- Example: Closed Sets Disproof (2)
+> Let $S = (0,1)$. This is not closed, as we could choose the sequence
+> $$
+> \left\{ \frac{1}{n} \right\}_{n=2}^\infty \to 0 \not\in (0,1)
+> $$
+
+> [!Example]+ Example: Closed Sets Proof
+> Let $S = \{ \pi \}$. This is a closed set, as the only possible sequence is
+> $$
+> \pi, \pi, \pi, \dots \to \pi
+> $$
+> Which is in $\{\pi\}$.
+
+> [!Example] Example: Closed Sets Proof
+> Let $S = [0,\infty)$. This is closed!
+>
+> For any $\{x_n\}$ such that $x_n > 0$ and $x_n \to x$, then it follows that $x \ge 0$. We need to prove this (by contradiction) - show that if we converge to a negative number, then our sequence would be "stuck" there, and could not go till infinity.

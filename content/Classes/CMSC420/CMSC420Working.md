@@ -12,5 +12,4 @@ Working notes for CMSC420, Spring Semester 2024.
 
 (Basic Data Structures)
 
-*Red-Black Trees*
-
+# Hash Tables

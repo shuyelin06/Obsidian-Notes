@@ -8,6 +8,7 @@ tags:
 *We discuss series and sequences*
 
 # Sequences
+## Introduction
 A **sequence** is a function $f: \mathbb{N} \to \mathbb{R}$ that takes in a natural number $n \in \mathbb{N}$ as input, and returns a real number.
 
 Letting $n \in \mathbb{N}$, we typically write a sequence in one of the following ways:
@@ -27,7 +28,6 @@ Sequences can really be anything we want - they don't necessarily have to follow
 > 1,1,2,3,5,8,\dots
 > $$
 
-## Properties of Sequences
 ### Convergence of Sequences
 Given a sequence $a_n$, we say that the $a_n \to a$ as $n \to \infty$, alternatively denoted as $\lim_{n\to\infty} a_n = a$, if
 $$
@@ -129,6 +129,7 @@ Intuitively, this is saying that for all epsilon values, we can find a term in t
 > > C |a_n - a| < \epsilon
 > > $$
 
+## Properties of Sequences
 ### Sequence Bounds
 We say that a sequence $\{x_n\}$ is **bounded** if
 $$
@@ -201,7 +202,92 @@ We say a set $S \subseteq \mathbb{R}$ is **closed** if for all sequences $x_n \i
 > $$
 > Which is in $\{\pi\}$.
 
-> [!Example] Example: Closed Sets Proof
+> [!Example]- Example: Closed Sets Proof
 > Let $S = [0,\infty)$. This is closed!
 >
 > For any $\{x_n\}$ such that $x_n > 0$ and $x_n \to x$, then it follows that $x \ge 0$. We need to prove this (by contradiction) - show that if we converge to a negative number, then our sequence would be "stuck" there, and could not go till infinity.
+
+
+### Monotonicity
+Let $\{a_n\}$ be a sequence. 
+
+We say that $\{a_n\}$ is **monotone (increasing)** if $\forall n$,
+$$
+a_{n+1} \ge a_n
+$$
+
+Similarly, we say that $\{a_n\}$ is **monotone (decreasing)** if $\forall n$,
+$$
+a_{n+1} \le a_n
+$$
+
+There exist respective strictly increasing ($>$) and strictly decreasing definitions as well!
+
+> [!Abstract] Theorem: Monotone Convergence Theorem
+> Let $\{a_n\}$ be monotone. Then, $\{a_n\}$ converges if and only if $\{a_n\}$ is bounded.
+> - If monotone increasing, then $a_n \to \sup_{n \ge 1} \{a_n\}$.
+> - If monotone decreasing, then $a_n \to \inf_{n \ge 1} \{a_n\}$.
+>
+> > Recall that by our definition of convergence, the converse was not true. In the case of monotonicity, it is true!
+>
+> > [!Note]- Proof
+> >
+> > We prove the backwards direction ($\leftarrow$), as the forwards direction follows by definition of convergence.
+> > 
+> > Let $\{a_n\}$ be bounded. Without loss of generality, assume $\{a_n\}$ is monotone increasing (if it is monotone decreasing, just flip the sequence with $-1$), and bounded.
+> > 
+> > Let $S = \{a_n : n \in \mathbb{N}\}$. Because we know that $S$ is bounded, $\sup(S)$ exists, so let $l = \sup(S)$.
+> > 
+> > Recall that by the $\epsilon$ definition of supremums, $\forall \epsilon > 0$, there $\exists a_N \in S, N \in \mathbb{N}$ such that
+> > $$
+> > \begin{align*}
+> >     l - \epsilon &< a_N \\
+> >         &\le a_n, \forall n \ge N &\text{Monotonicity Assumption} \\
+> >         &< l &\text{Definition of Supremum} \\
+> >         &< l + \epsilon 
+> > \end{align*}
+> > $$
+> > 
+> > Thus, $\forall \epsilon > 0$, we have found an $N \in \mathbb{N}$ such that $\forall n \ge N$, 
+> > $$
+> > l - \epsilon < a_n < l + \epsilon \Longrightarrow |a_n - l| < \epsilon
+> > $$
+> > So by definition, our sequence converges.
+
+> [!Example]- Example: Monotone Convergence
+> $$
+> S_n = \sum_{k=3}^n \frac{1}{2^k k^2}
+> $$
+> Prove that $S_n$ converges as $n \to \infty$.
+> 
+> Using the monotone convergence theorem, we want to show that $S_n$ is monotone and that $S_n$ is bounded.
+> 
+> #### Monotone Proof
+> We can easily see that $S_n$ is monotone increasing, as we're adding more positive terms to every subsequent $S_{n+1}$ term. Thus,
+> $$
+> S_{n+1} \ge S_n
+> $$
+> 
+> #### Bound Proof
+> If $S_n$ is bounded, then $|a_n| \le M$. We find $M$ show that $S_n$ is bounded.
+> $$
+> \begin{align*}
+>     \left| \sum_{k=3}^n \frac{1}{2^k k^2} \right|
+>     &\le \sum_{k=3}^n \left| \frac{1}{2^k k^2} \right| \\
+>     &\le \sum_{k=3}^n \frac{1}{2^k k^2} \\
+>     &\le \sum_{k=3}^n \frac{1}{2^k} \\
+>     &\le \sum_{k=0}^\infty \frac{1}{2^k} \\
+>     &\le 2
+> \end{align*}
+> $$
+> We've shown that $S_n$ is bounded by 2.
+
+> [!Abstract] Theorem
+> Let $|c| < 1$. Then, $\{c^n\} \to 0$.
+>
+> > [!Note]- Proof (Sketch)
+> > 
+> > 1. If $c = 0$, it's clear that we converge to 0.
+> > 2. Without loss of generality (in the negative case, the absolute value gets rid of the negative), we can assume that $0 < c < 1$.
+> >    
+> >    We would want to show that $c^n$ is monotone decreasing, and bounded below by 0. So, by the monotone convergence theorem, we show convergence to the infimum. We end by showing that the infimum is 0.

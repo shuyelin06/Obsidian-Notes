@@ -291,3 +291,110 @@ There exist respective strictly increasing ($>$) and strictly decreasing definit
 > > 2. Without loss of generality (in the negative case, the absolute value gets rid of the negative), we can assume that $0 < c < 1$.
 > >    
 > >    We would want to show that $c^n$ is monotone decreasing, and bounded below by 0. So, by the monotone convergence theorem, we show convergence to the infimum. We end by showing that the infimum is 0.
+
+# Subsequences 
+## Introduction
+Let $\{n_k\}_{k=1}^\infty$ be a strictly increasing sequence in $\mathbb{N}$. Then, we say 
+$$
+\{b_k\}_{k=1}^\infty = \{a_{n_k}\}_{k=1}^\infty
+$$ 
+is a **subsequence** of $\{a_n\}_{n=1}^\infty$.
+> Note that by this definition, $\{a_n\}_{n=1}^\infty$ can be a subsequence of itself (choose $n_k = k, \forall k \in \mathbb{N}$)
+
+> [!Info] Corollary
+> Note by the definition of a subsequence, it must be true that $\forall k \in \mathbb{N}$, $n_k \ge k$.
+>
+> > [!Note]- Proof
+> >
+> > As a base case, note that $n_1 \ge 1$ because $n_1$ must be a natural number.
+> > 
+> > Now, as an inductive step, suppose $n_k \ge k$ for all $k \in \mathbb{N}$. Then 
+> > $$
+> > \begin{align*}
+> >     n_{k+1} 
+> >     &> n_k &\text{Strictly Increasing Definition} \\
+> >     &\ge k &\text{Assumption}
+> > \end{align*}
+> > $$
+> > So, because $n_{k+1}$ is a natural number, $n_{k+1} \ge k + 1$.
+
+Informally, a subsequence is a "choice" of the elements in the sequence (left to right) - for every element in our sequence, we decide whether we want it or not in our subsequence.
+
+> [!Example]+ Example: Subsequence
+> $$
+> \{a_n\}_{n=1}^\infty = \{ 0, 1, 2, 3, 4, \dots \}
+> $$
+> 
+> Suppose we have subsequence
+> $$
+> \{a_{n_k}\}_{k=1}^\infty = \{0,2,4,6,\dots\}
+> $$
+> 
+> Then, $n_1 = 1$, $n_2 = 3$, $n_3 = 5$, and so on, telling us that
+> $$
+> \{a_{n_k}\}_{k=1}^\infty = \{a_{2k-1}\}_{k=1}^\infty
+> $$
+
+> [!Example]- Example: Not a Subsequence
+> $$
+> \{a_n\} = \{0,1,2,3,4, \dots\}
+> $$
+>
+> The sequence 
+> $$
+> \{1,1,1,1,1,\dots\}
+> $$
+> 
+> Is **not** a subsequence of $\{a_n\}$, as $n_k$ is not strictly increasing ($n_k = 1, \forall k \in \mathbb{N}$)
+
+## Convergence of Subsequences
+Because $n_k$ is strictly increasing, we can show the following.
+
+> [!Abstract] Theorem: Convergence of Subsequences
+> If sequence $\{a_n\} \to a$, then any subsequence $\{a_{n_k}\} \to a$.
+>
+> > [!Note]- Proof
+> >
+> > By definition, $\forall \epsilon > 0$, there exists a $N \in \mathbb{N}$ such that $\forall k \ge N$,
+> > $$
+> > | a_k - a | < \epsilon
+> > $$
+> > But $n_k \ge k$ for all $k \in \mathbb{N}$, so for all $\epsilon > 0$, we show that there exists a $N \in \mathbb{N}$ such that $\forall k \ge N$,
+> > $$
+> > | a_{n_k} - a | < \epsilon
+> > $$
+> > So by definition, $a_{n_k} \to a$ as $k \to \infty$.
+
+See the below example.
+
+> [!Example]+ Example: Convergence of Subsequenes
+> $$
+> \{a_n\} = \left\{ 1, \frac 1 2, \frac 1 3, \frac 1 4, \dots \right\} = \left\{ \frac{1}{n} \right\}_{n=1}^\infty \to 0
+> $$
+> 
+> Then, the following subsequence also converges to 0. Let $n_k = k^2$.
+> $$
+> \left\{ \frac{1}{k^2} \right\}_{k=1}^\infty \to 0
+> $$
+
+We can additionally use the idea of monotonicity to show convergence of subsequences. 
+
+> [!Abstract] Theorem: Monotone Subsequence Theorem
+> Any sequence has a monotone subsequence.
+
+> [!Abstract] Theorem: Bolzano-Weierstrass Theorem
+> Any bounded sequence contains a convergent subsequence.
+>
+> > [!Note]- Proof
+> > 
+> > Let $\{a_n\}$ be bounded. Then, $\{a_n\}$ contains a monotone subsequence, and because the subsequence is bounded, it converges by the Monotone Convergence Theorem.
+
+## Sequential Compactness
+A subset $S$ of $\mathbb{R}$ is **sequentially compact (compact)** if any sequence $\{a_n\}$ of $S$ has a subsequence converging to an element of $S$. 
+> The convergence of a subsequence is guaranteed by the previous theorem!
+
+> [!Abstract] Sequential Compactness
+> In $\mathbb{R}$ (or $\mathbb{R}^n$), a set is sequentially compact if and only if it is closed and bounded.
+
+> [!Example]+ Example: Sequential Compactness
+> Let $S = [0,5]$. $S$ is closed and bounded, so it is compact, meaning that for any sequence taken from $S$, it has a subsequence that converges to $x \in S$.

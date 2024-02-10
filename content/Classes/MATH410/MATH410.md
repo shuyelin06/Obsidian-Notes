@@ -8,8 +8,8 @@ tags:
 These are tentative notes for MATH410. This course covers an introduction to real analysis, the study of limits and related ideas (derivatives, integrals) with respect to the real number system. Topics for this course, and later notes, are given below.
 
 Topics covered:
-1.  Axioms and properties of real numbers
-2.  Convergent and divergent sequences. Closed and compact sets.
+1.  [[The Real Numbers]]
+2.  [[Sequences]]
 3.  Continuous and uniformly continuous functions
 4.  Differentiation
 6.  Integration (Darboux integral): Two Fundamental Theorems

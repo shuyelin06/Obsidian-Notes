@@ -57,6 +57,8 @@ Solve $Ax = b$, where $A$ is a $n \times n$ matrix.
 
 ---
 
+# Gaussian Elimination
+
 The above Gaussian Elimination method is quite naive.
 $$
 \begin{bmatrix}
@@ -173,8 +175,135 @@ $$
 |a_{ii}| > \sum_{j=1, j \ne i}^n |a_{ij}|, \forall 1 \le i \le n
 $$
 
+Recap:
+- Gaussian Elimination with back substitution. 
+- The above is naive and can create issues due to loss of precision, so we discuss possible better algorithms
+  - Partial pivoting (MATLAB does partial pivoting with $A \ b$ automatic solving)
+  - Scaled partial pivoting
+
 ---
 
 We can also consider full pivoting, where we swap the order of the variables in the equations... (not really covered).
 
 ---
+
+# LU Factorization
+## Introduction
+Suppose we can factorize $A$ into a product of two matrices $L$ and $U$, where $L$ is a lower triangular matrix, and $U$ is an upper triangular matrix. This is known as a **LU Factorization (Decomposition)** of $A$.
+
+
+$$
+L = 
+\begin{bmatrix}
+    a_{11} & 0 & 0 \\
+    a_{21} & a_{22} & 0 \\
+    a_{31} & a_{32} & a_{33}
+\end{bmatrix}
+\qquad
+U =
+\begin{bmatrix}
+    a_{11} & a_{12} & a_{13} \\
+    0 & a_{22} & a_{23} \\
+    0 & 0 & a_{33}
+\end{bmatrix}
+$$
+
+If $L$ and $U$ are non-singular (which we can check by seeing if any of the diagonals is 0), then the following two systems are equivalent.
+$$
+Ax = b \Longleftrightarrow Ly = b \qquad Ux = y
+$$
+This can easily be solved via forward and backward substitutions, which are fairly efficient!
+
+> [!Info] Practical Applications
+> LU Factorizations can be useful in solving a system many times under different $b$ vectors! This lets us use backwards / forwards substitution instead of Gaussian elimination, which is faster!
+>
+> One useful way this can be applied is in finding matrix inverses, as when finding them, we are really just solving the system $A A^{-1} = I$ for each column of $I$! If we factorize $A$ beforehand, we can use substitution to save on a lot of complexity!
+
+Such a decomposition may not even exist! The following theorem lets us know whether or not such a decomposition exists.
+
+> [!Abstract] Theorem: Existence of Decompositions
+> Let $A$ be an $n \times n$ matrix. Then, if $A$ can be transformed to $U$ using Gaussian Elimination without any pivoting, there exists a decomposition of $A$.
+> > The elimination may still continue after a 0 pivot, as it may still yield a decomposition (albeit with 0's on the diagonal).
+>
+> Moreover, this decomposition is equal to the inverse of the transform matrix applied to $A$.
+
+Common cases where this occurs is as follows:
+- $A$ is **diagonally dominant**
+- $A$ is **symmetric and positive definite**: $A = A^T$, and $x^T A x > 0, \forall x \in \mathbb{R}^n, x \ne 0$
+
+However, if we are allowed to interchange the rows of $A$, then we can always obtain an $LU$ factorization!
+
+> [!Abstract] Theorem: Permutations and Factorizations
+> Given an $n \times n$ matrix $A$, there exists a $P$ such that
+> $$
+> PA = LU
+> $$
+> Where $P$ is the **permutation matrix** of $A$, swapping its rows.
+
+## General Approach to Factorization
+Finding a factorization can be a bit tricky! We discuss a general algorithm to find it below.
+
+Let $L$ and $U$ be lower and upper triangular matrices (respectively). If $A = LU$, then 
+$$
+a_{ij} = \sum_{k=1}^n l_{ik} u_{kj} = \sum_{k=1}^{\min(i,j)} l_{ik} u_{kj}
+$$
+> Note that we can simplify our summation, because we know $L$ and $U$ are triangular matrices (by assumption), so $l_{ik} = 0$ for $i < k$, and $u_{kj} = 0$ for $j < k$.
+
+Now suppose we either know $l_{11}$ or $u_{11}$. We can use what we know above to derive our $LU$ factorization!
+1. We start by deriving row 1 of $U$. Then, for $a_{1j}$, we know that 
+   $$
+   a_{1j} = l_{11} u_{1j} \Longrightarrow u_{1j} = \frac{a_{1j}}{l_{11}}
+   $$
+2. Then, we derive column 1 of $L$. Then, for $a_{i1}$, we know that
+   $$
+   a_{i1} = l_{i1} u_{11} \Longrightarrow l_{i1} = \frac{a_{i1}}{u_{11}}
+   $$
+3. Now, suppose we want to derive the next row of $U$, or column of $L$. Suppose we have already determined rows $1, 2, \dots s - 1$ of $U$ and columns $1, 2, \dots s - 1$ of $L$ from previous steps. 
+
+    Then, we can find the next rows and columns using the following summations. For the diagonals $l_{ss}$ and $u_{ss}$, choose an arbitrary number for one diagonal, to find the other. 
+   $$
+   \begin{align*}
+       a_{ss} &= \sum_{k=1}^{s-1} l_{sk} u_{ks} + l_{ss} u_{ss} &\text{Next Diagonal} \\
+       a_{sj} &= \sum_{k=1}^{s-1} l_{sk} u_{kj} + l_{ss} u_{sj} &\text{Next Row of U, } u_{sj} \\
+       a_{is} &= \sum_{k=1}^{s-1} l_{ik} u_{ks} + l_{is} u_{ss} &\text{Next Column of L, } l_{is}
+   \end{align*}
+   $$
+   We repeat this until we are done!
+
+> This algorithm works, provided $l_{ss}$ and $u_{ss}$ are not zero! 
+
+$LU$ decompositions are not unique! If one exists for a matrix $A$, may more could too! Below, we discuss some special decompositions that can be unique in some scenarios.
+
+## Special LU Factorizations
+We can find some special LU factorizations of $A$! The following theorem guarantees uniqueness of these factorizations.
+
+> [!Abstract] Uniqueness of LU Factorizations
+> If $A$ is invertible, then there exists a $P$ giving us a unique Doolittle factorization, Grout factorization, and Cholesky's factorization.
+
+### Doolittle Factorization
+If $A = LU$ where the elements on $L$'s diagonal are 1, then we have a **Doolittle Factorization**.
+
+This is obtained by finding the matrix $M$ with 1's on the diagonal, where the entries below the diagonal are the multipliers used by the Gaussian Elimination, and taking the inverse.
+
+$$
+M = 
+\begin{bmatrix}
+    1 & \\
+    \alpha_{21} & 1 \\
+    \alpha_{31} & \alpha_{41} & 1 \\ 
+    \vdots & & \ddots & \ddots \\
+    \alpha_{n1} & \cdots & \cdots & \alpha_{n(n-1)} & 1
+\end{bmatrix}
+
+\qquad 
+
+L = M^{-1}
+$$
+
+When finding this factorization, set $l_{ss} = 1$ when solving for the diagonal along $u_{ss}$.
+
+> [!Info] Grout's Factorization
+> We similarly have **Grout's Factorization**, if $A = LU$ where the elements on $U$'s diagonal are 1.
+
+### Cholesky's Factorization
+If $A = LU$ with $L = U^T$, then we have a **Cholesky Factorization**. By definition, $A = L L^T$, meaning that $A$ is not only symmetric, but also positive semi-definite. 

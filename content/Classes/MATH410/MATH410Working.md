@@ -296,7 +296,71 @@ The following theorem establishes a connection between the $\epsilon$-$\delta$ c
 > 1. The function $f : D \to \mathbb{R}$ is continuous at $x_0$.
 > 2. The $\epsilon$-$\delta$ criterion at $x_0$ holds.
 
-Similarly, we can establish a connectio between the $\epsilon$-$\delta$ criterion and uniform continuity. 
+> [!Example]+ Example: Disproof
+> Define $f(x)$ as the function where 
+> $$
+> f(x) = \begin{cases}
+>     0 & x < 0 \\
+>     1 & x \ge 0
+>     \end{cases}
+> $$
+> We want to show by the $\epsilon$-$\delta$ proof that the function is not continuous at $x = 0$.
+> 
+> Choose $\epsilon = \frac{1}{2}$. Then, there is no $\delta$ such that $|x| < \delta \to |f(x) - f(0)|$.
+
+> [!Example]- Example: Proof
+> Let $f(x) = x^2$. Prove it is continuous at $x_0 \in \mathbb{R}$ by $\epsilon$-$\delta$.
+>
+> #### Scratch Work
+> Fix any $\epsilon > 0$. We start from our $y$ constraint and work backwards to choose a $\delta$.
+> 
+> $$
+> \begin{align*}
+>     |f(x) - f(x_0)| 
+>     &= |x^2 - x_0^2| = |x - x_0| \cdot |x + x_0| \\
+>     &< \delta |x + x_0|
+> \end{align*}
+> $$
+> 
+> If $\delta = 1$, then
+> $$
+> |x - x_0| < 1 \Longrightarrow |x| - |x_0| < 1 \Longrightarrow |x| < 1 + |x_0|
+> $$
+> 
+> $$
+> \begin{align*}
+>     |f(x) - f(x_0)| 
+>     &< \delta |x + x_0| \\
+>     &\le \delta ( |x| + |x_0| ) \\
+>     &\le \delta ( 2|x_0| + 1 ) < \epsilon
+> \end{align*}
+> $$
+> 
+> Provided that $\delta < \frac{\epsilon}{2 |x_0| + 1}$.
+> 
+> #### Proof
+> Let $\epsilon > 0$. Let $\delta = \min\left(1, \frac{\epsilon}{2 |x_0| + 1} \right)$.
+> 
+> Then, for all $x \in \mathbb{R}$, if $|x - x_0| < \delta$, we get $|x^2 - x_0^2| < \epsilon$ (show from above inequalities).
+
+> [!Example]- Example: Proof
+> Suppose $f(x_0) > 0$ and $f : \mathbb{R} \to \mathbb{R}$ is continuous. Prove $f(x) > 0$ for all $x$ on some interval $(x_0 - \delta, x_0 + \delta)$.
+> 
+> $$
+> \begin{align*}
+> |f(x) - f(x_0)| < \epsilon \\
+> f(x_0) - \epsilon < f(x) < f(x_0) + \epsilon
+> \end{align*}
+> $$
+> 
+> Choose $\epsilon = f(x_0) / 2$.
+> 
+> $$
+> \frac{f(x_0)}{2} < f(x)
+> $$
+> For all $x \in (x_0 - \delta, x_0 + \delta)$.
+
+Similarly, we can establish a connection between the $\epsilon$-$\delta$ criterion and uniform continuity. 
 
 We say $f$ satisfies the $\epsilon$-$\delta$ criterion on the domain $D$, if for all $\epsilon > 0$, there is a $\delta > 0$ such that for all $u,v \in D$,
 $$
@@ -307,3 +371,29 @@ $$
 > Let $f : D \to \mathbb{R}$ be a function, and let $x_0 \in D$. Then, the following two assertions are equivalent.
 > 1. The function $f : D \to \mathbb{R}$ is uniformly continuous at $x_0$.
 > 2. The $\epsilon$-$\delta$ criterion on the domain $D$ holds.
+
+> [!Example]+ Example: Proof
+> Prove $f(x) = \sqrt{x}$ is uniformly continuous on $[0,2]$ using $\epsilon$-$\delta$.
+> 
+> $$
+> \begin{align*}
+>     |\sqrt{x} - \sqrt{y}|
+>     &= |\sqrt{x} - \sqrt{y}| \frac{|\sqrt{x} + \sqrt{y}|}{|\sqrt{x} + \sqrt{y}|} \\
+>     &= \frac{|x - y|}{|\sqrt{x} + \sqrt{y}|}
+> \end{align*}
+> $$
+> But this doesn't work, as we can't control the denominator! So, we approach this differently, and begin with a squared term.
+>
+> $$
+> \begin{align*}
+>     |\sqrt{x} - \sqrt{y}|^2
+>     &= |\sqrt{x} - \sqrt{y}| \cdot |\sqrt{x} - \sqrt{y}| \\
+>     &\le |\sqrt{x} - \sqrt{y}| \cdot |\sqrt{x} + \sqrt{y}| \\
+>     &\le |x - y|
+> \end{align*}
+> $$
+> Given this, we take the square root of all terms to find 
+> $$
+> |\sqrt{x} - \sqrt{y}| < |x - y|^\frac{1}{2} < \delta^\frac{1}{2} < \epsilon
+> $$
+> So we choose $\delta < \epsilon^2$ to finish our proof.

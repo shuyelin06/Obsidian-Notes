@@ -397,3 +397,70 @@ $$
 > |\sqrt{x} - \sqrt{y}| < |x - y|^\frac{1}{2} < \delta^\frac{1}{2} < \epsilon
 > $$
 > So we choose $\delta < \epsilon^2$ to finish our proof.
+
+
+## Inverses, Continuity, and Monotonicity
+### Monotonicity
+Recall in the intermediate value theorem section, the theorem on the image of continuous functions.
+
+> [!Abstract] Theorem: Intervals of Images
+> Let $f : I \to \mathbb{R}$ be continuous, where $I$ is an interval. Then, $f(I)$ is an interval. 
+
+Note that the converse of this is not true in normal cases, but it is when $f$ is monotone! This is expressed below.
+
+> [!Abstract] Theorem: Continuity of Monotone Functions
+> If $f : D \to \mathbb{R}$ is monotone, then if $f(D)$ is an interval, $f$ is continuous!
+> > Note that $D$ does not have to be an interval. We skip the proof as it is long and technical. 
+
+### Function Inverses
+We say a function $f : D \to \mathbb{R}$ is **injective (one-to-one)** if any $y \in f(D)$ has exactly one $x$ value. Formally, if we have any two $x$-values $x_1, x_2$, then
+$$
+x_1 \ne x_2 \to f(x_1) \ne f(x_2)
+$$
+> In other words, the function passes the **horizontal line test** - if we draw any horizontal line, it only crosses the function once.
+
+> [!Abstract] Theorem: Monotonicity and Injections
+> If $f$ is strictly monotone, then $f$ is injective.
+> 
+> > [!Note]- Proof
+> >
+> > Choose any two $x$-values $x_1, x_2$. If $f$ is strictly monotone, then $f(x_1) < f(x_2)$, or $f(x_1) > f(x_2)$. In either case, $f(x_1) \ne f(x_2)$.
+
+Note that the converse is not true, as we can choose a piecewise function to violate monotonicity. However, this changes if $f$ is continuous!
+
+> [!Abstract] Theorem: Continuity, Injections, and Monotonicity
+> Let $f : I \to f(I)$ be continuous. Then, $f$ is injective if and only if $f$ is strictly monotone.
+>
+> > The continuity and interval clauses are extremely important, and without them, this theorem won't hold.
+
+We say that function $f : D \to f(D)$ is **invertible** provided that $f$ is injective. In the event this is true, we define the inverse function as
+$$
+f^{-1} : f(D) \to D
+$$
+Such that $x = f^{-1} (y)$ if and only if $f(x) = y$. 
+
+> [!Abstract] Theorem: Monotonicity of Inverses
+> If $f : D \to f(D)$ is strictly monotone, then $f^{-1}$ is also strictly monotone.
+>
+> > [!Note]- Proof
+> > 
+> > Without loss of generality, suppose $f$ is strictly increasing. Then, for two domain values $u,v \in D$ such that $u < v$,
+> > $$
+> > u < v \iff f(u) < f(v)
+> > $$
+> > 
+> > Let $u = f^{-1} (x)$, $v = f^{-1} (y)$. Then,
+> > $$
+> > f^{-1} (x) < f^{-1} (y) \iff f^{-1} ( f(u) ) < f^{-1} ( f(v) ) \Longrightarrow u < v
+> > $$
+> > So, $f^{-1}$ is strictly increasing.
+
+> [!Abstract] Theorem: Continuity of Inverses
+> Let $f : I \to f(I)$ be strictly monotone. Then, $f^{-1}$ is continuous on $f(I)$.
+>
+> > [!Note]- Proof
+> > 
+> > Since $f$ is a strictly monotone, so is $f^{-1}$. Because  $f^{-1}$ maps to an interval, and is strictly monotone, it is continuous by an earlier theorem.
+
+
+3.7 Wednesday

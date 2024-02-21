@@ -463,4 +463,39 @@ Such that $x = f^{-1} (y)$ if and only if $f(x) = y$.
 > > Since $f$ is a strictly monotone, so is $f^{-1}$. Because  $f^{-1}$ maps to an interval, and is strictly monotone, it is continuous by an earlier theorem.
 
 
-3.7 Wednesday
+## Limits
+In this section, we discuss limits and what they mean.
+
+A point $x_0 \in \mathbb{R}$ is a **limit point** of $D \subseteq \mathbb{R}$, provided there exists some sequence $\{x_n\}$ in $D / \{x_0\}$ such that
+$$
+\{x_n\} \to x_0
+$$
+
+> [!Example]+ Example: Limit Points of $\mathbb{R}$
+> What are limit points of $D = \mathbb{R}$?
+> 
+> All of the points in $\mathbb{R}$, as for any $x_0$, we can define the sequence
+> $$
+> \{x_n\} = x_0 + \frac{1}{n}
+> $$
+> Which wil converge to $x_0$.
+
+> [!Example]- Example: Limit Points of Intervals
+> Let $D = (0,1)$. What are the limit points?
+>
+> All of the points in the interval $[0,1]$, as we can define a sequence that converges to the endpoints, or any value inside of the interval.
+
+Let $f : D \to \mathbb{R}$ be a function, and let $x_0 \in \mathbb{R}$ be a limit point of $D$. Then, the **limit** of $f$ is
+$$
+\lim_{x \to x_0} f(x) = L
+$$
+If for any sequence $\{x_n\}$ in $D/\{x_0\}$, if $\{x_n\} \to x_0$, then $f(x_n) \to L$.
+> Limits can only be defined if there exists a sequence in our domain that converges to the point (by definition of a limit point).
+
+Formally, for all $\epsilon > 0$, there exists a $\delta > 0$ such that for all $x \in D$,
+$$
+0 < | x - x_0 | < \delta \to | f(x) - L | < \epsilon
+$$
+
+Note that all of our limit rules apply, and can be used.
+

@@ -112,6 +112,10 @@ Which, by property of the basis functions, is guaranteed to be equal to $f(x_j)$
 > \end{align*}
 > $$
 
+> [!Info] Lagrange Form Benefits
+> The Lagrange Form can particularly be useful if we have the same fixed points $\{x_i\}_{i=0}^{n+1}$ for different $f$'s, as our basis functions remain the same! This will avoid computational costs
+> > Compare this with Newton's Form (later), where we'd have to recalculate all the divided differences.
+
 ### Newton's Form of Interpolation
 Another way we can explicitly construct such polynomials is by using **Newton's Form of Interpolation**. 
 
@@ -128,7 +132,7 @@ Suppose we have $\{ x_i \}_{i=0}^n$ distinct nodes. Then, we define the **$k^{th
   $$
 - The **first divided difference** of $f$ at $x_i, x_{i + 1}$ uses the zeroth divided difference.
   $$
-  f[x_i, x_{i + 1}] = \frac{f[x_{i+1}] - f[x_i]}{x_{i+1} - x_i} ] = \frac{f(x_{i+1}) - f(x_i)}{x_{i+1} - x_i}
+  f[x_i, x_{i + 1}] = \frac{f[x_{i+1}] - f[x_i]}{x_{i+1} - x_i} = \frac{f(x_{i+1}) - f(x_i)}{x_{i+1} - x_i}
   $$
 - The **second divided difference** of $f$ at $x_i, x_{i + 1}, x_{i + 2}$ uses the first divided difference.
   $$
@@ -139,4 +143,124 @@ Suppose we have $\{ x_i \}_{i=0}^n$ distinct nodes. Then, we define the **$k^{th
   f[x_i, x_{i+1}, \dots x_{i + k}] = \frac{f[x_{i+1}, x_{i+2}, \dots x_{i+k}] - f[x_{i}, x_{i+1}, \dots x_{i+k-1}]}{x_{i+k} - x_i}
   $$
 
-We continue determining the divided differences, until we have a divided difference on all the $x_i$ terms.
+The below diagram illustrates how we would calculate the $4^{th}$ divided difference on $x_0, x_1, x_2, x_3$.
+```mermaid
+graph LR
+0[x<sub>0</sub>];
+1[x<sub>1</sub>];
+2[x<sub>2</sub>];
+3[x<sub>3</sub>];
+
+0 -.-> 4["f[x<sub>0</sub>]"];
+1 -.-> 5["f[x<sub>1</sub>]"];
+2 -.-> 6["f[x<sub>2</sub>]"];
+3 -.-> 7["f[x<sub>3</sub>]"];
+
+4 & 5 -.-> 8["f[x<sub>0</sub>,x<sub>1</sub>]"];
+5 & 6 -.-> 9["f[x<sub>1</sub>,x<sub>2</sub>]"];
+6 & 7 -.-> 10["f[x<sub>2</sub>,x<sub>3</sub>]"];
+
+8 & 9 -.-> 11["f[x<sub>0</sub>,x<sub>1</sub>,x<sub>2</sub>]"];
+9 & 10 -.-> 12["f[x<sub>1</sub>,x<sub>2</sub>,x<sub>3</sub>]"];
+
+11 & 12 -.-> 13["f[x<sub>0</sub>,x<sub>1</sub>,x<sub>2</sub>,x<sub>3</sub>]"];
+```
+
+These divided differences become our coefficients! Using $x = x_k$, we can find our coefficient as
+$$
+a_k = f[x_0, x_1, \dots x_k]
+$$
+Giving us polynomial
+$$
+P_n (x) = f[x_0] + \sum_{k=1}^n \left( f[x_0, \dots x_k] \cdot \prod_{j=0}^{k-1} (x - x_j) \right)
+$$
+> Note that by our above uniqueness theorem, the polynomial obtained here should be the same as the Lagrange Polynomial.
+
+> [!Abstract] Theorem: Divided Differences and Permutations
+> If $y_0, y_2, \dots y_k$ is any permutation of our points $x_0, x_1, \dots x_k$, then their divided differences are the same.
+> $$
+> f[y_0, y_1, \dots y_k] = f[x_0, x_1, \dots x_k]
+> $$
+
+> [!Example]+ Example: Newton's Interpolation
+> Let $x_0 = 2, x_1 = 3, x_2 = 5$, and let $f = 1/n$. We find
+> $$
+> f(x_0) = \frac{1}{2} \qquad f(x_1) = \frac{1}{3} \qquad f(x_2) = \frac{1}{5}
+> $$
+> We find our divided differences.
+> $$
+> \begin{align*}
+>     &f[x_0] = f(x_0) = 1/2 \\
+>     &f[x_1] = f(x_1) = 1/3 \\
+>     &f[x_2] = f(x_2) = 1/5 \\
+>     &f[x_0, x_1] = \frac{1/3 - 1/2}{3 - 2} = -1/6 \\
+>     &f[x_1, x_2] = \frac{1/5 - 1/3}{5 - 3} = -1/15 \\
+>     &f[x_0, x_1, x_2] = \frac{-1/15 - (-1/6)}{5 - 2} = 1/30
+> \end{align*}
+> $$
+> 
+> We now use these differences to find our polynomial.
+> $$
+> \begin{align*}
+>     P_3(x) 
+>     &= f[x_0] + f[x_0, x_1] (x - x_0) + f[x_0, x_1, x_2] (x - x_0) (x - x_1) \\
+>     &= \frac{1}{2} - \frac{1}{6} (x - 2) + \frac{1}{30} (x - 2) (x - 3)
+> \end{align*}
+> $$
+> This is equivalent to the polynomial we found using Lagrange's Method!
+
+> [!Info] Newton Form Benefits
+> The Newton Form can particularly be useful if we need to add more fixed points for the same $f$. This will keep our divided differences the same, as we can use these already calculated divided differences to easily calculate the extra differences we need!
+> > Compare this with Lagrange, where we'd have to recalculate all the basis functions if we add a new node.
+
+
+## Errors in Interpolation
+Let $f$ have $n + 1$ continuous derivatives on some interval $[a,b]$.
+
+Let $P_n(x)$ be the interpolating polynomial at $(n + 1)$ distinct nodes $\{x_i\}_{i=0}^n$. Then, for all $x \in [a,b]$, there exists an error $\delta(x)$ such that
+$$
+f(x) - P_n(x) = f^{n+1} (\delta(x)) \frac{\prod_{j=0}^n (x - x_j)}{(n+1)!}
+$$
+
+We prove this fact below.
+
+> [!Note] Proof
+> Let $x \in [a,b]$. 
+> 
+> Suppose $x$ is one of the interpolating nodes. Then, we are done.
+> 
+> Suppose $x$ is not one of the interpolating nodes. Define
+> $$
+> w(y) = \prod_{j=0}^n (y - x_j)
+> $$
+> Which has degree $n + 1$, with leading term $1 \cdot y^{n+1}$.
+> 
+> We use this to define the function with $n + 1$ continuous derivatives
+> $$
+> F(y) = f(y) + P_n(y) - \lambda w(y)
+> $$
+> 
+> Where $\lambda$ is chosen such that $F(x) = 0$.
+> $$
+> \lambda = \frac{f(x) - P_n(x)}{w(x)}
+> $$
+> > We know that because $x$ is not an interpolating node, $\lambda$ is defined.
+> 
+> Because of this, we know that $F(x) = 0$, and $F(x_i) = 0$ as well as all terms drop to 0! So, $F$ drops to 0 at $x, x_0, x_1, \dots x_n$.
+> 
+> Without loss of generalization, assume $x, x_0, x_1, \dots x_n$ are ordered. Then, by Rolle's theorem, there must exist points between each consecutive pair such that $F'(x) = 0$ - in other words, there are $(n + 1)$ distinct nodes where $F'$ will drop to 0. 
+> - Reapplying Rolle's theorem, there must be $n$ distinct nodes where $F''$ will drop to 0.
+> - Reapplying Rolle's theorem, there must be $(n - 1)$ distinct nodes with $F'''$ will drop to 0.
+> - ...
+> 
+> Continuing this way, we find that $F^{n+1} = 0$ at some point, which we'll call $\delta(x)$.
+> $$
+> \begin{align*}
+> F^{n+1} ( \delta(x) ) 
+> &= f^{n+1}(\delta(x)) - P_n^{n+1} (\delta(x)) - \lambda w^{n+1} (x) \\
+> &= f^{n+1}(\delta(x)) - 0 - \lambda (n + 1)! \\
+> &= f^{n+1}(\delta(x)) - \frac{f(n) - P_n(x)}{w(x)} (n + 1)!
+> \end{align*}
+> $$
+> 
+> This can be refactored to obtain the above result. 

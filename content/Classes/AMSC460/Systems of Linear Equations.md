@@ -476,7 +476,10 @@ In other words, the maximum norm of $Ax$ given all possible unit vectors $x$.
 > The following properties of the matrix norm are true.
 > - If $A \ne 0$, then $|| A || > 0$.
 > - If $A = 0$, then $|| A || = 0$.
+> - If $A = I$, then $|| I || = 1$.
+> - For any vector $x$, then $||Ax|| \le ||A|| \cdot ||x||$.
 > - For any scalar $\lambda$, then $|\lambda| \cdot ||A||$.
+> - For any matrix $B$, then $||AB|| \le ||A|| \cdot ||B||$.
 > - **Triangle Inequality**: $||A + B|| \le ||A|| + ||B||$
 >
 > Furthermore, for any vector $x$,
@@ -487,7 +490,7 @@ In other words, the maximum norm of $Ax$ given all possible unit vectors $x$.
 
 > [!Example]+ Example: Matrix Norms
 > Note that our matrix norm depends on our selection of the vector norm.
-> - If we use the $||x||_\infty$, then $||A||_\infty$ will be the max of each of $A$'s rows sums.
+> - If we use the $||x||_\infty$, then $||A||_\infty$ will be the max of each of $A$'s rows (absolute value) sums.
 > - If we use $||x||_1$, then $||A||_1$ will be the max of each of $A$'s columns sums.
 
 ## Errors in Systems of Equations

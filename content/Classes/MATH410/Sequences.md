@@ -33,20 +33,35 @@ $$
 Intuitively, this is saying that for all epsilon values, we can find a term in the sequence such that all terms after are within some range around $a$ (the range $(a - \epsilon, a + \epsilon)$.
 > By this definition, you need to find an $N$ given $a$ and $\epsilon$ that satisfies our definition. Note that by this definition, we need to know what $a$ is.
 
-> [!Example]+ Example: Convergence of Sequences
-> Let $a_n = 1 / n$. Prove that $a_n \to 0$.
->
-> Let $\epsilon > 0$ and $a = 0$.
->
-> **Scratch Work**: We want
+> [!Example]+ Example: Convergence of Sequences (1)
+> Prove that 
 > $$
-> \left| \frac{1}{n} - 0 \right| < \epsilon \Longrightarrow \frac{1}{n} < \epsilon
+> \left\{ 2 - \frac{1}{n} + \frac{3}{n^2} \right\} \to 2
 > $$
-> So we can choose a $N \in \mathbb{N}$ such that $1 / N < \epsilon$ to satisfy our definition, and this $N$'s existence is guaranteed by the Archimedian property.
->
-> **Formal Proof**: Fix any $\epsilon > 0$, and let $N \in \mathbb{N}$ such that $1 / N < \epsilon$. Then, $\forall n \ge \mathbb{N}$, we have
+> 
+> We want to show that $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N$,
 > $$
-> \left| \frac{1}{n} - 0 \right| = \frac{1}{n} \le \frac{1}{N} < \epsilon
+> \left| \left(2 - \frac{1}{n} + \frac{3}{n^2}\right) - 2 \right| < \epsilon
+> $$
+> 
+> We find this $N$.
+> $$
+> \begin{align*}
+>     \left| \left(2 - \frac{1}{n} + \frac{3}{n^2}\right) - 2 \right|
+>     &= \left| - \frac{1}{n} + \frac{3}{n^2} \right| \\
+>     &\le \left| \frac{1}{n} + \frac{3}{n^2} \right| \\
+>     &\le \left| \frac{1}{n} + \frac{3}{n} \right| \\
+>     &\le \left| \frac{4}{n} \right| 
+> \end{align*}
+> $$
+> 
+> By the Archimedian property, there $\exists n$ such that
+> $$
+> \frac{1}{n} < \frac{\epsilon}{4} \Longrightarrow \frac{4}{n} < \epsilon
+> $$
+> Let $N$ be this $n$. We satisfy our definition and have shown convergence.
+> $$
+> \left| \frac{4}{n} \right| < \epsilon
 > $$
 
 > [!Example]- Example: Convergence of Sequences (2)

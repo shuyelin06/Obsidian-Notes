@@ -39,6 +39,39 @@ $$
 > \lim_{n\to\infty} (x_n)^3 = (\lim_{n\to\infty} x_n)^3 = (x_0)^3
 > $$
 
+> [!Example]- Example: Continuity Proof (2)
+> Let $f : \mathbb{R} \to \mathbb{R}$ such that
+> $$
+> f(x) = 
+> \begin{cases}
+>     2x & x \le 5 \\
+>     0 & x > 5
+> \end{cases} 
+> $$
+> Show that $f(x)$ is continuous at $x = 3$.
+> 
+> We want to show that for any $\{x_n\} \to x_0$, $\{f(x_n)\} \to f(x_0)$.
+> 
+> Let $\{x_n\} \to 3$. By definition, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N$,
+> $$
+> | x_n - 3 | < \epsilon
+> $$
+> 
+> Let $\epsilon = 1$, and choose the $N$ associated with this epsilon such that $\forall n \ge N$,
+> $$
+> | x_n - 3 | < 1
+> $$
+> 
+> Now take the expression $|f(x_n) - f(3)|$. Because $\forall n \ge N$, $2 < x_n < 4$, we always apply the $2x$ part of the function. 
+> $$
+> \begin{align*}
+>     |f(x_n) - f(3)| 
+>     &= |2x_n - 6| \\
+>     &= 2 |x_n - 3|
+> \end{align*}
+> $$
+> Because $\{x_n\} \to 3$, and $|f(x_n) - f(3)| \le 2 |x_n - 3|$, by the squeeze theorem, $\{f(x_n)\} \to f(3)$.
+
 > [!Example]- Example: Continuity Disproof
 > Prove that $f: \mathbb{R} \to \mathbb{R}$
 > $$
@@ -55,6 +88,15 @@ $$
 > Let $f$ and $g$ be continuous functions. Then $fg$, $\frac{f}{g}$, $f + g$, $f - g$, $f \circ g$ are also continuous.
 > 
 > > These properties trivially follow from the limit properties.
+
+> [!Example]- Example: Continuity and Sequential Compactness
+> Let $f : D \to \mathbb{R}$ be continuous where $D$ is sequentially compact. Prove that $f(D)$ is sequentially compact.
+>
+> To show that $f(D)$, is sequentially compact, we want to show that for any $\{y_n\} \in f(D)$, there exists a subsequence $\{y_{n_k}\} \to y_0$ such that $y_0 \in f(D)$.
+>
+> As all terms of $\{y_n\}$ are in $f(D)$, for all $y_n$, there exists an $x_n$ such that $f(x_n) = y_n$. By sequential compactness on $D$, there exists a subsequence $\{x_{n_k}\} \to x_0$ such that $x_0 \in D$.
+>
+> By continuity on $f$, as $\{x_{n_k}\} \to x_0$, $\{f(x_{n_k})\} \to f(x_0)$. Letting this $f(x_0) = y_0$, we have a subsequence $\{x_{n_k}\} = y_{n_k}$ converging to a $y_0 \in f(D)$.
 
 ### Geometric Properties of Continuity
 Some important implications of continuity are given below: the **extreme value theorem**, and the **intermediate value theorem**.

@@ -33,6 +33,8 @@ $$
 Intuitively, this is saying that for all epsilon values, we can find a term in the sequence such that all terms after are within some range around $a$ (the range $(a - \epsilon, a + \epsilon)$.
 > By this definition, you need to find an $N$ given $a$ and $\epsilon$ that satisfies our definition. Note that by this definition, we need to know what $a$ is.
 
+The $\forall$ clause on $\epsilon$ is quite powerful, and can be used in a variety of sequence proofs (as it lets us select any $\epsilon$ we want!).
+
 > [!Example]+ Example: Convergence of Sequences (1)
 > Prove that 
 > $$
@@ -303,6 +305,11 @@ There exist respective strictly increasing ($>$) and strictly decreasing definit
 > > 2. Without loss of generality (in the negative case, the absolute value gets rid of the negative), we can assume that $0 < c < 1$.
 > >    
 > >    We would want to show that $c^n$ is monotone decreasing, and bounded below by 0. So, by the monotone convergence theorem, we show convergence to the infimum. We end by showing that the infimum is 0.
+
+> [!Abstract] Theorem: Nested Interval Theorem
+> For all $n \in \mathbb{N}$, define $a_n$ and $b_n$ such that $a_n < b_n$, and define the interval $I_n = [a_n, b_n]$. Additionally, suppose that for every increasing $n$, $I_{n+1} \subseteq I_n$.
+>
+> Then, if $\{ a_n - b_n \} \to 0$, then there is exactly one point belonging to the interval $I_n$ for all $n$, and both $a_n, b_n$ converge to this point. 
 
 # Subsequences 
 ## Introduction

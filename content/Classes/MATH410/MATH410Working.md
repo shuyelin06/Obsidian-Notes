@@ -541,3 +541,71 @@ $$
 
 Note that all of our limit rules apply, and can be used.
 
+--- wip ---
+
+# Derivatives
+Consider a function $f : I \to \mathbb{R}$ defined along some interval. Say we want the "slope" of the function at some limit point $x_0 \in I$.
+
+This is the **derivative** of the function, $f'(x_0)$, defined as
+$$
+f'(x_0) = \lim_{x \to x_0} \frac{f(x) - f(x_0)}{x - x_0} = \lim_{h \to 0} \frac{f(x + h) - f(x_0)}{h}
+$$
+Where $\{x\} \in I / \{x_0\}$ is a sequence converging to $x_0$.
+> Note you can obtain the decond definition from the first by setting $x = x_0 + h$
+
+If the derivative for $f$ exists at a point $x_0$, we say $f$ is **differentiable** at this point.
+
+> [!Abstract] Theorem: Differentiability and Continuity
+> If $f'(x_0)$ exists, then $f$ is continuous at $x_0$. In other words, differentiability implies continuity.
+>
+> > [!Note]- Proof
+> >
+> > Let $x_n \to x_0$, where $x_n \in I / \{x_n\}$. We want to show that $f(x_n) \to f(x_0)$.
+> > 
+> > $$
+> > \begin{align*}
+> >     f(x_n) - f(x_0) = \frac{f(x_n) - f(x_0)}{x_n - x_0} (x_n - x_0) \to f'(x_0) \cdot 0 = 0
+> > \end{align*}
+> > $$
+
+Derivatives have a variety of useful properties that we can prove! They are given below.
+
+> [!Abstract] Theorem: Product Rule
+> If $f : I \to \mathbb{R}$ and $g : I \to \mathbb{R}$ are both differentiable at $x_0$, so is $f \cdot g$.
+> $$
+> \frac{d}{dx} f(x) g(x) = f'(x) g(x) + f(x) g'(x)
+> $$
+>
+> > [!Note]- Proof
+> >
+> > Let $x_n \to x_0$ with $x_n \in I / \{x_0\}$. Then, 
+> > $$
+> > \begin{align*}
+> >     \lim_{x_n \to x_0} \frac{f(x_n) g(x_n) - f(x_0) g(x_0)}{x_n - x_0}  
+> >     &=  \lim_{x_n \to x_0} \frac{f(x_n) g(x_n) - f(x_0) g(x_0) + f(x_n) g(x_0) - f(x_n) g(x_0)}{x_n - x_0} \\
+> >     &= \lim_{x_n \to x_0} \frac{f(x_n) (g(x_n) - g(x_0)) + g(x_0) (f(x_n) - f(x_0))}{x_n - x_0} \\
+> >     &= \lim_{x_n \to x_0} f(x_n) \frac{g(x_n) - g(x_0)}{x_n - x_0} + g(x_0) \frac{f(x_n) - f(x_0)}{x_n - x_0} \\
+> >     &= f(x_0) g'(x_0) + g(x_0) f'(x_0)
+> > \end{align*}
+> > $$
+
+> [!Abstract] Theorem: Chain Rule
+> If $f : I \to \mathbb{R}$ and $g : I \to \mathbb{R}$ are both differentiable at $x_0$, so is $f(g(x))$.
+> $$
+> \frac{d}{dx} f(g(x)) = f'(g(x)) g'(x)
+> $$
+
+
+> [!Abstract] Theorem: Derivatives of Inverses
+> Let $x_0 \in I$ and $f : I \to \mathbb{R}$ be a strictly monotone continuous function. Suppose $f'(x_0) \ne 0$ exists (to avoid division by 0). Then, we can find the derivative of $f$'s inverse as follows: 
+> $$
+> (f^{-1})'(x_0) = \frac{1}{f'(x_0)} = \frac{1}{f' (f^{-1}(x_0))}
+> $$
+
+> [!Example]- Example: Derivatives of Inverses
+> Let $f(x) = x^2$, where $f : [0, \infty) \to \mathbb{R}$. Find $(f^{-1})' (4)$.
+>
+> We have $f'(x) = 2x$, and $f^{-1} (4) = 2$. Then,
+> $$
+> (f^{-1})' (4) = \frac{1}{2(2)} = \frac{1}{4}
+> $$

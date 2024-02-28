@@ -187,10 +187,12 @@ Inserting in a Patricia Trie is more complicated than a traditional trie, as we 
 
 The general algorithm is as follows. Suppose we want to insert $S$ into our tree. Then,
 1. Search for $S$ into the tree. Continuously repeat (2) until our search succeeds.
-2. If the search fails, then resolve by doing one of the following, and continue the search:
-   - **Case 1 (Null)**: If the next pointer is null, then allocate a new node for the remainder of $S$.
-   - **Case 2 (Simple Split)**: If our new key is a prefix of the last node hit, create a new parent node with this prefix.
-   - **Case 3 (Complex Split)**: If our new key shares a common prefix with the last node we hit, split the node along this prefix and create two new children.
+2. If the search fails, then resolve by doing one of the following, and move to step 3.
+   - **Case 1 (Null)**: If the next pointer is null, then allocate a new node for the remainder of $S$. Move to step 3 on this new node.
+   - **Case 2 (Simple Split)**: If our new key is a prefix of the last node hit, split the node's key value from this prefix, and insert the prefix as a new parent of the node. Move to step 3 on this parent.
+   - **Case 3 (Complex Split)**: If our new key shares a common prefix with the last node we hit, split both the key and the node's key value from this common prefix. 
+   
+       Then, create a new parent node with this common prefix, and add the original node and a new node with the key's remaining value as children. Move to step 3 on this new node.
 3. When the search succeeds, then flag the node as terminating a string. Terminate.
 
 See the below example, with a Binary Patricia Trie for simplicity.
@@ -227,8 +229,8 @@ The general algorithm is as follows. Suppose we're deleting a string $S$ from th
 2. If we suceed, we perform one of the 3 cases:
    - **Case 1**: If the node has more than one child, unflag the node.
    - **Case 2**: If the node only has one child, merge it with the child.
-   - **Case 3**: If the node has no children, delete it 
-3. Then, bubbling back up to the root, we check the parent. If the parent is unflagged nodes and only has one child, we merge it with its child.
+   - **Case 3**: If the node has no children, delete it by removing its reference in the parent.
+3. Then, check the parent. If the parent is unflagged and only has one child, then merge the parent with this child. 
 
 > [!Example]- Example: Patricia Trie Deletion
 > Nodes that are marked have rounded edges.

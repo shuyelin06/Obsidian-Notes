@@ -187,7 +187,7 @@ Inserting in a Patricia Trie is more complicated than a traditional trie, as we 
 
 The general algorithm is as follows. Suppose we want to insert $S$ into our tree. Then,
 1. Search for $S$ into the tree. Continuously repeat (2) until our search succeeds.
-2. If the search fails, then resolve by doing one of the following:
+2. If the search fails, then resolve by doing one of the following, and continue the search:
    - **Case 1 (Null)**: If the next pointer is null, then allocate a new node for the remainder of $S$.
    - **Case 2 (Simple Split)**: If our new key is a prefix of the last node hit, create a new parent node with this prefix.
    - **Case 3 (Complex Split)**: If our new key shares a common prefix with the last node we hit, split the node along this prefix and create two new children.

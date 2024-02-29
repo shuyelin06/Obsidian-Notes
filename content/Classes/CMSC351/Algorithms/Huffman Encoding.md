@@ -1,6 +1,7 @@
 ---
-title: Huffman's Algorithm
+title: Huffman Encoding
 tags:
+- cmsc420
 - cmsc351
 ---
 

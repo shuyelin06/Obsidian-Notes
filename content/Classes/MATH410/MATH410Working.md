@@ -541,16 +541,15 @@ $$
 
 Note that all of our limit rules apply, and can be used.
 
---- wip ---
-
 # Derivatives
+## Definition
 Consider a function $f : I \to \mathbb{R}$ defined along some interval. Say we want the "slope" of the function at some limit point $x_0 \in I$.
 
 This is the **derivative** of the function, $f'(x_0)$, defined as
 $$
 f'(x_0) = \lim_{x \to x_0} \frac{f(x) - f(x_0)}{x - x_0} = \lim_{h \to 0} \frac{f(x + h) - f(x_0)}{h}
 $$
-Where $\{x\} \in I / \{x_0\}$ is a sequence converging to $x_0$.
+Where $\{x\} \in I / \{x_0\}$ is any sequence converging to $x_0$.
 > Note you can obtain the decond definition from the first by setting $x = x_0 + h$
 
 If the derivative for $f$ exists at a point $x_0$, we say $f$ is **differentiable** at this point.
@@ -609,3 +608,93 @@ Derivatives have a variety of useful properties that we can prove! They are give
 > $$
 > (f^{-1})' (4) = \frac{1}{2(2)} = \frac{1}{4}
 > $$
+
+## Mean-Value Theorem
+### Definition and Proof
+Let $f$ be a function continuous on $[a,b]$, and differentiable on $(a,b)$. Then $\exists c \in (a,b)$ such that
+$$
+f'(c) = \frac{f(b) - f(a)}{b - a}
+$$
+In other words, there exists a point where the derivative is equal to the average slope!
+
+> [!Example]+ Example: Mean-Value Theorem Applications
+> $\forall x$, let $|f'(x)| \le M$. Then, by mean value theorem,
+> $$
+> | f(x) - f(y) | = | f'(c) (x - y) | \le M |x - y|
+> $$
+> This proves an earlier theorem in uniform continuity!
+
+We will prove this theorem; but first, we define a variety of lemmas that will be useful to us.
+
+> [!Abstract] Lemma
+> Let $I$ be an open interval containing $x_0$, and $f : I \to \mathbb{R}$. Suppose $f'(x_0)$ exists,
+>
+> If $f(x_0)$ is a max (or min), then $f'(x_0) = 0$.
+>
+> > [!Note]- Proof
+> >
+> > Without loss of generality, assume $f(x_0)$ is a max. We show that the limit of slopes on the left and right bound $f'(x_0)$, forcing $f'(x_0) = 0$.
+> >
+> > Define the interval $I = (x_0 - 1/n, x_0 + 1/n)$ sufficiently close to our maximum. We have
+> > $$
+> > \frac{f \left( x_0 + \frac{1}{n} \right) - f(x_0)}{\left(x + \frac{1}{n} \right) - x_0} \le 0
+> > $$
+> > Take this from $n \to \infty$ to get $f'(x_0) \le 0$.
+> >
+> > Similarly, we define the sequence $x_n = x_0 - 1/n$ to show that $f'(x_0) \ge 0$, which forces $f'(x_0)$ as $0 \le f'(x_0) \le 0$.
+
+> [!Abstract] Theorem: Rolle's Lemma
+> Let $f$ be continuous on $[a,b]$, differentiable on $(a,b)$, and $f(a) = f(b)$. Then, $\exists c \in (a,b)$ such that $f'(c) = 0$.
+>
+> > This is a special case of MVT, but we will use it to prove MVT!
+>
+> > [!Note]- Proof
+> > 
+> > By the extreme value theorem, we know that the maximum and minimum of $f$ exist. We do a case analysis:
+> > 1. Suppose the max and min both occur at the endpoints. Then, the function is constant - we can choose any point in the interior whose derivative is 0.
+> > 2. Suppose a max (or min) appears in $(a,b)$. Then, we apply our previous lemma to guarantee that $\exists c \in (a,b)$ such that $f'(c) = 0$.
+
+We now prove MVT. The idea of this proof is to create a function from $f$ whose endpoints are the same, and applying Rolle's theorem.
+
+> [!Note]+ Proof (Mean Value Theorem)
+> 
+> Let $f$ be a function continuous on $[a,b]$, and differentiable on $(a,b)$. Let $h(x) = f(x) - mx$ for some $m \in \mathbb{R}$. We can choose an $m$ such that $h(a) = h(b)$ in order to apply Rolle's theorem.
+> $$
+> f(a) + ma = f(b) + mb \Longrightarrow m = \frac{f(b) - f(a)}{b - a}
+> $$
+> By Rolle's lemma, $\exists c \in (a,b)$ such that $h'(c) = 0$! Plugging this in and solving for $f'(c)$, this gives us
+> $$
+> f'(c) = \frac{f(b) - f(a)}{b - a}
+> $$
+
+> [!Example]+ Example: Mean Value Theorem
+> Prove that $5x + \sin(x) = 0$ does not have more than one solution.
+>
+> Note that $f'(x) = 5 + \cos(x) \le 4 > 0$. If there were two or more solutions, by Rolle's lemme, $f'(x) = 0$ at some point, which is a contradiction.
+
+> [!Info] Corollary 1
+> If $f : I \to \mathbb{R}$ is differentiable, then $f'(x) = 0$ for all $x$ is true if and only if $f$ is constant.
+>
+> > [!Note]-  Proof
+> > 
+> > #### Proof ($\leftarrow$)
+> > We can use limit definition to easily show that the derivative is 0.
+> >
+> > #### Proof ($\rightarrow$)
+> > By contrapositive, suppose that $f$ is not constant. Then there exists two separate points $a,b \in I$ such that $f(a) \ne f(b)$.
+> > 
+> > By MVT, there exists a derivative such that 
+> > $$
+> > f'(c) = \frac{f(b) - f(a)}{b - a} \ne 0
+> > $$
+> > 
+> > We apply the contrapositive to obtain our corollary.
+
+> [!Info] Corollary 2
+> Let $I$ be an open interval, and $f,g$ differentiable on $I$. Then, for some constant $C$, $f'(x) = g'(x)$ if and only if $f(x) = g(x) + C$. 
+> 
+> > This will be really important in integration!
+
+> [!Info] Corollary 3
+> Let $f : I \to \mathbb{R}$ be differentiable on $I$. For all $x \in I$, if $f'(x) > 0$ at $x \in I$, then $f$ is strictly increasing on $I$.
+

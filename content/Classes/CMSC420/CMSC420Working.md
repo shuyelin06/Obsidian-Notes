@@ -237,6 +237,8 @@ $$
 # (Point-Region) QuadTrees
 Note that the ideas in this can be generalized to 3-dimensions! This 3-dimensional generalization is known as an **Octree**.
 
+Generally, PR-QuadTrees have faster search than KD-Trees! However, they can also split the space more aggresively, especially when data points are closer together.
+
 ## Structure
 A **QuadTree** is a tree structure where every node has 4 children, which represent the northwest ($NW$), northeast ($NE$), southwest ($SW$), and southeast ($SE$) cells of a $2 \times 2$ grid. 
 
@@ -253,13 +255,126 @@ By nesting these nodes within one another, we can partition a 2D-plane into grou
 >
 > Note that Point QuadTrees are **completely unrelated** to Point-Region QuadTrees - they're just listed here for the sake of completeness.
 
-## Operations
-### Insertion
-Unlike KD-Trees and Point QuadTrees, which divides the space at data points, PR QuadTrees divides the space **based on characteristics of the space itself**, and assigns points based on these divisions! 
+Unlike KD-Trees and Point QuadTrees, which divides the space at data points, PR QuadTrees assigns points based on **fixed divisions of the space**!
 
-Consider a well-defined square region, with explicitly defined size $2^k \times 2^k$, centered at the position (**centroid**) $\vec{c}$. This region has x and y bounds
+In a PR QuadTree, each node will represent a square region with size $2^k \times 2^k$, centered at the position (**centroid**) $\vec{c}$. This region will have $x$ and $y$ bounds given as
 $$
 x \in (c_x - 2^{k-1}, c_x + 2^{k-1}) \qquad y \in (c_y - 2^{k-1}, c_y + 2^{k-1})
 $$
+> The space as a whole is centered around $(0,0)$!
 
-Then, 
+> [!Example]+ Example: Example Region
+> Consider a region centered around 0 with size 16, Then, its bounds are from $(-16, -16)$ to $(16,16)$.
+
+Then, the children of each node will represent the 4 quadrants of the region, all of the same size $2^{k-1} \times 2^{k-1}$, with centroids
+$$
+(c_x \pm 2^{k-2}, c_y \pm 2^{k-2})
+$$
+
+In a PR QuadTree, we aim for each datapoint to be in a space of its own (though this constraint can be relaxed), and we can achieve this by splitting nodes recursively to get finer and finer subdivisions of a particular portion of the space.
+> This implies that we cannot have two identical data points in a PR QuadTree.
+
+We will achieve this by representing our tree using 3 node types:
+- **Black**: An undivided quadrant with 1+ data points.
+- **White**: An undivided quadrant with no data points (usually represented as null).
+- **Gray**: A quadrant that has been further sub-divided.
+
+> Note that by this representation, black and white nodes will always be the leaves of our tree.
+
+
+## Operations
+### Insertion / Searching
+In our PR-QuadTree, we'll always start with a White node, with some size, centered around $(0,0)$.
+
+Then, our general insertion algorithm is as follows. Suppose we want to insert a point $P$. Then:
+1. Start at the root.
+2. For some node $N$, check what type of node it is.
+   - **White Node**: If the node is a white node (null reference), insert the point at this node and terminate.
+   - **Gray Node**: If the node is a gray node, then repeat step (2) on the child quadrant that $P$ is located in.
+   - **Black Node**: If the node is a black node, then convert it into a gray node by splitting it into 4 quadrants. Then, recursively call insert on this new node, with $P$ and every other point already in the node.
+
+> If the point is on a quadrant boundary, we will prefer to bias things towards the $+X, +Y$ directions.
+
+Note that searching is essentially the same, without the insertion / splitting process! On a black node, we simply check if $P$ is contained within the node.
+
+> [!Example]- Example: PR-QuadTree Insertion
+> Suppose we insert $(4,2)$, $(-10,2)$, and $(2,20)$ into an empty PR-Quadtree.
+> 
+> 1. We insert $(4,2)$. Start at the root. Because our root is a white node, we insert here.
+>    ```mermaid
+>    graph TD
+>        subgraph After
+>         1["(4,2)"];
+>        end
+>        subgraph Before
+>         2[ ];
+>        end
+>    ```
+> 2. We insert $(-10,2)$. Start at the root. Because our root is a black node, we split it. Then, we reinsert both $(4,2)$ and $(-10,2)$ on this new node.
+>    ```mermaid
+>    graph TD
+>        subgraph After
+>         2[ ] -.-> 3["(-10,2)"] & 4["(4,2)"] & 5[ ] & 6[ ];
+>        end
+>        subgraph Before
+>         1["(4,2)"];
+>        end
+>    ```
+> 2. We insert $(2,20)$. Start at the root. Because our root is a gray node, traverse into the top-right quadrant where the point is located.
+> 
+>    Because this node contains $(4,2)$, it is a black node, so we split it and reinsert $(4,2)$ and $(2,20)$. 
+>    ```mermaid
+>    graph TD
+>        subgraph After
+>         7[ ] -.-> 8["(-10,2)"] & 9[ ] & 10[ ] & 11[ ];
+>         9[ ] -.-> 12["(2,20)"] & 13[ ] & 14["(4,2)"] & 15[ ];
+>        end
+>        subgraph Before
+>         2[ ] -.-> 3["(-10,2)"] & 4["(4,2)"] & 5[ ] & 6[ ];
+>        end
+>    ```
+
+Notice that this insertion process creates a lot of redundant nodes, wasting a lot of space! There are many ways to address this, but one of the most common is to **treat black nodes as buckets**, which can store $b \ge 1$ points.
+> This will make our splitting process take more time, with the tradeoff of minimizing empty white nodes! 
+
+By this insertion algorithm, the height of the tree is based on $d_{\text{min}}$, the minimum distance between any two points, and $k_{\text{max}}$, the dimensions of the root.
+
+### Deletion
+Suppose we now want to delete a point $P$ from our PR-QuadTree. To do this, we can make the following observations:
+1. If we have a gray node with all black / white children, and the black children collectively hold $\le b$ points, we can collapse it into a single black node! 
+2. Black nodes become white when all of their points have been deleted.
+3. The black and white nodes are always leaves of the tree.
+
+Thus, deletion involves removing the point from the tree, then checking if we can collapse any gray nodes, or downgrade any black nodes!
+
+The general algorithm is as follows. Suppose we want to remove $P$ from the tree. Then:
+1. Start from the root.
+2. Search for the point $P$. If the node is a gray node, recursively traverse into the child quadrant where $P$ can be found.
+3. If the node is a white node, break and do nothing. 
+4. If the node is a black node, check if it contains $P$, and remove it if so.
+5. While bubbling back up from the recursion, check for the following:
+   - **Case 1**: If the current node is black and it is now empty, remove it from the tree.
+   - **Case 2**: If the current node is gray, its children are all black / white and the black nodes collectively hold $\le b$ points, replace it with a black node with all these points.
+
+## Spatial Queries
+Just like with KD-Trees, we can also perform spatial queries with PR-QuadTrees. 
+> By convention (for this course), we'll traverse subtrees by first choosing the closest subtree to the anchor, and then traversing the rest of the subtrees in $Z$-order (ignoring the subtree we already traversed).
+
+### Range Queries
+Suppose we want to perform a **range query** with a PR-QuadTree, with anchor point $P$ and radius $r$.
+
+Then, our algorithm is as follows:
+1. Start from the root.
+2. For any node, check the type of the node.
+   - **White Node**: Do nothing. 
+   - **Black Node**: If the node is a black node, then for every point, see if it is within the point and range, and include it in the output if so.
+   - **Gray Node**: If the node is a gray node, then for every one of its subtree, check if the range contains part of the subtree. If it does, then repeat step (2) on the subtree. Otherwise, ignore.
+   
+   > By convention, we will prioritize traversal into the subtree that the anchor is located in.
+
+This is very similar to KD-Trees, with a slight modification to the pruning process!
+
+### Nearest-Neighbor Queries
+Suppose we want to perform a **nearest-neightbor query** with a PR-QuadTree, with anchor point $P$ and number of neighbors $k$.
+
+Just like with KD-Trees, we will also use a bounded priority queue for $k$-neighbors, and perform a range query, where the range is the highest distance in our queue.

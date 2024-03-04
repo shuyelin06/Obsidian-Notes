@@ -698,3 +698,104 @@ We now prove MVT. The idea of this proof is to create a function from $f$ whose 
 > [!Info] Corollary 3
 > Let $f : I \to \mathbb{R}$ be differentiable on $I$. For all $x \in I$, if $f'(x) > 0$ at $x \in I$, then $f$ is strictly increasing on $I$.
 
+### Cauchy MVT
+Below, we discuss a generalization of the Mean Value Theorem onto parametric curves. 
+
+> [!Abstract] Theorem: Cauchy Mean-Value Theorem
+> Suppose $f$ and $g$ are continuous and differentiable on $(a,b)$, creating a parametric curve $(f(t), g(t))$. If $g'(t) \ne 0$, then $\forall t \in (a,b)$, $\exists t_0 \in (a,b)$ such that
+> $$
+> \frac{f'(t_0)}{g'(t_0)} = \frac{f(b) - f(a)}{g(b) - g(a)}
+> $$
+
+Note that this is a generalization, as we can set $g(t) = t$ for any suitable $f$ to prove the Mean Value Theorem on $f$.
+
+> [!Note]- Proof (Sketch)
+> Let $h(t) = f(t) - m g(t)$.
+> 
+> Choose $m$ such that $h(a) = h(b)$ in order to apply Rolle's theorem to $h(t)$. We then follow a similar process to the MVT theorem proof.
+
+This theorem is quite important! It sets the stage for the Taylor series Lagrange remainder theorem.
+
+> [!Abstract] Theorem: Remainder Theorem
+> Let $I$ be an open interval, let $n \in \mathbb{N}$, and suppose we have a differentiable function $f : I \to \mathbb{R}$ which is $n$-times differentiable.
+> 
+> Suppose that at $x_0$
+> $$
+> f(x_0) = f'(x_0) = f''(x_0) = \dots = f^{n-1} (x_0) = 0
+> $$ 
+> Then $\forall x \in I / \{x_0\}$, there exists a $z$ between $x_0$ and $x$ such that 
+> $$
+> f(x) = \frac{f^n (z)}{n!} (x - x_0)^n
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > Let $g(x) = (x - x_0)^n$. We have
+> > $$
+> > \begin{align*}
+> >     &g(x_0) = 0 \\
+> >     &g'(x_0) = n (x - x_0)^{n-1} \vert_{x=x_0} = 0 \\
+> >     &g''(x_0) = n (n - 1) (x - x_0)^{n-2} \vert_{x=x_0} = 0 \\
+> >     &\vdots \\
+> >     &g^{n-1} (x_0) = n! (x - x_0) \vert_{x=x_0} = 0 \\
+> >     &g^n (x_0) = n! \\
+> > \end{align*}
+> > $$
+> > 
+> > Then, because $f(x_0) = g(x_0) = 0$, we take (continuously applying to the $n^{th}$ derivative)
+> > $$
+> > \begin{align*}
+> >     \frac{f(x)}{g(x)} 
+> >     &= \frac{f(x) - f(x_0)}{g(x) - g(x_0)} = \frac{f'(x_1)}{g'(x_1)} &x_1 \text{ between } x_0, x \\
+> >     & \frac{f'(x_1) - f'(x_0)}{g'(x_1) - g'(x_0)} = \frac{f''f(x_2)}{g''(x_2)} \\
+> >     &\vdots \\
+> >     &\frac{f^n (z)}{n!}
+> > \end{align*}
+> > $$
+> > 
+> > So, we find 
+> > $$
+> > f(x) = g(x) \frac{f^n (z)}{n!} = \frac{f^n (z)}{n!} (x - x_0)^n
+> > $$
+
+> [!Example]+ Example: Remainder Theorem
+> Let $f : \mathbb{R} \to \mathbb{R}$ and $f(2) = f'(2) = 0$, and $|f''(x)| \le 3$ for all $x$. Give a bound on $f(5)$.
+>
+> By the remainder theorem,
+> $$
+> \begin{align*}
+> f(5) = \frac{f^2 (z)}{2!} (5 - 2)^2  \\
+> |f(5)| \le \frac{3}{2} \cdot 9 \le \frac{27}{2}
+> \end{align*}
+> $$
+
+# Limsup / Liminf
+Consider a sequence that oscillates between $-1$ and $1$ as $n \to \infty$. While its limit does not exist, it does still have a "notion" of two different limits! This is the idea behind limsup (**limit superior**) and liminf (**limit inferior**) - they let us make claims about the limit for sequences, which may not necessarily converge to a single value!
+
+Let $\{x_n\}$ be bounded. Then,
+1. We say the **limit superior (limsup)**, is
+   $$
+   \limsup_{n\to\infty} x_n = \lim_{n\to\infty} \sup_{k \ge n} x_k
+   $$
+   Equivalent to the limit of the upper bound of $x_n$, for all $n$.
+2. We say the **limit inferior (liminf)** is
+   $$
+   \liminf_{n\to\infty} x_n = \lim_{n\to\infty} \inf_{k \ge n} x_k
+   $$
+   Equivalent to the limit of the lower bound of $x_n$, for all $n$.
+> Note that this can be extended to unbounded sequences too! We just won't cover them.
+
+> [!Example]+ Example: Limsup and Liminf
+> Consider $\{x_n\} = (-1)^n$. We can clearly see that limsup is 1 and liminf is -1, but why?
+>
+> Well, according to our limsup definition,
+> $$
+> \sup_{k \ge n} x_k = 1 
+> $$
+> As no matter what $n$ we choose, our supremum of subsequent terms will always be 1.
+>
+> Similarly, according to our liminf definition,
+> $$
+> \inf_{k \ge n} x_k = -1
+> $$
+> As no matter what $n$ we choose, our infimum of subsequent terms will always be -1.

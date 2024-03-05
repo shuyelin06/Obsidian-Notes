@@ -6,7 +6,8 @@ tags:
 ---
 
 # Interpolation and Polynomial Approximations
-## Motivation
+
+# Motivation
 Consider a function $f(x)$ defined along the interval $[a,b]$. While we may be able to calculate it by hand, in practice, computers are unable to calculate all possible types of functions - and in these cases, it's necessary to approximate the function $f(x)$.
 
 A common way to do this is by approximating $f(x)$ using a polynomial
@@ -35,8 +36,8 @@ This approximation is good, but is typically only used for error estimation, as 
 
 Below, we explore alternative, more practical ways to approximate $f$.
 
-## The Interpolation Problem
-### The Interpolation Property
+# The Interpolation Problem
+## The Interpolation Property
 One way we can approximate functions is by using **interpolation**.
 
 Given $(n + 1)$ distinct nodes $\{x_i\}_{i=0}^n$ along the function's domain, interpolation aims to find a polynomial $P_n(x)$ such that for all $0 \le i \le n$,
@@ -63,7 +64,7 @@ The following theorem sets an upper bound on the degree needed for such a polyno
 
 How can we explicitly construct such polynomials?
 
-### Lagrange Interpolating Polynomials
+## Lagrange Interpolating Polynomials
 One way we can explicitly construct such polynomials is by using the **Lagrange Interpolating Polynomial**.
 
 Suppose we have $\{ x_i \}_{i=0}^n$ distinct nodes. Then, for any $0 \le j \le n$, define the polynomial
@@ -116,7 +117,7 @@ Which, by property of the basis functions, is guaranteed to be equal to $f(x_j)$
 > The Lagrange Form can particularly be useful if we have the same fixed points $\{x_i\}_{i=0}^{n+1}$ for different $f$'s, as our basis functions remain the same! This will avoid computational costs
 > > Compare this with Newton's Form (later), where we'd have to recalculate all the divided differences.
 
-### Newton's Form of Interpolation
+## Newton's Form of Interpolation
 Another way we can explicitly construct such polynomials is by using **Newton's Form of Interpolation**. 
 
 This method attempts to find the polynomial in the form
@@ -224,7 +225,7 @@ $$
 
 We prove this fact below.
 
-> [!Note] Proof
+> [!Note]- Proof
 > Let $x \in [a,b]$. 
 > 
 > Suppose $x$ is one of the interpolating nodes. Then, we are done.
@@ -264,3 +265,186 @@ We prove this fact below.
 > $$
 > 
 > This can be refactored to obtain the above result. 
+
+# Hermite Interpolation
+## Problem Stated
+Above, we saw that given $(n + 1)$ distinct nodes, we can form a polynomial that equals our function $f$ at these points! Now, what if we had **more information** about $f$ at these nodes, like $f$'s derivatives? Could we create a polynomial that interpolates $f$ on these derivatives as well? 
+
+Consider the following example.
+
+> [!Example]+ Example: Finer Interpolations of $f$
+> Find a $P(x)$ such that
+> $$
+> \begin{align*}
+>     P(0) = f(0) = -1 \\
+>     P(1) = f(1) = 0 \\
+>     P'(1) = f'(1) = -1
+> \end{align*}
+> $$
+>
+> Notice how we now have 2 conditions at the same node! 
+>
+> It's definitely possible to find an interpolating polynomial! Plugging our values into the polynomial $P(x) = a_0 + a_1 x + a_2 x^2$, we get a system of equations! Solving for it, we can find the polynomial 
+> $$
+> P(x) = -1 + 3x - 2x^2
+> $$
+
+Note how in the above example, it seems reasonable to expect that as we have 3 conditions, the degree of our polynomial is $\le 2$. But this is not necessarily the case! Consider the following:
+$$
+\begin{align*}
+    P'(0) = f'(0) = c \\
+    P'(1) = f'(1) = d
+\end{align*}
+$$
+
+With 2 conditions, we may expect to find a polynomial with degree $\le 1$. But such a polynomial isn't possible when $c \ne d$ (we'll need a higher degree)! Moreover, even if $c = d$, we do not have enough information to produce a unique polynomial! 
+> So, it's definitely possible to interpolate values of $f(x)$ and $f'(x)$ simultaneously, but additional conditions are needed to ensure the existence of a unique $P(x)$.
+
+This problem is known as **hermite interpolation**, and is formally stated as follows. Consider the $l + 1$ distinct nodes $x_0, \dots x_l$ with the **strict ordering** $x_0 < x_1 < x_2 \dots < x_l$.
+
+We want to find a polynomial $P_n(x)$, whose degree is $\le n$ such that
+$$
+P_n^i (x_j) = f^i (x_j) \qquad 0 \le i \le m_j - 1, 0 \le j \le l
+$$
+> Such a polynomial is known as a **hermite polynomial**.
+
+Where every node has **$m_j$ conditions** (derivatives). In other words, we need a polynomial which will equal all of the given derivatives for nodes $x_0 \dots x_l$ provided!
+
+Note that this means for a given problem, we have $m_0 + m_1 + \dots + m_l$ conditions. As the number of unknowns in $P_n(n) = n + 1$, we need $n + 1$ to be equal to this sum! So, if we have the following number of unknown values (or less), **we can guarantee uniqueness!**
+$$
+n = m_0 + m_1 + \dots + m_l - 1
+$$
+
+## Generalized Newton's Form of Interpolation
+Let's reconsider our above example from another perspective.
+
+> [!Note] Observation: Generalizing Newton's Form
+> Define non-distinct nodes (note how they're now non-distinct) $x_0 = 0$, $x_1 = 1$, $x_2 = 1$. Let's attempt to use Newton's form of interpolation to find
+> $$
+> \begin{align*}
+>     P_2(x) 
+>     &= f[x_0] + f[x_0,x_1] (x - x_0) + f[x_0,x_1,x_2] (x - x_0) (x - x_1) \\
+>     &= f(0) + \frac{f(1) - f(0)}{1 - 0} (x - 0) + f[0,1,1] (x - 0) (x - 1) \\
+>     &= -1 + x + f[0,1,1] x (x - 1)
+> \end{align*}
+> $$
+> 
+> We can use Newton's method to get this far normally, but we don't know what to do with a divided difference on repeated elements! However, we've seen from our earlier example that we can find our polynomial as 
+> $$
+> P(x) = -1 + 3x - 2x^2 = -1 + x - 2x (x - 1)
+> $$
+> 
+> So we should expect $f[0,1,1] = -2$. Expanding our divided difference, we normally should expect
+> $$
+> f[0,1,1] = \frac{f[1,1] - f[0,1]}{1 - 0} = f[1,1] - 1
+> $$
+> 
+> So $f[1,1] = -1$! Interestingly enough, this is precisely equal to $f'(1)$! This suggests that there is a connection between our divided difference with repeated elements, and $f$'s derivative at these repeated values! 
+
+In fact, given a divided difference
+$$
+f[x, \tilde{x}] = \frac{f[\tilde{x}] - f[x]}{\tilde{x} - x}
+$$
+If we take the limit as $\tilde{x} \to x$, we'll get our derivative!
+$$
+\lim_{\tilde{x} \to x} f[x, \tilde{x}] = f'(x)
+$$
+Thus, it makes sense that $f[x,x] = f'(x)$! While we won't formally prove it, we'll state this observation in the following lemma.
+
+> [!Abstract] Lemma: Generalizing Newton's Form
+> Let $x_0, x_1, x_2, \dots x_n$ be non-distinct nodes with the ordering $x_0 \le x_1 \le x_2 \le \dots \le x_n$. Then for a function continuous on $n$ derivatives $f \in C^n$, the **$n^{th}$ order divided difference** satisfies
+> $$
+> f[x_0, x_1, \dots x_n] =
+> \begin{cases}
+>     \frac{f[x_1, x_2, \dots x_n] - f[x_0, x_1, \dots x_{n-1}]}{x_n - x_0} & x_0 \ne x_n \\
+>     \frac{f^n (x_0)}{n!} & x_0 = x_n
+> \end{cases}
+> $$
+> > Note that if $x_0 = x_n$, then all the nodes are the same due to the ordering of the nodes that we force.
+
+This lemma lets us find divided differences on non-distinct nodes! Suppose we have conditions on the same node $x_i$ for $x_0, x_1, \dots x_l$. Define node $z_j$ to represent any single condition on some node $x_i$. 
+$$
+\{z_0, z_1, z_2, z_3, z_4, \dots \} = \{x_0, x_0, \dots, x_1, \dots, \}
+$$
+> Note that this number is equal to $n + 1$, or $m_0 + m_1 + \dots + m_l$. 
+
+Then, using **Newton's Form**, our required polynomial is given as
+$$
+P_n = f[z_0] + f[z_0,z_1] (x - z_0) + f[z_0, z_1, \dots, z_n] \prod_{i=0}^{n-1} (x - z_i)
+$$
+
+Where we can use the above lemma to solve for the divided differences. 
+
+Consider the following example.
+
+> [!Example]- Example: Newton's Form for Hermite Interpolation
+> Find the Hermite polynomial using
+> $$
+> f(0) = 1 \quad f'(0) = 2 \quad f(2) = -1 \quad f'(2) = 3
+> $$
+> 
+> First, note that there are two distinct nodes, 0 and 2. We'll denote them as
+> $$
+> x_0 = 0 \qquad x_1 = 2
+> $$
+> Furthermore, note that both nodes have 2 conditions, $m_0 = 2$, $m_1 = 2$.
+> > We have all information up to our highest derivative for each node,so we can guarantee uniqueness of our polynomial!
+> 
+> We define our total notes, including repetitions, and use this to find our polynomial.
+> $$
+> \{z_0, z_1, z_2, z_3\} = \{x_0, x_0, x_1, x_1\}
+> $$
+> 
+> We find the divided differences as
+> $$
+> \begin{align*}
+>     &f[z_0] = f[x_0] = 1 \\
+>     &f[z_1] = f[x_0] = 1 \\
+>     &f[z_2] = f[x_1] = -1 \\
+>     &f[z_3] = f[x_1] = -1 \\
+>     &f[z_0,z_1] = f[x_0,x_0] = \frac{f'(x_0)}{1!} = 2 \\
+>     &f[z_1, z_2] = f[x_0, x_1] = \frac{f(x_1) - f(x_0)}{x_1 - x_0} = \frac{-1 -1}{2 - 0} = -1 \\
+>     &f[z_2, z_3] = f[x_1, x_1] = \frac{f'(x_1)}{1!} = 3 \\
+>     &f[z_0, z_1, z_2] = f[x_0, x_0, x_1] = \frac{f[x_0, x_1] - f[x_0, x_0]}{x_1 - x_0} = \frac{-1 - 2}{2 - 0} = -\frac{3}{2} \\
+>     &f[z_1, z_2, z_3] = f[x_0, x_1, x_1] = \frac{f[x_0, x_1] - f[x_1, x_1]}{x_1 - x_0} = \frac{3 + 1}{2} = 2 \\
+>     &f[z_1, z_2, z_3, z_4] = f[x_0, x_0, x_1, x_1] = \frac{f[x_0, x_1, x_1] - f[x_0, x_0, x_1]}{x_1 - x_0} = \frac{2 + 3/2}{2} = \frac{7}{4}
+> \end{align*}
+> $$
+> 
+> We put these together to findour polynomial! We know our polynomial is given as
+> $$
+> \begin{align*}
+>     P_3(x) 
+>     &= f[z_0] + f[z_0, z_1] (x - z_0) + f[z_0, z_1, z_2] (x - z_0) (x - z_1) + f[z_0, z_1, z_2] (x - z_0) (x - z_1) (x - z_2) \\
+>     &= 1 + 2x - \frac{3}{2} x^2 + \frac{7}{4} x^2 (x - 2)
+> \end{align*}
+> $$
+
+> [!Example]- Example: Newton's Form for Hermite Interpolation (2)
+> Suppose we find the hermite polynomial $P(x)$ such that $P^i (x_0) = f^i (x_0)$ for all $0 \le i \le n$. Note that in this case, we only have one distinct node.
+> 
+> Because all of our $z_i$ terms are equal to the same $x_0$, when we write out our polynomial, we get
+> $$
+> P_n (x) = f(x_0) + \frac{f'(x_0)}{1!} (x - x_0) + \dots + \frac{f^n(x_0)}{n!} (x - x_0)^n
+> $$
+> 
+> This is, interestingly enough, the truncated Taylor series expansion of $f$ at $x_0$! 
+
+> [!Abstract] Theorem: Error Estimate on Hermite Polynomials
+> Consider $f \in C^{N+1} ([a,b])$, the function continuous on $n$ derivatives along the interval $[a,b]$. Furthermore, consider polynomial with degree $\le N + 1$ such that for $(l + 1)$ distinct nodes $x_0, \dots x_l \in [a,b]$,
+> $$
+> P_N^i (x_j) = f^i (x_j) \qquad \forall 0 \le i \le m_{j-1}, 0 \le j \le l
+> $$
+> > A polynomial approximating the nodes at the conditions given
+>
+> and $m_0 + m_1 + \dots m_l = N + 1$, then $\forall x \in [a,b]$, there exists an $\delta(x) \in (a,b)$ such that
+> $$
+> f(x) - P_N (x) = \frac{f^{N+1} (\delta_N (x))}{(N+1)!} \prod_{j=0}^l (x - x_j)^{m_j}
+> $$
+> This estimates our error on hermite polynomials!
+
+# Issues with Interpolation
+Below, we discuss issues that we face when interpolating polynomials.
+
+# Runge's Phenomena 
+Oscillations can occur 

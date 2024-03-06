@@ -66,7 +66,7 @@ Similarly, the largest possible positive number we can represent is on
 $$
 s = 0, c = 2047, f \approx 1 \Longrightarrow \approx 0.1799 \times 10^{309}
 $$
-so any real number smaller than this is simply given the special number $+\infty$, known as an **overflow**.
+so any real number larger than this is simply given the special number $+\infty$, known as an **overflow**.
 > There are equivalent underflows and overflows for negative numbers.
 
 Artithmetic with these special number is defined, and follows logical reasoning if we think of these special numbers as very small or very large values.

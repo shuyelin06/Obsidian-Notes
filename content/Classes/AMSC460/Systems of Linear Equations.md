@@ -536,9 +536,11 @@ Where $K(A) = ||A|| \cdot ||A^{-1}||$ is the **condition number of $A$**! This t
 
 > [!Abstract] Theorem: Condition Numbers
 > Let $B$ be a singular matrix. Then, for any matrix $A$,
-    > $$
-> \frac{||A - B||}{||A||} = \frac{1}{K(A)}
 > $$
+> \min_{b \in \mathbb{R}^{n \times n}} \frac{||A - B||}{||A||} = \frac{1}{K(A)}
+> $$
+> 
+> Giving us a measure of how close to being a singular matrix $A$ is! By convention, we'll say that for singular matrices, $K(A) = \infty$.
 
 > [!Example]+ Example: Condition Numbers
 > $$

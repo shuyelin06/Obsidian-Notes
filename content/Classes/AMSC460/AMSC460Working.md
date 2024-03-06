@@ -446,5 +446,97 @@ Consider the following example.
 # Issues with Interpolation
 Below, we discuss issues that we face when interpolating polynomials.
 
-# Runge's Phenomena 
-Oscillations can occur 
+## Runge's Phenomena 
+When interpolating a function with high degree polynomials, interpolations on equally spaced points can create oscillations along the edges of the interval being interpolated. This is known as **Runge's Phenomena**.
+
+Consider the following function, commonly known as the **Runge Function**
+$$
+f(x) = \frac{1}{1 + 25x^2}
+$$
+
+Now, consider the interpolating polynomial on $(n+1)$ equally-spaced nodes, with degree $\le n$. We have the following polynomials.
+
+![[Runge Function.png]]
+
+We can see that as we increase the degree of our polynomial, we get larger and larger oscillations at the end of the interval!  This creates a ton of error.
+
+How could we resolve this issue?
+
+### Resolving Runge's Phenomena: Chebyshev Nodes
+One way to resolve this issue is to pick non-equidistant nodes that will prevent oscillations from occurring around the edges! By concentrating our nodes around the edges, we make constrain the polynomial more so that it cannot oscillate.
+
+In fact, one example of how we could choose these nodes is **Chebyshev nodes**, which are distributed more densely near the edges of the interval than the interior.
+
+### Resolving Runge's Phenomena: Splines
+Another way we could resolve this issue is by using **piecewise interpolating polynomials**! By combining polynomials together that interpolate different portions of our interval, we can minimize the maximum degree polynomial we use. 
+
+This is the idea behind **splines**! A **spline** of degree $k$ having $n + 1$ knots $t_0, t_1, \dots t_n$ is a function $s(x)$ with the following properties:
+1. On each interval between knots $[t_{i-1}, t_i)$, $s(x)$ is a polynomial of degree $\le k$.
+2. $s(x)$ is continuous on $k - 1$ derivatives in the interval $[t_0, t_n]$.
+
+> We call $t_i$'s knots, as they serve as "connections" for our piecewise polynomials.
+
+> [!Example]- Example: Splines
+> Consider a spline of degree 1! Then, for all pairs of nodes, we'll have piecewise lines approximating our function!
+>
+> ![[Spline Deg1.png]]
+
+
+We don't have to chooose our knots to be our interpolating nodes, though, this is quite a convenient choice.
+
+One of the most commonly used types of splines is the **cubic spline** ($k = 3$)! In such a spline, each piecewise polynomial $s_i(x)$ on $x \in [t_i, t_{i+1})$ has degree $\le 3$.
+
+Furthermore, to be interpolating, the following must hold:
+1. All polynomials in a spline must satisfy
+   $$
+   \begin{align*}
+   s_i(t_i) = y_i \qquad \forall 0 \le i \le n - 1 \\
+   s_{n-1} (t_n) = y_n
+   \end{align*}
+   $$
+   In other words, they must equal our nodes at their given value, and furthermore, our last polynomial should also match our last node as well. 
+
+2. Our spline must be continuous up to 2 derivatives, meaning 
+   $$
+   \begin{align*}
+       s_{i-1} (t_i) = s_i (t_i) = y_i \qquad \forall 1 \le i \le n - 1 \\
+       s'_{i-1} (t_i) = s'_i (t_i) = y_i \qquad \forall 1 \le i \le n - 1 \\
+       s''_{i-1} (t_i) = s''_i (t_i) = y_i \qquad \forall 1 \le i \le n - 1 \\
+   \end{align*}
+   $$
+   In other words, our polynomials' derivatives (up to the 2nd) must match with the polynomials they're connected to.
+
+As we have $n$ degree 3 polynomials, we have $4n$ unknowns! However, summing up the information needed for the interpolation above, we only have $4n - 2$ conditions (equations), which is not enough information!
+
+One common way to address this is by setting boundary conditions for the polynomials. 
+- **Natural (Free) Boundaries**: Setting the 2nd derivatives at the boundaries to be 0 - $s''(t_0) = s''(t_n) = 0$.
+- **Clamped Boundaries**: Setting $s'(t_0) = f'(t_0)$ and $s'(t_n) = f'(t_n)$.
+
+Using natural boundaries, we will have to solve the system $Az = b$, where $z = [z_1, z_2, \dots z_{n-1}]^T \in \mathbb{R}^{n-1}$ and
+$$
+A = 
+\begin{bmatrix}
+    \frac{h_0 + h_1}{3} & \frac{h_1}{6} & 0 & 0 & \dots \\
+    \frac{h_1}{6} & \frac{h_1 + h_2}{3} & \frac{h_2}{6} & 0 & \dots \\
+    0 & \frac{h_2}{6} & \ddots & \ddots \\
+    0 & 0 & \ddots
+\end{bmatrix}
+
+\qquad
+b = 
+\begin{bmatrix}
+    \frac{y_2 - y_1}{h_1} - \frac{y_1 - y_0}{h_0} \\
+    \frac{y_3 - y_2}{h_2} - \frac{y_2 - y_1}{h-1} \\ 
+    \vdots \\
+    \frac{y_n - y_{n-1}}{h_{n-1}} - \frac{y_{n-1} - y_{n-2}}{h_{n-2}}
+\end{bmatrix}
+$$
+
+With our splines being given in the equation
+$$
+s_i (x) = z_{i+1} \frac{(x - t_i)^3}{6h_i} + z_i \frac{(t_{i+1} - x)^3}{6h_i} + \left( \frac{y_{i+1}}{h_i} - \frac{z_{i+1} h_i}{6} \right) (x - t_i) + \left( \frac{y_i}{h_i} - \frac{z_i h_i}{6} \right) (t_{i+1} - x)
+$$
+
+Where $h_i = t_{i+1} - t_i$ for all $0 \le i \le n - 1$, and $z_0 = z_n = 0$.
+> In MATLAB, we can solve this system using the `spline` function!
+

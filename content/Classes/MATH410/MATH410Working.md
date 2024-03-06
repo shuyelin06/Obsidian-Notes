@@ -785,17 +785,108 @@ Let $\{x_n\}$ be bounded. Then,
    Equivalent to the limit of the lower bound of $x_n$, for all $n$.
 > Note that this can be extended to unbounded sequences too! We just won't cover them.
 
-> [!Example]+ Example: Limsup and Liminf
-> Consider $\{x_n\} = (-1)^n$. We can clearly see that limsup is 1 and liminf is -1, but why?
+Note that by this definition, $\bar{x}_n = \sup_{k \ge n} x_k$ is a decreasing sequence! And furthermore, because this sequence is bounded and decreasing, by the MCT, it converges to the infimum.
+> This similarly holds for the liminf.
+
+So we can alternatively write the liminf and limsup as
+$$
+\begin{align*}
+    \limsup_{n\to\infty} x_n = \inf_{n\ge 1} (\sup_{k \ge n} x_k) \\
+    \liminf_{n\to\infty} x_n = \sup_{n\ge 1} (\inf_{k \ge n} x_k )
+\end{align*}
+$$
+
+> [!Example]+ Example: Computing Limsup
+> Suppose we have the sequence
+> $$
+> x_n = \frac{(-1)^n}{n}
+> $$
+> 
+> We find the limsup as
+> $$
+> \bar{x}_n = \sup_{k \ge n} x_k = 
+> \begin{cases}
+>     (-1)^{n+1} / n+1 & \text{n odd} \\
+>     (-1)^n / n & \text{n even}
+> \end{cases}
+> $$
+> Taking the limit as $n \to \infty$, this converges to 0. So, our limsup is 0.
+> > We can similarly show that the liminf is 0. 
+
+> [!Example]- Example: Computing Limsup (2)
+> Limsups are not always easy to prove! Consider
+> $$
+> \lim_{n\to\infty} \sin(n) = 1
+> $$
+> While it seems arbitrarily, this is difficult to prove! We need to prove that $\sin(n)$ for $n \in \mathbb{N}$ is dense in $[-1,1]$.
+
+> [!Abstract] Theorem: Addition of Limsup / Liminf
+> $$
+> \begin{align*}
+>     \limsup_{n\to\infty} (x_n + y_n) \le \limsup_{n\to\infty} x_n + \limsup_{n\to\infty} y_n \\
+>     \liminf_{n\to\infty} (x_n + y_n) \ge \liminf_{n\to\infty} x_n + \liminf_{n\to\infty} y_n \\
+> \end{align*}
+> $$
 >
-> Well, according to our limsup definition,
+> > [!Note]- Proof (Limsup)
+> > 
+> > By the upper bound nature of supremums,
+> > $$
+> > x_n + y_n \le \sup_{k \ge n} x_k + \sup_{k \ge n} y_k
+> > $$
+> > And furthermore, as the supremum of $x_n + y_n$ is the least upper bound,
+> > $$
+> > \sup_{k \ge n} (x_k + y_k) \le \sup_{k \ge n} x_k + \sup_{k \ge n} y_k
+> > $$
+> > We apply the limit on both sides to obtain our theorem.
+
+The **limit set** of $\{x_n\}_{n=1}^\infty$ is
+$$
+\{ x \in \mathbb{R} | \exists x_{n_j} \to x \}
+$$
+As $j \to \infty$. In other words, its the set of all limits that $\{x_n\}$'s subsequences converge to.
+
+> [!Example]+ Example: Limit Sets
 > $$
-> \sup_{k \ge n} x_k = 1 
-> $$
-> As no matter what $n$ we choose, our supremum of subsequent terms will always be 1.
+> x_n =
+> \begin{cases}
+>     \frac{5}{n+1} & \text{n odd} \\
+>     \frac{(-1)^n + n^2}{n^2} & \text{n even}
+> \end{cases}
+> $$ 
+> 
+> Then, our limit set is $S = \{ 0, 1 \}$. 
+
+Interestingly enough, in the above example, our liminf is 0, and our limsup is 1! This is no coincidence - we can use limit sets to compute our liminf and limsup!
+
+> [!Abstract] Theorem: Limit Sets and Liminf / Limsup
+> Let $\{x_n\}$ be a bounded sequence, and let $S$ be the limit set.
 >
-> Similarly, according to our liminf definition,
+> Then, 
 > $$
-> \inf_{k \ge n} x_k = -1
+> \begin{align*}
+>     \limsup_{n\to\infty} x_n = \sup(S) \\
+>     \liminf_{n\to\infty} x_n = \inf(S)
+> \end{align*}
 > $$
-> As no matter what $n$ we choose, our infimum of subsequent terms will always be -1.
+> > We omit the proof.
+
+> [!Abstract] Theorem: Convergence and Limsup / Liminf
+> $$
+> \limsup x_n = \liminf x_n \iff \lim x_n = L \text{ exists}
+> $$
+> In which case, all 3 limits are equal to $L$.
+>
+> > [!Note]- Proof (Forward Direction)
+> > 
+> > #### Proof ($\rightarrow$)
+> > Assume $\liminf x_n = \limsup x_n = L$. Then, for any $n$,
+> > $$
+> > \inf_{k \ge n} x_k \le x_n \le \sup_{k \ge n} x_k
+> > $$
+> > 
+> > Taking the limit of both sides as $n \to \infty$, we get
+> > $$
+> > L \le \lim_{n\to\infty} x_n \le L
+> > $$
+> > Forcing our limit to be equal to $L$.

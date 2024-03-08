@@ -598,7 +598,7 @@ Derivatives have a variety of useful properties that we can prove! They are give
 > [!Abstract] Theorem: Derivatives of Inverses
 > Let $x_0 \in I$ and $f : I \to \mathbb{R}$ be a strictly monotone continuous function. Suppose $f'(x_0) \ne 0$ exists (to avoid division by 0). Then, we can find the derivative of $f$'s inverse as follows: 
 > $$
-> (f^{-1})'(x_0) = \frac{1}{f'(x_0)} = \frac{1}{f' (f^{-1}(x_0))}
+> (f^{-1})'(x_0) = \frac{1}{f'(y_0)} = \frac{1}{f' (f^{-1}(x_0))}
 > $$
 
 > [!Example]- Example: Derivatives of Inverses
@@ -890,3 +890,111 @@ Interestingly enough, in the above example, our liminf is 0, and our limsup is 1
 > > L \le \lim_{n\to\infty} x_n \le L
 > > $$
 > > Forcing our limit to be equal to $L$.
+
+
+# Integration
+## Defining Integrals
+Suppose we have a function $f: [a,b] \to \mathbb{R}$. In this section, we formally define what an **integral** is.
+$$
+\int_a^b f(x) dx
+$$
+
+> [!Info] Definition of an Integral
+> Recall that in earlier calculus classes, we define an integral as the sum of progressionally smaller rectangles under the curve, known as a **Riemann Sum**.
+> $$
+> \int_a^b f(x) dx = \lim_{n\to\infty} \sum_{i=1}^n f(x_i) \Delta x_i
+> $$
+
+Consider the closed interval $[a,b]$, and partition it using $n + 1$ points $x_0, x_1, x_2, \dots x_{n} \in [a,b]$, where 
+$$
+x_0 = a \qquad x_i < x_{i+1}, \forall i \qquad x_n = b
+$$
+
+Let $f$ be bounded, and consider the interval between any two partition points $[x_{i-1}, x_i]$. By assumption, we can define the quantities $m_i$, the infimum of $f$ along this interval, and $M_i$, the supremum of $f$ along this interval.
+$$
+m_i = \inf_{x \in [x_{i-1}, x_i]} f(x) \qquad \qquad M_i = \sup_{x \in [x_{i-1}, x_i]} f(x)
+$$
+And use this to define the **lower ($L$) and upper ($U$) Darboux sums** of $f$,
+$$
+L(f,P) = \sum_{i=1}^n m_i \Delta x_i \qquad \qquad U(f,P) = \sum_{i=1}^n M_i \Delta x_i
+$$
+> Note that as $\Delta x_i$ is the width of our interval, we are defining rectangles under $f$ (whose heights are either the infimum of supremum along the interval)! This is very similar to Riemann Sums.
+
+> [!Abstract] Theorem: Darboux Sums
+> Suppose $m \le f(x) \le M$ for all $x \in [a,b]$. Then,
+> $$
+> m(b - a) \le L(f,P) \le U(f,P) \le M(b-a)
+> $$
+>
+> > [!Note]- Proof
+> >
+> > $P = \{x_0, \dots x_n\}$ be a partition of $[a,b]$, where $x_i$ is a subinterval, and let $m_i$, $M_i$ be the infimum and supremums along this subinterval. Then,
+> > $$
+> > \begin{align*}
+> >     m \Delta x_i \le f(x) \Delta x_i \le M \Delta x_i \\
+> >     \Delta x_i \le m_i \Delta x_i \le M_i \Delta x_i \le  M \Delta x_i
+> > \end{align*}
+> > $$
+> > 
+> > Summing this over all of the subintervals, we get
+> > $$
+> > m (b - a) \le L(f,P) \le U(f,P) \le M (b - a)
+> > $$
+
+Now let $P$ be a partition of $[a,b]$. Then, we say $P^*$ is a **refinement** of $P$ if $P^*$ contains all points of $P$, and possibly others.
+> A refinement is essentially just a partition with more points inside it.
+
+> [!Example]+ Example: Refinement
+> $$
+> \left\{ 0, \frac{1}{3}, \frac{1}{2}, 1 \right\} 
+> $$
+>
+> The below is an example of a refinement of this partition
+> $$
+> \left\{ 0, \frac{1}{3}, \frac{1}{2}, \frac{3}{4}, 1 \right\}
+> $$
+
+Refinements are important, as they let us define finer and finer sums for $L$ and $U$!
+
+> [!Abstract] Theorem: Refinements and Darboux Sums
+> Let $P$ be a partition of $[a,b]$, and $P^*$ refine $P$. Then,
+> $$
+> \begin{align*}
+>     L(f,P) \le L(f,P^*) \\
+>     U(f,P) \ge U(f,P^*)
+> \end{align*}
+> $$
+>
+> > This should intuitively make sense! If we more finely divide up $[a,b]$, then the minimum of $f$ along our new subintervals can only increase, and the maximum of $f$ along these subintervals can only decrease!
+
+> [!Abstract] Theorem: Partitions and Darboux Sums
+> For any partitions $P_1$ and $P_2$ of $[a,b]$, lower sums are always less than upper sums.
+> $$
+> L(f, P_1) \le L(f, P_2)
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > Define the common refinement of $P_1$ and $P_2$, by combining them as $P^* = P_1 \cup P_2$. Then, we can apply our previous theorem to obtain
+> > $$
+> > L(f, P_1) \le L(f, P^*) \le L(f, P^*) \le L(f, P_2)
+> > $$
+
+We can use these theorems to define what an integral is!
+
+Let $P$ be an arbitrary partition of $[a,b]$. Then, we define the **lower / upper (Darboux) integral** as
+$$
+\underline{\int_a^b} f = \sup \{ L(f,P) \} \qquad \overline{\int_a^b} f = \inf \{ U(f,P) \}
+$$
+Or in other words, the maximum lower sum, and the minimum upper sum.
+
+If these two integrals are equal,
+$$
+\underset{\bar{}}{\int_a^b} f = \bar{\int_a^b} f
+$$
+
+Then we say $f$ is **integrable** (in terms of Darboux) and we write
+$$
+\int_a^b  f
+$$
+for the commmon value.

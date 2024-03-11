@@ -970,31 +970,131 @@ Refinements are important, as they let us define finer and finer sums for $L$ an
 > [!Abstract] Theorem: Partitions and Darboux Sums
 > For any partitions $P_1$ and $P_2$ of $[a,b]$, lower sums are always less than upper sums.
 > $$
-> L(f, P_1) \le L(f, P_2)
+> L(f, P_1) \le U(f, P_2)
 > $$
 >
 > > [!Note]- Proof
 > > 
 > > Define the common refinement of $P_1$ and $P_2$, by combining them as $P^* = P_1 \cup P_2$. Then, we can apply our previous theorem to obtain
 > > $$
-> > L(f, P_1) \le L(f, P^*) \le L(f, P^*) \le L(f, P_2)
+> > L(f, P_1) \le L(f, P^*) \le U(f, P^*) \le U(f, P_2)
 > > $$
 
 We can use these theorems to define what an integral is!
 
 Let $P$ be an arbitrary partition of $[a,b]$. Then, we define the **lower / upper (Darboux) integral** as
 $$
-\underline{\int_a^b} f = \sup \{ L(f,P) \} \qquad \overline{\int_a^b} f = \inf \{ U(f,P) \}
+\underline{\int_a^b} f = \sup_P \{ L(f,P) \} \qquad \overline{\int_a^b} f = \inf_P \{ U(f,P) \}
 $$
-Or in other words, the maximum lower sum, and the minimum upper sum.
+Or in other words, the maximum lower sum, and the minimum upper sum over all possible partitions $P$.
+> Note that the $P$ underneath the supremums and infimums is notation! We're essentially applying a "supremum / infimum" over all possible $L$ and $U$, where $P$ is arbitrary (like the $dx$ in an integral).
 
-If these two integrals are equal,
+If these two integrals are equal, then we say $f$ is **integrable** (in terms of Darboux) and we write
 $$
-\underset{\bar{}}{\int_a^b} f = \bar{\int_a^b} f
-$$
-
-Then we say $f$ is **integrable** (in terms of Darboux) and we write
-$$
-\int_a^b  f
+\int_a^b  f = \underline{\int_a^b} f = \overline{\int_a^b} f
 $$
 for the commmon value.
+
+> [!Abstract] Theorem: Darboux Sums and Integrals
+> Let $f: [a,b] \to \mathbb{R}$ be a function. Then,
+>
+> $$
+> L(f,P) \le \underline{\int_a^b} f \le \overline{\int_a^b} f \le  U(f,P)
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > The first and last inequalities naturally hold by definition of infimums and supremums.
+> >
+> > We apply our theorem above. For any two arbitrary partitions $P_1, P_2$,
+> > $$
+> > L(f, P_1) \le U(f, P_2)
+> > $$
+> > 
+> > Because $P_1$ and $P_2$ are arbitrary, we can apply our supremum on $P_1$ to obtain
+> > $$
+> > \sup_{P_1} L(f, P_1) \le U(f, P_2)
+> > $$
+> > We know that the supremum exists, as $L(f,P_1)$ is bounded above by $U$. 
+> >
+> > By the same idea, we apply our infimum on $P_2$ to obtain
+> > $$
+> > \sup_{P_1} L(f, P_1) \le \inf_{P_2} U(f, P_2)
+> > $$
+> > Which translates to our integrals by definition!
+
+> [!Example]+ Example: Computing Darboux Integrals
+> Consider the constant function over interval $[a,b]$, $f(x) = c$.
+>
+> We find our integral.
+> $$
+> \begin{align*}
+>     &L(f,P) = \sum_{i=1}^n m_i \Delta x_i = \sum_{i=1}^n c \Delta x_i = c (b - a) \\
+>     &U(f,P) = \sum_{i=1}^n M_i \Delta x_i = \sum_{i=1}^n c \Delta x_i = c (b - a) \\
+>     &\sup_P L(f,P) = c(b - a) = \inf_P U(f,P) \\
+>     &\int_a^b f = c (b - a)
+> \end{align*}
+> $$
+
+> [!Example]- Example: Computing Darboux Integrals
+> Consider the Dirichlet function
+> $$
+> f(x) = 
+> \begin{cases}
+>     0 & x \in \mathbb{Q} \\
+>     1 & x \not\in \mathbb{Q}
+> \end{cases}
+> $$
+> 
+> Is $f$ integrable along $[0,1]$?
+> 
+> Because the rationals / irrationals are dense, any subinterval will always contain a rational and an irrational, so $f$ will always be both 0 and 1 at some point in the interval.
+> $$
+> \begin{align*}
+>    &L(f,P) = \sum_{i=1} m_i \Delta x_i = \sum_{i=1} 0 \Delta x_i = 0 \\
+>    &\sup_P L(f,P) = 0 \\
+>    &U(f,P) = \sum_{i=1} M_i \Delta x_i = \sum_{i=1} 1 \Delta x_i = (1 - 0) \\
+>    &\inf_P U(f,P) = 1 \\
+>    &\sup_P L(f,P) \ne \inf_P U(f,P) 
+> \end{align*}
+> $$
+> 
+> As these are not equal, our function is not integrable along $[0,1]$ in the sense of the Riemann Darboux.
+
+Computing these integrals can be annoying, especially as we need to compute infimums and supremums! The below theorem can help simplify our integral computations in specific cases.
+
+> [!Abstract] Theorem: Archimedes-Riemann Theorem
+> Let $f: [a,b] \to \mathbb{R}$ be bounded. Then, $f$ is integrable if and only if there exists a sequence of partitions $\{P_n\}$ such that
+> $$
+> \lim_{n \to \infty} ( U(f,P_n) - L(f,P_n) ) = 0
+> $$
+> 
+> Furthermore, in the case that it is integrable,
+> $$
+> \int_a^b f = \lim_{n\to\infty} U(f,P_n) = \lim_{n\to\infty} L(f,P_n)
+> $$
+>
+> > [!Note] Proof
+> > 
+> > #### Proof ($\leftarrow$)
+> > Suppose there exists a sequence of partitions $\{P_n\}$ such that 
+> > $$
+> > \{ U(f,P_n) - L(f, P_n) \} \to 0
+> > $$
+> > 
+> > We know that
+> > $$
+> > \begin{align*}
+> >     \overline{\int_a^b} f \le U(f,P_n) \\
+> >     \underline{\int_a^b} f \ge L(f, P_n)
+> > \end{align*}
+> > $$
+> > 
+> > So we use these to obtain
+> > $$
+> > 0 \le \overline{\int_a^b} - \underline{\int_a^b} f \le U(f,P_n) - L(f, P_n) \to 0
+> > $$
+> > So by squeeze theorem, 
+> > $$
+> > \overline{\int_a^b} = \underline{\int_a^b} f
+> > $$

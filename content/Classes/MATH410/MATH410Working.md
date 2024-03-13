@@ -893,7 +893,7 @@ Interestingly enough, in the above example, our liminf is 0, and our limsup is 1
 
 
 # Integration
-## Defining Integrals
+## Darboux Integrals
 Suppose we have a function $f: [a,b] \to \mathbb{R}$. In this section, we formally define what an **integral** is.
 $$
 \int_a^b f(x) dx
@@ -918,6 +918,8 @@ And use this to define the **lower ($L$) and upper ($U$) Darboux sums** of $f$,
 $$
 L(f,P) = \sum_{i=1}^n m_i \Delta x_i \qquad \qquad U(f,P) = \sum_{i=1}^n M_i \Delta x_i
 $$
+Where $\Delta x_i = x_i - x_{i-1}$.
+
 > Note that as $\Delta x_i$ is the width of our interval, we are defining rectangles under $f$ (whose heights are either the infimum of supremum along the interval)! This is very similar to Riemann Sums.
 
 > [!Abstract] Theorem: Darboux Sums
@@ -1061,6 +1063,7 @@ for the commmon value.
 > 
 > As these are not equal, our function is not integrable along $[0,1]$ in the sense of the Riemann Darboux.
 
+## Archimedes-Riemann Theorem
 Computing these integrals can be annoying, especially as we need to compute infimums and supremums! The below theorem can help simplify our integral computations in specific cases.
 
 > [!Abstract] Theorem: Archimedes-Riemann Theorem
@@ -1068,13 +1071,14 @@ Computing these integrals can be annoying, especially as we need to compute infi
 > $$
 > \lim_{n \to \infty} ( U(f,P_n) - L(f,P_n) ) = 0
 > $$
+> In this case, we say that $\{P_n\}$ is **archimedian**.
 > 
 > Furthermore, in the case that it is integrable,
 > $$
 > \int_a^b f = \lim_{n\to\infty} U(f,P_n) = \lim_{n\to\infty} L(f,P_n)
 > $$
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > #### Proof ($\leftarrow$)
 > > Suppose there exists a sequence of partitions $\{P_n\}$ such that 
@@ -1096,5 +1100,118 @@ Computing these integrals can be annoying, especially as we need to compute infi
 > > $$
 > > So by squeeze theorem, 
 > > $$
-> > \overline{\int_a^b} = \underline{\int_a^b} f
+> > \overline{\int_a^b} f = \underline{\int_a^b} f
 > > $$
+> >
+> > #### Proof ($\rightarrow$)
+> > Suppose
+> > $$
+> > \overline{\int_a^b} f = \underline{\int_a^b} f = \int_a^b f
+> > $$
+> > 
+> > By definition,
+> > $$
+> > \overline{\int_a^b} f = \inf_P U(f,P) \qquad \underline{\int_a^b} f = \sup_P L(f,P)
+> > $$
+> > 
+> > So by the epsilon-definition of supremums, we know that $\forall \epsilon > 0$, there exists a $L(f,P)$, $U(f,P)$ such that
+> > $$
+> > L(f,P) < \inf_P U(f,P) + \epsilon \qquad \sup_P L(f,P) - \epsilon < U(f,P)
+> > $$
+> > We choose $\epsilon = 1/n$, and for all $n \in \mathbb{N}$ choose these $L$'s and $U$'s to find a sequence. Note that these sequences converge by squeeze theorem.
+> > $$
+> > \begin{align*}
+> > \inf_P U(f,P) < L(f,P_n) < \inf_P U(f,P) + \frac{1}{n} \\
+> > \sup_P L(f,P) - \frac{1}{n} < U(f,P'_n) < \sup_P L(f,P)
+> > \end{align*}
+> > $$ 
+> > 
+> > Our partitions are not guaranteed to be the same, so we can take the union of them, $P'_n \cup P_n = Q_n$
+> > $$
+> > \begin{align*}
+> > \inf_P U(f,P) < L(f,Q_n) \le L(f,P_n) < \inf_P U(f,P) + \frac{1}{n} \\
+> > \sup_P L(f,P) - \frac{1}{n} < U(f,P'_n) \le U(f, Q_n) < \sup_P L(f,P)
+> > \end{align*}
+> > $$ 
+> > Finally,
+> > $$
+> > \begin{align*}
+> >     0 
+> >     &\le U(f, Q_n) - L(f,Q_n) \\
+> >     &< \int_a^b f + \frac{1}{n} + \frac{1}{n} - \int_a^b f \\
+> >     &= \frac{2}{n} \to 0
+> > \end{align*}
+> > $$
+> > 
+> > We apply squeeze theorem to obtain convergence.
+> > 
+> > 
+> > We now show that
+> > $$
+> > \int_a^b f = \lim_{n\to\infty} U(f,P_n)
+> > $$
+> > To do this, we use the property of infimums that
+> > $$
+> > \begin{align*}
+> >     \overline{\int_a^b} f \le U(f, P_n) \\
+> >     0 \le U(f,P_n) - \overline{\int_a^b} f \le U(f,P_n) - L(f,P_n)
+> > \end{align*}
+> > $$
+> > 
+> > As $n \to 0$, we apply squeeze theorem.
+> > $$
+> > U(f,P_n) - \overline{\int_a^b} = 0 \Longrightarrow \overline{\int_a^b} = U(f,P_n)
+> > $$
+> > > We have similar argument for the limit of the lower sum!
+
+This theorem is really important, and can be used to prove a lot!
+
+For example, we can use this theorem to prove some properties of integrability.
+
+> [!Abstract] Theorem: Monotonicity and Integrability
+> Any monotone function $f : [a,b] \to \mathbb{R}$ is integrable.
+> > The monotonicity on $f$ and its restricted domain automatically implies boundedness!
+>
+> > [!Note]- Proof 
+> > 
+> > Let $P_n = \{ x_0, x_1, \dots x_n \}$ where $\Delta x_i = x_i - x_{i-1} = (b-a) / n$ is constant.
+> > 
+> > We show that $\{P_n\}$ is Archimedian, to apply the previous theorem.
+> > $$
+> > \begin{align*}
+> >     0 &\le U(f,P_n) \Delta x - L(f, P_n) \\
+> >       &= \sum_{i=1}^n M_i \Delta x - \sum_{i=1}^n m_i \Delta x \\
+> >       &= \frac{b-a}{n} \left( \sum_{i=1}^n f(x_i) - \sum_{i=1}^n f(x_{i-1}) \right) \\
+> >       &= \frac{b-a}{n} (f(x_n) - f(x_0)) \\
+> >       &= \frac{b-a}{n} (f(b) - f(a)) \to 0 
+> > \end{align*}
+> > $$
+> > 
+> > Thus, we apply our above theorem to obtain integrability.
+
+We can use a similar idea to show that any step function is integrable, though this is much more difficult.
+
+> [!Abstract] Lemma
+> Let $\{P_n\}$ be Archimedian for $f: [a,b] \to \mathbb{R}$. Then any refinement $\{P_n^*\}$ is also Archimedian.
+>
+> > [!Note]- Proof
+> > 
+> > By property of refinements, $U$ will get smaller, and $L$ will get larger, so
+> > $$
+> > \begin{align*}
+> >     0 &\le U(f, P_n^*) - L(f, P_n^*) \\
+> >     &\le U(f,P_n) - L(f,P_n) \to 0
+> > \end{align*}
+> > $$
+
+> [!Abstract] Theorem: Monotonicity
+> Let $f(x) \le g(x)$ for all $x \in [a,b]$. Then,
+> $$
+> \int_a^b f \le \int_a^b g
+> $$
+> 
+> > [!Note]- Proof
+> >
+> > Let $\{P_n\}$ be Archimedian for $f$, and $\{P_n'\}$ for $g$. Let $Q_n = P_n \cup P_n'$, which is still Archimedian for $f$ and $g$!
+> >
+> > With a common refinement, we have $U(f, Q_n) \le U(g, Q_n)$. Then, as $n \to \infty$, by the Archimedian Riemann theorem, we are done.

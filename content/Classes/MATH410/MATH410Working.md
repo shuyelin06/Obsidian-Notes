@@ -1164,10 +1164,13 @@ Computing these integrals can be annoying, especially as we need to compute infi
 > > $$
 > > > We have similar argument for the limit of the lower sum!
 
-This theorem is really important, and can be used to prove a lot!
+This theorem is really important, and can be used to prove a lot! In fact, many of the below properties of integrals can be proven using the Archimedes-Riemann Theorem. See below.
 
-For example, we can use this theorem to prove some properties of integrability.
 
+## Properties of Integrals
+Below, we discuss various useful properties of integrals.
+
+### Monotonicity and Integrals
 > [!Abstract] Theorem: Monotonicity and Integrability
 > Any monotone function $f : [a,b] \to \mathbb{R}$ is integrable.
 > > The monotonicity on $f$ and its restricted domain automatically implies boundedness!
@@ -1215,3 +1218,171 @@ We can use a similar idea to show that any step function is integrable, though t
 > > Let $\{P_n\}$ be Archimedian for $f$, and $\{P_n'\}$ for $g$. Let $Q_n = P_n \cup P_n'$, which is still Archimedian for $f$ and $g$!
 > >
 > > With a common refinement, we have $U(f, Q_n) \le U(g, Q_n)$. Then, as $n \to \infty$, by the Archimedian Riemann theorem, we are done.
+
+### Additivity, Linearity, Absolute Value of Integrals
+> [!Abstract] Theorem: Additivity of Integrals
+> Let $f : [a,b] \to \mathbb{R}$ be an integrable function. Then, $\forall c \in (a,b)$,
+> $$
+> \int_a^b f = \int_a^c f + \int_c^b f
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > Suppose there exists an Archimedian Sequence $\{P_n\}$ for $f$ on $[a,b]$. Without loss of generality, suppose $\{P_n\}$ contains $c$ (since any refinement is also Archimedian).
+> > 
+> > Split $\{P_n\}$ into mutually exclusive partitions $P_n'$ and $P_n''$ based on $c$. We want to show that both subsequences are Archimedian.
+> > 
+> > We have
+> > $$
+> > \begin{align*}
+> >     &U(f,P_n) - L(f,P_n) \to 0 \\
+> >     &(U(f,P_n') + U(f,P_n'')) - (L(f,P_n') + L(f,P_n'')) \to 0 \\
+> >     &(U(f,P_n') - L(f,P_n')) + (U(f,P_n'') - L(f,P_n'')) \to 0
+> > \end{align*}
+> > $$
+> > 
+> > Because $U(f,P_n') - L(f,P_n')$ and $U(f,P_n'') - L(f,P_n'')$ are both non-negative for all $n$, for this sequence to converge it must be true that they both converge to 0.
+
+> [!Abstract] Theorem: Linearity of Integrals
+> Let $\alpha, \beta \in \mathbb{R}$, and $f,g : [a,b] \to \mathbb{R}$ be integrable. Then,
+> $$
+> \int_a^b (\alpha f + \beta g) = \alpha \int_a^b f + \beta \int_a^b g
+> $$
+> 
+> > [!Note]- Proof (Half)
+> > 
+> > We show the first part of the proof.
+> > $$
+> > \int_a^b f + g = \int_a^b f + \int_a^b g
+> > $$
+> > 
+> > Let $P_n$ be an Archimedian sequence for $f$ and $g$ on $[a,b]$, which is possible by common refinement.
+> >    
+> > We know that
+> > $$
+> > \begin{align*}
+> >     f(x) + g(x) \le \sup f(x) + \sup g(x) \\
+> >     \sup( f(x) + g(x) ) \le \sup f(x) + \sup g(x) \\
+> >     U(f + g, P_n) \le U(f,P_n) + U(g,P_n)
+> > \end{align*}
+> > $$
+> >    
+> > Similarly, we can obtain
+> > $$
+> > L(f + g, P_n) \ge L(f,P_n) + L(g,P_n)
+> > $$
+> >    
+> > Giving us
+> > $$
+> > \begin{align*}
+> >     &L(f,P_n) + L(g,P_n) \le L(f + g, P_n) \le U(f + g, P_n) \le U(f,P_n) + U(g,P_n) \\
+> >     &\int_a^b f + \int_a^b f \le \int_a^b f + g \int_a^b f + g \le \int_a^b f + \int_a^b g &n \to \infty \\
+> >     &\int_a^b f + \int_a^b g = \int_a^b f + g
+> > \end{align*}
+> > $$
+
+> [!Abstract] Theorem: Absolute Value and Integrals
+> Let $f$ and $|f|$ be integrable on $[a,b]$. Then, 
+> $$
+> \left| \int_a^b f \right| \le \int_a^b |f|
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > We know that
+> > $$
+> > -|f(x)| \le f(x) \le |f(x)|
+> > $$
+> > By monotonicity,
+> > $$
+> > -\int_a^b |f| \le \int_a^b f \le \int_a^b |f|
+> > $$
+> > But this is essentially an absolute value!
+> > $$
+> > \left| \int_a^b f \right| \le \int_a^b |f|
+> > $$
+
+
+### Continuity and Integrals
+The follow theorems guarantee integrability for continuous functions.
+
+> [!Abstract] Theorem: Continuity and Integrability
+> Let $f$ be a continuous function on compact interval $[a,b]$. Then, its integral along this interval exists.
+>
+> > [!Note]- Proof
+> >
+> > Since we have a continuous function on a compact interval, we know $f$ is uniformly continuous. By definition, $\forall \epsilon > 0, \exists \delta > 0$ such that $\forall x,y \in [a,b]$,
+> > $$
+> > |x - y| < \delta \to |f(x) - f(y)| < \epsilon
+> > $$
+> >
+> > For later convenience, take the constant $\frac{\epsilon}{b-a}$.
+> >
+> > Let $\{P_n\} = \{x_0, \dots, x_n\}$ be a uniform sequence of partitions for $[a,b]$, where $x_0 = a, x_n = b$. As the partition is uniform, we have that $\Delta x_i = \frac{b-a}{n}$. We wish to show that $\{P_n\}$ is Archimedian.
+> > 
+> > We know that by a theorem,
+> > $$
+> > \begin{align*}
+> >     0 
+> >     &\le U(f,P_n) - L(f,P_n) \\
+> >     &\le \sum_{i=1}^n \left( \sup_{x \in [x_{i-1}, x_i]} f \right) \Delta x_i - \sum_{i=1}^n \left( \inf_{x \in [x_{i-1}, x_i]} f \right) \Delta x_i 
+> > \end{align*}
+> > $$
+> > 
+> > By the Extreme Value theorem, we know that for some $u_i, v_i \in [x_{i-1}, x_i]$,
+> > $$
+> > \sup_{x \in [x_{i-1}, x_i]} f = f(u_i) \qquad \inf_{x \in [x_{i-1}, x_i]} f = f(v_i)
+> > $$
+> > 
+> > This gives us
+> > $$
+> > \begin{align*}
+> >     0 &\le \sum_{i=1}^n \left( \sup_{x \in [x_{i-1}, x_i]} f \right) \Delta x_i - \sum_{i=1}^n \left( \inf_{x \in [x_{i-1}, x_i]} f \right) \Delta x_i  \\
+> >     &\le \sum_{i=1}^n ( f(u_i) - f(v_i) ) \Delta x_i \\
+> >     &\le \max_{1 \le i \le n} ( f(u_i) - f(v_i) ) \sum_{i=1}^n \Delta x_i \\
+> >     &\le f(u_{i_0}) - f(v_{i_0}) (b - a)
+> > \end{align*}
+> > $$
+> > 
+> > Where $u_{i_0}, v_{i_0}$ is the greatest difference between the maximum and minimum.
+> > 
+> > If $|u_{i_0} - v_{i_0}| < \delta$, we can apply uniform continuity, we have
+> > $$
+> > f(u_{i_0}) - f(v_{i_0}) (b - a) < \frac{\epsilon}{b-a} (b - a) < \epsilon
+> > $$
+> > 
+> > And since this holds for all $\epsilon$, we can let $\epsilon \to 0$ and apply squeeze theorem, to have
+> > $$
+> > \{ U(f,P_n) - L(f,P_n) \} \to 0
+> > $$
+> > 
+> > To guarantee the $|u_{i_0} - v_{i_0}| < \delta$ condition, we choose $N$ large enough such that $\Delta x_i < \delta$, so that $\Delta x_i < \delta$ for all $n \ge N$.
+
+> [!Abstract] Theorem: Continuity and Integrability
+> Let $f$ be continuous on open $(a,b)$ and bounded on $[a,b]$. Then, $\int_a^b f$ exists and does NOT depend on $f(a)$ or $f(b)$.
+> 
+> > [!Note]- Proof (Sketch)
+> > 
+> > Create an interval $I_n = [a + \frac{1}{n}, b - \frac{1}{n}]$. For each $I_n$, choose a partition $\{P_n^*\}$ satisfying
+> > 
+> > $$
+> > 0 \le U(f, P_n^*) - L(f,P_n^*) \le \frac{1}{n}
+> > $$
+> > Whose existence is guaranteed by our previous proof.
+> > 
+> > Let $P_n = P_n^* \cup \{a,b\}$. We show that $\{P_n\}$ is Archimedian for $[a,b]$ to show that $\int_a^b f$ exists, and then show that
+> > $$
+> > U(f,P_n^*) \to \int_a^b f
+> > $$
+> > 
+> > Since $P_n^*$ doesn't depend on $a$ or $b$, it must be true that the integral also doesn't depend on $f(a)$ or $f(b)$!
+
+> [!Example]+ Example: Continuity and Integrability
+> $$
+> f = \begin{cases}
+>       \sin(1/x) & x \in (0,1) \\
+>       0 & x = 0
+>     \end{cases}
+> $$
+> 
+> As $f$ is continuous on $(0,1)$, and bounded on $[0,1]$, its integral $\int_0^1 f$ exists.

@@ -1386,3 +1386,94 @@ The follow theorems guarantee integrability for continuous functions.
 > $$
 > 
 > As $f$ is continuous on $(0,1)$, and bounded on $[0,1]$, its integral $\int_0^1 f$ exists.
+
+## Fundmental Theorems of Calculus
+> [!Abstract] Theorem: First Fundamental Theorem of Calculus
+> Let $F$ be a continuous function on $[a,b]$, and $F'$ be bounded and continuous on $[a,b]$.
+>
+> Then,
+> $$
+> \int_a^b F'(x) dx = F(b) - F(a) 
+> $$
+>
+> > [!Note]- Proof
+> >
+> > Since $F'$ is continuous and bounded, our integral $\int_a^b F'$ exists by a theorem.
+> > 
+> > Let $P = \{x_0, \dots, x_n\}$ be a partition. Because $F$ is continuous, we apply Mean Value Theorem on each subinterval $[x_{i-1}, x_i]$, we know that $\exists c_i$ such that
+> > $$
+> > F(x_i) - F(x_{i-1}) = F'(c_i) \Delta x_i
+> > $$
+> > 
+> > Since $F'$ is bounded, we know that 
+> > $$
+> > \begin{align*}
+> > \inf_{[x_{i-1}, x_i]} F'(x) \le &F'(c_i) \le \sup_{[x_{i-1}, x_i]} F'(x) \\
+> > m_i \le &F'(c_i) \le M_i
+> > \end{align*}
+> > $$
+> > 
+> > So $m_i \Delta x_i \le F(x_i) - F(x_{i-1}) \le M_i \Delta x_i$. We take the sum over all the subintervals to get
+> > $$
+> > L(F',P) \le F(b) - F(a) \le U(F',P) \\
+> > $$
+> > 
+> > As this holds for all lower sums, we have
+> > $$
+> > \begin{align*}
+> >     \sup_P L(F',P) \le F(b) - F(a) \le \inf_P U(F',P) \\
+> >     \underline{\int_a^b} F' \le F(b) - F(a) \le \overline{\int_a^b} F'
+> > \end{align*}
+> > $$
+> > 
+> > And as we assume integrability, this gives us
+> > $$
+> > \int_a^b F' \le F(b) - F(a) \le \int_a^b F' \Longrightarrow \int_a^b F' = F(b) - F(a)
+> > $$
+
+We need the below theorems to prove the second fundamental theorem.
+
+> [!Abstract] Lemma
+> If $a > b$, then
+> $$
+> \int_a^b f = - \int_b^a f
+> $$
+
+> [!Abstract] Theorem: Integral Mean Value Theorem
+> If $f$ is a continuous function on $[a,b]$, then $\exists c \in [a,b]$ such that
+> $$
+> \int_a^b f = f(c) (b - a)
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > By EVT, $f(x_\text{min}) \le f(x) \le f(x_\text{max})$. We integrate this to obtain
+> > $$
+> > \begin{align*}
+> > f(x_\text{min}) (b - a) \le \int_a^b f \le f(x_\text{max}) (b - a) \\
+> > f(x_\text{min}) \le \frac{1}{(b-a)} \int_a^b f \le f(x_\text{max})
+> > \end{align*}
+> > $$
+> > 
+> > Now, for all points between the minimum and maximum, we can find a $c$ by intermediate value theorem equal to $f$ at that point - finishing our proof.
+
+
+> [!Abstract] Theorem: Second Fundamental Theorem of Calculus
+> If $f$ is a continuous function on $[a,b]$, then for any $x \in (a,b)$, 
+> $$
+> \frac{d}{dx} \int_a^x f(t) dt = f(x)
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > Let $\{x_n\} \to x_0$, $\{x_n\} \in [a,b] / \{x_0\}$. By definition of derivative,
+> > $$
+> > \begin{align*}
+> > \frac{\int_a^{x_n} f - \int_a^{x_0} f}{x_n - x_0} 
+> > &= \frac{\int_{x_0}^{x_n} f}{x_n - x_0} \\
+> > &= \frac{1}{x_n - x_0} f(C_n) \int_{x_0}^{x_n} 1 dx \\
+> > &= f(C_n)
+> > \end{align*}
+> > $$
+> > 
+> > By the Integral Mean Value Theorem where $C_n$ is between $x_0$ and $x_n$. We evaluate this and take the limit to obtain $f(x_0)$.

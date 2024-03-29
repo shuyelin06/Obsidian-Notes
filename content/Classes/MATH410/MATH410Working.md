@@ -1477,3 +1477,35 @@ We need the below theorems to prove the second fundamental theorem.
 > > $$
 > > 
 > > By the Integral Mean Value Theorem where $C_n$ is between $x_0$ and $x_n$. We evaluate this and take the limit to obtain $f(x_0)$.
+
+## Extra Integral Properties
+> [!Abstract] Theorem: Generalized Integral MVT
+> Let $g$ be integrable and $g(x) > 0$, and let $f : [a,b] \to \mathbb{R}$ be continuous. Then, $\exists x_0 \in (a,b)$ such that
+> $$
+> \int_a^b fg = f(x_0) \int_a^b g
+> $$
+> 
+> > Note that if $g = 1$, we have the Integral MVT!
+
+> [!Abstract] Theorem: Continuity of Integration
+> Define $F(x) = \int_a^x f(t) dt$ where $f$ is integrable. Then $F(x)$ is a continuous function, and in fact is uniformly continuous!
+> 
+> > [!Note] Proof (Sketch)
+> > 
+> > $$
+> > |F(x) - F(y)| = \left| \int_a^x f - \int_a^y \right| = \left| \int_y^x f \right|
+> > $$
+> > 
+> > Without loss of generality, say $x > y$. Then, 
+> > $$
+> > \left| \int_y^x f \right| \le \int_y^x |f| \le \max_{a \le x \le b} |f| \cdot (x - y)
+> > $$
+
+> [!Abstract] Theorem: Fundamental Theorem of Calculus + Chain Rule
+> $$
+> \frac{d}{dx} \int_{a(x)}^{b(x)} f(t) dt = f(b(x)) \frac{db}{dx} - f(a(x)) \frac{da}{dx} 
+> $$
+>
+> > We can easily prove this by splitting our integral along a middle $c$ value, and applying the second fundamental theorem.
+
+

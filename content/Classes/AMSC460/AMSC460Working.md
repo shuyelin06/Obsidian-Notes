@@ -294,3 +294,135 @@ If we choose a set of functions $\{\phi_j\}_{j=0}^N$ to be orthonormal, then $M$
 $$
 c_i^* = d_i = \int_a^b \phi_i (x) f(x) w(x) dx
 $$
+
+Some important examples of these orthonormal polynomials are given as follows:
+- The **Legendre Polynomials**: Given $w(x) = 1$, and applying Grahm Schmidt on $[-1,1]$, we have
+  $$
+  \phi_0 (x) = 1 \\
+  \phi_1 (x) = x \\
+  \phi_{n+1} (x) = {(2n + 1) x \phi_n (x) - n \phi_{n-1} (x)}{n + 1} \qquad \forall n \ge 1
+  $$
+  
+  with $L^2$ norm given as
+  $$
+  || \phi_n ||_{2,w} = \sqrt{\frac{2}{2n + 1}}
+  $$
+- The **Chebyshev Polynomials**: Given $w(x) = \frac{1}{\sqrt{1 - x^2}}$ on $[-1, 1]$, we get 
+  $$
+  \phi_0 (x) = 1 \\
+  \phi_1 (x) = x \\
+  \phi_{n+1} = 2x \phi_n (x) - \phi_{n-1} (x) \qquad \forall n \ge 1
+  $$
+  With $L^2$ norm given as
+  $$
+  || \phi_n ||_{2,w} = \begin{cases}
+      \sqrt{\pi} & n = 0 \\
+      \sqrt{\frac{\pi}{2}} & n \ne 0 
+  \end{cases}
+  $$
+
+
+--- New Chapter ----
+
+
+# Nonlinear Functions
+
+# Root Finding Algorithms
+Consider the function $f(x) = ax^2 + bx + c$. Suppose we want to find its root, i.e. $x^*$ such that $f(x^*) = 0$. Note that we can easily find this using the **quadratic formula**
+$$
+x^* = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+What if we had $f(x) = \sin(x) - e^{-x}$? Now our example is too complicated!
+
+This section describes, given a non-linear function, how do we find the roots of these functions? We discuss **root-finding algorithms** that can do this for us! Notes:
+- These algorithms are iterative, giving us a sequence of approximations $x_n \to x^*$.
+- The roots $x^*$ we find are NOT guaranteed to be unique, and the $x^*$ we converge to will depend on an initial guess $x_0$!
+
+> [!Abstract] Theorem: 
+> If $f$ is continuous on $[a,b]$, and $k$ is a value between $f(a)$ and $f(b)$, then there exists some $c \in (a,b)$ such that $f(c) = k$.
+
+> [!Info] Corollary
+> If $f$ is a continuous function on $[a,b]$ and $f(a) f(b) < 0$, then $\exists c \in (a,b)$ such that $f(c) = 0$.
+
+## Bisection Algorithm
+Assume $f$ is continuous. Pick $a_0$ and $b_0$ such that $f(a_0) f(b_0) < 0$. Note that by our corollary, we are guaranteed the existence of a root between $a_0$ and $b_0$.
+
+Then, for each step $n = 0, 1, 2, \dots$,
+1. Define the midpoint, $c_n = \frac{a_n + b_n}{2}$.
+2. Then, we check the following cases.
+   - If $f(c_n) = 0$, we have found our root and stop!
+   - If $f(c_n) f(a_n) < 0$, then pick the next interval $[a_{n+1}, b_{n+1}] = [a_n, c_n]$ and repeat (1).
+   - If $f(c_n) f(b_n) < 0$, then pick the next interval $[a_{n+1}, b_{n+1}] = [c_n, b_n]$ and repeat (1).
+
+As we have our interval's size (about the root) every iteration, it should intuitively converge! The following theorem guarantees this.
+
+> [!Abstract] Theorem: Convergence of the Bisection Algorithm
+> Let $f$ be a continuous function on $[a_0, b_0]$ and $f(a_0) f(b_0) < 0$. Then,
+> $$
+> \lim_{n \to \infty} a_n = \lim_{n \to \infty} b_n = x^*
+> $$
+> 
+> Where $f(x^*) = 0$.
+
+How fast (efficient) is this algorithm? Well, note that because $c_n = \frac{a_n + b_n}{2}$, and $x^* \in [a_n, b_n]$,
+$$
+|c_n - x^*| \le \frac{1}{2} (b_n - a_n)
+$$
+and furthermore,
+$$
+\begin{align*}
+| c_{n+1} - x^* | &\le \frac{1}{2} ( b_{n+1} - a_{n+1} ) \\
+    &\le \frac{1}{4} (b_n - a_n)
+\end{align*}
+$$
+Define $E_n = \frac{1}{2} (b_n - a_n)$. Any given  method is said to **converge with order $p$** if for some constant $c$,
+$$
+E_{n+1} \le c E_n^p
+$$
+So for our bisection, we converge with order $p = 1$ (linearly) and $c = 1/2$.
+
+
+## Newton's Method
+Assume $f$ has at least one real root. Additionally, assume $f$ is differentiable.
+
+1. Start with an initial "guess" $x_0$, and let $l(x)$ be the tangent to $f$ at $x_0$.
+   $$
+   l(x) - f(x_0) = f'(x_0) (x - x_0)
+   $$
+   Let $x_1$ be the x-intercept of $l(x)$, 
+   $$
+   x_1 = x_0 - \frac{f(x_0)}{f'(x_0)}
+   $$
+2. Start with $x_1$, and let $l(x)$ be the new tangent line to $f$ at $x_1$. Similarly, pick $x_2$ to be the x-intercept of this line.
+   $$
+   x_2 = x_1 - \frac{f(x_1)}{f'(x_1)}
+   $$
+3. Continuing this, given any $x_n$, we can find $x_{n+1}$ as
+   $$
+   x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+   $$
+
+We can find the convergence rate of this method to be quadratic, which is faster than our previous method!
+$$
+E_n \le c E_n^2
+$$
+
+However, there's a major trade-off - there's no guarantee that Newton's Method converges, depending on our choice of $x_0$! Only in some cases can we guarantee convergence.
+
+> [!Abstract] Theorem: Convergence of Newton's Method
+> Let $f$ have the following properties:
+> - $f$ has 2 continuous derivatives
+> - $f$ is strictly monotone increasing, i.e. $f'(x) > 0$
+> - $f$ is convex, i.e. $f''(x) > 0$
+> - $f$ has to have a root $x^*$
+> 
+> Then, $x^*$ is unique, and Newton's method will converge to $x^*$ for any initial $x_0$ (known as **global convergence**).
+
+We can modify Newton's method to be the formula
+$$
+x_{n+1} = x_n - \frac{f(x_n) (x_n - x_{n-1})}{f(x_n) - f(x_{n-1})}
+$$
+
+Known as the **secant method**, which, instead of using the tangent line, essentially finds the $x$-intercept of the line passing through $(x_{n-1}, f(x_{n-1})), (x_n, f(x_n))$.
+> However, this method has an order $p$ between 1 and 2 (known as being **super-linear**), making it more efficient than bisection, but less than Newton's!

@@ -1486,20 +1486,45 @@ We need the below theorems to prove the second fundamental theorem.
 > $$
 > 
 > > Note that if $g = 1$, we have the Integral MVT!
+> 
+> > [!Note]- Proof
+> > 
+> > By assumption, we know that $f : [a,b] \to \mathbb{R}$. Thus, by the Extreme Value Theorem, $f$ has a minimum and maximum at $x_\text{min}, x_\text{max}$ (respectively). 
+> > 
+> > By property of minimums and maximums, we know that $\forall x \in [a,b]$,
+> > $$
+> > \begin{align*}
+> > f(x_\text{min}) \le &f(x) \le f(x_\text{max}) &\text{Mins and Maxes} \\
+> > f(x_\text{min}) g(x) \le &f(x) g(x) \le f(x_\text{max}) g(x) &g(x) \ge 0 \\
+> > \int_a^b f(x_\text{min}) g(x) \le \int_a^b &f(x) g(x) \le \int_a^b f(x_\text{max}) g(x) &\text{Monotonicity} \\
+> > f(x_\text{min}) \int_a^b g(x) \le \int_a^b &f(x) g(x) \le f(x_\text{max}) \int_a^b g(x) &\text{Constants} \\
+> > f(x_\text{min}) \le &\frac{\int_a^b f(x) g(x)}{\int_a^b g(x)} \le f(x_\text{max})
+> > \end{align*}
+> > $$
+> > 
+> > Since this value is bounded by the minimum and maximum of $f$,by the Intermediate Value Theorem, we know that there exists a $x_0 \in (a,b)$ such that
+> > $$
+> > f(x_0) = \frac{\int_a^b f(x) g(x)}{\int_a^b g(x)} \\
+> > \Longrightarrow \int_a^b f(x) g(x) = f(x_0) \int_a^b g(x)
+> > $$
+
 
 > [!Abstract] Theorem: Continuity of Integration
 > Define $F(x) = \int_a^x f(t) dt$ where $f$ is integrable. Then $F(x)$ is a continuous function, and in fact is uniformly continuous!
 > 
-> > [!Note] Proof (Sketch)
+> > [!Note]- Proof (Sketch)
 > > 
+> > Let $F(x) = \int_a^x f(t) dt$. Without loss of generality, say $x > y$. We have
 > > $$
-> > |F(x) - F(y)| = \left| \int_a^x f - \int_a^y \right| = \left| \int_y^x f \right|
+> > \begin{align*}
+> > |F(x) - F(y)| 
+> > &= \left| \int_a^x f - \int_a^y \right| = \left| \int_y^x f \right| \\
+> > &\le \int_y^x |f| &\text{Property of Absolute Values} \\
+> > &\le \max_{a \le x \le b} |f| \cdot (x - y)
+> > \end{align*}
 > > $$
-> > 
-> > Without loss of generality, say $x > y$. Then, 
-> > $$
-> > \left| \int_y^x f \right| \le \int_y^x |f| \le \max_{a \le x \le b} |f| \cdot (x - y)
-> > $$
+> >
+> > Choose $\delta = \frac{1}{\max_{a \le x \le b} |f| \cdot (x - y)}$ to obtain uniform continuity.
 
 > [!Abstract] Theorem: Fundamental Theorem of Calculus + Chain Rule
 > $$

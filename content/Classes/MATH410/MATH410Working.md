@@ -1440,7 +1440,7 @@ We need the below theorems to prove the second fundamental theorem.
 > $$
 
 > [!Abstract] Theorem: Integral Mean Value Theorem
-> If $f$ is a continuous function on $[a,b]$, then $\exists c \in [a,b]$ such that
+> If $f$ is a continuous function on $[a,b]$, then $\exists c \in (a,b)$ such that
 > $$
 > \int_a^b f = f(c) (b - a)
 > $$
@@ -1534,3 +1534,78 @@ We need the below theorems to prove the second fundamental theorem.
 > > We can easily prove this by splitting our integral along a middle $c$ value, and applying the second fundamental theorem.
 
 
+## Integration by Parts
+> [!Abstract] Theorem: Integration by Parts
+> If $f$ and $g$ are continuous on $[a,b]$, and $f'$ and $g'$ are bounded and continuous on $(a,b)$. Then
+> $$
+> \int f g' = f g - \int g f'
+> $$
+>
+> Additionally,
+> $$
+> \int_a^b f g' = fg \bigg\vert_{x=a}^{x=b} - \int_a^b f' g
+> $$
+> > What we are essentially doing with integration by parts is "moving" the derivative on $g$ onto $f$!
+>
+> > [!Note]- Proof
+> > 
+> > $$
+> > \begin{align*}
+> >     (fg)' = fg' + gf' \\
+> >     fg = \int fg' + \int gf'
+> > \end{align*}
+> > $$
+
+> [!Example] Example: Integration by Parts
+> $$
+> \begin{align*}
+>     \int x e^x 
+>     &= \int x \frac{d}{dx} e^x dx \\
+>     &= x e^x - \int e^x \frac{d}{dx} x dx \\
+>     &= x e^x - e^x + C
+> \end{align*}
+> $$
+
+
+> [!Abstract] Theorem: u-Substitution
+> Let $f : [a,b] \to \mathbb{R}$ be continuous, $g : [c,d] \to \mathbb{R}$ be continuous, $g'$ continuous and bounded on $(c,d)$, and $\text{range}(g) \subset (a,b)$. Then,
+> $$
+> \int_c^d f ( g(t) ) g'(t) dt = \int_{g(c)}^{g(d)} f(u) du
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > Let $H(x) = \int_c^x f(g(t)) g'(t) - \int_{g(c)}^{g(x)} f(u) du$. We show it is equal to the 0 function to obtain our result.
+> > 
+> > First, note that $H(c) = 0$. By the second fundamental theorem of calculus,
+> > $$
+> > \frac{d}{dx} H(x) = f(g(x)) g'(x) - f(g(x)) g'(x) = 0
+> > $$
+> > And as the derivative is also 0, this forces $H(x) = 0$ for all $x$.
+> > 
+> > Thus, we have
+> > $$
+> > \int_c^x f(g(t)) g'(t) - \int_{g(c)}^{g(x)} f(u) du = 0
+> > $$
+> > Let $x = d$ and rearrange to get our result.
+
+
+# Taylor Polynomials
+Suppose we have a function $f$, with $n$ derivatives. How could we approximately match it?
+
+Well, one potential way of doing this might be by matching $f's$ derivatives at a point $x_0$! If we can capture $f$'s entire state at a point, we may be able to approximate the entire function, or at least approximate nearby points.
+
+We say two functions $f$ and $g$ have **contact of order** $n$ at $x_0$ if
+$$
+f^k (x_0) = g^k (x_0) \qquad \forall k = 0,1,2,\dots n
+$$
+
+> [!Example]+ Example: Contact of Order
+> Let $f = x^2$, $g = x^3$. These two functions have a contact of order $1$ at $x_0 = 0$, as
+> $$
+> f(x_0) = 0 = g(x_0) \\
+> f'(x_0) = 0 = g'(x_0) \\
+> f''(x_0) = 2 \ne 0 = g''(x_0)
+> $$
+
+With Taylor Polynomials, we are trying to give $f$ and $g$ the highest contact of order we can! This has a ton of practical applications in the real world.

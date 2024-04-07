@@ -403,14 +403,16 @@ Assume $f$ has at least one real root. Additionally, assume $f$ is differentiabl
    x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
    $$
 
+> Note that at each step, we're essentially making a linear approximation of $f$, and using its root!
+
 We can find the convergence rate of this method to be quadratic, which is faster than our previous method!
 $$
 E_n \le c E_n^2
 $$
 
-However, there's a major trade-off - there's no guarantee that Newton's Method converges, depending on our choice of $x_0$! Only in some cases can we guarantee convergence.
+However, there's a major trade-off - there's no guarantee that Newton's Method converges, depending on our choice of $x_0$! Only if the following properties hold, can we guarantee convergence.
 
-> [!Abstract] Theorem: Convergence of Newton's Method
+> [!Abstract] Theorem: Global Convergence of Newton's Method
 > Let $f$ have the following properties:
 > - $f$ has 2 continuous derivatives
 > - $f$ is strictly monotone increasing, i.e. $f'(x) > 0$
@@ -419,10 +421,224 @@ However, there's a major trade-off - there's no guarantee that Newton's Method c
 > 
 > Then, $x^*$ is unique, and Newton's method will converge to $x^*$ for any initial $x_0$ (known as **global convergence**).
 
-We can modify Newton's method to be the formula
+Otherwise, for localized convergence, we need that
+1. $f$ has 2 continuous derivatives.
+2. $f'(x^*) \ne 0$ at the root $x^*$.
+3. Our initial guess $x_0$ is close enough to $x^*$.
+
+### Secant Method
+We can also modify Newton's method to be the formula
 $$
 x_{n+1} = x_n - \frac{f(x_n) (x_n - x_{n-1})}{f(x_n) - f(x_{n-1})}
 $$
 
-Known as the **secant method**, which, instead of using the tangent line, essentially finds the $x$-intercept of the line passing through $(x_{n-1}, f(x_{n-1})), (x_n, f(x_n))$.
-> However, this method has an order $p$ between 1 and 2 (known as being **super-linear**), making it more efficient than bisection, but less than Newton's!
+Known as the **secant method**, which, instead of using the tangent line, essentially finds the $x$-intercept of the line passing through $(x_{n-1}, f(x_{n-1})), (x_n, f(x_n))$. 
+
+This method doesn't require us to know $f$'s derivatives! However, this method also has an order 
+$$
+p = \frac{\sqrt{5} + 1}{2}
+$$ 
+which is between 1 and 2 (known as being **super-linear**). This makes the secant method more efficient than bisection, but less than Newton's!
+
+## Hybrid Methods
+Newton's is fast, but does not guarantee convergence, whereas Bisection guarantees convergence, but is slow. Could we reap the benefits of both?
+
+This is the point behind a **hybrid approach**, where we alternative between using bisection with a secant-type method together! We will use the secant-type method until it stops working, then switch to bisection!
+> This is in fact, what MatLab does when we call the function `fzero()`!
+
+
+# Non-Linear Systems of Equations
+Let us consider $m$ equations in $n$ unknowns
+$$
+\begin{align*}
+&x = [x_1, x_2, \dots x_n]^T \in \mathbb{R}^N \\
+&f_j : \mathbb{R}^N \to \mathbb{R} \\
+&f(x) = 
+\begin{bmatrix}
+    f_1 (x_1, x_2, \dots x_n) \\
+    f_2 (x_1, x_2, \dots x_n) \\
+    \vdots \\
+    f_n (x_1, x_2, \dots x_n)
+\end{bmatrix} \in \mathbb{R}^m
+\end{align*}
+$$
+
+Suppose we want to find $x^*$ such that $f(x^*) = 0$. How can we do this?
+> In the case that there exists no such $x^*$, we find the $x^*$ MINIMIZING this norm!!!
+
+We may be able to do this using a process similar to Newton's Method! Define the **Jacobian Matrix** as $D_f (x) \in \mathbb{R}^{m \times n}$ such that
+$$
+D_f (x) = 
+\begin{bmatrix}
+    \frac{\partial f_1 (x)}{d x_1} & \dots & \frac{\partial f_1}{\partial x_n} (x) \\
+    \vdots & & \vdots \\
+    \frac{\partial f_m (x)}{d x_1} & \dots & \frac{\partial f_m (x)}{d x_n}
+\end{bmatrix}
+$$
+
+
+1. Look at the case where $m = n$. Then, we have the following Taylor expansion of $f : \mathbb{R}^n \to \mathbb{R}^n$ about $x_0$:
+   $$
+   f(x) = f(x_0) + D_f (x_0) (x - x_0) + R(x)
+   $$
+
+    Where $R(x)$ is a remainder based on the Taylor Remainder Theorem. Say we want to solve to obtain 0.
+    $$
+    D_f (x) (x - x_0) = - f(x_0) \\
+    \Longrightarrow A \delta x_0 = b
+    $$
+
+    So, given an initial guess $x^0$, for $k = 0, 1, 2, \dots$
+    1. Evaluate $A^k = D_f (x^k)$.
+    2. Evaluate $b^k = -f(x^k)$.
+    3. Solve for $\delta x^k$ satisfying
+       $$
+       A^k \delta x^k = b^k
+       $$
+    4. 
+       Set $x^{k+1} = x^k + \delta x^k$.
+
+> In MATLAB, we can actually do this process through the function `fsolve()`!
+
+> [!Abstract] Theorem: Convergence
+> Assume there is a root $f(x^*) = 0$. Then suppose the following properties hold:
+> - $f$ is continuous on two derivatives, on some neighborhood $B$ around $x^*$.
+> - The Jacobian at $x^*$, $D_f (x^*)$, is invertible.
+> 
+> Then, $\exists \delta > 0, c > 0$ such that for all guesses sufficiently close, $|| x^0 - x^* ||_\infty \le \delta$, we have
+> - Convergence is guaranteed; $\lim_{k\to\infty} x^k \to x^*$
+> - Our convergence is quadratic; $|| x^{k+1} - x^* ||_\infty \le C || x^k - x^* ||_\infty^2$
+
+2. Let's now look at the case where $m > n$. In this case, as we have more equations than unknowns, we may not have a solution! So, we instead want to find an $x^*$ that minimizes our problem. This is known as the **Gauss-Newton Algorithm**.
+   $$
+   x^* = \argmin_{x \in \mathbb{R}^n} || f(x) ||_2^2
+   $$
+   
+   So, writing our Taylor Remainder theorem, we have
+   $$
+   \begin{align*}
+   f(x) &\approx f(x^k) + D_f (x^k) (x - x^k) \\
+   &= -b^k + A^k \delta x^k
+   \end{align*}
+   $$
+   
+   But this may not have a solution! So, if we apply our iterative method, we get the following. Take $x^0 \in \mathbb{R}^n$. Then, for $k = 0, 1, 2, \dots$,
+   1. Evaluate $A^k = D_f (x^k)$
+   2. Evaluate $b^k = f(x^k)$
+   3. Solve $\delta x^k = \argmin_{\delta x \in \mathbb{R}^n} || A^k \delta x - b^k ||_2^2$. This is equivalent to solving our minimization problem (see above)
+      $$
+      (A^k)^T A^k \delta x^* = (A^k)^T b^k
+      $$
+   4. Add $x^{k+1} = x^k + \delta x^k$.
+
+Our errors estimate on this algorithm is
+$$
+|| x^{k+1} - x^* ||_2 \le C ( || f(x^*) ||_2 \cdot || x^k - x^* ||_2 + || x^k - x^* ||_2^2 )
+$$
+
+This is comparing our new error every $x^{k+1}$ to our old error! We get quadratic convergence if $|| f(x^*) || = 0$, which is not usually true!
+
+If $\epsilon = || f(x^*) ||_2$ is small, then you initially have **quadratic decay**, but once $|| x^k - x^* ||_2 \approx \epsilon$, then decay becomes linear, as we can no longer ignore the $|| f(x^*) ||_2 \cdot || x^k - x^* ||_2$ term.
+
+
+
+--- END OF CHAPTER ---
+
+# Numerical Differentiation (Derivative Approximations)
+In many practical applications, we may want the derivative of a function $f$, without evaluating the true expression for $f'(x)$. This may occur because:
+- The true expression for $f'(x)$ is extremely complicated, or expensive to compute!
+- We only have points for $f$ - $\{ (x_i, f(x_i) ) \}$, so we don't even have an expression for $f$ to compute a derivative with!
+
+How can we find such derivatives?
+
+Recall that 
+$$
+f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
+$$
+If $h > 0$ and is very small, we approximately have that
+$$
+f'(x) \approx \frac{f(x + h) - f(x)}{h}
+$$
+By the Taylor Remainder Theorem of $f(x + h)$ about $x$, we have that for some $z \in (x, x + h)$,
+$$
+\begin{align*}
+    f(x + h) 
+    &= f(x) + f'(x) \cdot h + \frac{f''(x)}{2!} h^2 + \frac{f'''(x)}{3!} h^3 + \frac{f'''(z)}{4!} h^4 \\
+    f'(x) 
+    &= \frac{f(x + h) - f(x)}{h} - \frac{f''(x)}{2!} h - \frac{f'''(x)}{3!} h^2 -  \frac{f'''(z)}{4!} h^3 \\
+    f'(x) 
+    &= \frac{f(x + h) - f(x)}{h} + \text{Er(h)}
+\end{align*}
+$$
+Where $\text{Er(h)}$ is the error value on $h$, which converges to 0 as h becomes small. In particular, this method is known as a $p^{th}$ order method, where $p$ is the leading power term (lowest exponent) of $h$ in $\text{Er(h)}$, as the lowest exponent will contribute the most.
+> We say the rate of convergence is $p$ if $\text{Er}(h) = O(h^p)$
+
+This essentially approximates our derivative from the left-hand side, known as the **forward difference**! 
+
+We similarly have a **backward difference**,
+$$
+f'(x) = \frac{f(x) - f(x - h)}{h} + \text{Err(h)}
+$$
+which essentially approximates our derivative from the right-hand side.
+
+Finally, we have a **central difference**,
+$$
+f'(x) = \frac{f(x+h) - f(x-h)}{2h} + \text{Er}(h)
+$$
+We can prove that this error term is $O(h^2)$, meaning it's a 2nd order method!
+
+We also can find a **central difference for $f''$** as 
+$$
+f''(x) = \frac{f(x+h) - 2f(x) + f(x-h)}{h^2} + \text{Er}(h)
+$$
+Where this error term is $O(h^2)$, meaning it's a second order method!
+
+In general, we have $k \in \mathbb{R}$, $z \in (x, x + kh)$
+$$
+f(x + kh) = f(x) + f'(x) \frac{(kh)}{1!} + f''(x) \frac{(kh)^2}{2!} + f'''(x) \frac{(kh)^3}{3!} + f''''(z) \frac{(kh)^4}{4!}
+$$
+
+---
+
+How can we use these formulas to actually approximate our derivatives? There are many methods, but the one we will focus on is the **method of undetermined coefficients**!
+
+Given the values of $f$
+$$
+\{ f(x + k_i h) \}_{i=1}^n
+$$
+Where $k_i \in \mathbb{R}$ and $i \ne j \to k_i \ne k_j$, find a linear combination of these values to approximate some derivative $f^r (x)$.
+
+> [!Example] 
+Say we want to approximate $f''(x)$ using a linear combination of $f(x - h), f(x), f(x + h)$. Then, we can approximate it as
+$$
+f''(x) = c_1 f(x-h) + c_2 f(x) + c_3 f(x+h) = L(h)
+$$
+
+We expand each using their Taylor Expansions (performed above) to obtain
+$$
+\begin{align*}
+    L(h) 
+    &= c_1 \left[ f(x) - f'(x) h + \frac{f''(x)}{2!} h^2 - \frac{f'''(x)}{3!} h^3 + \frac{f''''(z_1)}{4!} h^4 \right] \\
+    &+ c_2 f(x) \\
+    &+ c_3 \left[ f(x) + f'(x) h + \frac{f''(x)}{2!} h^2 + \frac{f'''(x)}{3!} h^3 + \frac{f''''(z_2)}{4!} h^4 \right] \\
+    &= (c_1 + c_2 + c_3) f(x) + (-c_1 + c_3) h f'(x) + (c_1 + c_3) \frac{h^2}{2} f''(x) \\
+    &+ (-c_1 + c_3) \frac{h^3}{3!} f'''(x) + (c_1 f''''(z_1) + c_3 f''''(z_2)) \frac{h^4}{4!}
+\end{align*}
+$$
+We now attempt to find $c_1, c_2, c_3$ necessary to find our answer. As we want our second derivative, we want to drop our $f$ and $f'$ terms to 0, but keep the $f''$ term!
+$$
+\begin{align*}
+    c_1 + c_2 + c_3 &= 0 \\
+    -c_1 h + c_3 h &= 0 \\
+    c_1 \frac{h^2}{2} + c_3 \frac{h^2}{2} &= 1
+\end{align*}
+$$
+We solve this as
+$$
+c_1 = c_3 = \frac{1}{h^2} \qquad c_2 = -\frac{2}{h^2}
+$$
+Subbing this back into our equation, we get
+$$
+f''(x) = \frac{f(x - h) - 2f(x) + f(x + h)}{h^2} + O(h^2)
+$$
+Which we can use to approximate our $f''(x)$ value!

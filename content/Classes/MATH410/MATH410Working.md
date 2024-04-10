@@ -716,7 +716,7 @@ Note that this is a generalization, as we can set $g(t) = t$ for any suitable $f
 
 This theorem is quite important! It sets the stage for the Taylor series Lagrange remainder theorem.
 
-> [!Abstract] Theorem: Remainder Theorem
+> [!Abstract] Theorem: Function Value Theorem
 > Let $I$ be an open interval, let $n \in \mathbb{N}$, and suppose we have a differentiable function $f : I \to \mathbb{R}$ which is $n$-times differentiable.
 > 
 > Suppose that at $x_0$
@@ -1609,3 +1609,102 @@ $$
 > $$
 
 With Taylor Polynomials, we are trying to give $f$ and $g$ the highest contact of order we can! This has a ton of practical applications in the real world.
+
+> [!Info] Notation: Kronecker Delta
+> For convenience, we will define the notation
+> $$
+> \delta_{kl} = \begin{cases}
+>    1 & k = l \\ 0 & k \ne l
+> \end{cases}
+> $$
+
+
+> [!Abstract] Theorem: Taylor Polynomial
+> Let $I$ be an open interval containing $x_0$, and fix $n \in \mathbb{N}$. 
+> 
+> Then, if $f$ is $n$-times differentiable, there exists a unique Taylor Polynomial $p_n \in \mathbb{P}_n$ such that $p_n$ and $f$ have contact of order $n$ at $x_0$.
+> 
+> > [!Note]- Proof
+> > 
+> > Start with the guess that the polynomial exists, with the form
+> > $$
+> > P_n (x) = \sum_{l=0}^n a_l (x - x_0)^l
+> > $$
+> > 
+> > We show that we can choose our $a_l$'s to form such a polynomial. Let's first force 
+> > $$
+> > f^k (x_0) = p^k (x_0) \qquad \forall k = 0, 1, \dots, n
+> > $$
+> > 
+> > So,
+> > $$
+> > \begin{align*}
+> >     f^k (x_0) &= \sum_{l=0}^n a_l \frac{d^k}{dx^k} (x - x_0)^l \bigg\vert_{x=x_0} \\
+> >         &= \sum_{l=0}^n a_l k! \delta_{kl} \\
+> >         &= a_k k!
+> > \end{align*}
+> > $$
+> > Giving us $a_k = \frac{f^k (x_0)}{k!}$, so
+> > $$
+> > p_n (x) = \sum_{l=0}^n \frac{f^l (x_0)}{l!} (x - x_0)^l
+> > $$
+> > > We can show uniqueness by assuming two polynomials, and showing their coefficients are the same, by evaluating their derivatives at $x_0$ (which drops everything else to 0).
+> > 
+> > We verify the intermediate step below. Suppose we have
+> > $$
+> > \frac{d^k}{dx^k} (x - x_0)^3 \bigg\vert_{x = x_0} = \Phi^k (x)
+> > $$
+> > Then, for various values $k$, we have
+> > $$
+> > \begin{align*}
+> >     &k = 0 &\Phi^0 (x_0) = 0 \\
+> >     &k = 1 &\Phi^1 (x_0) = 0 \\
+> >     &k = 2 &\Phi^2 (x_0) = 0 \\
+> >     &k = 3 &\Phi^3 (x_0) = 3! \\
+> >     &k = 4 &\Phi^4 (x_0) = 0 \\
+> >     &k > 4 &\Phi^k (x_0) = 0
+> > \end{align*}
+> > $$
+> > So, 
+> > $$
+> > \frac{d^k}{dx^k} (x - x_0)^3 \bigg\vert_{x = x_0} = 3! \delta_{k3}
+> > $$
+> > We can generalize this for all $l$!
+
+What if we extended, $n \to \infty$? That is, given $f$, is it true that
+$$
+f(x) = \sum_{k=0}^\infty \frac{f^k (x_0)}{k!} (x - x_0)^k = \lim_{n\to\infty} p_n (x)
+$$
+This is possible, but only in some cases. This is where the remainder theorem comes in! 
+
+For any function $f$, we can write it as
+$$
+f(x) = p_n (x) + r_n (x)
+$$
+Where $r_n (x)$ is its remainder term. The following theorem defines this remainder term for us.
+
+> [!Abstract] Theorem: Lagrange Remainder Theorem
+> Fix $n \in \mathbb{N}$, and let $x_0 \in I$. Let $f : I \to \mathbb{R}$ be $(n + 1)$ times differentiable. Then, $\forall x \ne x_0$, there $\exists c \in I$ such that
+> $$
+> f(x) = p_n (x) + \frac{f^{n+1} (c)}{(n+1)!} (x - x_0)^{n+1}
+> $$
+>
+> > Note that $c$ depends on $x$. Changing $x$ may give us a different $c$.
+>
+> > [!Note]- Proof
+> > 
+> > $$
+> > f(x) - p_n (x) = r_n (x)
+> > $$
+> > Since $f$ and $p_n$ have contact of order $n$ at $x_0$, 
+> > $$
+> > r(x_0) = r'(x_0) = r''(x_0) = \dots = r^n (x_n) = 0
+> > $$
+> > By the Function Value Theorem, we have that for any $x \ne x_0$, $\exists c$ such that
+> > $$
+> > r (x) = \frac{r^{n+1} (c)}{n!} (x - x_0)^{n+1} = \frac{f^{n+1} (c)}{n!} (x - x_0)^{n+1}
+> > $$
+> > Because $p_n^{n+1} = 0$.
+
+
+Then, for $f$ to equal it's Taylor Series, we need this remainder to drop to 0 as $n \to \infty$!

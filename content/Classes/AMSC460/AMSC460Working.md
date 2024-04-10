@@ -642,3 +642,133 @@ $$
 f''(x) = \frac{f(x - h) - 2f(x) + f(x + h)}{h^2} + O(h^2)
 $$
 Which we can use to approximate our $f''(x)$ value!
+
+Generally, the method is as follows. We approximate the mth order derivative as:
+$$
+f^m (x) = \sum_{i=1}^n \alpha_i f(x + k_i h) + Er(h)
+$$
+Where we find $\{a_i\}_{i=1}^n such that $Er(h) = O(h^p)$. We do this by using the Taylor Expansion.
+
+---
+
+## Richardson's Extrapolation
+**Richardson's Extrapolation** describes a general method to boost the accuracy given some algorithm. 
+
+Consider the $p^{th}$ order approximation
+$$
+T = L(h) + e_0 h^p + e_1 h^{p+1} + \dots
+$$
+Where $T$ is our target, $L(h)$ is our algorithm, and every $e_i h^{p + i}$ is part of the error term.
+
+Note that if we wanted to change the order of the, we'd need to eliminate the $e_0 h^p$ term. 
+
+Consider what happens if we replace $h$ with $2h$.
+$$
+T = L(2h) + e_0 2^p h^p + e_1 2^{p+1} h^{p+1} + \dots
+$$
+Then, we can use this equation to elminate our $e_0 h^p$ error term. Multiplying our first equation by $2^p$ and subtracting our second equation from it, we get
+$$
+\begin{align*}
+    (2^p - 1) T &=  2^p L(h) - L(2h) \\
+    &+ 2^p (e_0 h^p + e_1 h^{p+1} + \dots )  - 2^p (e_0 h^p + 2 e_1 h^{p+1} + 4 e_2 h^{p+2} + \dots ) \\
+    T &= \frac{2^p L(h) - L(2h)}{2^p - 1} + \hat{e}_1 h^{p+1} + \hat{e}_2 h^{p+2} + \dots
+\end{align*}
+$$
+Giving us a new algorithm that increases our order of error!
+
+## Finding the Rate of Convergence
+Given an approximation $L(h)$ of $T$, the error is given as
+$$
+E(h) = |T - L(h)| 
+$$
+Suppose the error is approximately equal to $Ch^p$, where $C$ is a constant, indicating that it is a $p$ order method.
+
+If we take the logarithm of this error, we obtain
+$$
+\log (E(h)) \approx \log C + p \log h
+$$
+
+We can also use this to compare two rates of convergence. So, given two errors
+$$
+E(h_1) = C h_1^p \qquad E(h_2) = C h_2^p
+$$
+We can find their ratio as
+$$
+\frac{E(h_1)}{E(h_2)} = \left( \frac{h_1}{h_2} \right)^p \\
+p = h \frac{\frac{\log E(h_1)}{\log E(h_2)}}{\log h_1 / \log h_2} 
+$$
+?? Check this
+
+
+# Numerical Integration
+In other practical applications, we may want the integral of a function $f$, $\int_a^b f(x) dx$. This may occur because
+- We may not know $f(x)$ in order to take the integral.
+- We may know $f(x)$, but a closed form expression of the integral may not be available.
+- We may be able to compute the integral, but it is difficult to compute.
+- We may only have $f$ at a few nodes!
+
+To do these approximations, we'll perform what are known as **quadrature rules**, rules that let us approximate integrals.
+
+## Integration via Interpolation
+Possibly one of the more intuitive approaches to approximations is to first interpolate $f$ given its points, and then integrate this interpolation.
+
+Assume we're given points $\{ (x_i, f(x_i) \}_{i=0}^n$, where $\forall 0 \le i \le n$, $x_i \in [a,b]$. Recall that for these points, we can find our Lagrange Polynomial as
+$$
+f(x) \approx P_n (x) = \sum_{i=0}^n f(x_i) l_i (x)
+$$
+Where $l_i (x)$ are the bais polynomials.
+
+Then, as this approximates $f$, we may also be able to approximate its integral using $P_n (x)$!
+$$
+\int_a^b f(x) dx \approx \int_a^b P_n (x) dx = \sum_{i=0}^n f(x_i) \int_a^b l_i (x) dx
+$$
+> Similar to our Lagrange Interpolation, this has an advantage in that we can save on a lot of computation for different functions on the same nodes!
+
+Note that this is essentially taking a "weighted sum", as the integrals define a value determining how much each $f(x_i)$ contributes to the result.
+
+
+## Closed Newton-Cotes Quadrature
+Suppose we have our equipspaced interpolation nodes on $[a,b]$, given by
+$$
+x_i = a + ih \qquad \forall 0 \le i \le n
+$$
+Where $h = \frac{b-a}{n}$. 
+
+Then, using our integral approximation from before, we'll obtain approximation
+$$
+\int_a^b f(x) dx = \sum_{i=0}^n A_i f(x_i) + Er(h)
+$$
+
+> [!Abstract] Theorem: Error
+> There exists a $\epsilon \in (a,b)$ such that
+> $$
+> Er(h) = 
+> \begin{cases}
+>    \frac{h^{n+3} f^{n+2} (\epsilon)}{(n+2)!} \int_0^n t^2 (t - 1) (t - 2) \dots (t - n) dt & \text{n even and } f \in C^{n+2} [a,b] \\
+>    \frac{h^{n+2} f^{n+1} (\epsilon)}{(n+1)!} \int_0^n t (t - 1) \dots (t - n) dt &\text{n odd and } f \in C^{n+1} [a,b]
+> \end{cases}
+> $$
+> 
+> Note that this error is 0, meaning this quadrature is exact if $f(x)$ is a polynomial such that
+> - It's degree $\deg(f) \le n+1$ if $n$ is even
+> - It's degree $\deg(f) \le n$ if $n$ is odd
+> 
+> As in these cases, the derivative in the error term drops to 0.
+
+Some important quadratures from this rule are given below.
+- When $n = 1$, we have the **Trapezoidal rule**, giving us
+  $$
+  \begin{align*}
+      &x_0 = a &\qquad x_1 = b \\
+      &\int_a^b f(x) dx = \left( \frac{f(a) + f(b)}{2} \right) (b - a) - \frac{h^3}{12} f''(\epsilon)
+  \end{align*}
+  $$
+- When $n = 2$, we have the **Simpson's rule**, giving us
+  $$
+  \begin{align*}
+      &x_0 = a \qquad x_1 = \frac{a + b}{2} \qquad x_2 = b \\
+      &\int_a^b f(x) dx = \frac{f(a) + 4 f (\frac{a+b}{2}) + f(b)}{6} (b - a) - \frac{h^5}{90} f^4 (\epsilon) 
+  \end{align*}
+  $$
+
+## Open Newton Algorithm... (Midpoint Algorithm)

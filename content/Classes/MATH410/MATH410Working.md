@@ -1671,7 +1671,7 @@ With Taylor Polynomials, we are trying to give $f$ and $g$ the highest contact o
 > > $$
 > > We can generalize this for all $l$!
 
-What if we extended, $n \to \infty$? That is, given $f$, is it true that
+What if we extended this for $n \to \infty$? That is, given $f$, is it true that
 $$
 f(x) = \sum_{k=0}^\infty \frac{f^k (x_0)}{k!} (x - x_0)^k = \lim_{n\to\infty} p_n (x)
 $$
@@ -1689,7 +1689,7 @@ Where $r_n (x)$ is its remainder term. The following theorem defines this remain
 > f(x) = p_n (x) + \frac{f^{n+1} (c)}{(n+1)!} (x - x_0)^{n+1}
 > $$
 >
-> > Note that $c$ depends on $x$. Changing $x$ may give us a different $c$.
+> > Note that $c$ depends on $x$ and $n$. Thus, changing $x$ or $n$ may give us a different $c$.
 >
 > > [!Note]- Proof
 > > 
@@ -1706,5 +1706,84 @@ Where $r_n (x)$ is its remainder term. The following theorem defines this remain
 > > $$
 > > Because $p_n^{n+1} = 0$.
 
-
 Then, for $f$ to equal it's Taylor Series, we need this remainder to drop to 0 as $n \to \infty$!
+
+When does this remainder term converge to 0?
+$$
+|r(x)| \le \frac{|f^{n+1}(c)|}{(n+1)!} |x - x_0|^{n+1}
+$$
+Notice that in the denominator, we have a factorial $(n+1)!$, whereas in the numerator we have a power $|x-x_0|^{n+1}$. 
+
+> [!Abstract] Theorem: Factorials vs Powers
+> $$
+> \lim_{n\to\infty} \frac{|c|^n}{n!} = 0 \qquad \forall c \in \mathbb{R}
+> $$
+> 
+> > [!Note]- Proof
+> >
+> > Using the Ratio Test, our sum converges if our limit
+> > $$
+> > \lim_{n\to\infty} \left| \frac{a_{n+1}}{a_n} \right| = r < 1
+> > $$
+> > In which case our series converges to 0.
+> > 
+> > $$
+> > \frac{|c|^{n+1}/(n+1)!}{|c|^n / n!} = \frac{|c|}{n+1} \to 0
+> > $$
+
+As seen above, factorials grow faster than powers - so for convergence, we need our numerator term to be a power or slower! So, if we assume our function grows no faster than a power function,
+$$
+|f^n (x)| \le C M^n \qquad \forall n
+$$
+For some $C > 0, M > 0$, then we obtain convergence of our remainder term.
+$$
+|r(x)| \le \frac{CM^{n+1} |x - x_0|^{n+1}}{(n+1)!} \to 0
+$$
+
+This is given in the below theorem. 
+
+> [!Abstract] Theorem: Convergence of Taylor Polynomial
+> Let $f \in C^\infty (I)$, and let $x_i \in I$. Suppose $\exists \delta, C, M$ such that
+> $$
+> |f^n (x)| \le CM^n \qquad \forall x \in [x_0 - \delta, x_0 + \delta]
+> $$
+> > Note that this condition is sufficient, but not necessary for all cases of convergence.
+> 
+> Then, $f$ is equal to its Taylor series on $[x_0 - \delta, x_0 + \delta]$.
+> $$
+> f(x) = \sum_{k=0}^\infty \frac{f^k (x_0)}{k!} (x - x_0)^k
+> $$
+
+> [!Example]+ Example: Convergence of Taylor Polynomial
+> $$
+> \cos x = \sum_{n=0}^\infty \frac{(-1)^n}{(2n)!} x^{2n} \qquad x = x_0
+> $$
+> 
+> Convergence occurs because every derivative of $\cos x$ is bounded between $-1$ and $1$. In other words,
+> $$
+> \left| \frac{d^n}{dx^n} \cos x \right| \le 1 \le C \cdot M^n 
+> $$
+> Where $C = 1$, $M = 1$.
+
+> [!Example]- Example: Convergence of Taylor Polynomial (2)
+> $$
+> e^x = \sum_{n=0}^\infty \frac{x^n}{n!} \qquad x_0 = 0
+> $$
+>
+> Let's show convergence directly through remainder theorem. Our Lagrange Remainder is given as
+> $$
+> \frac{f^{n+1} (c)}{(n+1)!} x^n = \frac{e^c}{(n+1!} x^n
+> $$
+> $c$ depends on both $x$ and $n$! So, we need to restrict our $x \in [-R,R]$ to be able to restrict $c$, and claim convergence.
+> $$
+> \frac{e^c}{(n+1!} x^n \le \frac{e^R}{(n+1)!} |x|^n \to 0
+> $$
+> As this works for any $x \in [-R,R]$ we can expand $R$ to infinity to obtain convergence along all $x$!
+
+> [!Example]- Example: Convergence of Taylor Polynomial (3)
+> Does the Taylor Polynomial for $1/x$ converge?
+> $$
+> \frac{1}{x} \approx \sum (-1)^n (x - 1)^n \qquad x_0 = 1
+> $$
+> 
+> Yes, but only for $0 < x < 2$. Otherwise, our $(x - 1)$ term would be 1 or greater, making our remainder term fail to converge.

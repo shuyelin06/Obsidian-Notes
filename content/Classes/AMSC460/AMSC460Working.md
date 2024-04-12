@@ -716,11 +716,15 @@ Assume we're given points $\{ (x_i, f(x_i) \}_{i=0}^n$, where $\forall 0 \le i \
 $$
 f(x) \approx P_n (x) = \sum_{i=0}^n f(x_i) l_i (x)
 $$
-Where $l_i (x)$ are the bais polynomials.
 
-Then, as this approximates $f$, we may also be able to approximate its integral using $P_n (x)$!
+Where $l_i (x)$ are the bais polynomials. Then, as this approximates $f$, we may also be able to approximate its integral using $P_n (x)$!
 $$
 \int_a^b f(x) dx \approx \int_a^b P_n (x) dx = \sum_{i=0}^n f(x_i) \int_a^b l_i (x) dx
+$$
+
+This can alternatively be given as
+$$
+\int_a^b f(x) dx \approx \sum_{i=0}^n A_i f(x_i) \qquad A_i = \int_a^b l_i (x) dx
 $$
 > Similar to our Lagrange Interpolation, this has an advantage in that we can save on a lot of computation for different functions on the same nodes!
 
@@ -732,7 +736,7 @@ Suppose we have our equipspaced interpolation nodes on $[a,b]$, given by
 $$
 x_i = a + ih \qquad \forall 0 \le i \le n
 $$
-Where $h = \frac{b-a}{n}$. 
+Where $h = \frac{b-a}{n}$. Note that by this, $x_0 = a$, and $x_n = b$.
 
 Then, using our integral approximation from before, we'll obtain approximation
 $$
@@ -771,4 +775,89 @@ Some important quadratures from this rule are given below.
   \end{align*}
   $$
 
-## Open Newton Algorithm... (Midpoint Algorithm)
+## Open Newton-Cotes Quadrature
+Suppose we have a set of nodes $\{x_i\}_{i=0}^n \subset (a,b)$, such that $\forall 0 \le i \le n$,
+$$
+x_i = a + (i + 1)h
+$$
+Where $h = \frac{b - a}{n + 2}$. Note that by this definition, $x_0 = a + h$, and $x_n = b - h$.
+
+Then, for some $\epsilon \in (a,b)$, we obtain
+$$
+\int_a^b f(x) dx = 
+\begin{cases}
+    \sum_{i=0}^n A_i f(x_i) + \frac{h^{n+3} f^{n+2} (\epsilon)}{(n+2)!} \int_{-1}^{n+1} t^2 (t-1)(t-2) \dots (t-n) dt & \text{n even} \\
+    \sum_{i=0}^n A_i f(x_i) + \frac{h^{n+2} f^{n+1} (\epsilon)}{(n+1)!} \int_{-1}^{n+1} t^2 (t-1)(t-2) \dots (t-n) dt & \text{n odd} \\
+\end{cases}
+$$
+
+Note that we have exactness if $f(x)$ is a polynomial under the same conditions as the closed-form algorithm.
+
+Some important quadratures from this rule are given below.
+- When $n = 0$, we have the **Midpoint rule**, giving us
+  $$
+  \begin{align*}
+      &x_0 = \frac{a+b}{2} \\
+      &\int_a^b f(x) dx = f \left( \frac{a+b}{2} \right) (b - a) + \frac{h^3}{3} f''(\epsilon)
+  \end{align*}
+  $$
+  > This takes the integral of a constant line, whose value is equal to $f$'s midpoint.
+
+
+## Composite Quadrature Rules
+In each of these quadrature rules, because our errors depend on $h$, as $n \to \infty$, $h \to 0$, giving us lower errors! So, we should interpolate with higher-degree polynomials, right?
+
+Wrong! As we use higher-degree polynomials, we run into another issue - Runge's Phenomena! So, to minimize our errors, we should use other methods (as described below).
+
+One such method is by applying a **composite quadrature rule**, which partitions $[a,b]$ into smaller intervals and applies lower-order quadrature rules on each. So, given $\{x_i\}_{j=0}^m$, we'll have partition
+$$
+x_0 < x_1 < x_2 < \dots < x_{m-1} < x_m
+$$
+And can apply our quadrature rules on each $[x_j, x_{j+1}]$ subinterval with size $x_{j+1} - x_j$, whose composite will form our function integral.
+$$
+\int_a^b f(x) dx = \int_{x_0}^{x_1} f(x) dx + \int_{x_1}^{x_2} f(x) dx + \dots + \int_{x_{m-1}}^{x_m} f(x) dx
+$$
+
+Each subquadrature is given as
+$$
+\int_{x_j}^{x_{j+1}} f(x) dx \approx \sum_{i=0}^{n_j} A_i^j f(x_i^j)
+$$
+Where $A_i$ are the quadrature weights on $[x_j, x_{j+1}]$, and $\{ x_i^j \}_{i=0}^{n_j}$ are the quadrature nodes in our subinterval. For each subquadrature, we commonly will apply our midpoint rule, trapezoidal rule, or simpson's rule.
+
+Let's estimate the error for this rule. For simplicity, assume that the size of our subintervals is constant. Then, 
+- Note that if we applied our midpoint rule, any one time, we get error term
+  $$
+  Er = \frac{h^3}{3} f''(\epsilon)
+  $$
+  For some $\epsilon$ in our interval. Then, our total composite error is given as
+  $$
+  Er = \sum_{j=0}^{m-1} Er_j = \frac{h^3}{3} \sum_{j=0}^{m-1} f''(\epsilon_j)
+  $$
+  Defining $M = \frac{1}{m} \sum_{j=0}^{m-1} f''(\epsilon_j)$, the average of these node values, we know that this average is bounded by $f''(x)$'s maximum and minimum along the entire interval. 
+  
+  So, we apply intermediate value theorem to find a $c$ such that $f''(c) = M$. This gives us error
+  $$
+  Er = \frac{m h^3}{3} f''(c)
+  $$
+  For some $c$ in our interval $[a,b]$. Applying our assumption that $h = \frac{(b-a)}{m}$, we get
+  $$
+  Er = (b - a) \frac{h^2}{3} f''(c)
+  $$
+  Telling us that our error eterm is a 2nd order method.
+
+We can similary find that the composition trapezoidal rule is a 2nd order method, and our composition simpson's rule is a 4th order method.
+
+--- end of midterm material ---
+
+
+### Romberg Integration 
+Similarly to how we have **Richardson's Extrapolation** for boosting accuracy, we can also apply something known as **Romberg Integration** to boost the accuracy of composite integration.
+
+Applying a similar process to Richardson's Extrapolation, we obtain
+$$
+T = \frac{2^p Q(h) - Q(2h)}{2^p - 1} + \hat{e_1} h^{p+1} + \hat{e_2} h^{p+2}
+$$
+Giving us a new quadrature which is of a higher order error! 
+
+However, we need to be a bit careful with this - replacing $h$ by $2h$ means we're halving the number of subintervals we have for this second quadrature! This is only possible if $m$ is even, as otherwise, we won't be able to evenly cover our entire domain.
+> Doing this also means we have to evaluate $f$ at different points, which are actually where the partition boundaries once were!

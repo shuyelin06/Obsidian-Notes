@@ -1785,5 +1785,63 @@ This is given in the below theorem.
 > $$
 > \frac{1}{x} \approx \sum (-1)^n (x - 1)^n \qquad x_0 = 1
 > $$
+>
+> Yes, but only for $0 < x < 2$. Otherwise, our $(x - 1)$ term would be 1 or greater, making our remainder term fail to converge!
+>
+> We attempt to show convergence using the Lagrange Remainder Theorem. By the Lagrange Remainder Theorem, we obtain remainder
+> $$
+> | r_n (x) | = \frac{|x - 1|^{n+1}}{|c_{n,x}|^{n+2}}
+> $$
 > 
-> Yes, but only for $0 < x < 2$. Otherwise, our $(x - 1)$ term would be 1 or greater, making our remainder term fail to converge.
+> 1. **Case 1**: Suppose $1 < x < 2$. Then, we have $\frac{1}{c_{n,x}} < 1$, and we furthermore know that $0 < x - 1 < 1$, so our remainder converges to 0 as $n \to \infty$! In other words, our Taylor series converges to $f$ on $1 \le x < 2$.
+> 2. **Case 2**: Suppose $0 < x < 1$. Then, we have $x < c_{n,x} < 1 \Longrightarrow \frac{1}{c_{n,x}} < \frac{1}{x}$, so we have remainder term
+>    $$
+>    |r_n (x)| \le \frac{|x - 1|^{n+1}}{x^{n+2}}
+>    $$
+>    Which fails to converge to 0 for all $x \in (0,1)!
+> 
+> Notice how Lagrange fails in case 2, but we still have convergence on $x \in (0,1)$! Thus, Lagrange is a sufficient condition to prove convergence, but is not necessary for convergence.
+
+# Analytic Functions
+We say $f : D \to \mathbb{R}$ is **(real)-analytic** if $\forall x_0 \in D$, $\exists \delta > 0$ and $I = (x_0 - \delta, x_0 + \delta)$ such that
+$$
+f(x) = \sum_{n=0}^\infty a_n (x - x_0)^n
+$$
+For $x \in I$, and some $\{a_n\}$. In other words, all points in the function has a localized power series expansion!
+
+Note that if $f$ is analytic, then it is smooth ($f \in C^\infty$). However, the converse of this is false! See the below example.
+
+> [!Example]+ Example: Analytic Function Counterexample
+> Consider the **bump function (mollifier)**
+>
+> $$
+> f(x) = 
+> \begin{cases}
+>    c_\epsilon e^{\frac{1}{|\frac{x}{\epsilon}|^2 - 1}} & |x| < \epsilon \\
+>    0 & |x| \ge \epsilon
+> \end{cases}
+> $$
+> Where $c_\epsilon$ is chosen to make the integral equal to 1.
+>
+> This is a smooth function, but it doesn't have a globally convergent Taylor series, nor is it analytic!
+
+> [!Abstract] Theorem: Weierstrass Approximation Theorem
+> Let $f \in C[a,b]$. Then, $\forall \epsilon > 0$, there exists a polynomial $p_n$ of degree $n$ such that $\forall x \in [a,b]$, 
+> $$
+> | f(x) - p_n (x) | < \epsilon
+> $$
+>
+> > Note that $n$ can be a very high degree!
+
+This theorem is very strong, but needs all of the clauses! See the below counterexample. 
+
+> [!Example] 
+> Suppose $[a,b]$ is not compact. Then, we can form a counterexample to this theorem with $e^x$ on $(-\infty, \infty)$!
+> 
+> Suppose $| p_n (x) - f(x) | < \epsilon$ for all $x$. Then, we get a counterexample as for any non-zero polynomial, it will eventually go to $-\infty$ or $\infty$, so it cannot be bounded!
+> 
+> In other words,
+> $$
+> |p_n (x)| = |p_n (x) - e^x + e^x| \le |p_n - e^x| + e^x < \epsilon + e^x
+> $$
+> So as $x \to -\infty$, this forces $p_n(x)$ to go to $\epsilon$, but this is not possible for a non-zero polynomial!

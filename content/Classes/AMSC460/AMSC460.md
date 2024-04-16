@@ -11,3 +11,7 @@ In AMSC460, we discuss computational methods often used in many applications in 
 
 - [[Machine Numbers and Error]]
 - [[Systems of Linear Equations]]
+- [[Interpolation]]
+- [[Approximation Theory]]
+- [[Root Finding Algorithms]]
+- [[Numerical Differentiation and Integration]]

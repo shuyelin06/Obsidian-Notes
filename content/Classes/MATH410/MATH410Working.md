@@ -1845,3 +1845,94 @@ This theorem is very strong, but needs all of the clauses! See the below counter
 > |p_n (x)| = |p_n (x) - e^x + e^x| \le |p_n - e^x| + e^x < \epsilon + e^x
 > $$
 > So as $x \to -\infty$, this forces $p_n(x)$ to go to $\epsilon$, but this is not possible for a non-zero polynomial!
+
+
+# Cauchy Sequences
+We say the sequence
+$$
+\{a_n\}_{n=1}^\infty \in \mathbb{R}
+$$
+is **Cauchy** if $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n, m \ge N$,
+$$
+| a_n - a_m | < \epsilon
+$$
+
+> [!Abstract] Theorem: Boundedness of Cauchy Sequences
+> Let $\{a_n\}$ be a Cauchy sequence. Then, $\{a_n\}$ is bounded.
+> 
+> > [!Note]- Proof
+> >
+> > This proof is very similar to our proof on boundedness of convergent sequences!
+> > 
+> > Let $\{a_n\}$ be Cauchy. Then,
+> > $$
+> > \begin{align*}
+> > |a_n| 
+> > &= |a_n - a_N + a_N| \\
+> > &\le |a_n - a_N| + |a_N| \\
+> > &< \epsilon + |a_N|
+> > \end{align*}
+> > $$
+> > This guarantees a bound for our larger values! So, we take $M = \max\{\epsilon + |a_N|, |a_n|, \dots |a_{N-1}|\}$ to find a bound.
+
+> [!Abstract] Theorem: Convergence of Cauchy Sequences
+> Let $\{a_n\}$ be a sequence of real numbers. Then, $\{a_n\}$ is Cauchy if and only if it converges.
+>
+> > Note that this only holds because our sequence is on real numbers! In other spaces, this may not hold.
+> 
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\leftarrow$)
+> > Suppose $\{a_n\}$ converges. Let $a$ be what it converges to. Then,
+> > $$
+> > \begin{align*}
+> > | a_n - a_m | 
+> > &= | a_n + a - a - a_m | \\
+> > &\le | a_n - a | + | - (a_m - a) | \\
+> > &< \frac{\epsilon}{2} + \frac{\epsilon}{2} \\
+> > &< \epsilon
+> > \end{align*}
+> > $$
+> > 
+> > #### Proof ($\rightarrow$)
+> > Suppose $\{a_n\}$ is Cauchy. By definition, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n, m \ge N$, 
+> > $$
+> > | a_n - a | < \epsilon
+> > $$
+> > 
+> > We know that Cauchy sequences are bounded. By the Bolzano-Weierstrass Theorem, we can extract a convergent subsequence $\{a_{n_k}\} \to L$ forall $k \ge K$.
+> >
+> > Finally, fix $N$ and $K$. Then,
+> > $$
+> > \begin{align*}
+> > | a_n - L | 
+> > &\le | a_n - a_{n_k} | + | a_{n_k} - L | \\
+> > &< \frac{\epsilon}{2} + \frac{\epsilon}{2} \\
+> > &< \epsilon
+> > \end{align*}
+> > $$
+> > For $n \ge N$, $n_k \ge N$, and $k \ge K$. Note that we can always obtain this, as $n_k$ is a strictly increasing seqeuence, so we can keep increasing $K$ until $n_k \ge N$.
+
+
+Cauchy sequences can be very helpful in determining convergence! Recall how before, we could show that a sequence converges, but we had to know what it converged to in order to prove this! Cauchy sequences avoids this limitation. 
+
+# Infinite Series
+Let $S_n$ be a **partial sum**, given as
+$$
+S_n = \sum_{k=0}^n a_k
+$$
+Where $\{a_k\}$ are terms of a sequence. We say it is a **series** when $n \to \infty$, and this series **converges** if
+$$
+S = \lim_{n\to\infty} S_n \qquad S \in \mathbb{R}
+$$
+Otherwise, if $S$ does not exist, then the series **diverges**.
+
+A variety of test proofs are given below.
+
+> [!Note]- Divergence Test (Proof)
+> Suppose $\sum_{k=0}^\infty a_k$ converges. Then, 
+> $$
+> a_n = S_n - S_{n-1} \to 0 
+> $$
+> 
+> So by contrapositive, if $a_n \not\to 0$, then the series diverges.

@@ -76,6 +76,11 @@ A typical graphics program will run in the CPU, which will do a variety of tasks
 
 And then pass instructions to the GPU, to process what should be displayed. The visuals produced by the GPU are then displayed, prompting further user interaction, repeating our cycle!
 
+> [!Tip] Limitations of Graphics
+> The real world is complex, and it will always be the case that we cannot 100% accurately model and simulate all of it. Thus, approximations are necessary so that we can run our graphics programs at consistent speeds. 
+>
+> Common representations and approximations used throughout all of graphics are described more in [[Standard Representations]].
+
 ## The Graphics Pipeline
 To describe how the graphics rendering portion of a system works, we typically describe it using an abstraction known as the **graphics pipeline**. We call it a pipeline, as it describes a sequence of steps that need to take place to transform our mathematical model of some scene to pixels on the screen!
 > Such a pipeline used to be fixed and unchangeable, but with recent introductions of shaders, this pipeline is now programmable! 

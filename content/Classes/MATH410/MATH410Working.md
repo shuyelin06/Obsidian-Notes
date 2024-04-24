@@ -1927,7 +1927,17 @@ S = \lim_{n\to\infty} S_n \qquad S \in \mathbb{R}
 $$
 Otherwise, if $S$ does not exist, then the series **diverges**.
 
-A variety of test proofs are given below.
+Proofs for some of the series tests are given below.
+
+> [!Note]- Telescoping Sums (Proof)
+> By assumption, suppose that $\{c_n\} \to 0$.
+> $$
+> \begin{align*}
+> s_n &= \sum_{k=m}^\infty (c_{k-1} - c_k) \\
+>     &= (c_{m_1} - c_m) + (c_m - c_{m+1} ) + \dots + (c_{n-1} - c_n) \\
+>     &= c_{m-1} - c_n \to c_{m-1}
+> \end{align*}
+> $$
 
 > [!Note]- Divergence Test (Proof)
 > Suppose $\sum_{k=0}^\infty a_k$ converges. Then, 
@@ -1936,3 +1946,159 @@ A variety of test proofs are given below.
 > $$
 > 
 > So by contrapositive, if $a_n \not\to 0$, then the series diverges.
+
+> [!Note]- Geometric Series (Proof)
+> $$
+> \begin{align*}
+> s_n = \sum_{k=0}^n r^k = 1 + r + r^2 + \dots + r^n \\
+> r s_n = r + r^2 + r^3 + \dots + r^{n+1} \\
+> (1 - r) s_n = 1 - r^{n+1} \\
+> s_n = \frac{1 - r^{n+1}}{1 - r} \to \frac{1}{1 - r} \qquad |r| < 1
+> \end{align*}
+> $$
+
+> [!Note]- Series with Non-Negative Terms (Proof)
+> $$
+> s_n = \sum_{k=0}^n a_k \qquad a_k \ge 0
+> $$
+> By the Monotone Convergence Theorem, if $\{s_n\}$ is bounded, then it converges, and it converges to its supremum.
+
+> [!Note]- Direct Comparison Test (Proof)
+> $$
+> \begin{align*}
+> 0 \le a_k \le b_k \\
+> 0 \le \sum_{k=1}^n a_k \le \sum_{k=1}^n b_k
+> \end{align*}
+> $$
+> Suppose $\sum b_k$ exists. Then, $\sum a_k$ exists by the Monotone Convergence Theorem.
+> 
+> Otherwise, if $\sum a_k = \infty$, then $\sum b_k = \infty$ as no number can be greater than infinity.
+
+> [!Note]- Limit Comparison Test (Proof)
+> We have
+> $$
+> a_k \ge 0, b_k \ge 0 \qquad \lim_{k\to\infty} \frac{a_k}{b_k} = c > 0
+> $$
+> Thus, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall k \ge N$, 
+> $$
+> \left| \frac{a_k}{b_k} - c \right| < \epsilon
+> $$
+> This gives us
+> $$
+> 0 \le b_k (-\epsilon + c) < a_k < b_k (\epsilon + c)
+> $$
+> Taking the summation, we can apply the direct comparison test to determine convergence or divergence.
+> > Basically, we find that our partial sums are approximately equal (with a multiplier), so anything one sum does, the other must also do.
+
+> [!Note]- Integral Test & P-Test (Proof)
+> We have
+> $$
+> 0 \le \sum_{n=1}^\infty f(n+1) \le \int_a^\infty f(x) dx \le \sum_{n=1}^\infty f(n)
+> $$
+> Formed with the left-hand and right-hand Riemann sums, whose comparisons are known as $f$ is monotonically decreasing.
+> 
+> Apply direct comparison test.
+>
+> Apply integral test on $p-Test$ to show convergence on $p > 1$.
+
+> [!Note]- Cauchy Convergence Criterion (Proof)
+> Suppose $\{s_n\}$ is Cauchy. Then, we can combine $s_m, s_n$ into a single sum, which by definition is bounded by $\epsilon$.
+
+> [!Note]- Absolute Convergence Test (Proof)
+> Let $s_n = \sum_{k=1}^n a_k$. We show $s_n$ is Cauchy
+> $$
+> 0 \le | s_{n+k} - s_n | = | \sum_{i=n+1}^{n+k} a_i | \le \sum_{i=n+1}^{n+k} |a_i| < \epsilon
+> $$
+> We have $< \epsilon$ provided our $n$ is large enough.
+>
+> We now apply the Cauchy Sequence Criterion to obtain convergence.
+
+# Convergence of Function Sequences
+## Pointwise Convergence
+We say a sequence of functions **$\{f_n\} \to f$ pointwise on $D \subseteq \mathbb{R}$**, if $\forall x \in D, \forall \epsilon > 0, \exists N \in \mathbb{N}$ such that $\forall n \ge N$,
+$$
+| f_n (x) - f(x) | < \epsilon
+$$
+Or in other words, $\forall x \in D$,
+$$
+\lim_{n \to \infty} f_n (x) = f(x)
+$$
+> Notice how we fix our $x$ first, before aplying our limit!
+
+> [!Example]+ Example: Pointwise Convergence of Taylor Polynomials
+> It can be shown that $\forall x_0$, the Taylor Polynomials pointwise converge to $f$
+> $$
+> f(x_0) = \lim_{n \to \infty} P_n (x_0)
+> $$
+> 
+> Provided that the Lagrange Remainder drops to 0
+> $$
+> | r_n (x_0) | \to 0 \qquad n \to \infty
+> $$
+
+This is a very weak notion of convergence! Let's see why in the following examples.
+
+> [!Example] Example: Pointwise Covergence (1)
+> $$
+> f_n (x) = x + \frac{1}{n}
+> $$
+> 
+> Fix $x \in \mathbb{R}$. Then, as $n \to \infty$, $\{f_n (x)\} \to x$, giving us pointwise convergence.
+
+Some notable things we can see from this example:
+1. All functions $f_n$ are continuous on $x \in \mathbb{R}$, and so is $f$.
+2. The limit of our derivatives is equal to our function derivative
+   $$
+   \lim_{n\to\infty} f_n' (x) = 1 = f'(x)
+   $$
+3. The limit of our integrals is equal to our function integral
+   $$
+   \lim_{n\to\infty} \int_a^b f_n (x) dx = \frac{1}{2} x^2 \bigg\vert_a^b = \int_a^b f(x) dx
+   $$
+
+However **none of these properties always hold for pointwise convergence**! This makes pointwise convergence is extremely weak, as we can't really use it for anything.
+
+> [!Example]+ Example: Weakness of Pointwise Convergence (1)
+> Consider $f_n (x) = x^n$ on $[0,1]$. Then,
+> $$
+> \{ f_n \} \to f(x) \; \text{pointwise} \; = 
+> \begin{cases}
+>     0 & x \in [0,1) \\
+>     1 & x = 1
+> \end{cases}
+> $$
+>
+> So, we have pointwise convergence, but the limit ($f$) is not continuous!
+
+> [!Example]+ Example: Weakness of Pointwise Convergence (2)
+> Consider $f_n (x) = \sin(nx) / n$. Observe that as $n \to \infty$,
+> $$
+> \lim_{n\to\infty} f_n (x) = 0
+> $$
+> 
+> However, 
+> $$
+> f_n' (x) = \cos(nx)
+> $$
+> Does not converge to $f$'s derivative which is 0!
+> > We can show this by taking $\cos(2nx)$, applying a trig identity, and obtaining a contradiction by seeing that the identity gives us convergence to -1!
+
+> [!Example]+ Weakness of Pointwise Convergence (3)
+> $$
+> f_n (x) = 
+> \begin{cases}
+>     0 & x \in \{ q_1, q_2, \dots q_n \}, q_i \in \mathbb{Q} \\
+>     1 & \text{else}
+> \end{cases}
+> $$
+> 
+> Then,
+> $$
+> f_n (x) \to f(x) \; \text{pointwise} \; = 
+> \begin{cases}
+>     0 & x \in \mathbb{Q} \cap [0,1] \\
+>     1 & \text{else}
+> \end{cases}
+> $$
+> 
+> So the integral of $\int_0^1 f_n (x) = 1$ (we have a finite number of points), but the integral of the limit doesn't exist!

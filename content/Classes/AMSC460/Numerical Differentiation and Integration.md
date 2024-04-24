@@ -312,7 +312,7 @@ Suppose we applied our midpoint rule. We can prove that our new error is of orde
 
 We can similary find that the composition trapezoidal rule is a 2nd order method, and our composition simpson's rule is a 4th order method.
 
-### Romberg Integration 
+## Romberg Integration 
 Similarly to how we have **Richardson's Extrapolation** for boosting accuracy, we can also apply something known as **Romberg Integration** to boost the accuracy of composite integration.
 
 Applying a similar process to Richardson's Extrapolation, we obtain
@@ -323,3 +323,138 @@ Giving us a new quadrature which is of a higher order error!
 
 However, we need to be a bit careful with this - replacing $h$ by $2h$ means we're halving the number of subintervals we have for this second quadrature! This is only possible if $m$ is even, as otherwise, we won't be able to evenly cover our entire domain.
 > Doing this also means we have to evaluate $f$ at different points, which are actually where the partition boundaries once were!
+
+## Gaussian Quadratures
+Note that in the prior quadrature rules, we formed approximations of the form
+$$
+\int_a^b f(x) dx \approx \sum_{i=0}^n A_i f(x_i)
+$$
+
+Where our quadrature nodes are given. 
+
+How do we pick the quadrature nodes and quadrature weights such that our approximate is exact for the maximal degre of polynomials?
+
+> [!Example]+ Example: Exact Quadratures
+> The quadrature rule
+> $$
+> \int_{-1}^1 f(x) dx \approx f\left( -\frac{1}{\sqrt{3}} \right) + f \left( \frac{1}{\sqrt{3}} \right)
+> $$
+> 
+> Is exact on $P_3 [-1,1]$.
+
+So, suppose we have $(n + 1)$ quadrature nodes and $(n + 1)$ quadrature weights. This gives us $(2n + 2)$ unknowns! Thus, it may be possible to exactly represent polynomials in $\prod_{2n + 1}$.
+
+Note that any polynomial $p \in \prod_n [a,b]$ can be expressed as
+$$
+p(x) = \sum_{i=0}^n p(x_i) l_i (x) \qquad l_i = \prod_{j=0}^n \frac{ (x - x_j) }{ (x_i - x_j) } \quad j \ne i, 0 \le i \le n
+$$
+
+So, our rule is exact on $\prod_n [a,b]$ if it is equal to the integral of this!
+$$
+\begin{align*}
+\sum_{i=0}^n A_i p(x_i) = \int_a^b p(x) dx = \sum_{i=0}^n p(x_i) \int_a^b l_i (x) dx \\
+\Longrightarrow A_i = \int_a^b l_i (x) dx
+\end{align*}
+$$
+
+Below, we state a theorem to help us determine what nodes and weights we should be choosing.
+
+> [!Abstract] Theorem: Properties of Orthogonal Functions
+> If $f$ is a non-zero function on $[a,b]$ such that
+> 1. $f \in C [a,b]$
+> 2. $f$ is **orthogonal** to $\prod_n [a,b]$, or in other words
+>    $$
+>    \int_a^b f(x) p(x) dx = 0 \qquad p \in \prod_n [a,b]
+>    $$
+>
+> Then, $f$ will change sign at least $(n + 1)$ times in $[a,b]$ - it has at least $n$ real distinct zeroes in $[a,b]$.
+
+> [!Abstract] Theorem: Exactness of Quadrature Rules
+> Let $q$ be a polynomial satisfying the following properties:
+> 1. $q(x) \not\equiv 0$ and is of the degree $(n + 1)$.
+> 2. $q(x)$ is orthogonal to $\prod_n [a,b]$.
+> 3. $q(x)$ has real, simple roots, and all roots are in $[a,b]$.
+> 
+> Then, the quadrature rule $\sum_{i=0}^n A_i f(x_i)$ with these roots as the quadrature nodes and the quadrature weights
+> $$
+> A_i = \int_a^b l_i (x) \qquad l_i = \prod_{j=0}^n \frac{(x - x_j)}{(x_i - x_j)} \quad j \ne i
+> $$
+> Is exact on $\prod_{2n+1} [a,b]$.
+>
+> > [!Note]- Proof
+> > 
+> > Let $p(x) = \prod_{2n + 1} [a,b]$. By property of polynomials, we can factorize $p(x)$ as
+> > $$
+> > p(x) = q(x) \cdot \tilde{p}(x) + r(x)
+> > $$
+> > Where $q(x)$ is a polynomial of most $(n + 1)$ satisfying the above theorem, and $\tilde{p}(x)$ and $r(x)$ are polynomials of at most $n$.
+> > 
+> > At the roots of $q(x)$ (which are guaranteed by the above theorem), we have
+> > $$
+> > q(x_i) = 0 \Longrightarrow p(x_i) = r(x_i)
+> > $$
+> > 
+> > Taking the integral of $p(x)$, we have
+> > $$
+> > \begin{align*}
+> > \int_a^b p(x) dx 
+> > &= \int_a^b q(x) \tilde{p}(x) dx + \int_a^b r(x) dx \\
+> > &= 0 + \int_a^b r(x) \\
+> > &= \sum_{i=0}^n r(x_i) \int_a^b l_i (x) dx \\
+> > &= \sum_{i=0}^n p(x_i) \int_a^b l_i (x) dx
+> > \end{align*}
+> > $$
+> > 
+> > So, if we can find such a polynomial $q(x)$, we can find exactness!
+
+How can we find such a $q(x)$?
+
+Recall the Legendre Polynomials on $[-1, 1]$, which are orthogonal
+$$
+\phi_0 (x) = 1 \qquad \phi_1 (x) = x \qquad \phi_2(x) = \frac{3x^2 - 1}{2}
+$$
+
+These polynomials have the following properties:
+1. The degree of each polynomial $\phi_k (x)$ is $k$.
+2. $\phi_{k+1} (x)$ is orthogonal to $\prod_k [-1,1]$.
+3. By an earlier theorem, $\phi_k (x)$ has $k$ distinct, real roots on $[-1,1]$.
+
+So, on $[-1,1]$, we can choose $q(x)$ to be the Legendre polynomial on $\phi_{n+1} (x)$!
+> We can, in fact, find our earlier example using $\phi_2 (x)$!
+
+> [!Example]+ Example: Exact Quadratures
+> Recall
+> $$
+> \int_{-1}^1 f(x) dx \approx f\left( -\frac{1}{\sqrt{3}} \right) + f \left( \frac{1}{\sqrt{3}} \right)
+> $$
+> 
+> This is exact on $\prod_3 [-1,1]$, so $2n + 1 = 3 \Longrightarrow n = 1$, so we choose $q(x) = \phi_{n+1} (x) = \phi_2 (x)$.
+>
+> We have roots at $x_0 = -1/\sqrt{3}$ and $x_1 = 1 / \sqrt{3}$. We choose these to be our quadrature nodes. We then have
+> $$
+> \begin{align*}
+> A_0 = \int_{-1}^1 l_0 (x) dx = \int_{-1}^1 \frac{x - x_1}{x_0 - x_1} dx = 1 \\
+> A_1 = \int_{-1}^1 l_1 (x) dx = \int_{-1}^1 \frac{x - x_0}{x_1 - x_0} dx = 1
+> \end{align*}
+> $$
+> 
+> Thus, our exact quadrature rule is $A_0 f(x_0) + A_1 f(x_1)$, giving us the above!
+
+What if our interval isn't $[-1,1]$? Then, we can apply a change of variables! 
+
+If $x \in [a,b]$, then we can set 
+$$
+t = \frac{2x - a - b}{b - a} \iff x = \frac{1}{2} [ (b - a) t + a + b ]
+$$
+transforming our domain into the interval $[-1, 1]$! This gives us integral
+$$
+\begin{align*}
+\int_a^b f(x) dx 
+&= \int_{-1}^1 f \left(  \frac{1}{2} [(b - a) t + a + b] \right) \frac{dx}{dt} dt \\
+&= \int_{-1}^1 f \left(  \frac{1}{2} [(b - a) t + a + b] \right) \frac{(b - a)}{2} dt \\
+&= \int_{-1}^1 \tilde{f} (t) dt \\
+\tilde{f}(t) &= \frac{(b-a)}{2} f \left(  \frac{1}{2} [(b - a) t + a + b] \right)
+\end{align*}
+$$
+
+We can use this to find the roots $t_i$ of $\phi_{n+1} (t)$ in $(-1, 1)$, and convert them to the quadrature nodes $x_i$!

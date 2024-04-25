@@ -30,12 +30,49 @@ graph LR
     1[Application Stage] -.-> 2[Geometry Processing Stage] -.-> 3[Rasterization Stage] -.-> 4[Pixel Processing Stage];
 ```
 
-Each of these stages are described more later. Note that each of these stages is typically a pipeline in itself with substages, and some are even parallelized.
+Each of these stages are described more later. Note that each of these stages is typically a pipeline in itself with several substages.
 
 > [!Tip] Parallelism in the Graphics Pipeline
 > One of the major advantages of the graphics pipeline is that it is **highly parallelizable**! With the advent of the modern GPU, we can execute stages in parallel, letting us process huge quantities of data in real time (which is absolutely necessary for rendering).
 >
 > More information about this is covered in [[Parallelization With GPUs]]
+
+Substages in the pipeline all have varying levels of programmability. They range from fully programmable ($P$), to configurable but not programmable ($C$), to completely fixed ($F$). 
+> We will use these symbols to denote their programmability.
+
+Over time, the graphics pipeline has evolved to have higher levels of programmability. A major step in this transition, was the introduction of stages we can completely customize using  **programmable shaders**!
+
+Features common to all of these programmable shaders are discussed next.
+
+
+## Programmable Shader Stages
+Modern shader programs use a **unified shader architecture**. This means that all of our various programmable shaders share the same **instruction set architecture**, and thus the same programming model.
+
+> [!Tip] Programming Shaders
+> We can program shaders using **shading languages**, such as the **High-Level Shading Language (HLSL)** for DirectX, and **OpenGL Shading Language (GLSL)** for OpenGL.
+
+Processors implementing such a model allow the GPU to allocate their usage based on graphical needs, ensuring that work is ideally distributed to keep processors as busy as possible. 
+> Without such a unified model, we'd have to rigidly determine how many processors should be allocated for each shader type! 
+
+Everytime the application wants to draw a group of primitives, it invokes a **draw call**, which will execute the graphics pipeline (with its shaders) on these primitives. During a draw call, each shader stage has two types of inputs:
+- **Uniform Inputs**: Values that remain constant throughout a draw call (but can change between draw calls).
+- **Varying Inputs**: Data that a shader will take as input (which will change depending on the process), or data the shader will output. 
+
+Shaders support 32-bit single-precision floating point scalars and vectors, as well as arrays, structures, and matrices. Modern GPUs also suport 32-bit integerts, and 64-bit floats natively.
+
+A shader has differing numbers of registers for storing these uniform and varying inputs. It has:
+- **Input Registers**: Registers for the shader's varying inputs. There are 16 registers for the vertex shader, 16 for the geometry shader, and 32 for the pixel shader.
+- **Temporary Registers**: Registers for intermediate calculations. There are 4096 registers for this.
+- **Output Registers**: Registers that store the shader's outputs. There are 16 registers for the vertex shader, 32 registers for the geometry shader, and 8 registers for the pixel shader.
+- **Constant Registers**: Registers that store any sort of uniform data for use by the shader. There are 16 buffers of 4096 registers.
+- **Textures**: Arrays that store textures (typically images) for use in pixel coloring. There are 128 arrays of 512 textures.
+
+As it does not change between draw calls, uniform data is shared between all of the shaders.
+> These numbers are based off of Shader Model 4.0.
+
+Shaders also support two types of **flow control**, referring to the use of branching instructions to change how code executes.
+- **Static Flow Control**: Based on the values of uniform inputs. As this is constant across an entire draw call, it does not cause thread divergence, and moreso exists for reusability.
+- **Dynamic Flow Control**: Based on the values of varying inputs. More powerful, but can cause thread divergence and thus cost performance. 
 
 # Application Stage
 The **application stage** represents code that is executed by the program on the CPU. By this nature, we have a lot of control over what can happen in this stage, and can determine the implementation as we please.
@@ -52,6 +89,10 @@ To work around the serialized nature of this stage, this stage is often executed
 
 # Geometry Processing Stage
 The **geometry processing** stage is the first GPU stage of the pipeline, and is responsible for a majority of the per-triangle and per-vertex operations. It is divided into the following sub-stages:
+1. **Vertex Shading (P)**: Perform a variety of transformations on the vertex to bring it into the world space, and then into the camera space. Evaluate additional desired vertex output data.
+2. **Tessellation / Geometry Shading (P)**: Additional (optional) geometry stages.
+4. **Clipping (F)**: Clip primitives outside of the view to save on resources.
+5. **Screen Mapping (C)**: Map primitives in our view to screen coordinates, for use in the next stage (rasterization).
 
 ```mermaid
 graph LR
@@ -59,16 +100,19 @@ graph LR
 ```
 
 ## Vertex Shading Substage
-The **vertex shading stage** performs the following tasks:
-1. Transform vertices into the world space, and then into the camera space.
-2. Evaluate additional vertex output data that the programmer desires.
-3. Evaluate (optional) geometry stages.
-4. Clip primitives outside of the view.
-5. Map primitives in view to screen coordinates, for the next stage (rasterization).
+The vertex shading substage is a fully programmable stage where we apply per-vertex transformations, and evaluate extra outputs that we configure later stages of the pipeline to use.
 
-Note that of these stages, we have the most control in the first, second, and third stages.
+### Pre-Stage: Input Assembler
+Before the vertex shader actually executes, some data manipulation must occur.
 
-### (1) Vertex Transformations
+In what's called the **input assembler stage** (DirectX), streams of data can be woven together to form the vertices and primitives sent down the pipeline. There are various ways data for objects is represented; and the input assembler manipulates it into a uniform format for the pipeline to take.
+
+> [!Tip] Instancing
+> The input assembler also provides support for **instancing**, where an object can be drawn several times with some varying data per instance. 
+> 
+> This allows for one object to be drawn several times with varying data, all with a single draw call.
+
+### Vertex Transformations
 In a graphics engine, we often use a variety of **coordinate systems**, as different systems make it convenient to represent data. Typically, models will reside in their own **model space** - where their geometries are defined from the origin - and will have an associated **model transform** to position and orient the model.
 > By this system, it's possible to have multiple model transforms associated with one model, allowing the same model to be reused multiple times (saving memory)! 
 
@@ -78,26 +122,35 @@ For all scenes, there exists a "camera" we render our scene from. This camera ha
 
 To make these operations more convenient, we'll transform each of our models from the world space into the camera's space, known as the **view space**. In this space, the camera is looking along the $+z$ axis (by convention), making it easy to determine whether or not an object can be seen by the camera or not.
 
-### (2) Additional Output Evaluations
+### Additional Output Evaluations
 Note that to produce any scene, it's typically not enough to only render the shape and positions of objects. Oftentimes, we need to include additional information as well, such as:
 - Information about the object's material, including normals, colors, and other numerical information.
 - Information about lighting around the object, which is typically computed (in a process known as **shading**) using the object material information.
 
 These will be discussed more later.
 
-### (3) Optional Stages
+## (Optional) Tessellation and Geometry Shader Stages
 Alongside the above vertex processing, which occurs in all pipelines, there are also additional optional stages which can be used. The use of these stages depends on the hardware and programmer, and they are not commonly used.
 
-The first stage is **tessellation**, which allows for the generation of curved surfaces with the appropriate number of triangles, depending on how far the surface is from the camera.
-> Further surfaces need less detail, while closer surfaces need more!
+### Tessellation
+The first stage is **tessellation**, which allows for the rendering of curved surfaces. Given a view, this stage provides control over the **level of detail (LOD)** we need to render a curved surface, which can help us save on performance! 
 
-The next stage is the **geometry shader**, which allows for the creation of new vertices given its inputs. This stage is commonly used in particle systems (ex. each "particle point" can be transformed into a triangle in this stage).
+The tessellation stage consists of 3 elements:
+1. **Hull Shader**: A special **patch** primitive is received, representing a curved surface. The hull shader takes this, modifies these patches, and outputs them to the tessellator to tell it how many triangles to generate.
+2. **Tessellator**: A fixed-function stage which adds several new vertices for processing. It receives information from the hull shader about how tessellation should be done.
+3. **Domain Shader**: Similar to a vertex shader, takes the vertex inputs from the tessellator and processes them to generate an output vertex, to be passed further into the pipeline.
 
-The last stage is the **stream output** stage, letting us save the output of these stages to an array for further processing. This output can then be used by the CPU, or the GPU itself in a later pass.
+### Geometry Shader
+The next stage is the **geometry shader**, which allows for the transformation of primitives into other primitives. This way, it can selectively modify meshes, by editing vertices, adding new primitives, and removing others.
+> This stage is commonly used in particle systems (ex. each "particle point" can be transformed into a triangle in this stage).
 
-Each of these stages will be covered more in depth in later articles.
+### Stream Output
+Alongside these two optional stages, we also have the ability to save our intermediate outputs somewhere, in a stage referred to as **stream output**.
+> This stage is referred to as **transform feedback** in OpenGL.
 
-### (4) Clipping & Perspective Division
+This lets us save the output of these stages to an array for further processing. This output can then be used by the CPU, or the GPU itself in a later pass.
+
+## Clipping & Perspective Division
 After transforming our vertices into the viewing space, note that there may be many shapes outside of our view. As these shapes are outside, they won't be rendered, making it inefficient to pass their data to later stages for further processing.
 
 To avoid these inefficiencies, we perform **clipping**, which removes these shapes outside of the view.
@@ -110,12 +163,12 @@ Typically, for consistency (and efficiency), we clip against the unit cube rangi
 
 After clipping, we perform **perspective division**, where the coordinates are divided by the $w$ coordinate, converting them into **normalized device coordinates**. These coordinates can then be used and converted to screen (pixel) coordinates. 
 
-### (5) Screen Mapping
+## Screen Mapping
 After clipping our shapes, we now need to perform **screen mapping**, where we convert our coordinates into **screen coordinates**. 
 
 In other words, assuming we have a window with bottom-left corner $(x_1, y_1)$ and $(x_2, y_2)$, we want to transform our shape coordinates into the corresponding coordinates on the screen. Oftentimes, we will also convert the $z$ coordinate too (to a value between 0 and 1) so we know which shapes are in front of each other.
 
-## Rasterization
+# Rasterization
 The **rasterization stage** takes the transformed vertices (with their associated data) and finds all pixels that are inside of each shape being rendered. This process is divided up into 2 substages:
 1. **Triangle Setup (Primitive Assembly)**: Computes data (such as edge equations and differentials) for the triangle that are used in the next stage.
 2. **Triangle Traversal**: Finds what pixels are inside of a triangle, generating a **fragment** for the parts of pixels overlapping the triangle. Fragment properties are generated using data (perspective-correct) interpolated from the 3 triangle vertices.
@@ -131,12 +184,14 @@ The **pixel processing** stage takes all of the pixels found from the previous s
 1. **Pixel Shading**: Performs per-pixel computations.
 2. **Merging**: Stores information for pixels together to generate an output image. 
 
-### (1) Pixel Shading
+### Pixel Shading
 After receiving pixel data from the rasterizer, we often want to perform extra operations on individual pixels. 
 
-A wide variety of operations can be performed, with the most common being **texturing**. In this operation, we sample an image at a point (as determined by the pixel's data), and assign the color at that point in the image to the pixel. This lets us "glue" images onto our shapes!
+These per-pixel operations are performed by the fully programmable pixel shader stage, which receives pixels (and associated data) which it can output a color for. 
 
-### (2) Merging
+A wide variety of operations can be performed here, with the most common being **texturing**. In this operation, we sample an image at a point (as determined by the pixel's data), and assign the color at that point in the image to the pixel. This lets us "glue" images onto our shapes!
+
+### Merging
 After performing per-pixel operations, the resultant pixels are merged into a **color buffer**, a rectangular array of colors (RGB). This stage determines how these pixels are combined with the color already stored in the buffer, and different operations here can enable various effects.
 
 In most programs, this stage has a **depth buffer (z buffer)**, which is the same size and shape as the color buffer, storing distance ($z$-value) to the closest primitive. This buffer is then used to determine if a computed pixel is behind or in front of the already existing pixel.
@@ -144,8 +199,10 @@ In most programs, this stage has a **depth buffer (z buffer)**, which is the sam
 2. If the computed pixel is behind the existing pixel, then we do nothing
 This ensures that objects correctly obscure each other in the view.
 
+> Sometimes, this is even performed before the pixel shading stage, to avoid executing unnecessary computations.
+
 > [!Info] Transparent Primitives
-> It's important to note that the $z$-buffer only stores a single depth, so it cannot store partially transparent primitives. Thus primitives **must** be rendered after our opaque primitives, in back-to-front order (farthest to closest).
+> It's important to note that the $z$-buffer only stores a single depth, so it cannot store partially transparent primitives. Thus transparent primitives **must** be rendered after our opaque primitives, in back-to-front order (farthest to closest).
 
 Alongside the depth buffer and color buffer, the merger substage supports a variety of other buffers to capture and filter pixel information. 
 - **The Alpha Channel** is a buffer associated with the color buffer, storing an opacity value for the associated pixel.

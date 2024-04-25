@@ -2083,7 +2083,7 @@ However **none of these properties always hold for pointwise convergence**! This
 > Does not converge to $f$'s derivative which is 0!
 > > We can show this by taking $\cos(2nx)$, applying a trig identity, and obtaining a contradiction by seeing that the identity gives us convergence to -1!
 
-> [!Example]+ Weakness of Pointwise Convergence (3)
+> [!Example]+ Example: Weakness of Pointwise Convergence (3)
 > $$
 > f_n (x) = 
 > \begin{cases}
@@ -2102,3 +2102,84 @@ However **none of these properties always hold for pointwise convergence**! This
 > $$
 > 
 > So the integral of $\int_0^1 f_n (x) = 1$ (we have a finite number of points), but the integral of the limit doesn't exist!
+
+
+## Uniform Convergence
+We say a sequence of functions $\{f_n\} \to f$ **uniformly** on $D \subseteq \mathbb{R}$, if $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N$, $\forall x \in D$
+$$
+| f_n (x) - f(x) | < \epsilon
+$$
+> Notice how we fix our $x$ last! This is called uniform convergence, as our $N$ is no longer dependent on $x$, and should work "uniformly" for all $x$.
+
+Uniform convergence is a much stronger notion of convergence than pointwise.
+
+> [!Abstract] Theorem: Uniform and Pointwise Convergence
+> If $\{f_n\} \to f$ uniformly on $D$, then $\{f_n\} \to f$ pointwise.
+
+> [!Example]+ Example: Uniform Convergence
+> $$
+> f_n (x) = x + \frac{1}{n}
+> $$
+> 
+> Let's show $\{f_n\} \to f$ uniformly. Fix $\epsilon > 0$. We want
+> $$
+> | f_n (x) - f(x) | = \left| x + \frac{1}{n} - x \right| = \left| \frac{1}{n} \right| \le \left| \frac{1}{N} \right| < \epsilon 
+> $$
+> 
+> Choose $N$ such that $\frac{1}{N} < \epsilon$, whose existence is guaranteed by the Archimedian Property. Then, we have uniform convergence.
+
+> [!Example]- Example: Uniform Convergence (2)
+> $$
+> f_n (x) = x^n \qquad x \in [0,1]
+> $$
+> 
+> As shown before, this converges pointwise to
+> $$
+> f(x) = \begin{cases}
+>     1 & x = 1 \\ 0 & x \in [0,1)
+>     \end{cases}
+> $$
+> 
+> Assume $f_n \to f$ uniformly. Then, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N, \forall x \in [0,1]$,
+> $$
+> | x^n - f(x) | < \epsilon
+> $$
+> 
+> Let's choose $\epsilon = \frac{1}{10}$. So,
+> $$
+> | x^n - f(x) | < \frac{1}{10} \qquad \forall x \in [0,1]
+> $$
+> 
+> Choose $x = \left( \frac{1}{2} \right)^{1/n}$, which is in our interval. Then,
+> $$
+> \left| \left( \left( \frac{1}{2} \right)^{1/n} \right)^n - f(x) \right| \not< \frac{1}{10}
+> $$
+
+We say sequence $\{f_n\}$ is **uniformly Cauchy** on $D \subseteq \mathbb{R}$ if $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N, \forall k \in \mathbb{n}, \forall x \in D$,
+$$
+| f_{n+k} (x) - f_n (x) | < \epsilon
+$$
+> While a complex definition, this lets us show convergence even if we don't know the limit!
+
+> [!Abstract] Theorem: Uniform Cauchy and Uniform Convergence
+> Uniform Cauchy convergence implies uniform convergence. 
+> [!Example]+ Example: Uniform Cauchy Convergence
+> $$
+> f_n (x) = \sum_{j=1}^n \frac{x^j}{j 2^j} \qquad f_n : [-1, 1] \to \mathbb{R}
+> $$
+> 
+> We show this is uniformly convergent using our Cauchy definition. Let $\epsilon > 0$. We want
+> $$
+> \begin{align*}
+>     \left| f_{n+k} (x) - f_n (x) \right| 
+>     &= \left| \sum_{j=1}^{n+k} \frac{x^j}{j 2^j} - \sum_{j=1}^n \frac{x^j}{j 2^j} \right| \\
+>     &= \left| \sum_{j=n+1}^{n+k} \frac{x^j}{j 2^j} \right|
+>     \le \sum_{j=n+1}^{n+k} \frac{|x^j|}{j 2^j} \\
+>     &\le \sum_{j=n+1}^{n+k} \frac{1}{j 2^j}
+>     \le \sum_{j=n+1}^{\infty} \frac{1}{j 2^j} \\
+>     &\le \sum_{j=n+1}^{\infty} \frac{1}{2^j} < \epsilon
+> \end{align*}
+> $$
+> 
+> Provided $N$ is large enough. We find this $N$ using the Geometric Series Test to finish.
+

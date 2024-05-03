@@ -333,7 +333,7 @@ Some important examples of these orthonormal polynomials are given as follows:
   $$
   \phi_0 (x) = 1 \\
   \phi_1 (x) = x \\
-  \phi_{n+1} (x) = {(2n + 1) x \phi_n (x) - n \phi_{n-1} (x)}{n + 1} \qquad \forall n \ge 1
+  \phi_{n+1} (x) = \frac{(2n + 1) x \phi_n (x) - n \phi_{n-1} (x)}{n + 1} \qquad \forall n \ge 1
   $$
   
   with $L^2$ norm given as

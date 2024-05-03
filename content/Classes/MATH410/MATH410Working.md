@@ -2163,6 +2163,8 @@ $$
 
 > [!Abstract] Theorem: Uniform Cauchy and Uniform Convergence
 > Uniform Cauchy convergence implies uniform convergence. 
+> 
+
 > [!Example]+ Example: Uniform Cauchy Convergence
 > $$
 > f_n (x) = \sum_{j=1}^n \frac{x^j}{j 2^j} \qquad f_n : [-1, 1] \to \mathbb{R}
@@ -2183,3 +2185,189 @@ $$
 > 
 > Provided $N$ is large enough. We find this $N$ using the Geometric Series Test to finish.
 
+Uniform convergence is much stronger than pointwise convergence! In fact, properties of continuity, differentiation, and integration that did not hold for pointwise convergence, now hold for uniform convergence!
+
+> [!Abstract] Theorem: Continuity and Uniform Convergence
+> If $f_n : D \to \mathbb{R}$ is continuous for each $n$, and $f_n \to f$ uniformly, then $f$ is continuous.
+> > The same holds for uniform continuity on $f_n$ and $f$.
+>
+> > [!Note]- Proof
+> > 
+> > By definition of $f_n$'s continuity, $\forall \epsilon > 0$, $\exists \delta > 0$ such that $\forall x \in D$,
+> > $$
+> > | x - x_0 | < \delta \to | f_n(x) - f_n(x_0) | < \frac{\epsilon}{3}
+> > $$
+> > 
+> > And by definition of uniform convergence, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N, \forall x \in D$,
+> > $$
+> > | f_n (x) - f(x) | < \frac{\epsilon}{3}
+> > $$
+> > 
+> > We want to show that $\forall \epsilon > 0$, $\exists \delta > 0$ such that $\forall x \in D$,
+> > $$
+> > | x - x_0 | < \delta \to | f(x) - f(x_0) | < \epsilon
+> > $$
+> > 
+> > Fix $\epsilon > 0$. If $| x - x_0 | < \delta$, then
+> > $$
+> > \begin{align*}
+> > | f(x) - f(x_0) | 
+> >     &= | f(x) - f(x_0) + f_n (x) - f_n (x) + f_n (x_0) - f_n (x_0) \\
+> >     &\le | f_n(x) - f_n (x_0) | + | f_n (x) - f(x) | + | f_n(x_0) - f(x_0) | \\
+> >     &< \frac{\epsilon}{3} + \frac{\epsilon}{3} + \frac{\epsilon}{3} = \epsilon
+> > \end{align*}
+> > $$
+
+> [!Abstract] Theorem: Integration and Uniform Convergence
+> Let $f_n \to f$ uniformly on $[a,b]$, and assume $\int_a^b f_n$ exists for al $n$. Then,
+> $$
+> \lim_{n\to\infty} \int_a^b f_n = \int_a^b \lim_{n\to\infty} f_n = \int_a^b f
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > By definition, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N, \forall x \in [a,b]$,
+> > $$
+> > | f_n (x) - f(x) | < \epsilon \Longrightarrow f_n (x) - \epsilon < f(x) < f_n (x) + \epsilon
+> > $$
+> > 
+> > Taking the upper integral on the right-side inequality, and the lower integral on the left-side inequality,
+> > $$
+> > \begin{align*}
+> >     \overline{\int_a^b} f < \overline{\int_a^b} f_n (x) dx + \epsilon (b - a) \\
+> >     \underline{\int_a^b} f_n (x) dx - \epsilon (b - a) < \underline{\int_a^b} f
+> > \end{align*}
+> > $$
+> > 
+> > Combining these, we get
+> > $$
+> > \begin{align*}
+> > 0 \le \overline{\int_a^b} f - \underline{\int_a^b} f < \left( \overline{\int_a^b} f_n dx + \epsilon (b - a) \right) + \left( \epsilon (b - a) - \underline{\int_a^b} f_n dx \right) \\
+> > 0 \le \overline{\int_a^b} f - \underline{\int_a^b} f < 2 \epsilon (b - a)
+> > \end{align*}
+> > $$
+> > 
+> > Thus, by squeeze theorem, the upper and lower integral of $f$ is the same, so $f$ is integrable. Knowing that $f$ is integrable, we can now integrate our first inequality to get
+> > $$
+> > \begin{align*}
+> > \int_a^b f_n (x) dx - \epsilon (b - a) < \int_a^b f(x) < \int_a^b f_n (x) dx + \epsilon (b - a) \\
+> > \left| \int_a^b f_n (x) - \int_a^b f \right|  < \epsilon (b - a)
+> > \end{align*}
+> > $$
+> > Letting $\epsilon \to 0$, we get equality! So, as $\epsilon \to 0$, $\int_a^b f_n \to \int_a^b f$.
+
+> [!Abstract] Theorem: Differentiation and Uniform Convergence
+> Let $f_n \in C^1 (D)$ for all $n$. Suppose $f_n \to f$ pointwise on $D$, and suppose $f_n' \to g$ uniformly on $D$, where $g$ is some function.
+> 
+> Then, $g(x) = f'(x)$, and $f' \in C^1 (D)$.
+>
+> > If we don't know the limit $g$, we can also find that $f_n'$ is uniformly Cauchy.
+>
+> > [!Note]- Proof
+> > 
+> > $\forall x, x_0 \in D$, we have that
+> > $$
+> > f_n (x) - f_n (x_0) = \int_{x_0}^x f_n' (t) dt
+> > $$
+> > 
+> > Taking the limit as $n \to \infty$, we get
+> > $$
+> > \begin{align*}
+> >     \lim_{n\to\infty} f_n (x) - f_n (x_0) = \lim_{n\to\infty} \int_{x_0}^x f_n' (t) dt \\
+> >     f(x) - f(x_0) = \int_{x_0}^x g(t) dt
+> > \end{align*}
+> > $$
+> > 
+> > Since the map $x \to \int_{x_0}^x g$ is continuous, we get that $f$ is continuous. 
+> > 
+> > Also, $f'(x) = g(x)$, as we take the derivative of both sides and apply the second fundamental theorem. Note that this works because $g$ is continuous, as $f_n'$ are continuous, and they converge uniformly to $g$.
+
+# Power Series
+A **power series** is defined as
+$$
+f(x) = \sum_{n=0}^\infty a_n (x - x_0)^n
+$$
+> We'll typically just use $x_0 = 0$.
+
+We can often find the domain of $f$ using a Ratio Test (or Root Test) where we check the endpoints as well. Can we differentiate and integrate this series?
+
+> [!Abstract] Theorem (9.40 Fitzpatrick)
+> Define the power series
+> $$
+> f(x) = \sum_{k=0}^\infty a_k x^k
+> $$
+> 
+> And let $x_0$ be in its domain of convergence, $D$. Furthermore, let $0 < r < |x_0|$.
+> 
+> Then, $[-r, r] \subseteq D$ and 
+> $$
+> \sum_{k=0}^\infty a_k x^k \qquad \sum_{k=1}^\infty a_k k x^{k-1} 
+> $$
+> Both converge uniformly on $[-r, r]$.
+> 
+> > This means that the partial sums converge uniformly!
+
+This does not mean that we have uniform convergence on $D$! For example,
+
+> [!Example]+ Example: Uniform Convergence Counterexample
+> $$
+> f(x) = \sum_{n=0}^\infty x^n = \frac{1}{1 - x}
+> $$
+> 
+> We have that the domain of convergence is $(-1, 1)$. Since our partialsums are bounded on $(-1, 1)$, but the limit is unbounded, we cannot have uniform convergence!
+
+> [!Abstract] Theorem: Integrability of Power Series
+> Let $[a,b] \subseteq (-r, r) \subset D$, where
+> $$
+> f(x) = \sum_{k=0}^\infty a_k x^k
+> $$
+>
+> Then, we're allowed to integrate our term!
+> $$
+> \int_a^b f(x) dx = \sum_{k=0}^\infty \left( \int_a^b a_k x^k dx \right) = \sum_{k=0}^\infty a_k \frac{x^{k+1}}{k + 1} \bigg\vert_a^b
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > We know by Theorem 9.40 that our partial sums converge uniformly.
+> > 
+> > So,
+> > $$
+> > \lim_{n\to\infty} \int_a^b s_n (x) dx = \int_a^b \lim_{n\to\infty} s_n (x) dx
+> > $$
+> > > This is enabled by our uniform convergence!
+> > 
+> > This simplifies to 
+> > $$
+> > \begin{align*}
+> > &\sum_{k=0}^\infty \left( \int_a^b a_k x^k \right) = \lim_{n\to\infty} \int_a^b s_n (x) dx = \int_a^b \lim_{n\to\infty} s_n (x) dx = \int_a^b f(x) dx \\
+> > &\int_a^b f(x) dx = \sum_{k=0}^\infty \frac{a_k x^{k+1}}{k+1} \bigg\vert_a^b
+> > \end{align*}
+> > $$
+
+> [!Abstract] Theorem: Differentiability of Power Series
+> Let $(-r, r) \subset D$ where
+> $$
+> f(x) = \sum_{k=0}^\infty a_k x^k
+> $$
+>
+> Then, $f \in C^\infty (-r, r)$ and 
+> $$
+> f^n (x) = \sum_{k=n}^\infty a_k \frac{d^n}{dx^n} x^k = \frac{k!}{(k - n)!} x^{k - n}
+> $$
+> 
+> > Note that $f^n (0) = a_n n!$, as we have a $0^0$ term which we define as equal to 1.
+> 
+> > [!Note]- Proof
+> > 
+> > We know the partial sums $\{ s_n (x) \}$ and $\{ s_n' (x) \}$ converge uniformly on $[-R, R] \subseteq (-r, r)$ by Theorem 9.40.
+> > 
+> > So $s_n \to f$ uniformly on $[-R, R]$, $s_n' \to g$ uniformly to some $g$. But as $s_n \to f$, then $s_n' = f'$ by property of uniform convergence, so $s_n \to f'$ uniformly on $[-R, R]$. Taking our limit, we get
+> > $$
+> > \begin{align*}
+> > \lim_{n\to\infty} s_n' (x)
+> > &=\lim_{n\to\infty} \frac{d}{dx} \sum_{k=0}^n a_k x^k \\
+> > &= \lim_{n\to\infty} \sum_{k=1}^n a_k k x^{k-1} \\
+> > &= f'(x) = \frac{d}{dx} \sum_{k=0}^\infty a_k x^k
+> > \end{align*}
+> > $$

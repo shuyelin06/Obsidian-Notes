@@ -2,7 +2,6 @@
 title: Binary Search Trees
 tags:
 - cmsc420
-- wip
 ---
 
 # Binary Search Trees (BSTs)

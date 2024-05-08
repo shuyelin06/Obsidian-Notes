@@ -1,16 +1,8 @@
 ---
-title: CMSC420Working
+title: Spatial Data Structures
 tags:
 - cmsc420
-- wip
 ---
-
-Working notes for CMSC420, Spring Semester 2024.
-
-
----
-
-(Spatial Data Structures)
 
 # Motivation
 In many data storage implementations, we store data with keys in one dimension. These are often integers (or some equivalent that can be interpreted as an integer value), which make for easy comparisons between keys.

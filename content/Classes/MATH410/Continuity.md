@@ -316,7 +316,7 @@ Uniform continuity is a fairly strong result! While continuity does not necessar
 > \left\{ 1/\frac{1}{n^2} - 1/\frac{1}{n} \right\} = \{ n^2 - n \} \to \infty
 > $$
 
-## Epsilon-Delta Criterion for Continuity
+## $\epsilon-\delta$ Criterion for Continuity
 Recall how we defined continuity. We propose below an alternative, yet equivalent, definition that may be useful. 
 
 Let $f : D \to \mathbb{R}$ be a function. Then, we say $f$ satisfies the $\epsilon$-$\delta$ criterion at $x_0 \in D$, if for all $\epsilon > 0$, there exists a $\delta > 0$ such that for $x \in D$,
@@ -343,6 +343,43 @@ The following theorem establishes a connection between the $\epsilon$-$\delta$ c
 > We want to show by the $\epsilon$-$\delta$ proof that the function is not continuous at $x = 0$.
 > 
 > Choose $\epsilon = \frac{1}{2}$. Then, there is no $\delta$ such that $|x| < \delta \to |f(x) - f(0)|$.
+
+> [!Example]- Example: Epsilon-Delta Continuity Proof
+> Let $f : \mathbb{R} \to \mathbb{R}$ be defined as $f(x) = x^2 - 4$. Verify using the $\epsilon - \delta$ definition that $f$ is continuous at point $x_0 = 0$.
+>
+> #### Scratch Work
+> Pick any arbitrary $\epsilon > 0$. For this $\epsilon$, we want to find a $\delta > 0$ satisfying the relation
+> $$
+> | x - 3 | < \delta \to | f(x) - f(3) | < \epsilon
+> $$
+> 
+> Let's find this $\delta$.
+> $$
+> \begin{align*}
+>     | f(x) - f(3) | &= | x^2 - 4 - (3^2 - 4) | = | x^2 - 9 | \\
+>     &= | x - 3 | \cdot | x + 3 |
+> \end{align*}
+> $$
+> 
+> We know that $|x - 3| < \delta$ by assumption, but $|x + 3|$ is not bounded! Thus, we need to establish a bound for it.
+> 
+> Suppose $\delta = 1$. Then, for this $\delta$ bound, we know that
+> $$
+> | x - 3 | < 1 \to 2 < x < 4 \to 5 < x + 3 < 7
+> $$
+> Thus, for all $\delta \le 1$, $|x + 3| < 7$! Assume our $\delta \le 1$. Then,
+> $$
+> = | x - 3 | \cdot | x + 3 | < \delta \cdot 7 
+> $$
+> 
+> Let $\delta = \min( \frac{\epsilon}{7}, 1 )$. Then, for this $\delta$, we successfully have bounded $|f(x) - f(3)| < \epsilon$. 
+> 
+> #### Proof
+> Let $\epsilon > 0$, and let $\delta = \min( \frac{\epsilon}{7}, 1 )$. Then, for all $x$ such that $|x - 3| < \delta$,
+> $$
+> | f(x) - f(3) | = | x^2 - 9 | = | x - 3 | \cdot | x + 3 | < \delta \cdot 7 < \epsilon
+> $$
+
 
 > [!Example]- Example: Proof
 > Let $f(x) = x^2$. Prove it is continuous at $x_0 \in \mathbb{R}$ by $\epsilon$-$\delta$.

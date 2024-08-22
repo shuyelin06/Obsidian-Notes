@@ -180,22 +180,36 @@ Or in other words, $\forall x \in D$,
 $$
 \lim_{n \to \infty} f_n (x) = f(x)
 $$
-> Notice how we fix our $x$ first, before aplying our limit!
+> Notice how we fix our $x$ first, before choosing $N$! This means that $N$ can rely on both $x$ and $\epsilon$.
 
-> [!Example]+ Example: Pointwise Convergence of Taylor Polynomials
-> It can be shown that $\forall x_0$, the Taylor Polynomials pointwise converge to $f$
+> [!Example]- Example: Pointwise Convergence Proof
+> Let $f_n (x) = \frac{nx}{(1 + nx)^2}$. Show that $\{ f_n(x) \} \to f(x) = 0$ pointwise on $x \in [0, \infty)$. 
+> 
+> Pick any arbitrary $\epsilon > 0$, $x \in [0, \infty)$. To show pointwise convergence, we want to find an $N \in \mathbb{N}$ such that
 > $$
-> f(x_0) = \lim_{n \to \infty} P_n (x_0)
+> | f_n (x) - f(x) | < \epsilon
 > $$
 > 
-> Provided that the Lagrange Remainder drops to 0
+> We find this $N$. Assume $x \ne 0$. 
+> > Note that if $x = 0$, then $| f_n (x) - f(x) | = 0 < \epsilon$.
+> 
 > $$
-> | r_n (x_0) | \to 0 \qquad n \to \infty
+> \begin{align*}
+>     | f_n(x) - f(x) | &= \left| \frac{nx}{(1 + nx)^2} - 0 \right| = \left| \frac{nx}{(1 + nx) (1 + nx)} \right| \\
+>     &\le \left| \frac{nx}{(nx) (1 + nx)} \right| = \left| \frac{1}{1 + nx} \right| \\
+>     &\le \left| \frac{1}{nx} \right| < \epsilon
+> \end{align*}
 > $$
+> 
+> By the Archimedian property, we can guarantee the existence of a $N \in \mathbb{N}$ such that
+> $$
+> \frac{1}{N} < \epsilon x
+> $$
+> Choose this $N$. Then, $\forall n \ge N$, we have $| f_n (x) - f(x) | < \epsilon$, giving us pointwise convergence!
 
-This is a very weak notion of convergence! Let's see why in the following examples.
+Pointwise convergence is a very weak notion of convergence! Let's see why.
 
-> [!Example] Example: Pointwise Covergence (1)
+> [!Example]+ Example: Weakness of Pointwise Covergence
 > $$
 > f_n (x) = x + \frac{1}{n}
 > $$
@@ -215,7 +229,9 @@ Some notable things we can see from this example:
 
 However **none of these properties always hold for pointwise convergence**! This makes pointwise convergence is extremely weak, as we can't really use it for anything.
 
-> [!Example]+ Example: Weakness of Pointwise Convergence (1)
+Below, we provide counterexamples to each of the "observations" above.
+
+> [!Example]- Example: Weakness of Pointwise Convergence (1)
 > Consider $f_n (x) = x^n$ on $[0,1]$. Then,
 > $$
 > \{ f_n \} \to f(x) \; \text{pointwise} \; = 
@@ -227,7 +243,7 @@ However **none of these properties always hold for pointwise convergence**! This
 >
 > So, we have pointwise convergence, but the limit ($f$) is not continuous!
 
-> [!Example]+ Example: Weakness of Pointwise Convergence (2)
+> [!Example]- Example: Weakness of Pointwise Convergence (2)
 > Consider $f_n (x) = \sin(nx) / n$. Observe that as $n \to \infty$,
 > $$
 > \lim_{n\to\infty} f_n (x) = 0
@@ -240,7 +256,7 @@ However **none of these properties always hold for pointwise convergence**! This
 > Does not converge to $f$'s derivative which is 0!
 > > We can show this by taking $\cos(2nx)$, applying a trig identity, and obtaining a contradiction by seeing that the identity gives us convergence to -1!
 
-> [!Example]+ Example: Weakness of Pointwise Convergence (3)
+> [!Example]- Example: Weakness of Pointwise Convergence (3)
 > $$
 > f_n (x) = 
 > \begin{cases}
@@ -266,26 +282,47 @@ We say a sequence of functions $\{f_n\} \to f$ **uniformly** on $D \subseteq \ma
 $$
 | f_n (x) - f(x) | < \epsilon
 $$
-> Notice how we fix our $x$ last! This is called uniform convergence, as our $N$ is no longer dependent on $x$, and should work "uniformly" for all $x$.
+> Notice how we fix our $x$ after choosing $N$! This is called uniform convergence, as our $N$ is no longer dependent on $x$, so it should work "uniformly" for all $x$.
 
-Uniform convergence is a much stronger notion of convergence than pointwise.
+Uniform convergence is a much stronger notion of convergence than pointwise. In fact, it implies pointwise convergence.
 
 > [!Abstract] Theorem: Uniform and Pointwise Convergence
 > If $\{f_n\} \to f$ uniformly on $D$, then $\{f_n\} \to f$ pointwise.
 
-> [!Example]+ Example: Uniform Convergence
+> [!Example]+ Example: Uniform Convergence Proof
 > $$
 > f_n (x) = x + \frac{1}{n}
 > $$
 > 
-> Let's show $\{f_n\} \to f$ uniformly. Fix $\epsilon > 0$. We want
+> Note that $\lim_{n\to\infty} f_n (x) = f(x) = x$. Let's show $\{f_n\} \to f$ uniformly. Fix $\epsilon > 0$. We want
 > $$
 > | f_n (x) - f(x) | = \left| x + \frac{1}{n} - x \right| = \left| \frac{1}{n} \right| \le \left| \frac{1}{N} \right| < \epsilon 
 > $$
 > 
 > Choose $N$ such that $\frac{1}{N} < \epsilon$, whose existence is guaranteed by the Archimedian Property. Then, we have uniform convergence.
 
-> [!Example]- Example: Uniform Convergence (2)
+> [!Example]- Example: Uniform Convergence Disproof
+> Let $f_n (x) = \frac{n}{n + x}$.
+> 
+> Show that $f_n (x) \not\to f(x)$ uniformly on $x \in [0, \infty)$.
+>
+> First, observe that $\lim_{n\to\infty} f_n (x) = f(x) = 1$. Now, suppose by way of contradiction that $f_n (x) \to f(x)$ uniformly.
+> 
+> By definition, $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that $\forall n \ge N, \forall x \in [0, \infty)$,
+> $$
+> | f_n (x) - f(x) | < \epsilon
+> $$
+> Let $\epsilon = \frac{1}{6}$, and choose the $N$ satisfying this definition. Then, it should be true that $\forall n \ge N, \forall x \in [0, \infty)$,
+> $$
+> | f_n (x) - f(x) | = \left| \frac{n}{n+x} - 1 \right| = \left| \frac{x}{n+x} \right| < \epsilon
+> $$
+> Let $x = \frac{1}{2}$, which is in our domain. Then, we have
+> $$
+> \left| \frac{x}{n+x} \right| = \left| \frac{n / 2}{3n / 2} \right| = \frac{1}{3} \not< \frac{1}{6}
+> $$
+> Which is a contradiction! Thus, we do not have uniform convergence.
+
+> [!Example]- Example: Uniform Convergence Disproof (2)
 > $$
 > f_n (x) = x^n \qquad x \in [0,1]
 > $$
@@ -320,7 +357,6 @@ $$
 
 > [!Abstract] Theorem: Uniform Cauchy and Uniform Convergence
 > Uniform Cauchy convergence implies uniform convergence. 
-> 
 
 > [!Example]+ Example: Uniform Cauchy Convergence
 > $$

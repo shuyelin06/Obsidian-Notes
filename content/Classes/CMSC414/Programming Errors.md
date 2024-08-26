@@ -144,3 +144,57 @@ We could exploit this to control the order where we search for libraries, having
 
 
 # Vulnerabilities and Malware
+## Properties of Secure Systems
+We begin by discussing some rules that all secure systems should abide by. Unfortunately, not all systems abide by these rules, leading to vulnerabilities that can be exploited. 
+
+The **principle of least privilege** states that any principal n a system should only have access to resources it needs for legitimate actions, and **absolutely nothing else**.
+
+Commonly, this is implemented with **access control**, which is split into two categories:
+- **Mandatory Access Control**: Controls that are mandated by the system.
+- **Discretionary Access Control**: Optional controls that you can place in addition to mandatory controls.
+
+Unfortunately, most software violates this principle of least privilege! 
+
+Any secure system should also follow the **gold standard**, which has 3 working components:
+- **Authentication**: Establishes the identity of a principal.
+- **Authorization**: Establishes the permissions of an identity. Includes access control.
+- **Auditability**: Ensures that all operations can be inspected / validated later. Commonly done with logs that store actions.
+
+## Vulnerability Equities
+Finding and fixing vulnerabilities is often not easy. While there are people who try want to find these vulnerabilities to fix them, there are also people who want to find these vulnerabilities to exploit them. 
+
+This leads to the **equities problem**. People who find vulnerabilities essentially have found "equity" in the system, and may not share these vulnerabilities to be fixed, as its not as profitable for them to do so. Instead, it may actually be more worth it to share them to be exploited instead.
+
+
+## Malware
+**Malware** is any malicious software that runs on a victim's system. 
+
+### Categories of Malware
+There are 3 general categories of malware, described below.
+
+**Viruses** are malware that hide in executable parts of files, that try to evade detection by security programs. They are ran when this executable part is ran, and propagate based on user actions (that prompt the execution of the stored code).
+
+**Worms** are malware that hide in running code behind the scene, that (generally) try to hide themselves from programs that can find them. They tend to propagate automatically, and try to spread rapidly.
+
+**Trojans** are malware that immitate legitimate software, but do more than the user believes. They tend to be propagated by the attacker, who delivers the software.
+
+> In more recent years, malware has begun to blend between these categories.
+
+### Infection Vectors
+An **infection vector** is a component that malware can used to gain access into a system. There are some common vectors, including:
+- **Vulnerable Network Services**: Services on a network which are vulnerable, commonly to buffer overflows. 
+- **Backdoor Logins**: Components that are left by developers to leave a way into the system. Sometimes this is dont by laziness rather than malice.
+- **Social Engineering**: Attempts to persuade people to give up information into a system, or run an executable to grant access.
+- **Trojan Horse**: A trojan malware that can grant other malwares access.
+- **Physical Access**: Physical peripheral hardware with the malware, or unsecured network ports or terminals that people can access.
+
+### Effects
+The effects of malware depend primarily on the goals of the creator, and what they want to do with the malware. Some common goals include:
+- System disruption
+- Defacement of a publicly visible service
+- Destruction of data
+- Crashing of a system
+- Stealing data (otherwise known as **data exfiltration**)
+- Send spam
+- Extort money from victims
+- Rootkits for later access

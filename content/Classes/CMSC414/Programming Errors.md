@@ -31,9 +31,10 @@ graph LR
 3[Saved EBP] --> 4[ ] -->
 5[Local Variables] --> 6[ ];
 
-7[%esp] -.-> 4;
-8[%ebp] -.-> 6;
+7[%ebp] -.-> 4;
+8[%esp] -.-> 6;
 ```
+> TODO: Need to check this; I think this is wrong.
 
 The stack maintains 2 pointers in the current frame:
 - The **Extended Stack Pointer (`%esp`)**, pointing to the current "top" of the stack (the lowest address of the current frame). 

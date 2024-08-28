@@ -138,3 +138,93 @@ We say that $u$ is **orthogonal** to $v$, $u \perp v$, if $<u, v> = 0$.
 > > $$
 > > ||v - u|| \le ||v|| - ||u||
 > > $$
+
+---
+
+# Sequences and Limits in $\mathbb{R}^n$
+Consider a sequence in $\mathbb{R}^n$ $\{u_k\}$, $k \in \mathbb{N}$. In other words, each entry in the sequence is a point in $\mathbb{R}^n$.
+> Note that we will denote $u^i$ as the projection of the $i^{th}$ element of $u$ ($u$'s $i^{th}$ element).
+
+If $\{u_k\}$ is a sequence in $\mathbb{R}^n$, $u \in \mathbb{R}^n$, then we define the **limit**
+$$
+\lim_{k\to\infty} u_k = u \quad \text{if} \quad \lim_{k\to\infty} || u_k - u || = 0
+$$
+We alternatively can write this as **$\{u_k\} \to u$ in the norm**. This is similar in idea to convergence in 1-dimensional series!
+
+But in higher dimensions, this is not the only notion of convergence that we have! We can also say that $\{u_k\} \to u$ **componentwise**, if each $u_k^i \to u^i$ as $k \to \infty$.
+
+> [!Abstract] Theorem: Notions of Convergence
+> $\{u_k\} \to u$ in norm if and only if $\{u_k\} \to u$ componentwise.
+>
+> > [!Note]-  Proof
+> > 
+> > #### Proof $\rightarrow$
+> > Assume that $\{u_k\} \to u$ in norm. Then, for each $1 \le i \le n$, 
+> > $$
+> > 0 \le | u_k^i - u^i | \le \sqrt{ (u_k^1 - u^1)^2 + \dots + (u_k^n - u^n)^2 } = || u_k - u || \to 0
+> > $$
+> > So by the squeeze theorem, $|u_k^i - u^i| \to 0$.
+> > 
+> > #### Proof $\leftarrow$
+> > Assume that $\{u_k^i\} \to u^i$. Then,
+> > $$
+> > || u_k - u || = \sqrt{ (u_k^1 - u^1)^2 + \dots + (u_k^n - u^n)^2 }
+> > $$
+> > As each component converges to 0 by definition, and sums of sequences converging to 0 also converge to 0, we know that $|| u_k - u || \to 0$.
+
+Note that this does not hold for infinite dimensions! In particular, component-wise convergence does not imply convergence in norm.
+
+For example, say we have a sequence $\{u_k\}$, where for any $k$ the $k^{th}$ element is 1, all other 0. So,
+$$
+\begin{align*}
+    u_1 &= (1, 0, 0 \dots) \\
+    u_2 &= (0, 1, 0, \dots)
+\end{align*}
+$$
+We can see that as $k \to \infty$, $\{u_k\} \to \vec{0}$, the 0 vector! However, $||u_k|| \to 1$, so it does not converge in norm to 0.
+
+# Closed and Open Sets in $\mathbb{R}^n$
+Let $r > 0$, $u \in \mathbb{R}^n$. We define the **open ball of radius $r$, centered at $u$** as
+$$
+B_r(u) = \{ v \in \mathbb{R}^n : || u - v || < \mathbb{R} \}
+$$
+In other words, the set of all $n$-dimensional points that are within some predetermined hypersphere of $u$.
+
+We say that a set $A \subseteq \mathbb{R}^n$ is **open** if $\forall u \in A$, $\exists r > 0$ such that $B_r(u) \subseteq A$. In other words, for all vectors in $A$, we can find an open ball around the vector such that all vectors in the ball are in $A$.
+
+> [!Abstract] Open Balls and Open Sets
+> For $r > 0$, $u \in \mathbb{R}^n$, the open ball $B_r(u)$ is an open set.
+> > Intuitively, this makes sense as for any vector inside the open ball, we can find a ball contained within our original ball. As our vectors get closer and closer to the ball's edge, our containing ball will shrink!
+>
+> > [!Note]- Proof
+> > 
+> > We want to show that $\forall v \in B_r(u)$, $\exists p > 0$ such that $B_p (v) \le B_r(u)$.
+> > 
+> > We know that for $v$, $|| u - v || \mathbb{R}$ by definition. We define the distance from $v$ to the ball's edge, $p = r - || u - v ||$. This will be the radius of our new ball around $v$.
+> > 
+> > We now show that $B_p(v) \subseteq B_r (u)$. Pick any $w \in B_p(v)$. By definition, 
+> > $$
+> > || v - w || < p \Longrightarrow || v - w || < r - || u - v ||
+> > $$
+> > Look at $|| u - w ||$. We know that
+> > $$
+> > \begin{align*}
+> > || u - w || &= || u - v + v - w || \\
+> > &\le || u - v || + || v - w || \\
+> > &< || u - v || + p \\
+> > &< || u - v || + (r - ||u - v||) \\
+> > &< r
+> > \end{align*}
+> > $$
+> > Thus, $w \in B_r (u)$!
+
+We say that a set $A \subseteq \mathbb{R}^n$ is **closed** if for any sequence in $A$ $\{u_k\} \subseteq A$ such that $\{u_k\} \to u$, $u \in \mathbb{R}^n$, then $u \in A$. 
+
+Furthermore, if $A \in \mathbb{R}^n$, then we call $A^c$ the **complement** of $A$, 
+$$
+A^c = \mathbb{R}^n \backslash A = \{ u \in \mathbb{R}^n | u \not\in A \}
+$$
+
+> [!Abstract] Theorem: Properties of Open Sets
+> $A$ is an open set if and only if it's complement, $A^c$, is closed.
+> > The statement that "$A$ is open if and only if it is not closed" is NOT TRUE. There exist sets that are neither open or closed, and there exist sets that are both open and closed (ex. the empty set and $\mathbb{R}^n$)!

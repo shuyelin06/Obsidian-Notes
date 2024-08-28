@@ -8,8 +8,9 @@ Combinatorics and graph theory
 
 ---
 
-# Section 1.1: The Basics
-## Permutations
+# Section 1: 
+## 1.1: The Basics
+### Permutations
 A **permutation** on an $n$-element set is an arrangement of the elements in a specific order. A **$k$-permutation** is an arragement of $k$ elements from the set.
 > We assume that all elements are distinct, by property of sets.
 
@@ -46,7 +47,7 @@ This result (and intuition) can be generalized to a theorem.
 > $$
 > Called the **multinomial coefficient**.
 
-## Combinations
+### Combinations
 The total number of ways to create a $k$-element subset from $[n] = \{1, 2, \dots n\}$, **n choose k**, is denoted
 $$
 \binom{n}{k} = C(n,k) = \frac{n!}{k! (n - k)!}
@@ -78,4 +79,34 @@ and called a combination of **binomial coefficient**.
 > (x + y)^n = \sum_{k=0}^n \binom{n}{k} x^k y^{n-k}
 > $$
 > 
-> > We omit the proof. However, intuitively, you can think of it as expanding $(x + y)^n = (x + y)(x + y) \dots$. Then, for any $x^k y^{n-k}$, we can find its coefficient by finding all ways we can choose $(x + y)$ terms to contribute to the x, the rest being $y$.
+
+The proof for above is omitted. However, intuitively, you can think of it as expanding $(x + y)^n = (x + y)(x + y) \dots$
+
+Then, for any $x^k y^{n-k}$, we can find its coefficient by choosing $k$ $(x + y)$ terms to contribute to the x, and choosing the remaining $n - k$ terms to contribute to the way. We find all ways we can do this (leading to the binomial coefficient you see!)
+
+> [!Example] Example: Binomial Theorem Intuition, Extended
+> Suppose we are interested in the coefficient of $x_1^3 x_3 x_4$ from $(x_1 + x_2 + x_3 + x_4)^5$!
+>
+> Well, of the 5 $(x_1 + x_2 + x_3 + x_4)$ terms, we choose 3 to multiply the $x_1$, 1 to multiply the $x_3$, and 1 to multiply the $x_4$. This gives us
+> $$
+> \binom{5}{3} \binom{2}{1} \binom{1}{1} 
+> $$
+> > This is essentially permutations with repetition!
+
+> [!Abstract] Multinomial Theorem
+> $$
+> (x_1 + \dots x_k)^n = \sum_{a_1 + a_2 + \dots a_k = n} \binom{n}{a_1 \; a_2 \dots a_k} x_1^{a_1} x_2^{a_2} \dots x_k^{a_k}
+> $$
+
+## 1.2: Counting in Two Ways
+We can count a combinatorial identity in two ways.
+
+For example, consider
+$$
+\binom{n-1}{k-1} + \binom{n-1}{k} = \binom{n}{k}
+$$
+This describes the same count, but we can see it in 2 different ways!
+- The right hand side describes the number of ways to create a $k$-size subset from $[n]$.
+- The left hand side describes $k$-size subsets that do or do not contain element $n$. 
+  - If we do contain $n$, then we choose $k - 1$ elements from the remaining $n - 1$ elements. $\binom{n-1}{k-1}$
+  - If we do not contain $n$, then we choose $k$ elements from the remaining $n - 1$ elements. $\binom{n-1}{k}$

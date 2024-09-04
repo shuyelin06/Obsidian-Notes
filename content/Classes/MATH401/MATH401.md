@@ -140,4 +140,120 @@ $$
 First, we observe that all terms on the right-hand side should have non-negative entries (as $M$ has all non-negative entries- we cannot consume negative products)! Furthermore, as $I$ has 1's down the diagonal, this means that our inverse must have values $\ge 1$, as we are only adding positive numbers to 1!
 
 These conditions are $M$ are as follows. We define a **column sum** of a matrix to be the sum of the entires in any given column of the matrix. Any matrix $M$ with column sums $<1$ satisfy the above condition, and in fact, any "reasonable" economy is one where each column sum is $<1$.
-> Otherwise, it would take more than one unit to produce a unit of a product, which is not smart!
+> Otherwise, it would take more than one unit to produce a unit of a product, which is not economically feasible!
+
+> [!Abstract] Theorem: Economically Feasible Consumption Matrices
+> Suppose that $M$ is $n \times n$ with non-negative entries and suppose every column sum of $M$ is less than 1.
+>
+> Then,
+> - $(I - M)^{-1} = 1 + M + M^2 + M^3 + \dots$
+> - In particular, $(I - M)^{-1}$ exists and has non-negative entries.
+> - Given an external demand $\vec{d}$ with non-negative entries, then we have a unique solution $\vec{p} = (I - M)^{-1} \vec{d}$ and furthermore, $\vec{p}$ has non-negative entries too.
+
+> [!Example]- Example: A Nonsensical Economy
+> Suppose we have consumption matrix
+> $$
+> M = 
+> \begin{bmatrix}
+> 0.6 & 0.7 \\ 
+> 0.5 & 0.5 \\
+> \end{bmatrix}
+> $$
+> 
+> and we want to satisfy some external demand $\vec{d}$. In this example,
+> $$
+> (I - M)^{-1} = 
+> \begin{bmatrix}
+> -3.33 & -4.66 \\
+> -3.33 & -2.66
+> \end{bmatrix}
+> $$
+> 
+> It's not feasible to satisfy $\vec{d}$, and this is because of the column sums!
+
+
+# Applications of Computer Graphics
+Here, we're going to work with points in $2D$/$3D$, and focus on how we can move these points in space. For example, how can we rotate points in space? Translate them? 
+> Hint: This can be accomplished through matrix multiplication!
+
+We'll start by treating points in $2D$/$3D$ as either $2 \times 1$ / $3 \times 1$ vectors $\vec{p}$. We can represent collections of them, called **pictures**, as a $n \times k$ matrix
+$$
+[ \vec{p}_1, \vec{p}_2, \vec{p}_3, \dots \vec{p}_k ]
+$$
+We'll also treat "movements" in space as a matrix $M$, such that we can transform points by taking $M \vec{p}$. We can also apply this movement to an entire picture by multiplying
+$$
+M [ \vec{p}_1, \vec{p}_2, \vec{p}_3, \dots \vec{p}_k ]
+$$
+
+---
+
+A **linear transformation** is a function $f : \mathbb{R}^n \to \mathbb{R}^m$ such that
+1. $\forall \vec{u}, \vec{v} \in \mathbb{R}^n$, $f(\vec{u} + \vec{v}) = f(\vec{u}) + f(\vec{v})$
+2. For $\vec{u} \in \mathbb{R}^n, c \in \mathbb{R}$, $f(c \vec{u}) = c f(\vec{u})$
+
+If $A$ is any $m \times n$ matrix, then we can use it to define a linear transformation function $f(\vec{x}) = A \vec{x}$. And in fact, every linear transformation $f: \mathbb{R}^n \to \mathbb{R}^m$ has a corresponding matrix form.
+
+> [!Abstract] Theorem: Matrices of Linear Transformations
+> If $f : \mathbb{R}^n \to \mathbb{R}^m$ is a linear transformation, then there is a $m \times n$ matrix $A$ such that $f(\vec{x}) = A \vec{x}$ for all $\vec{x}$.
+>
+> To find it, we can find $A$ column by column as so:
+> $$
+> A = 
+> \begin{bmatrix}
+> f(\vec{e}_1) & f(\vec{e}_2) & \dots &f(\vec{e}_n)
+> \end{bmatrix} 
+> $$
+> Where $\vec{e}_i$ is the standard basis vector for $i$, the vector with 1 in the $i^{th}$ component and 0's everywhere else.
+
+> [!Example]+ Example: Matrices of Linear Transformations (1)
+> Counterclockwise rotation about the origin by $\pi / 2$ degrees in $\mathbb{R}^2$ is a linear transformation $f : \mathbb{R}^2 \to \mathbb{R}^2$.
+> 
+> We can find its standard matrix column by column:
+> $$
+> \begin{align*}
+> e_1 = (1,0) &\to (0,1) \\
+> e_2 = (0,1) &\to (-1,0)
+> \end{align*}
+> $$
+> This gives us matrix
+> $$
+> \begin{bmatrix}
+> 0 & -1 \\
+> 1 & 0
+> \end{bmatrix}
+> $$
+
+> [!Example] Example: Matrices of Linear Transformations (2)
+> Find the matrix for reflection through the $x$-axis.
+> $$
+> A = 
+> \begin{bmatrix}
+>     f(\vec{e}_1) & f(\vec{e}_2) 
+> \end{bmatrix}
+> = 
+> \begin{bmatrix}
+>     1 & 0 \\
+>     0 & -1
+> \end{bmatrix}
+> $$
+>
+> What about reflection through the line $L_\theta$ that makes an angle of $\theta$ with the positive $x$-axis? 
+> 
+> Instead of doing heavy math, we can actually just combine linear transformations! Let's first rotate to the origin, then reflect, then rotate back!
+> 1. Rotate by $-\theta$ radians
+> 2. Reflect across the $x$-axis
+> 3. Rotate by $\theta$ radians
+> 
+> Finding and multiplying the matrices for these steps will give us our final transformation!
+
+
+Below, we can find some common linear transformations in $\mathbb{R}^2$.
+- Say we wanted to perform a CCW rotation about the origin by $\theta$ radians. Our transformation matrix is
+  $$
+  \begin{bmatrix}
+  \cos \theta & -\sin(\theta) \\
+  \sin \theta & \cos(\theta)
+  \end{bmatrix}
+  $$
+- Say we wanted to reflect through a line through the origin.
+

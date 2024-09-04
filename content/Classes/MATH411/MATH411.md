@@ -218,7 +218,7 @@ We say that a set $A \subseteq \mathbb{R}^n$ is **open** if $\forall u \in A$, $
 > > $$
 > > Thus, $w \in B_r (u)$!
 
-We say that a set $A \subseteq \mathbb{R}^n$ is **closed** if for any sequence in $A$ $\{u_k\} \subseteq A$ such that $\{u_k\} \to u$, $u \in \mathbb{R}^n$, then $u \in A$. 
+We say that a set $A \subseteq \mathbb{R}^n$ is **closed** if for any sequence in $A$, $\{u_k\} \subseteq A$ such that $\{u_k\} \to u$, $u \in \mathbb{R}^n$, then $u \in A$. 
 
 Furthermore, if $A \in \mathbb{R}^n$, then we call $A^c$ the **complement** of $A$, 
 $$
@@ -226,5 +226,231 @@ A^c = \mathbb{R}^n \backslash A = \{ u \in \mathbb{R}^n | u \not\in A \}
 $$
 
 > [!Abstract] Theorem: Properties of Open Sets
-> $A$ is an open set if and only if it's complement, $A^c$, is closed.
+> $A$ is an open set if and only if its complement, $A^c$, is closed.
 > > The statement that "$A$ is open if and only if it is not closed" is NOT TRUE. There exist sets that are neither open or closed, and there exist sets that are both open and closed (ex. the empty set and $\mathbb{R}^n$)!
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\rightarrow$)
+> > Assume first that $A$ is open. To show that $A^c$ is closed, pick any sequence $\{u_k\} \subseteq A^c$ such that $\{u_k\} \to u$, $u \in \mathbb{R}^n$.
+> > 
+> > We want to show that $u \in A^c$. Suppose $u \not\in A^c$, so $u \in A$. Then, because $A$ is open, there exists an $r > 0$ such that
+> > $$
+> > B_r (u) \subseteq A
+> > $$
+> > But no $u_k$ can be in this ball $B_r(u)$! This violates an assumption, so $u$ cannot be in $A$.
+> > 
+> > #### Proof ($\leftarrow$)
+> > Conversely, assume $A^c$ is closed. To show that $A$ is open, choose any $u \in A$. By definition, $\exists r > 0$ such that $B_r(u) \subseteq A$.
+> > 
+> > By way of contradiction, assume that $\forall r > 0$, our ball around $u$ is not a subset of $A$. This means that $B_r (u)$ contains some $v \not\in A$ ($v \in A^c$), where $v$ depends on $r$.
+> > 
+> > Let $r = 1/a$. For all $a \in \mathbb{Z}$, we can form a sequence of $v_a$'s which, by assumption, are all in $A^c$. 
+> > $$
+> > || v_a - u || < r \qquad v_a \in A^c
+> > $$
+> > However, as $a \to \infty$, $r \to 0$! This tells us that  $\{v_a\} \to u, u \in A$, violating our assumption that $A^c$ is closed.
+
+We continue by discussing intersections and unions of these sets.
+
+If $\{ V_s \}_s$ is a (possibly infinite) family of open sets, then the **union of these open sets $\bigcup_{s \in S} V_s$ is open**.
+
+Similarly, if $V_1, \dots V_k$ are open sets, then **the intersection of these sets  $V_1 \cap \dots \cap V_k$ is also open**.
+> Note that the intersection clause only works for finite sets. In the infinite case, we could find a counterexample by choosing open balls with radius $r = 1/a$, so as $a \to \infty$, we are left with a point.
+
+Let $\{F_s\}_{s} \in S$ be a possibly infinite family of closed sets. Then, $\bigcap_{s \in S} F_s$ is closed.
+
+Let $F_1, \dots F_k$ be closed sets. Then their union $F_1 \cup \dots F_k$ is closed.
+
+> [!Note]- Proof: Intersections and Unions of Open Sets
+> #### Union of Open Sets
+> Pick $u \in \bigcup_{s \in S} V_s$. We know that $\exists s_0 \in S$ such that $u \in V_{s_0}$. Since $V_{s_0}$ is open, we know that $\exists r > 0$ such that $B_r(u) \in V_{s_0} \subseteq \bigcup_{s \in S} V_s$.
+>
+> #### Intersection of Open Sets
+> Let $u \in V_1 \cap \dots V_k$. We know that by definition,
+> - Because $u \in V_1$, $\exists r_1 > 0$ such that the ball $B_{r_1} (u) \subseteq V_1$
+> - Because $u \in V_2$, $\exists r_2 > 0$ such that $B_{r_2} (u) \subseteq V_2$
+> - $\dots$
+> 
+> Continue this argument for all $k$. Now let $r = \min(r_1, \dots r_k)$. Then $B_r (u) \subseteq B_{r_i} u$ for all $i = 1 \dots k$, meaning $B_r (u) \subseteq \bigcap_{i=1}^k V_i$.
+
+> [!Note]- Proof: Intersections and Unions of Closed Sets
+> #### Intersection Proof (1)
+> We know that by Demorgan's Law, $\left( \bigcap_{s \in S} F_s \right)^c = \bigcup_{s \in S} F_s^c$. We also know from an earlier theorem that each $F_s^c$ is open, and any union of open sets is open. So $\left( \bigcap_{s \in S} F_s \right)^c$ is open, and therefore $\bigcap_{s \in S} F_s$ is closed.
+> 
+> #### Intersection Proof (2)
+> Let us have a sequence $\{u_k\} \subseteq \bigcap_{s \in S} F_s$, and assume $\{u_k\} \to u \in \mathbb{R}^n$. By definition of intersection, we know that $u_k \in F_s$ for all $s \in S$! So, by definition of a closed set, $u \in F_s$ for all $s \in S$.
+> 
+> This means that $u \in \bigcap_{s \in S} F_s$. 
+>
+> #### Union Proof (1)
+> We know that by Demorgan's Law, $\left( F_1 \cup \dots F_k \right)^c = F_1^c \cap \dots F_k^c$. Each set is, by an earlier theorem, open.
+>
+> As etablished previously, the intersection of open sets yields an open set, so $\left( F_1 \cup \dots F_k \right)^c$ is open. By an earlier theorem, this means that $F_1 \cup \dots F_k$ is closed.
+>
+> #### Union Proof (2)
+> Let us define a sequence in this union, $\{u_i\} \subseteq F_1 \cup \dots F_k$, where $\{u_i\} \to u \in \mathbb{R}^n$.
+> 
+> Because we have infinitely many $u_i$'s, and a finitely many sets $F$, at least one of these sets must contain infinitely many $u_i$ by the Pidgeonhole Principle. Let this set be $F_j$.
+>
+> So, there exists a subsequence $\{ u_{i_l} \}_{l \in \mathbb{N}}$ contained in $F_j$. As $\{u_i\} \to u$, it must be true that this subsequence converges to $u$ as well, and as $F_j$ is closed (by definition), $u \in F_j$. So, $u \in F_1 \cup \dots F_k$.
+
+Let $A \subseteq \mathbb{R}^n$.
+
+We define the **interior** of the set as
+$$
+\text{int} A = \{ u \in \mathbb{R}^n : \exists r > 0 \; \text{s.t.} \; B_r(u) \subseteq A \} \subseteq A
+$$
+In other words, the set of all points that can be contained within a ball inside of $A$.
+
+We can also consider the interior of $A$'s complement. By definition, these two sets are mutually exclusive.
+
+But what's between them? We call this the **boundary**:
+$$
+\text{Boundary} \; A = \{ u \in \mathbb{R}^n : \forall r > 0, B_r(u) \; \text{meets both} \; A \; \text{and} \; A^c \}
+$$
+
+These 3 sets are mutually exclusive, and form all of $R^n$!
+- The interior of $A$
+- The interior of $A^c$
+- The boundary of $A$
+
+
+# Functions and Continuity in $\mathbb{R}^n$
+Define the function $F : A \to \mathbb{R}^m$, where $A \subseteq \mathbb{R}^n$. 
+
+Then, $F$ is **continuous** at $u \in A$ if $\forall \{ u_k \} \to u$ where $\{u_k\} \subseteq A$, it follows that $\{F(u_k)\} \to F(u)$.
+> In other words, for any sequence converging to $u$, the sequence evaluated in the function $F(u_k)$ should converge to $F(u)$!
+
+> [!Example]+ Example: Continuity
+> Let $f : \{1,2\} \cup [3, \infty) \to \mathbb{R}$ such that
+> 
+> $$
+> f(x) = \begin{cases}
+>     1 & x = 1 \\
+>     0 & x = 2 \\
+>     x & \text{else}
+>     \end{cases}
+> $$
+> 
+> Is $f$ continuous at $x = 1$? Yes! If $\{u_k\} \subseteq A$ such that $\{u_k\} \to u$, then $u_k = 1$ for $k$ sufficiently large.
+> 
+> Let $\epsilon = \frac{1}{10}$. Then, by definition of convergence, $\exists k$ such that
+> $$
+> | u_k - 1 | < \frac{1}{10} \quad \forall k \ge K
+> $$
+> But $\{u_k\} \subset \{1,2\} \cup [3, \infty)$! Thus, $u_k = 1$ $\forall k \ge K$, meaning $f(u_k) = f(1) = 1$.
+
+> [!Abstract] Theorem: Preservation of Continuity
+> Let $f, g : A \to \mathbb{R}$ such that $A \subseteq \mathbb{R}^n$. If $f, g$ are continuous at $u \in A$, then
+> - $\forall \alpha, \beta \in \mathbb{R}$, $\alpha f + \beta g$ are also continuous at $u$
+> - If $\forall v \in A, g(v) \ne 0$, then $\frac{f}{g}$ is continuous at $u$. 
+>
+> > [!Note]- Proof 
+> > 
+> > Let $\{u_k\} \to u$, and assume $\{u_k\} \subseteq A$.
+> > 
+> > Then, by assumption, $\{f(u_k)\} \to f(u)$, and $\{g(u_k)\} \to g(u)$, so
+> > $$
+> > \begin{align*}
+> > &(f + g) (u_k) \to (f + g)(u) \\
+> > &fg (u_k) \to fg(u)
+> > \end{align*}
+> > $$
+> > By properties of sequences of real numbers.
+> > 
+> > Similarly, 
+> > $$
+> > \frac{f(u_k)}{g(u_k)} \to \frac{f(u)}{g(u)}
+> > $$
+> > if all $g(v) \not > 0$.
+
+> [!Abstract] Theorem: Compositions of Functions
+> Suppose we have two sets $A \subseteq \mathbb{R}^n$, $B \subseteq \mathbb{R}^m$, and define functions
+> $$
+> \begin{align*}
+>     F: A \to B \\
+>     G: B \to \mathbb{R}
+> \end{align*}
+> $$
+> 
+> If $F$ is continuous at $u \in A$, and $G$ is continuous at $F(u)$, then the composition $G \circ F$ is continuous at $u$.
+>
+> > [!Note]- Proof
+> > 
+> > Let $\{u_k\} \to u$. We know that $\{F(u_k)\} \to F(u)$ by definition and $\{G(F(u_k))\} \to G(F(u))\}$, i.e. $\{ (G \circ F) (u_k) \} \to G \circ F(u)$.
+
+We can also prove continuity using the following $\epsilon$-$\delta$ definition.
+
+It can be shown that $F : A \to \mathbb{R}^m$, $A \subseteq \mathbb{R}^n$ is continuous at $u \in A$ if and only if $\forall \epsilon > 0$, $\exists \delta > 0$ such that 
+$$
+|| u - v || < \delta \to || F(u) - F(v) || < \epsilon
+$$
+
+> [!Note]- Proof (Epsilon-Delta Continuity)
+> #### Proof ($\leftarrow$)
+> Assume $\epsilon$-$\delta$ definition.
+> 
+> Let $\{u_k\} \to u$. Let $\epsilon > 0$. We want $\exists K$ such that $\forall k \ge K$,
+> $$
+> || F(u_k) - F(u) || < \epsilon
+> $$
+> 
+> Because $\{u_k\} \to u$, we know by defintion that $\exists K$ such that $\forall k \ge K$,
+> $$
+> || u_k - u || < \delta
+> $$
+> Then
+> $$
+> || F(u_k) - F(u) ||  < \epsilon \qquad \forall k \ge K
+> $$
+> 
+> #### Proof ($\rightarrow$)
+> Assume that the sequence definition of continuity holds. Assume by contradiction, that the $\epsilon$-$\delta$ definition does not hold.
+> 
+> So, $\exists \epsilon > 0$ where $\forall \delta > 0$, $\exists v \in A$ such that
+> $$
+> || u - v || < \delta \to || F(u) - F(v) || \ge \epsilon
+> $$
+> 
+> Let $\delta = \frac{1}{k}$, and $\forall k \in \mathbb{N}$ form a sequence with these $v$'s. This sequence $\{v_k\} \to u$! However, by assumption, for all $v_k$,
+> $$
+> || F(v_k) - F(u) || \ge \epsilon
+> $$
+> So the sequence $\{F(v_k)\}$ does not converge to $F(u)$, which is a contradiction!
+
+Recall that if $F : A \to \mathbb{R}^m$, if $B \subseteq A$, then we define
+$$
+F(B) = \{ F(b) : b \in B \}
+$$
+And if $C \subseteq \mathbb{R}^m$, then 
+$$
+F^{-1} (C) = \{ u \in A : F(u) \in C \}
+$$
+Or in other words, the set of all inputs to $F$ yielding possible outputs in $C$. Note that this does not require the function inverse to exist.
+
+---
+
+Using this definition, we claim that the epsilon-delta deinition is also equivalent to saying $\forall \epsilon > 0$, $\exists \delta > 0$ such that:
+1. $$
+   F( B_\delta(u) \cap A ) \subseteq B_\epsilon (F(u))
+   $$
+   Or in other words, all inputs of the function in a $\delta$ ball centered around $u$ must have an output which is within the ball of all all possible outputs of the function in the $\epsilon$ ball centered around $u$.
+
+2. $$
+   B_\delta(u) \cap A \subseteq F^{-1} (B_\epsilon(F(u)))
+   $$
+   Or in other words, all possible inputs in $A$ within the $\delta$ ball of $u$ are within the set of inputs yielding the $\epsilon$ ball of $F$ around $u$.
+   
+> [!Abstract] Theorem
+> Let $O$ be open in $\mathbb{R}^n$, $F: O \to \mathbb{R}^m$. Then, $F$ is continuous (at every point of $O$) if and only if $F^{-1} (V)$ is open $\forall V \subseteq \mathbb{R}^m$, open.
+>
+> > [!Note] Proof
+> >
+Assume $F^{-1} (V)$ is open $\forall V$ open. We want to show that $\forall \epsilon > 0$, $\exists \delta > 0$ such that
+$$
+B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u)))
+$$
+
+Take $V = B_\epsilon (F(u))$. Then, by assumption, $F^{-1} (B_\epsilon (F(u)))$ is open. As we know $u \in F^{-1} (B_\epsilon (F(u)))$, there $\exists \delta > 0$ such that $B_\delta (u) \subseteq F^{-1} (B_\epsilon (F(u)))$.
+> Note that we did not use the $O$ open fact, but $O = F^{-1} (\mathbb{R}^m)$ is open!

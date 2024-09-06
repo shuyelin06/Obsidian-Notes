@@ -185,8 +185,7 @@ $$
 M [ \vec{p}_1, \vec{p}_2, \vec{p}_3, \dots \vec{p}_k ]
 $$
 
----
-
+## 2D Graphics
 A **linear transformation** is a function $f : \mathbb{R}^n \to \mathbb{R}^m$ such that
 1. $\forall \vec{u}, \vec{v} \in \mathbb{R}^n$, $f(\vec{u} + \vec{v}) = f(\vec{u}) + f(\vec{v})$
 2. For $\vec{u} \in \mathbb{R}^n, c \in \mathbb{R}$, $f(c \vec{u}) = c f(\vec{u})$
@@ -223,7 +222,10 @@ If $A$ is any $m \times n$ matrix, then we can use it to define a linear transfo
 > \end{bmatrix}
 > $$
 
-> [!Example] Example: Matrices of Linear Transformations (2)
+Note that we can also combine common linear transformations to build more complex transformations! Consider the following example. 
+> Note that what combining matrices by multiplying them, we should multiply right to left in order of the operation we want to perform first!
+
+> [!Example] Example: Compositions of Linear Transformations
 > Find the matrix for reflection through the $x$-axis.
 > $$
 > A = 
@@ -255,5 +257,78 @@ Below, we can find some common linear transformations in $\mathbb{R}^2$.
   \sin \theta & \cos(\theta)
   \end{bmatrix}
   $$
-- Say we wanted to reflect through a line through the origin.
+- Say we wanted to reflect a line across the $x$-axis. Then, we have transformation matrix
+  $$
+  \begin{bmatrix}
+  1 & 0 \\
+  0 & -1
+  \end{bmatrix}
+  $$
+- Say we wanted to translate a point, or in other words, shift it by a fixed amount. Such a translation is not possible with a $2 \times 2$ matrix, but it is with a $3 \times 3$ matrix!
+
+  We can represent our vectors in **homogeneous coordinates**, where we add an extra 1 component. So for any 2-dimensional vector, we consider them to be $(x,y,1)$, and can form a translation matrix as follows:
+  $$
+  \begin{bmatrix}
+  1 & 0 & t_x \\
+  0 & 1 & t_y \\
+  0 & 0 & 1
+  \end{bmatrix}
+  $$
+  
+> [!Info] Compositions of Transformations with Translation
+> Note that to combine translations with other transformations in $\mathbb{R}^2$, we need to convert our $2 \times 2$ transformations to a corresponding $3 \times 3$ matrix in homogeneous coordinates! We can do this by adding a 1 in the bottom-right diagonal, all others 0. 
+>
+> So for example, a rotation compatible with translations is
+> $$
+> \begin{bmatrix}
+> \cos \theta & -\sin(\theta) \\
+> \sin \theta & \cos(\theta)
+> \end{bmatrix} \Longrightarrow
+> \begin{bmatrix}
+> \cos \theta & -\sin(\theta) & 0 \\
+> \sin \theta & \cos(\theta) & 0  \\
+> 0 & 0 & 1
+> \end{bmatrix}
+> $$
+
+> [!Example]+ Example: Compositions of Linear Transformations (2)
+> Suppose we want to do a CCW rotation about the point $(5,7)$ by some angle $\pi / 3$. Find a matrix for this operation.
+>
+> We can find the matrix as follows:
+> 1. Translate by $(-5,-7)$
+> 2. Rotate about the origin by $\theta$
+> 3. Translate by $(5,7)$
+> 
+> We find this as
+> $$
+> \begin{bmatrix}
+>   1 & 0 & 5 \\
+>   0 & 1 & 7 \\
+>   0 & 0 & 1
+>   \end{bmatrix}
+> \begin{bmatrix}
+>   \cos \frac{\pi}{3} & -\sin \frac{\pi}{3} & 0 \\
+>   \sin \frac{\pi}{3} & \cos \frac{\pi}{3} & 0  \\
+>   0 & 0 & 1
+>   \end{bmatrix}
+> \begin{bmatrix}
+>   1 & 0 & -5 \\
+>   0 & 1 & -7 \\
+>   0 & 0 & 1
+>   \end{bmatrix}
+> $$
+> If we wanted to apply this to a point $(x,y)$, we would convert this to homogenoeus coordinates $(x,y,1)$, then take the product! 
+
+## 3D Graphics
+Like in the 2D case, we will represent the 3D point $(x,y,z)$ in homogeneous coordinates $(x,y,z,1)$.
+
+Translations can be done by multiplying the $4 \times 4$ matrix
+$$
+\begin{bmatrix}
+1 & 0 & 0 & t_x \\
+0 & 1 & 0 & t_y \\
+0 & 0 & 1 & t_z \\ 
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
 

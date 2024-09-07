@@ -216,7 +216,7 @@ $$
 $$
 Called a **composition** of $n$ into $k$ parts.
 
-### Partition
+### Partitions
 Let $X$ be a finite set, and $A_1, A_2, \dots A_k$ be **non-empty** subsets of $X$. A **partition** of $X$ $\{A_1, \dots A_k\}$ satisfies the following:
 1. $$
    \bigcup_{i=1}^k A_i = x
@@ -257,3 +257,109 @@ A **Stirling number of the second kind**, denoted $S(n,k)$ is the total number o
 > $$
 > \frac{2^n - 2}{2} = 2^{n-1} - 1
 > $$
+
+> [!Abstract] Theorem: Stirling Numbers (Recurrence Relation)
+> For all non-negative integers $n \ge k$, 
+> $$
+> S(n,k) = S(n - 1, k - 1) + k S(n - 1, k)
+> $$
+> 
+> > [!Note]- Proof
+> >
+> > The LHS is the total number of partitions of $[n]$ into exactly $k$ blocks.
+> > 
+> > In the RHS, we consider partitions of $n$ where element "n" is a singleton block or not. If it is a singleton block, then we find the remaining $k - 1$ blocks from the $n - 1$ remaining. If it is not a singleton block, then we can create $k$ blocks from $n - 1$, and then put $n$ in any of the $k$ blocks ($k$ choices).
+
+> [!Abstract] Theorem: Stirling Numbers (Summation)
+> We have
+> $$
+> S(n,k) = \frac{1}{k!} \sum_{i=0}^k (-1)^i \binom{k}{i} (k - i)^n
+> $$
+> > The proof will be covered later!
+
+What if we didn't want to be limited by $k$ blocks? 
+
+The total number of partitions of $[n]$ into any \# of blocks is the **Bell number**, denoted $B(n)$. By convention, $B(0) = 1$.
+
+> [!Example]+ Example: Bell Numbers
+> From an earlier example, let $X = [3]$.
+> 
+> We have 5 possible partitions:
+> $$
+> \begin{align*}
+>     \{1,2,3\} \\
+>     \{1,2\}, \{3\} \\
+>     \{1,3\}, \{2\} \\
+>     \{2,3\}, \{1\} \\
+>     \{1\}, \{2\}, \{3\}
+> \end{align*}
+> $$
+> So, $B(3) = 5$.
+
+> [!Abstract] Theorem: Bell Numbers (Summation)
+> We have 
+> $$
+> B(n) = \sum_{i=1}^n \binom{n-1}{i-1} B(n-i)
+> $$
+>
+> > [!Note]- Proof 
+> > 
+> > The LHS describes all ways to partition $[n]$. 
+> > 
+> > In the RHS, we look at partitions depending on some element "n", lying in a subset of size $i$. 
+> > 
+> > First, create one subset of size $1 + (i - 1)$ (1 element is always taken out before the choosing, hence the -1). Then, of the remaining $n - i$ elements, we find the number of ways to partition it.
+
+> [!Example]+ Example: Partitions
+> Let $f : A \to B, |A| = n, |B| = k$. 
+> 
+> Recall that $f$ is surjective / onto if for every $b \in B$, there exists an $a \in A$ such that $f(a) = b$. 
+> 
+> How many surjective functions are there?
+>
+> Here, we want to partition our domain values into $k$ blocks, where each block will be associated with one output. We multiply by $k!$, the total number of ways to associate one combination of blocks with the outputs.
+
+## 1.5: Integer Partitions
+A **partition of integer $n$** is a positive sequence of integers $a_1, a_2, \dots a_k$, where $a_1 \ge a_2 \ge \dots \ge a_k$, such that
+$$
+a_1 + a_2 + \dots + a_k = n
+$$
+> So, $1 + 3$ is the same as $3 + 1$. What matters is not what's inside of the blocks, but the sizes of the blocks relative to one another!
+
+We denote the total number of partitions of $n$ by $p(n)$. By convention, $p(0) = 1$.
+> The formula for this is extremely complex!
+
+> [!Example]+ Example: $n = 4$ Case
+> We find that
+> $$
+> 3 + 1 = 2 + 2 = 2 + 1 = 1 + 1 + 1 + 1 = 4
+> $$
+> There are 5 total partitions of 4! $p(4) = 5$.
+
+A **Ferrers diagram (or Young Diagram)** of an integer partition is a partial rectangular grid whose $i^{th}$ row contains $a_i$ dots (rectangles).
+
+These diagrams can illustrate some very interesting relationships! One example of a Ferrer diagram i as follows.
+
+> [!Example]+ Example: Ferrers Diagram
+> One diagram representing $4 + 3 + 1 + 1 + 1$ is given below.
+> $$
+> \begin{align*}
+>     &\star \star \star \star \\
+>     &\star \star \star \\
+>     &\star \\
+>     &\star \\ 
+>     &\star
+> \end{align*}
+> $$
+> 
+> Interestingly, the **conjugate** of a partition on a diagram is a new grid whose $i^{th}$ column is now $a_i$. Here, the conjugate would yield 
+> $$
+> \begin{align*}
+>     &\star \star \star \star \star \\
+>     &\star \star \\
+>     &\star \star\\
+>     &\star \\ 
+> \end{align*}
+> $$
+
+...

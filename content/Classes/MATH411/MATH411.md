@@ -443,14 +443,142 @@ Using this definition, we claim that the epsilon-delta deinition is also equival
    Or in other words, all possible inputs in $A$ within the $\delta$ ball of $u$ are within the set of inputs yielding the $\epsilon$ ball of $F$ around $u$.
    
 > [!Abstract] Theorem
-> Let $O$ be open in $\mathbb{R}^n$, $F: O \to \mathbb{R}^m$. Then, $F$ is continuous (at every point of $O$) if and only if $F^{-1} (V)$ is open $\forall V \subseteq \mathbb{R}^m$, open.
+> Let $O$ be open in $\mathbb{R}^n$, and let $F: O \to \mathbb{R}^m$. Then, $F$ is continuous (at every point of $O$) if and only if $F^{-1} (V)$ is open $\forall V \subseteq \mathbb{R}^m$, open.
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > >
-Assume $F^{-1} (V)$ is open $\forall V$ open. We want to show that $\forall \epsilon > 0$, $\exists \delta > 0$ such that
+> > If $F^{-1} (V)$ is open $\forall V$ open, then $F$ is continuous (and it follows that $O = F^{-1} (\mathbb{R}^m)$ must be open).
+> > 
+> > Assume $F^{-1} (V)$ is open $\forall V$ open. We want to show that $\forall \epsilon > 0$, $\exists \delta > 0$ such that
+> > $$
+> > B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u)))
+> > $$
+> > 
+> > Take $V = B_\epsilon (F(u))$. Then, by assumption, $F^{-1} (B_\epsilon (F(u)))$ is open. As we know $u \in F^{-1} (B_\epsilon (F(u)))$, there $\exists \delta > 0$ such that $B_\delta (u) \subseteq F^{-1} (B_\epsilon (F(u)))$.
+> > > Note that we did not use the $O$ open fact, but $O = F^{-1} (\mathbb{R}^m)$ is open!
+> > 
+> > ---
+> > 
+> > Conversely, assume $F$ is continuous at every $u \in O$. Let $V \subseteq \mathbb{R}^m$ open. We want $F^{-1} (V)$ open.
+> > 
+> > Fix a point $u \in F^{-1}(V)$. To show openness, we want to show that $\exists r > 0$ such that $B_r (u) \subseteq F^{-1}(V)$. We know that $F(u) \subseteq V$. 
+> > 
+> > Since $V$ is open by assumption, there $\exists \epsilon > 0$ such that $B_\epsilon (F(u)) \subseteq V$. Since $F$ is continuous at $u$, $\exists \delta > 0$ such that
+> > $$
+> > B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u))) \subseteq F^{-1}(V)
+> > $$
+> > This is close to what we want, except for the $\cap O$! We use the assumption that $O$ is open, and $u \in O$, to find a $\delta_1$ such that
+> > $$
+> > B_\delta (u) \subseteq O
+> > $$
+> > We find our $r = \min(\delta, \delta_1)$, finding a ball centered around $u$ to be contained within $F^{-1} (V)$.
+> > $$
+> > B_r(u) \subseteq B_\delta(u) \cap O \subseteq F^{-1} (V)
+> > $$
+
+Let $f : \mathbb{R}^n \to \mathbb{R}$. If $f$ is continuous, $\alpha \in \mathbb{R}$ fixed, then the sets
 $$
-B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u)))
+\begin{align*}
+f^{-1} ( (-\infty, a) ) = \{ u \in \mathbb{R}^n : f(u) < \alpha \} \\
+f^{-1}( (\alpha, \infty) ) = \{ u : \mathbb{R}^n : f(u) > \alpha \}
+\end{align*}
+$$
+are open. Similarly, $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}$ is closed because $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}^c = \{ u \in \mathbb{R}^n : f(u) > \alpha \}$ is open.
+
+# (11.2) Compactness
+## Compactness
+$K \subseteq \mathbb{R}^n$ is **sequentially compact** if for all sequences $\{ u_l \} \subseteq K$, there exists a subsequence $\{u_{l_m}\}$ and $u \in K$ such that
+$$
+\{u_{l_m}\} \to u
 $$
 
-Take $V = B_\epsilon (F(u))$. Then, by assumption, $F^{-1} (B_\epsilon (F(u)))$ is open. As we know $u \in F^{-1} (B_\epsilon (F(u)))$, there $\exists \delta > 0$ such that $B_\delta (u) \subseteq F^{-1} (B_\epsilon (F(u)))$.
-> Note that we did not use the $O$ open fact, but $O = F^{-1} (\mathbb{R}^m)$ is open!
+A set $A \subseteq \mathbb{R}^n$ is **bounded** if $\exists M$ such that
+$$
+|| u || \le M \quad \forall u \in A
+$$
+
+> [!Abstract] Theorem: Sequential Compactness and Bounded
+> If $K \subseteq \mathbb{R}^n$ is sequentially compact, then $K$ is bounded.
+>
+> > [!Note]- Proof
+> >
+> > We want $\exists M \ge 0$ such that
+> > $$
+> > ||u|| \le M \quad u \in K
+> > $$
+> > By way of contraction, assume that $K$ is sequetially compact but not bounded.
+> > 
+> > Then, $\forall M > 0$, $\exists u \in K$ such that
+> > $$
+> > ||u|| \le M
+> > $$
+> > Now let $M$ = m \in \mathbb{N}$, to get a sequence $u_m \in K$ such that $$|| u_m || > M$. For any subsequence in this sequence,
+> > $$
+> > || m_{m_l} || > m_l \to \infty
+> > $$
+> > So $u_{m_l}$ cannot converge! This is a contradiction.
+
+> [!Abstract] Theorem: Sequential Compactness and Closed
+> If $K \subseteq \mathbb{R}^n$ is sequentially compact, then $K$ is closed.
+>
+> > [!Note]- Proof
+> >
+> > Pick a sequence of points $\{u_l\} \subseteq K$, and assume that this sequence $\{u_l\} \to u \in \mathbb{R}^n$. We want to show that $u \in K$.
+> > 
+> > By sequential compactness, there exists a subsequence $\{u_{l_m}\} \to v$ such that $v \in K$. But $\{u_l\} \to u$, so $\{u_{l_m}\} \to u$! As limits are unique, this implies $u = v$, so $u \in K$!
+
+Recall that if we have a sequence $\{x_l\} \subseteq \mathbb{R}$, and $\{x_l\}$ is bounded, then there exists a subsequence $\{x_{l_m}\}$ and $x \in \mathbb{R}$ such that
+$$
+\{ x_{l_m} \} \to x
+$$
+This is known as the **Bolzano-Weirstrass Theorem**. We can generalize this to $\mathbb{R}^n$.
+
+> [!Abstract] Bolzano Weierstrass Theorem (Higher Dimensions)
+> If $\{u_l\} \subseteq \mathbb{R}^n$, and $\{u_l\}$ is bounded, then $\exists \{ u_{l_m} \} \to u \in \mathbb{R}^n$.
+>
+> > [!Note]- Proof by Induction
+> > 
+> > We know that if $n = 1$, this is true.
+> > 
+> > Assume true for $n$. We wish to prove that this theorem holds for $n + 1$.
+> > 
+> > Let $\{u_l\} \in \mathbb{R}^{n+1}$, bounded. Write 
+> > $$
+> > u_l = (u'_l, u^{n+1}_l)
+> > $$
+> > Where $u_l \in \mathbb{R}^{n+1}$, $u'_l \in \mathbb{R}^n$, $u^{n+1}_l \in \mathbb{R}$.
+> > 
+> > By assumption, $\exists \{u'_{l_m}\} \to u' \in \mathbb{R}^n$. Now look at the corresponding sequence of $u^{n+1}$, $\{u^{n+1}_{l_m}\}$. By our base case, $\exists \{ u^{k+1}_{l_{m_p}} \} \to u^{n+1} \in \mathbb{R}$. Then, 
+> > $$
+> > \{u_{l_{m_p}}\} \to (u', u^{n+1})
+> > $$
+
+> [!Abstract] Theorem: Closed + Bounded and Compactness
+> $K \subseteq \mathbb{R}^n$ is sequentially compact if and only if $K$ is closed and bounded.
+> 
+> > [!Note]- Proof
+> > 
+> > We already proved $\rightarrow$. We now prove the converse.
+> > 
+> > Let $K$ be closed and bounded. Choose any sequence $\{u_l\} \subseteq K$. As $K$ is bounded, by the Bolzano-Weierstrass Theorem we know that there exists a subsequence $\{u_{l_m}\} \to v$, where $v \in \mathbb{R}^n$.
+> > 
+> > But we also know that $K$ is closed! So, as $\{u_{l_m}\} \subseteq K$, it must be true that $v \in K$. So, 
+> > $$
+> > \exists \{u_{l_m}\} \to v \in K
+> > $$
+
+## Compactness and Functions
+We find that functions on sequentially compact sets have some guaranteed properties.
+
+> [!Abstract] Theorem
+> If $K$ is sequentially compact and $F : K \to \mathbb{R}^m$ is continuous, then the image, $F(K)$, is sequentially compact.
+>
+> > [!Note]- Proof
+> > 
+> > Let $\{v_l\} \subseteq F(K)$. We want to show that there is a subsequence that converges to something in $F(K)$.
+> > 
+> > By definition of the image, we know that $\exists \{u_k\} \subseteq K$ such that
+> > $$
+> > F(u_k) = v_k
+> > $$
+> > By sequential compactness on $K$, there is a subsequence $\{u_{k_l}\} \to u \in K$, and furthermore, $\{ F(u_{k_l}) \} \to F(u)$ as $F$ is continuous.

@@ -186,10 +186,27 @@ So if $\hat{\theta}$ is an unbiased estimator, it must be true that $\text{MSE}(
 > \frac{S_{xx}}{\sigma^2} \sim X^2_{n-1}
 > $$
 > Or in other words, this is equal to the Chi Squared Distribution with $n - 1$ degrees of freedom.
+> 
+>
+
+> Before, CLT describes the distribution of X bar, the sample mean (for any distribution, given we take a random sample). 
+>
+> This theorem describes the distribution of $S^2$, **the sample variance**, given that the random sample is taken from a normal distribution... theorem describes distribution of the sample variance as:
+> $$
+> S^2 = \frac{X^2_{n-1}}{n=1} * \sigma^2
+> $$
+>
+> We can find the expectation to be $\sigma^2$.
+> 
 
 > IT can be seen that $n - 1$ is best, and yields an unbiased estimator... WIP
 
+> IT can be found that sample variance, $S^2$, is always equal to $\sigma^2$.
 
+We can find the sample variance as
+$$
+S^2 = \frac{
+$$
 
 ---
 
@@ -215,3 +232,6 @@ $$
 
 ---
 
+$$
+S^2 
+$$

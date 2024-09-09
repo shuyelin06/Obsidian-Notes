@@ -570,7 +570,7 @@ This is known as the **Bolzano-Weirstrass Theorem**. We can generalize this to $
 ## Compactness and Functions
 We find that functions on sequentially compact sets have some guaranteed properties.
 
-> [!Abstract] Theorem
+> [!Abstract] Theorem: Images of Sequentially Compact Domains
 > If $K$ is sequentially compact and $F : K \to \mathbb{R}^m$ is continuous, then the image, $F(K)$, is sequentially compact.
 >
 > > [!Note]- Proof
@@ -582,3 +582,67 @@ We find that functions on sequentially compact sets have some guaranteed propert
 > > F(u_k) = v_k
 > > $$
 > > By sequential compactness on $K$, there is a subsequence $\{u_{k_l}\} \to u \in K$, and furthermore, $\{ F(u_{k_l}) \} \to F(u)$ as $F$ is continuous.
+
+Note that both properties must hold for this to be true! They do not hold on their own.
+
+> [!Example]+ Example: Failure of Image Closure and  of Images
+> If $C \subseteq \mathbb{R}^n$ is closed, $F : C \to \mathbb{R}^m$ is continuous, is $F(C)$ closed?
+>
+> No! As a counterexample, let $f : \mathbb{R} \to \mathbb{R}$, where $f = \frac{1}{1 + x^2}$. Then, $\mathbb{R}$ is closed, but $f$ is not, as it asymptotes towards $0 \not\in f(\mathbb{R})$!
+>
+> If $B \subseteq \mathbb{R}$ is bounded, and $f : B \to \mathbb{R}$ is continuous, is $f(B)$ bounded?
+>
+> No! Let $f(x) = \frac{1}{x}$ on $B = (0,1)$. Then, $F(B) = (1, \infty)$ which is unbounded.
+>
+> > Note the specific wording on the domain.
+> > 
+> > If $B \subseteq \mathbb{R}$ is bounded and $f : \mathbb{R} \to \mathbb{R}$ is continuous (domain is now $\mathbb{R}$), now $f(B)$ is bounded! We can find a sequentiall compact domain containing $B$, and find that $f$ on this domain is sequentially compact (and thus bounded!).
+
+> [!Abstract] Theorem: Minimums and Maximums on Sequentially Compact Domains
+> Let $K$ be sequentially compact, $f : K \to \mathbb{R}$ continuous.
+> 
+> Then $f$ has a minimum and maximum value.
+>
+> > [!Note]- Proof
+> > 
+> > We know that from an earlier theorem, $f(K)$ is bounded.
+> > 
+> > By definition, $\exists m$ which is the infimum of $f$ over all $K$. We want to show that $\exists u \in K$ such that $f(u) = m$. 
+> > 
+> > By definition of infimum, we know that $\exists \{u_i\} \subseteq K$ such that $\{f(u_i)\} \to m$. Since $K$ is sequentially compact, we know there exists a convergent subsequence $\{u_{i_l}\}$ such that $\{u_{i_l}\} \to u \in K$. Then, by continuity,
+> > $$
+> > \lim f(u_{i_l}) = \lim f(u_i) = m
+> > $$
+
+Interestingly enough, the converse of the above theorem can actually be used to prove sequential compactness.
+
+> [!Abstract] Theorem: Sequential Compactness via Minimums and Maximums
+> Let $A \subseteq \mathbb{R}^n$ be a set such that any function $f : A \to \mathbb{R}$ has a minimum and maximum value. Then, $A$ is sequentially compact.
+> 
+> > [!Note]- Proof
+> > 
+> > We wish to show that $A$ is bounded and closed.
+> > 
+> > To show that $A$ is bounded, choose some function $f(x) = ||x||$. By assumption, we know that $\exists x_\text{max}$ such that $\forall x \in A$,
+> > $$
+> > f(x) \le f(x_\text{max}) \Longrightarrow 0 \le ||x|| \le ||x_\text{max}||
+> > $$
+> > Let $x_\text{max}$ be our bound.
+> > 
+> > To show that $A$ is closed, let $\{u_i\} \in A$ such that $\{u_i\} \to u \in \mathbb{R}^n$. We want to show that $u \in A$. 
+> > 
+> > Let $f(x) = ||x - u||$. Note that $f$'s infimum is 0. Thus, the minimum of $f$ is also 0! But the minimum can only be attained at $x = u$, so $u \in A$.
+
+The function $F : A \to \mathbb{R}^n$, $A \subseteq \mathbb{R}^m$ is **uniformly continuous** if for any two sequences $\{u_i\}, \{v_i\} \subseteq A$, if
+$$
+\{ || u_i - v_i || \} \to 0
+$$
+Then,
+$$
+\{ || f(u_i) - f(v_i) || \} \to 0
+$$
+
+
+Note that uniform continuity implies continuity. This is because we can let $v_i$ be the sequence of whatever $\{u_i\}$ converges to, to get our continuity definition! 
+> The converse is not true. As a counterexample, let $f(x) = x^2$. Then, for $u_i = \frac{1}{i} + i$, $v_i = i$, we have that $u_i - v_i \to 0$, but $f(u_i) - f(v_i) = 2 + \frac{1}{i^2} \not\to 0$!
+

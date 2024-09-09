@@ -332,3 +332,43 @@ $$
 \end{bmatrix}
 $$
 
+Rotations in 3D are considerably more complex than that of the 2D case. Rotations in 3D have an **axis (line)** and an **angle**. All points are rotated around this axis such that the orthogonal vector from the line to the point, and the orthogonal vector from the line to the new point, form the angle given.
+
+If the axis goes through the origin, then the rotation is a linear transformation $f : \mathbb{R}^3 \to \mathbb{R}^3$ and can be given by a $3 \times 3$ matrix.
+
+> [!Example] Example: Rotations in 3D
+> Consider the rotation around the $z$-axis by $\theta$ radians.
+> 
+> We can find the standard matrix by transformating the standard basis vectors.
+> > It's important to realize that our rotation is actually a rotation in the $xy$ plane! The z-coordinate does not change.
+> $$
+> f\left( \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} \right) 
+> = \begin{bmatrix} \cos(\theta) \\ \sin{\theta} \\ 0 \end{bmatrix}
+> \quad
+> f\left( \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} \right) 
+> = \begin{bmatrix} -\sin(\theta) \\ \cos{\theta} \\ 0 \end{bmatrix}
+> \quad
+> f\left( \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \right) 
+> = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+> $$
+> 
+> This gives us standard matrix
+> $$
+> A = 
+> \begin{bmatrix}
+> \cos(\theta) & -\sin(\theta) & 0 \\
+> \sin(\theta) & \cos(\theta) & 0 \\
+> 0 & 0 & 1
+> \end{bmatrix}
+> $$
+> 
+> For homogeneous coordinates, we have
+> $$
+> A = 
+> \begin{bmatrix}
+> \cos(\theta) & -\sin(\theta) & 0 & 0 \\
+> \sin(\theta) & \cos(\theta) & 0 & 0 \\
+> 0 & 0 & 1 & 0 \\
+> 0 & 0 & 0 & 1
+> \end{bmatrix}
+> $$

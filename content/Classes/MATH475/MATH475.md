@@ -338,28 +338,93 @@ We denote the total number of partitions of $n$ by $p(n)$. By convention, $p(0) 
 
 A **Ferrers diagram (or Young Diagram)** of an integer partition is a partial rectangular grid whose $i^{th}$ row contains $a_i$ dots (rectangles).
 
-These diagrams can illustrate some very interesting relationships! One example of a Ferrer diagram i as follows.
+These diagrams can illustrate some very interesting relationships! One diagram representing $4 + 3 + 1 + 1 + 1$ is given below.
+$$
+\begin{matrix}
+    \star & \star & \star & \star \\
+    \star & \star & \star \\
+    \star \\
+    \star \\ 
+    \star
+\end{matrix}
+$$
 
-> [!Example]+ Example: Ferrers Diagram
-> One diagram representing $4 + 3 + 1 + 1 + 1$ is given below.
+Interestingly, the **conjugate** of a partition on a diagram is a new grid whose $i^{th}$ column is now $a_i$. Here, the conjugate would yield 
+$$
+\begin{matrix}
+    \star & \star & \star & \star & \star \\
+    \star & \star \\
+    \star & \star \\
+    \star \\ 
+\end{matrix}
+$$
+> Basically, we flip the entire thing along a diagonal!
+
+We can use this to establish some interesting identities!
+
+> [!Abstract] Theorem: Integer Partitions Identity
+> The total number of integer partitions of $n$ such that $a_1 = a_2 \ge a_3 \ge \dots$ equals the total number satisfying
 > $$
-> \begin{align*}
->     &\star \star \star \star \\
->     &\star \star \star \\
->     &\star \\
->     &\star \\ 
->     &\star
-> \end{align*}
+> a_1 \ge a_2 \ge \dots \ge 2
 > $$
+> > Each partition has a size of at least 2!
 > 
-> Interestingly, the **conjugate** of a partition on a diagram is a new grid whose $i^{th}$ column is now $a_i$. Here, the conjugate would yield 
-> $$
-> \begin{align*}
->     &\star \star \star \star \star \\
->     &\star \star \\
->     &\star \star\\
->     &\star \\ 
-> \end{align*}
-> $$
+> > [!Note]- Proof
+> > 
+> > Consider a partition such that $a_1 = a_2$. 
+> > 
+> > If we were to draw a Ferrers diagram, we would find that the conjugate of the diagram corresponds to a diagram whose first two columns are always the same length, telling us that there are at least two dots in each row.
+> > $$
+> > \begin{matrix}
+> >     \star & \star & \star & \star & \star & a_1 \\
+> >     \star & \star & \star & \star & \star & a_2 \\
+> >     \star & \star & \star \\
+> >     \star
+> > \end{matrix} 
+> > \Longrightarrow
+> > \begin{matrix}
+> >     \star & \star & \star & \star \\
+> >     \star & \star & \star \\
+> >     \star & \star & \star \\
+> >     \star & \star \\
+> >     \star & \star \\
+> >     a_1 & a_2
+> > \end{matrix} 
+> > $$
+> > 
+> > Thus, each $a_i$ must take on at least 2.
+> 
+> The converse also holds, with a similar proof. 
 
-...
+The **total partitions of $n$ into exactly $k$ parts** is denoted $P_k (n)$.
+> Note that the previous definition did not establish this $k$ part requirement.
+
+> [!Abstract] Theorem: Integer Partitions into Exactly $k$ Parts
+> For $1 < k < n$,
+> $$
+> P_k(n) = P_{k-1}(n-1) + P_k (n-k)
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > The LHS describes the ways to partition $n$ into exactly $k$ parts.
+> >
+> > The RHS considers partitions into $k$ parts for either $a_k = 1$ or $a_k > 1$. If $a_k = 1$, we take one and partition the remaining $n - 1$ into $k - 1$ parts for a total of $k$. If $a_k > 1$, we first give 1 to all parts, then partition the remaining into $k$ parts to guarantee that all numbers have at least 2.
+
+## 1.6: The Twelvefold Way
+We throw $n$ balls into $k$ bins. We consider the cases of the balls and bins being labeled (distinguishable) or not, and if each bin has no restriction, each bin has at least 1 ball, or each bin has at most 1 ball.
+
+This forms 12 cases total, which can be solved with the methods described previously.
+1. Labeled balls to labeled bins
+   1. No restriction: For every ball, we can put it in $k$ possible bins. $k^n$
+   2. At least 1 ball: We find the number of ways to partition $n$ into $k$, and then permute what bin each group goes into. $k! S(n,k)$
+   3. At most 1 ball (obvioulsly, $k \le n$): Choose $n$ of the $k$ bins to place the balls into. Then, permute the ordering of how we place the balls. $\binom{k}{n} n!$
+2. Unlabeled balls to labeled bins
+   1. No restriction: Perform weak composition to decompose $n$ into $k$ (labeled) parts. $\binom{n+k-1}{k-1}$.
+   2. At least 1 ball: First give each bin 1 dollar, then perform weak composition on the remaining $n - k$ parts. $\binom{n-1}{k-1}$
+   3. At most 1 ball: Choose $n$ bins of the $k$ to place a ball into. $\binom{k}{n}$.
+3. Labeled balls to unlabeled bins.
+   1. No restriction: We partition the set of balls $[n]$ into $i$, from $1 \le i \le k$. $\sum_{i=1}^k S(n,i)$.
+   2. At least 1 ball: We partition the set of balls $[n]$ into $k$ parts. $S(n,k)$.
+   3. At most 1 ball: Just one way, as the bins are labeled! $1$.
+   

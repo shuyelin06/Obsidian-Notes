@@ -55,20 +55,21 @@ This process is called **Parametric Estimation**, and lets us make probabilistic
 > So, suppose we knew that $E_1 \sim N(\mu, \sigma^2)$, or in other words, was normal. Then, we would try to fit our normal distribution to our samples to find $\mu$ and $\sigma$, and find our average as $\mu$!
 > > Note that based on the distribution that we assume on the population, we can get wildly differing results!
 
-# Methods of Point Estimation 
-Suppose $\theta$ is a paramter attached to a population distribution.
+# Estimators 
+## Definitions and Properties
+Suppose we have a population parameter $\theta$, and we are interested in estimating it.
 
-An **estimator** for $\theta$ is a statistic calculated from a random sample. The values of the statistic are estimates for $\theta$.
+An **point estimator** $\hat{\theta}$ for the parameter $\theta$ (from a population) is a statistic calculated from a random sample $\{X_1, X_2 \dots X_n\}$. The values of $\hat{\theta}$ are used as estimates for $\theta$.
 
-> [!Example] Example: Estimators
-> Say our population takes on the normal distribution $X \sim N(\mu, \sigma^2)$.
->
-> To be able to make predictions about the population, we need to know $\mu$ and $\sigma^2$! However, in many cases we don't have this information. For example, say John got 30 on an exam. He wants to know how well he did compared to his peers, so he wants to standardize his scores.
+> [!Example]- Example: Estimators (Motivation)
+> Say our population takes on the normal distribution $X \sim N(\mu, \sigma^2)$. To be able to make predictions about the population, we need to know $\mu$ and $\sigma^2$! However, in many cases we don't have this information. 
+> 
+> For example, say John got 30 on an exam. He wants to know how well he did compared to his peers, so he wants to standardize his scores.
 > $$
 > \frac{30 - \mu}{\sigma}
 > $$
 >
-> Instead, we will want to estimate $\hat{\mu}$ and $\hat{\sigma}^2$. Once we estimate these parameters, we'll have a distribution that we can use to make predictions! We can do this by taking a sample of our population, and using this sample to estimate our population parameter!
+> We don't know $\mu$ and $\sigma$! So instead, we will estimate them as $\hat{\mu}$ and $\hat{\sigma}^2$. After this, we'll have a distribution that we can use to make predictions! We do this by taking a sample of our population, and using this sample to estimate our population parameter!
 >
 > So, John samples some of his friends to find scores $(30, 72, 95)$. With this data, he estimates the mean and standard deviation:
 > $$
@@ -83,9 +84,9 @@ An **estimator** for $\theta$ is a statistic calculated from a random sample. Th
 > \frac{30 - 66}{32.96} = -1.09
 > $$
 > With this score, John can tell that he did poorly compared to the rest of his class. In fact, with the assumption that the scores are normally distributed, John finds that roughly 84% of the class did better than him!
-> > Note that this analysis is not perfect! Not only is the sample small, but it may not even be random! The datapoint of 30 could be John manually adding his score to the sample.
+> > This analysis is not perfect! Not only is the sample small, but it may not even be random! The datapoint of 30 could be John manually adding his score to the sample.
 
-> [!Example] Example: Examples of Estimators
+> [!Example]+ Example: Examples of Estimators
 > Suppose we want to estimate a population with a normal distribution. The following are examples of estimators.
 > 
 > We could estimate $\mu$ as:
@@ -99,20 +100,15 @@ An **estimator** for $\theta$ is a statistic calculated from a random sample. Th
 Suppose $\hat{\theta}$ is an estimator for $\theta$. We say that the **parameter space**, $\Theta$, is the set of all possible values that $\theta$ can take on.
 > This defines what values our estimator can take on!
 
-The **bias** of $\hat{\theta}$ is defined as
+For a point estimator $\hat{\theta}$ of the parameter $\theta$, we define the **bias** of $\hat{\theta}$ as
 $$
 \text{Bias} (\hat{\theta}) = E(\hat{\theta}) - \theta
 $$
-Where $E(\hat{\theta})$ denotes the average values of $\hat{\theta}$.
-
-And furthermore, we say that $\hat{\theta}$ is an **unbiased estimator** for $\theta$ if $\forall \theta \in \Theta$,
+Where $E(\hat{\theta})$ denotes the average values of $\hat{\theta}$. Furthermore, we say that $\hat{\theta}$ is an **unbiased estimator** for $\theta$ if $\forall \theta \in \Theta$,
 $$
 \text{Bias} (\hat{\theta}) = 0 
 $$
-This tells us how closely our estimator matches the parameter! We generally prefer unbiased estimators, in what is known as the **principle of unbiased estimation**.
-
-> [!Info] Principle of Unbiased Estimation
-> Among the possible estimators for $\theta$, we should choose an unbiased estimator.
+This tells us how closely our estimator matches the parameter!
 
 > [!Example]+ Example: Unbiased Estimator for Population Mean
 > Let $\hat{X}_k = \frac{1}{k} \sum_{i=1}^k X_i$.
@@ -129,26 +125,90 @@ This tells us how closely our estimator matches the parameter! We generally pref
 > 
 > This means that $E(\hat{X}_k)$ is an unbiased estimator for $\mu$!
 
-We can calculate how biased our estimator is! But there can be many unbiased estimators! So among these unbiased estimators, which one should we choose? 
-
 We define the **variance** of an estimator $\hat{\theta}$ as
 $$
 V(\hat{\theta}) = E\left( (\hat{\theta} - E(\hat{\theta}))^2 \right)
 $$
-Or in other words, the expected squared deviation of the values of $\hat{\theta}$ from $E(\hat{\theta})$! Just because we have an unbiased estimator, does not mean that it can give good results- some estimators may be unbiased, but can give heavily varying results (which would also not be the best!).
+Or in other words, the expected squared deviation of the values of $\hat{\theta}$ from $E(\hat{\theta})$! Just because we have an unbiased estimator, does not mean that it can give good results- some estimators may be unbiased, but can give heavily varying results.
 
-We define the **mean squared error** as
+We also define the **mean squared error** as
 $$
 \text{MSE} (\hat{\theta}) = E\left( (\hat{\theta} - \theta)^2 \right)
 $$
-Which defines the expected deviation of the values of $\hat{\theta}$ from $\theta$! Note that it can be shown that
+Which defines the expected deviation of the values of $\hat{\theta}$ from $\theta$! We say that $\hat{\theta}$ on a random sample $\{X_1, X_2, \dots X_n\}$ is  **consistent** if
 $$
-\text{MSE} (\hat{\theta}) = V(\hat{\theta}) + \left( \text{Bias}(\hat{\theta}) \right)^2
+\lim_{n\to\infty} \text{MSE}(\hat{\theta}) = 0
 $$
-So if $\hat{\theta}$ is an unbiased estimator, it must be true that $\text{MSE}(\hat{\theta}) = V(\hat{\theta})$! Thus, we can use the MSE to measure the variance of unbiased estimators. 
-> It is often the case that in minimizing either variance or bias, the other increases. So, typically a good estimator is one that aims to find a middle ground between both!
+> Good estimators will have small or minimal MSE.
 
-> [!Example] Example: The Best Estimator for Population Mean
+All of these estimator definitions can be related in the following theorem.
+
+> [!Abstract] Theorem: Bias-Variance Tradeoff
+> For a point estimator $\hat{\theta}$, 
+> $$
+> \text{MSE} (\hat{\theta}) = V(\hat{\theta}) + \left( \text{Bias}(\hat{\theta}) \right)^2
+> $$
+
+Some consequences of this theorem are as follows:
+- **Principle of Unbiased Estimation**: Generally, we prefer unbiased estimators. Not only does it lower MSE, but it also makes it easier to minimize our MSE, by removing the influence of bias in the above relation!
+- Consistent estimators tell us that we can make the MSE as small as we want by using sufficiently large sample sizes.
+- For a fixed sample size $n$, we will have to make trade offs between reducing bias and reducing variance, as reducing one increases the other.
+- For unbiased estimators, MSE is equal to the variance.
+- We will typically need to know how to calculate or estimate the sampling distribution of a point estimator.
+
+## Estimators for $\mu$ and $\sigma^2$
+Here, we describe estimators for two very commonly used population parameters.
+
+Let $\{X_1, X_2, \dots X_n\}$ is a random sample of size $n$, from a population with some distribution $X$. Furthermore, suppose that we know the population mean and variance as 
+$$
+E(X) = \mu \qquad V(X) = \sigma^2
+$$
+
+To estimate these parameters, we have the following estimators. For mean, we have $\bar{X}$:
+$$
+\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i = \frac{X_1 + X_2 + \dots + X_n}{n}
+$$
+For variance, we have $S_{xx}$:
+$$
+S_{xx} = \sum_{i=1}^n (X_i - \bar{X})^2 = (X_1 - \bar{X})^2 + \dots + (X_n - \bar{X})^2
+$$
+
+> [!Abstract] Theorem: Bias $\bar{X}$ and $S_{xx}$
+> We can find that
+> 1. $\bar{X}$ is an unbiased estimator for $\mu$
+> 2. $E(S_{xx}) = (n - 1) \sigma^2$
+> 3. $S^2 = \frac{1}{n-1} S_{xx}$, the **sample variance**, is an unbiased esetimator for $\sigma^2$
+
+Note that the above hold, **regardless** of the population distribution we're sampling from! 
+
+However, if we know about the population distribution, we may be able to infer some more information.
+
+> [!Abstract] Theorem: Distributions of $\bar{X}$ and $S^2$, Normal Case 
+> If $\{X_1, X_2, \dots X_n\}$ is a random sample from a population with distribution $X \sim N(\mu, \sigma^2)$, then we can find that the distributions of $\bar{X}$ and $S^2$ can be found as:
+> $$
+> \bar{X} \sim N\left( \mu, \frac{\sigma}{n} \right)
+> \qquad
+> \frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}
+> $$
+>
+> > Note that by definition, we can represent the chi-squared distribution as Gamma($\alpha = \frac{n}{2}, \beta = 2$).
+
+Even without knowing the population distribution, we may still be able to infer our sampling distributions! This is a powerful theorem known as the **Central Limit Theorem**.
+
+> [!Abstract] Theorem: Central Limit Theorem
+> If $\{X_1, X_2, \dots X_n\}$ is a random sample from a population with distribution $X$ with $E(X) = \mu$ and $V(X) = \sigma^2 < \infty$, then with $n$ sufficiently large, $\bar{X}$ approximates the normal distribution.
+> $$
+> \bar{X} \sim^\text{approx} N\left( \mu, \frac{\sigma^2}{n} \right)
+> $$
+> > Note that this tells us, that as the sample size increases, our sample distribution will center in on $\mu$! 
+
+--- CONTINUE ---
+
+---
+
+
+
+> [!Example]+ Example: The Best Estimator for Population Mean
 > From our previous example, $\hat{\theta}_k = \bar{X}_k$. We can find the variance of our estimator as
 > 
 > $$
@@ -163,7 +223,7 @@ So if $\hat{\theta}$ is an unbiased estimator, it must be true that $\text{MSE}(
 > 
 > So, in this example, our most optimal estimator is $\hat{\theta} = \hat{X} = \frac{1}{n} \sum_{i=1}^n X_i$ as it is an unbiased estimator with the least variance. 
 
-> [!Example] Example: The Best Estimator for Population Deviation
+> [!Example]+ Example: The Best Estimator for Population Deviation
 > Say we want an estimator for $\sigma^2$. Some possible estimators are as follows:
 > 1. $s^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$
 > 2. $\hat{\sigma}^2_1 = \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2$
@@ -171,7 +231,7 @@ So if $\hat{\theta}$ is an unbiased estimator, it must be true that $\text{MSE}(
 > 
 > Intuitively, it makes sense for us to want to use (2) whenever we have $\mu$! But let's calculate this to confirm. We want to find the estimator bias, as well as the mean squared error.
 
-> [!Abstract]
+> [!Abstract] Theorem: 
 > Suppose $\{X_1, X_2, \dots X_n\}$ is a random sample from $N(\mu, \sigma^2)$. 
 >
 > $$
@@ -209,6 +269,19 @@ S^2 = \frac{
 $$
 
 ---
+
+| Distribution | Associated Parameters | Parameter Space |
+| :-: | - | - |
+| Bernoulli($p$) | $p$, the probability of success | 0, 1 |
+ | Binom($n,p$) | $n$, the number of trials <br/> $p$, the probability of success | $\mathbb{N} * (0,1)$ |
+| NegBinom($r,p$) | $r$, the number of successes we are looking for <br/> $p$, the probability of success | $\mathbb{N} * (0,1)$ |
+| Pois($\lambda$) | $\lambda$, the rate of success | $\mathbb{R}_{>0}$ |
+| $N(\mu, \sigma^2)$ | $\mu$, mean <br/> $\sigma^2$, variance | |
+| Gamma($\alpha, \beta$) | $\alpha$, the shape parameter <br/> $\beta$, the scale parameter | |
+| Exp($\lambda$) | $\lambda$, the rate paramter | $\mathbb{N}$ |
+| Chi-Sq($n$) | $df$, the degrees of freedom | $\mathbb{N}$ |
+| Beta($\alpha, \beta$) | ...
+
 
 
 Ways to estimate..

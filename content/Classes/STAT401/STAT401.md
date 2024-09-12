@@ -157,6 +157,7 @@ Some consequences of this theorem are as follows:
 - We will typically need to know how to calculate or estimate the sampling distribution of a point estimator.
 
 ## Estimators for $\mu$ and $\sigma^2$
+### $\bar{X}$, $S^2$, and the Central Limit Theorem
 Here, we describe estimators for two very commonly used population parameters.
 
 Let $\{X_1, X_2, \dots X_n\}$ is a random sample of size $n$, from a population with some distribution $X$. Furthermore, suppose that we know the population mean and variance as 
@@ -201,6 +202,67 @@ Even without knowing the population distribution, we may still be able to infer 
 > \bar{X} \sim^\text{approx} N\left( \mu, \frac{\sigma^2}{n} \right)
 > $$
 > > Note that this tells us, that as the sample size increases, our sample distribution will center in on $\mu$! 
+
+### Critical Values
+Suppose $X$ has the distribution with cdf  defined as
+$$
+F_X (x) = P(X \le x) 
+$$
+Then, for some $\alpha \in (0,1)$, we say the **$\alpha^{th}$ critical value for $X$** is the number $x_\alpha$ satisfying:
+$$
+P(X \ge x_\alpha) = \alpha
+$$
+In other words, the critical value defines the proportion of people who did better than $x_\alpha$!
+> More formally, the critical value lets us define a region in our probability distribution that we deem is quite significant. See the below example.
+
+> [!Example]+ Example: Critical Values
+> Suppose $X \sim \text{Exam Scores}$, where $X(\omega)$ is the exam score of student $\omega$.
+> 
+> Suppose $\alpha = 0.05$. Then, $x_\alpha$ is the value such that the probability of any random exam score being larger than $x_\alpha$ is 0.05. Formally,
+> $$
+> P(X \ge x_\alpha) = \alpha
+> $$
+>
+> So, for small $\alpha$, having a score that is larger than $x_\alpha$ is an exceptional score. This lets us make inferences about the data, which is very important in later hypothesis testing!
+
+Let $p \in (0,1)$. Then, the $p^{th}$ percentile is the value $n_p$ satisfying:
+$$
+P(X \le n_p) = p
+$$
+In other words, the percentile defines the proportion of people who did worse than $n_p$! 
+
+This is complementary to the critical value. If $n_p$ is the value satisfying $p$, then we can find $n_p = x_\alpha$ for $\alpha = 1 - p$ (and vice versa).
+
+Percentiles and critical values let us make inferences about exceptional scores within our data. If the probability that a random value from our distribution falls above (or under) our value is low, then we know that we have an exceptional score!
+
+But what is a "low" probability? Generally, the standard, recommended by satistician Fisher, is to take $\alpha = 0.05$. Thus, for a value to be exceptional, it should be within the top 5% of the distribution.
+
+
+## ...
+So given $\bar{X} \sim N(\mu, \frac{sigma^2}{\mu})$, what is an exceptional observation on this distribution?
+
+Observe that we can standardize our sample mean distribution as
+$$
+Z = \left( \frac{\bar{X} - \mu}{\frac{\sigma}{\sqrt{n}}} \right)
+$$
+
+Then, using what's known as the **empirical rule**, we can find that
+- 68% of the distribution falls between the 1st standard deviation of the mean.
+- 95% of the distribution falls between the 2nd standard deviation of the mean.
+- 99.7% of the distribution falls between the 3rd standard deviation of the mean.
+
+So, any observation outside of 2 standard deviations of the mean is a significant observation!
+
+So, given any random sample $\bar{x}$, we can find how significant its sample mean is by taking
+$$
+P(\bar{X} \ge \bar{x} \qquad P(\bar{X} \le \bar{x}
+$$
+Where the observation is significant in either probability is small!
+
+> Point estimation tells us how close our estimator is to the actual paramter! Later, we do interval estimation, which tells us if our estiamtor is within some interval of the actual parameter.
+
+
+
 
 --- CONTINUE ---
 

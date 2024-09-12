@@ -322,7 +322,9 @@ Below, we can find some common linear transformations in $\mathbb{R}^2$.
 ## 3D Graphics
 Like in the 2D case, we will represent the 3D point $(x,y,z)$ in homogeneous coordinates $(x,y,z,1)$.
 
-Translations can be done by multiplying the $4 \times 4$ matrix
+---
+
+**Translations** can be done by multiplying the $4 \times 4$ matrix
 $$
 \begin{bmatrix}
 1 & 0 & 0 & t_x \\
@@ -332,11 +334,13 @@ $$
 \end{bmatrix}
 $$
 
-Rotations in 3D are considerably more complex than that of the 2D case. Rotations in 3D have an **axis (line)** and an **angle**. All points are rotated around this axis such that the orthogonal vector from the line to the point, and the orthogonal vector from the line to the new point, form the angle given.
+---
+
+**Rotations** in 3D are considerably more complex than that of the 2D case. Rotations in 3D have an **axis (line)** and an **angle**. All points are rotated around this axis such that the orthogonal vector from the line to the point, and the orthogonal vector from the line to the new point, form the angle given.
 
 If the axis goes through the origin, then the rotation is a linear transformation $f : \mathbb{R}^3 \to \mathbb{R}^3$ and can be given by a $3 \times 3$ matrix.
 
-> [!Example] Example: Rotations in 3D
+> [!Example]- Example: Z-Axis Rotation in 3D
 > Consider the rotation around the $z$-axis by $\theta$ radians.
 > 
 > We can find the standard matrix by transformating the standard basis vectors.
@@ -372,3 +376,110 @@ If the axis goes through the origin, then the rotation is a linear transformatio
 > 0 & 0 & 0 & 1
 > \end{bmatrix}
 > $$
+
+When we specify an axis of rotation, we'll also specify a direction on that axis indicating how we should rotate about that axis. Then, we will follow the **right hand rule** convention for rotations.
+
+In this convention, we place our thumb in the direction of the axis, and the way our fingers curl defines the orientation of the rotation.
+
+We have the following rotations about the standard axes:
+$$
+RX(\theta) = 
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & \cos(\theta) & -\sin(\theta) & 0 \\
+0 & \sin(\theta) & \cos(\theta) & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\qquad
+RY(\theta) =
+\begin{bmatrix}
+\cos(\theta) & 0 & \sin(\theta) & 0 \\
+0 & 1 & 0 & 0 \\
+-\sin(\theta) & 0 & \cos(\theta) & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+$$
+RZ(\theta) =
+\begin{bmatrix}
+\cos(\theta) & -\sin(\theta) & 0 & 0 \\
+\sin(\theta) & \cos(\theta) & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+But what if we want to rotate about an axis that is not one of the standard axes? Well, we could combine rotations to obtain a rotation which is "effectively" a rotation about this axis! 
+
+---
+
+Like in the 2D case, we can combine our transformations to obtain more complex transformations!
+
+> [!Example]+ Example: Compositions of Transformations
+> Suppose we want to rotate about the line through $(0,4,3)$ that is parallel to the $x$-axis (with same orientation) by an angle of $\frac{\pi}{6}$.
+> 
+> We can find our standard matrix by first translating to the origin, rotating about $x$, then translating back to our point!
+> $$
+> A = 
+> \begin{bmatrix}
+> 1 & 0 & 0 & 0 \\
+> 0 & 1 & 0 & 4 \\
+> 0 & 0 & 1 & 3 \\ 
+> 0 & 0 & 0 & 1
+> \end{bmatrix}
+> \begin{bmatrix}
+> 1 & 0 & 0 & 0 \\
+> 0 & \cos(\pi/6) & -\sin(\pi/6) & 0 \\
+> 0 & \sin(\pi/6) & \cos(\pi/6) & 0 \\
+> 0 & 0 & 0 & 1
+> \end{bmatrix}
+> \begin{bmatrix}
+> 1 & 0 & 0 & 0 \\
+> 0 & 1 & 0 & -4 \\
+> 0 & 0 & 1 & -3 \\ 
+> 0 & 0 & 0 & 1
+> \end{bmatrix}
+> $$
+
+
+
+## Perspective Projection in 3D
+In a 3D scene, how can we render it to a 2D image?
+
+We could simply project these points onto a "viewing" plane, but this will give us a very flat image, which fails to give us a sense of depth!
+
+In fact, this happens because our eyes have depth cues that simple projection doesn't preserve. These include:
+- Objects that are further are smaller
+- Parallel lines converge at the horizon 
+
+This is where **perspective projection** comes in! Given our view, this projection transforms points so that points further away appear closer in nature!
+
+Consider a view at $(0,0,d)$ which is looking down at the $xy$ plane. Then, for any $(x,y,z)$ point, we want to find its projection on the plane $(x',y',0)$, where the projection is co-linear with our viewing point and input point.
+
+We can find this as the point on the plane intersecting the line $(x,y,z-d)$ starting at $(0,0,d)$
+$$
+(0,0,d) + t(x,y,z-d) = (tx,ty,d + t(z-d)) \qquad t \in \mathbb{R}
+$$
+We wish to find the point such that $z = 0$, so we solve such that 
+$$
+d + t(z-d) = 0 \Longrightarrow t = \frac{d}{d-z} = \frac{1}{1 - z/d}
+$$
+This gives us the transformed point in perspective projection! 
+$$
+x' = \frac{x}{1 - z/d} \qquad y' = \frac{y}{1 - z/d}
+$$
+Now, how do we express this in matrix form?
+
+If we use homogeneous coordinates $(x,y,z,d)$, where $d$ influences our perspective projection, we can express this in the form
+
+--- WIP ---
+
+$$
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & -\frac{1}{d} & 1
+\end{bmatrix}
+$$
+After, divide every point by the 4th entry to fix the x and y coordinates.

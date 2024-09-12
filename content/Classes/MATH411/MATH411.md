@@ -317,6 +317,7 @@ These 3 sets are mutually exclusive, and form all of $R^n$!
 
 
 # Functions and Continuity in $\mathbb{R}^n$
+## Continuity
 Define the function $F : A \to \mathbb{R}^m$, where $A \subseteq \mathbb{R}^n$. 
 
 Then, $F$ is **continuous** at $u \in A$ if $\forall \{ u_k \} \to u$ where $\{u_k\} \subseteq A$, it follows that $\{F(u_k)\} \to F(u)$.
@@ -485,7 +486,6 @@ f^{-1}( (\alpha, \infty) ) = \{ u : \mathbb{R}^n : f(u) > \alpha \}
 $$
 are open. Similarly, $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}$ is closed because $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}^c = \{ u \in \mathbb{R}^n : f(u) > \alpha \}$ is open.
 
-# (11.2) Compactness
 ## Compactness
 $K \subseteq \mathbb{R}^n$ is **sequentially compact** if for all sequences $\{ u_l \} \subseteq K$, there exists a subsequence $\{u_{l_m}\}$ and $u \in K$ such that
 $$
@@ -567,7 +567,6 @@ This is known as the **Bolzano-Weirstrass Theorem**. We can generalize this to $
 > > \exists \{u_{l_m}\} \to v \in K
 > > $$
 
-## Compactness and Functions
 We find that functions on sequentially compact sets have some guaranteed properties.
 
 > [!Abstract] Theorem: Images of Sequentially Compact Domains
@@ -633,6 +632,7 @@ Interestingly enough, the converse of the above theorem can actually be used to 
 > > 
 > > Let $f(x) = ||x - u||$. Note that $f$'s infimum is 0. Thus, the minimum of $f$ is also 0! But the minimum can only be attained at $x = u$, so $u \in A$.
 
+## Uniform Continuity
 The function $F : A \to \mathbb{R}^n$, $A \subseteq \mathbb{R}^m$ is **uniformly continuous** if for any two sequences $\{u_i\}, \{v_i\} \subseteq A$, if
 $$
 \{ || u_i - v_i || \} \to 0
@@ -646,3 +646,109 @@ $$
 Note that uniform continuity implies continuity. This is because we can let $v_i$ be the sequence of whatever $\{u_i\}$ converges to, to get our continuity definition! 
 > The converse is not true. As a counterexample, let $f(x) = x^2$. Then, for $u_i = \frac{1}{i} + i$, $v_i = i$, we have that $u_i - v_i \to 0$, but $f(u_i) - f(v_i) = 2 + \frac{1}{i^2} \not\to 0$!
 
+> [!Abstract] Theorem: Uniform Continuity and Sequential Compactness
+> If $K$ is sequentially compact, and $F: K \to \mathbb{R}^n$ is continuous, then $F$ is uniformly continuous.
+>
+> > [!Note]- Proof
+> > 
+> > Suppose by way of contradiction that $F: K \to \mathbb{R}^n$ is continuous, $K$ sequentially compact, but $F$ is **not** uniformly continuous.
+> > 
+> > By definition, $\exists \{u_i\}, \{v_i\}$ with
+> > $$
+> > || u_i - v_i || \to 0
+> > $$
+> > With
+> > $$
+> > || F(u_i) - F(v_i) || \not\to 0
+> > $$
+> > By negating the definition of convergence, we can rewrite this as meaning $\exists \epsilon > 0$, such that $\forall I$, $\forall i \ge I$,
+> > $$
+> > || F(u_i) - F(v_i) || \ge \epsilon
+> > $$
+> > 
+> > Choose this $\epsilon$. For a subsequence starting at $i \ge I$, we find subsequences $\{u_{i_j}\}, \{v_{i_j}\}$, such that $\forall j$,
+> > $$
+> > || F(u_{i_j}) - F(v_{i_j}) || \ge \epsilon
+> > $$
+> > > So, all terms in the subsequence are greater than $\epsilon$!
+> > 
+> > Because $K$ is sequentially compact, we can find a subsequence in our subsequence such that $\{u_{i_{j_k}}\} \to u \in K, \{v_{i_{j_k}}\} \to u$. By continuity, we find that
+> > $$
+> > \{F(u_{i_{j_k}}\} \to F(u) \qquad \{F(v_{i_{j_k}}\} \to F(u)
+> > $$
+> > Thus, the difference converges to 0, but this is a contradiction!
+
+Like continuity, we also have a $\epsilon-\delta$ definition for uniform continuity too!
+
+Let $F : A \to \mathbb{R}^m$. Then, the following are equivalent.
+1. If $\{u_i\}, \{v_i\} \subseteq A$ with $\{ ||u_i - v_i|| \} \to 0$, then $\{ || F(u_i) - F(v_i) || \} \to 0$.
+2. $\forall \epsilon > 0$, $\exists \delta > 0$ such that if $u,v \in A$ with $|| u - v || < \delta$, then $|| F(u) - F(v) || < \epsilon$.
+
+The latter is the **$\epsilon-\delta$ definition for uniform continuity**.
+
+> [!Note]- Proof
+> #### Proof (1 to 2)
+> We prove this by contrapositive. Assume that (2) is not true. We wish to show that as a result, (1) cannot be true.
+>
+> By the negation of (2), $\exists \epsilon > 0$ such that $\forall \delta > 0$, $\exists u,v \in A$, $|| u - v || < \delta$ with $|| F(u) - F(v) || \ge \epsilon$. 
+>
+> Choose $\delta = \frac{1}{k}$, and let $k \in \mathbb{N}$ to create sequences $\{u_k\}, \{v_k\}$ such that $|| u_k - v_k || < \frac{1}{k} \to 0$, where $|| F(u_k) - F(v_k) || \ge \epsilon$.
+> 
+> Thus, (1) is not true.
+> 
+> #### Proof (2 to 1)
+> Assume (2). Let $\{u_i\}, \{v_i\} \subseteq A$ with $\{ ||u_i - v_i|| \} \to 0$. We wish to show that $\{ || F(u_i) - F(v_i) || \} \to 0$.
+>
+> Let $\epsilon > 0$. Then, $\exists \delta > 0$ such that (2) holds. Let $I$ such that $|| u_i - v_i || < \delta$. Then, by (2), $\forall i \ge I$, $|| F(u_i) - F(v_i) || < \epsilon$.
+
+
+
+# Convexity
+We say the set $A$ is **convex** if $\forall u,v \in A$, 
+$$
+t(u) + (1 - t) v \in A
+$$
+$\forall 0 \le t \le 1$. In other words, for any two points in the set, all points along the line between these two points are also within the set.
+> In lower dimensions, this defines a convex shape!
+
+We say $A \subseteq \mathbb{R}^n$ is **path connected** if $\forall u,v \in A$, if there exists a continuous function $\gamma : [a,b] \to A$, with 
+$$
+\gamma(a) = u \qquad \gamma(b) = v
+$$
+In other words, for any two points in the set, we can define a function (a "path") between these two points that remains completely within the shape! We call $\gamma$ (gamma) the **parameterized path**.
+> In lower dimensions, this defines a completely connected shape!
+
+> [!Abstract] Theorem: Path Connected Sets on Continuous Functions
+> If $A \subseteq \mathbb{R}^n$ is path connected and $F: A \to \mathbb{R}^m$ is continuous, then the set $F(A)$ is also path connected.
+> > Continuity preserves path connectedness!
+> 
+> > [!Note]- Proof
+> > 
+> > Let $u,v \in F(A)$. We wish to find a parameterized path between $u$ and $v$.
+> > 
+> > By definition of an image, we can find $x,y \in A$ such that $F(x) = u, F(y) = v$. By path connectedness of $A$, we can find an interval $[a,b]$ with a parameterized function $\gamma$ such that $\gamma(a) = x, \gamma(b) = y$.
+> > 
+> > Then, as $F$ is also continuous, we can find a composition of the functions $F \circ \gamma : [a,b] \to F(A)$, which is continuous such that $F \circ \gamma (a) = F (x) = u$, and $F \circ \gamma (b) = F(y) = v$. We have found a parameterized path from $u$ to $v$.
+
+> [!Abstract] Theorem: Path Connected Subsets of the Real Line
+> On the real line, $A \subseteq \mathbb{R}$ is path connected if and only if $A$ is an interval.
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\leftarrow$)
+> > If $A$ is an interval, let $u,v$ be points in this interval. Define function $\gamma (t) = tu + (1 - t) v$ for $0 \le t \le 1$. We can trivially show that $\gamma(0) = u, \gamma(1) = v$, and furthermore, $\gamma$ is continuous. We have our parameterized path.
+> > 
+> > #### Proof ($\rightarrow$)
+> > Conversely, if $A \subseteq \mathbb{R}$ is path connected, let $u,v \in A$. We wish to show that the interval $[u,v] \subseteq A$, which implies that $A$ is an interval (as we chose $u,v$ arbitrarily).
+> > 
+> > We know that $\exists \gamma : [a,b] \to A$ continuous with $\gamma[a] = u, \gamma[b] = v$. Choose any $w \in (u,v)$. We wish to show that $w \in A$, which then shows that $[u,v] \subseteq A$ ($u,v$ are trivially in $A$).
+> > 
+> > By the intermediate value theorem, $\exists c \in (a,b)$ such that $\gamma(c) = w$! Thus, $w \in A$ as it is in the image of $\gamma$, which is defined to be $A$. 
+
+We say that the set $A$ has the **Intermediate Value Property (IVP)** if for any function $f : A \to \mathbb{R}$ continuous, $f(A)$ is an interval.
+
+It can be shown that if $A$ is path connected, it has the intermediate value property!
+
+---
+
+-- WIP (Next time), we show that A connected iff IVP, and path connected implies connectivity!

@@ -416,15 +416,112 @@ We throw $n$ balls into $k$ bins. We consider the cases of the balls and bins be
 
 This forms 12 cases total, which can be solved with the methods described previously.
 1. Labeled balls to labeled bins
-   1. No restriction: For every ball, we can put it in $k$ possible bins. $k^n$
-   2. At least 1 ball: We find the number of ways to partition $n$ into $k$, and then permute what bin each group goes into. $k! S(n,k)$
-   3. At most 1 ball (obvioulsly, $k \le n$): Choose $n$ of the $k$ bins to place the balls into. Then, permute the ordering of how we place the balls. $\binom{k}{n} n!$
+   1. No restriction: For every ball, we can put it in $k$ possible bins. 
+   $$
+   k^n
+   $$
+   2. At least 1 ball: We find the number of ways to partition $n$ into $k$, and then permute what bin each group goes into. 
+   $$
+   k! S(n,k)
+   $$
+   3. At most 1 ball (obvioulsly, $k \le n$): Choose $n$ of the $k$ bins to place the balls into. Then, permute the ordering of how we place the balls. 
+   $$
+   \binom{k}{n} n!
+   $$
 2. Unlabeled balls to labeled bins
-   1. No restriction: Perform weak composition to decompose $n$ into $k$ (labeled) parts. $\binom{n+k-1}{k-1}$.
-   2. At least 1 ball: First give each bin 1 dollar, then perform weak composition on the remaining $n - k$ parts. $\binom{n-1}{k-1}$
-   3. At most 1 ball: Choose $n$ bins of the $k$ to place a ball into. $\binom{k}{n}$.
+   1. No restriction: Perform weak composition to decompose $n$ into $k$ (labeled) parts. 
+   $$
+   \binom{n+k-1}{k-1}
+   $$
+   2. At least 1 ball: First give each bin 1 dollar, then perform weak composition on the remaining $n - k$ parts. 
+   $$
+   \binom{n-1}{k-1}
+   $$
+   3. At most 1 ball: Choose $n$ bins of the $k$ to place a ball into. 
+   $$
+   \binom{k}{n}
+   $$
 3. Labeled balls to unlabeled bins.
-   1. No restriction: We partition the set of balls $[n]$ into $i$, from $1 \le i \le k$. $\sum_{i=1}^k S(n,i)$.
-   2. At least 1 ball: We partition the set of balls $[n]$ into $k$ parts. $S(n,k)$.
-   3. At most 1 ball: Just one way, as the bins are labeled! $1$.
-   
+   1. No restriction: We partition the set of balls $[n]$ into $i$, from $1 \le i \le k$. We do a sum instead of Bell numbers, as bell numbers will overcount (we cannot count higher than $k$).
+   $$
+   \sum_{i=1}^k S(n,i)
+   $$
+   2. At least 1 ball: We partition the set of balls $[n]$ into $k$ parts. 
+   $$
+   S(n,k)
+   $$
+   3. At most 1 ball: Just one way, as the bins are labeled!
+   $$
+   1
+   $$
+4. Unlabeled balls to unlabeled bins.
+   1. No restriction: Some bins can be empty, so this is integer partitions into 1 bin, then 2 bins, and so forth until $k$ bins. Simple integer partitions assume the integers (bins) can never be empty, which is not true here. 
+   $$
+   P_1 (n) + P_2 (n) + \dots + P_k(n)
+   $$
+   2. At least 1 ball: Each bin must have at least 1 ball, so this is integer partitions into $k$ parts. 
+   $$
+   P_k (n)
+   $$
+   3. At most 1 ball: If $n \le k$, since nothing is labeled, we'll just have $k$ bins filled with 1 ball. So, there is only 1 way.
+   $$
+   1
+   $$
+
+> [!Example]- Examples: The Twelvefold Way
+> 1. A **multiset** is a set such that elements can be repeated. How many multisets of size 5 can be created using $[7] = \{1,2, \dots, 7\}$?
+> 
+>    We can convert this into one of the 12 ways. Consider 5 unlabeled balls to 7 labeled bins. Each ball is used as a counter to how many times the element occurs in the multiset. 
+>    $$
+>    \binom{5 + 7 - 1}{7 - 1}
+>    $$
+> 
+> 2. Twenty students split into exactly 4 study groups to prepare for an exam (groups with 1 person are fine). However, brothers Bobs and Carl must be in the same group. Also, sisters Alice and Diane want to be in the same group. What are the possible number of groups?
+> 
+>     First, as Bob / Carl, Alice / Diane must always be together, let's group them into 1 entity each. So, we have 18 labeled balls into 4 unlabeled boxes, where each box must have at least 1 ball. 
+>     $$
+>     S(18,4)
+>     $$
+> 3. How many injective / one-to-one functions are there for $f: [n] \to [k]$?
+> 
+>    For each element in our range, we know that there is at most 1 value in our domain mapping to it. This is the same as $n$ labeled bins, $k$ labeled balls, where each bin can only have at most 1 ball.
+>    $$
+>    (k)_n = k (k - 1) \dots (k - n + 1)
+>    $$
+> 
+> 4. Let $n \ge k$. A function $f : [n] \to [k]$ is **monotone** if $f(x) \ge f(y)$ whenever $x > y$. How many monotonic functions $f : [n] \to [k]$ are there?
+> 
+>    Let us have $k$ labeled bins for the output, and $n$ unlabeled balls for the domain values. Note that these can be unlabeled, as the monotone constraint forces an order (the $i$ balls in bin 1 must correspond to the first $i$ values in the domain, and so forth). This is weak compositions! Thus, we have
+>    $$
+>    \binom{n + k - 1}{k - 1}
+>    $$
+
+## 1.7: Inclusion-Exclusion Principle
+> [!Abstract] Theorem
+> Let $A_1, \dots A_n \subseteq X$, where $X$ is finite. Assume that the $A_i$'s are non-empty.
+>
+> Let $I \subseteq [n]$, and denote $A_I = \bigcap_{i \in I} A_i$. Define $A_\varnothing = X$.
+> 
+> Then,
+> $$
+> \left| \bigcup_{i=1}^n A_i \right| = |X| - \sum_{I \subseteq [n]} (-1)^{|I|} |A_I|
+> $$
+> In other words, the union of all sets is the set minus the intersection of all subset combinations.
+> 
+> Applying Demorgan's Law on this, we obtain 
+> $$
+> \left| \bigcap_{i=1}^n A_i \right| = \sum_{I \subseteq [n]} (-1)^{|I|} |A_I|
+> $$
+
+> [!Example] Example: $n = 2$ Case
+> In the $n = 2$ case, we have
+> $$
+> \begin{align*}
+> \left| \bigcup_{i=1}^2 A_i \right| 
+> &= | A_1 \cup A_2 | \\
+> &= |X| - \left( (-1)^0 |A_\varnothing| + (-1)^1 |A_{\{1\}}| + (-1)^1 |A_{\{2\}}| + (-1)^2 |A_{\{1,2\}}| \right) \\
+> &= |X| - \left( |X| - |A_1| - |A_2| + |A_1 \cap A_2| \right) \\
+> &= |A_1| + |A_2| - |A_1 \cap A_2|
+> \end{align*}
+> $$
+> This is commonly used everywhere in probability theory!

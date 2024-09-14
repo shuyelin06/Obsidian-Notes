@@ -466,20 +466,50 @@ d + t(z-d) = 0 \Longrightarrow t = \frac{d}{d-z} = \frac{1}{1 - z/d}
 $$
 This gives us the transformed point in perspective projection! 
 $$
-x' = \frac{x}{1 - z/d} \qquad y' = \frac{y}{1 - z/d}
+x' = \frac{x}{1 - z/d} \qquad y' = \frac{y}{1 - z/d} \qquad z' = 0
 $$
 Now, how do we express this in matrix form?
 
-If we use homogeneous coordinates $(x,y,z,d)$, where $d$ influences our perspective projection, we can express this in the form
+The problem is, this is a nonlinear transformation!
 
---- WIP ---
-
+However, interestingly enough, we can find the the linear transformation
 $$
-\begin{bmatrix}
+(x,y,z,1) \to (x,y,0,1 - \frac{z}{d})
+$$
+After which, if we divide by the $w$ coordinate, we'll obtain our perspective projection!
+
+So, our perspective projection matrix is
+$$
+P = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & 0 \\
 0 & 0 & 0 & 0 \\
 0 & 0 & -\frac{1}{d} & 1
 \end{bmatrix}
 $$
-After, divide every point by the 4th entry to fix the x and y coordinates.
+Where for any $(x,y,z)$ point, we convert it to homogeneous coordinates $\vec{v} = (x,y,z,1)$, and after multiplying $P \vec{v}$, we divide all entries by the $w$ coordinate (sometimes called **post-processing**).
+> Note that this matrix assumes that our view is at $(0,0,d)$ and is looking at the origin! If our view has a different orientation, we can shift it to the $z$-axis, and then change everything back!
+
+> [!Example]+ Example: Perspective Projection
+> Consider the cube with vertices $(\pm 3, \pm 3, \pm 3)$. Consider perspective projection from $(0,0,9)$.
+> 
+> Let's apply perspective projection on $(3,3,3)$.
+> $$
+> \begin{bmatrix}
+> 1 & 0 & 0 & 0 \\
+> 0 & 1 & 0 & 0 \\
+> 0 & 0 & 0 & 0 \\
+> 0 & 0 & -\frac{1}{9} & 1
+> \end{bmatrix}
+> \begin{bmatrix}
+> 3 \\ 3 \\ 3 \\ 1
+> \end{bmatrix} =
+> \begin{bmatrix}
+> 3 \\ 3 \\ 0 \\ \frac{2}{3}
+> \end{bmatrix}
+> \Longrightarrow
+> \begin{bmatrix}
+> 9/2 \\ 9/2 \\ 0 \\ 1
+> \end{bmatrix}
+> $$
+> Our transformation was $(3,3,3) \to (\frac{9}{2}, \frac{9}{2}, 0)$!

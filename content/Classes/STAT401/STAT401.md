@@ -237,13 +237,14 @@ Percentiles and critical values let us make inferences about exceptional scores 
 
 But what is a "low" probability? Generally, the standard, recommended by satistician Fisher, is to take $\alpha = 0.05$. Thus, for a value to be exceptional, it should be within the top 5% of the distribution.
 
+## Deducations with $\bar{X}$
+So given $\bar{X} \sim N(\mu_x, \sigma_x)$, what is an exceptional observation on this distribution?
 
-## ...
-So given $\bar{X} \sim N(\mu, \frac{sigma^2}{\mu})$, what is an exceptional observation on this distribution?
+If we know what $\mu_x$ and $\sigma_x$ are, we can **deduce** information about $\bar{X}$!
 
 Observe that we can standardize our sample mean distribution as
 $$
-Z = \left( \frac{\bar{X} - \mu}{\frac{\sigma}{\sqrt{n}}} \right)
+Z = \left( \frac{\bar{X} - \mu_x}{\sigma_x} \right)
 $$
 
 Then, using what's known as the **empirical rule**, we can find that
@@ -251,13 +252,49 @@ Then, using what's known as the **empirical rule**, we can find that
 - 95% of the distribution falls between the 2nd standard deviation of the mean.
 - 99.7% of the distribution falls between the 3rd standard deviation of the mean.
 
-So, any observation outside of 2 standard deviations of the mean is a significant observation!
+So, any observation outside of 2 z-scores of the mean is significant!
 
-So, given any random sample $\bar{x}$, we can find how significant its sample mean is by taking
+So given any random sample $\bar{x}$, we can find how significant its sample mean is by taking
 $$
-P(\bar{X} \ge \bar{x} \qquad P(\bar{X} \le \bar{x}
+P(\bar{X} \ge \bar{x}) \qquad P(\bar{X} \le \bar{x} 
+\Longrightarrow 
+P\left(z \ge \frac{\bar{x} - \mu_x}{\sigma_x}\right) \qquad P\left(z \le \frac{\bar{x} - \mu_x}{\sigma_x}\right)
 $$
-Where the observation is significant in either probability is small!
+And look to see how small the probabilities are!
+
+## Inferences with $\bar{X}$
+What if we want to make statements about $\mu_x$ or $\sigma_x$ without exactly knowing the value of $\mu_x$ or $\sigma_x$? Well, we could try to **infer** it by sampling from our population!
+
+In **Point Estimation**, we take a random sample of outputs, to create a single point estimate. However, we can't just find the probability that our estimate equals the population parameter, as this is 0 for continuous distributions! So, how can we infer the true average?
+
+Cosider the equation
+$$
+P(|\bar{X} - \mu_x| < \epsilon) = 0.95
+$$
+So, we are defining a probability, a **confidence** that our sample mean doesn't deviate from the population mean by too much ($\epsilon$)!
+$$
+P\left( \left| \frac{\bar{X} - \mu_x}{\sigma_x/\sqrt{n}} \right| \le \frac{\epsilon}{\sigma_x / \sqrt{n}} \right) = 0.95
+$$
+By the Central Limit Theorem, we can find that this is approximately equivalent to
+$$
+P \left(|Z| \le \frac{\sqrt{u} \epsilon}{\sigma_x}\right) = 0.95
+$$ 
+So if we wanted to increase our confidence to 95%, we want to find
+$$
+Z_{0.025} = \frac{\sqrt{n} \epsilon}{\sigma_x} \Longrightarrow \epsilon = Z_{0.025} \frac{\sigma_x}{\sqrt{n}}
+$$
+So, submitting this back in, we find that
+$$
+\begin{align*}
+P\left( \left| \bar{X} - \mu_x \right| \le Z_{0.025} \frac{\sigma_x}{\sqrt{n}} \right) = 0.95 \\
+P\left( \bar{X} - Z_{0.025} \frac{\sigma_x}{\sqrt{n}} \le \mu_x \le \bar{X} + Z_{0.025} \frac{\sigma_x}{\sqrt{n}} \right) = 0.95 \\
+P\left( u_x \in \left[ \bar{X} - Z_{0.025} \frac{\sigma_x}{\sqrt{n}}, \bar{X} + Z_{0.025} \frac{\sigma_x}{\sqrt{n}} \right] \right) = 0.95 \\
+\end{align*}
+$$
+So, we have found our probability that our population parameter is within this interval to give us a 95% probability of being right! We call this the **95% confidence interval**.
+
+
+---
 
 > Point estimation tells us how close our estimator is to the actual paramter! Later, we do interval estimation, which tells us if our estiamtor is within some interval of the actual parameter.
 

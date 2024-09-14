@@ -513,6 +513,8 @@ This forms 12 cases total, which can be solved with the methods described previo
 > \left| \bigcap_{i=1}^n A_i \right| = \sum_{I \subseteq [n]} (-1)^{|I|} |A_I|
 > $$
 
+Basically, sometimes when we want to find something, we can find it by considering its complements (which can be easer to solve)!
+
 > [!Example] Example: $n = 2$ Case
 > In the $n = 2$ case, we have
 > $$
@@ -525,3 +527,93 @@ This forms 12 cases total, which can be solved with the methods described previo
 > \end{align*}
 > $$
 > This is commonly used everywhere in probability theory!
+
+This principle is very useful in simplifying problems that may be quite complex, into simpler sub-problems that can be combined to yield our solution.
+
+> [!Example] Example: Inclusion-Exclusion Principle
+> How many non-negative integer solutions are there to $x_1 + x_2 + x_3 = 35$, where
+> $$
+> 0 \le x_1 \le 15, 0 \le x_2 \le 15, 0 \le x_3 \le 15
+> $$
+> Here, we have a max on our integers, which is really difficult to solve! However, it may be easier to solve using the inclusion-exclusion principle.
+> 
+> Here, we could perform weak compositions when $x_1, x_2, x_3 \ge 0$, but we also have upper bounds.
+> 
+> Let
+> $$
+> \begin{align*}
+> A_1 = \{ \text{Weak Compositions of } x_1 + x_2 + x_3 = 35, x_1 \ge 16 \} \\
+> A_2 = \{ \text{Weak Compositions of } x_1 + x_2 + x_3 = 35, x_2 \ge 16 \} \\
+> A_3 = \{ \text{Weak Compositions of } x_1 + x_2 + x_3 = 35, x_3 \ge 16 \} \\
+> \end{align*}
+> $$
+> Note that $A_\varnothing$, is all weak compositions.
+> 
+> We want 
+> $$
+> \begin{align*}
+> |\bar{A}_1 \cap \bar{A}_2 \cap \bar{A}| &= \sum_{I \subseteq [3]} (-1)^{|I|} |A_I| \\
+> &= |A_\varnothing| + (-1)^1 (|A_1| + |A_2| + |A_3|) \\
+> &\qquad + (-1)^2 (|A_1 \cap A_2| + |A_2 \cap A_3| + |A_1 \cap A_3|) + (-1)^3 |A_1 \cap A_2 \cap A_3| \\
+> &= \binom{35 + 3 - 1}{3 - 1} + 3 * (-1)^1 \binom{19 + 3 - 1}{3 - 1} + 3 * (-1)^2 \binom{3 + 3 - 1}{3 - 1} + (-1)^3 0
+> \end{align*}
+> $$
+
+> [!Example]- Example: Inclusion-Exclusion (2)
+> Use inclusion-exclusion to count the total surjective functions $f : [n] \to [k]$. In other words, each $b \in [k]$ has at least 1 $a \in [n]$ such that $f(a) = b$.
+> 
+> Define
+> $$
+> \begin{align*}
+> A_1 = \{ \text{Functions s.t } f(j) \ne 1, j \in [n] \\
+> A_2 = \{ \text{Functions s.t } f(j) \ne 2, j \in [n] \\
+> \vdots
+> A_i = \{ \text{Functions s.t } f(j) \ne i, j \in [n] \\
+> \end{align*}
+> $$
+> 
+> So, the number of surjective functions can be found as
+> $$
+> \begin{align*}
+> | \bigcap_{i=1}^k \bar{A}_i | &= \sum_{I \subseteq [k]} (-1)^{|I|} |A_I| \\
+> &= \sum (-1)^i \binom{k}{i} (k - i)^n 
+> \end{align*}
+> $$
+> Note that the first term describes the number of indices we DON'T want to map to. If we do not map to $i$ indices, then there are $k - i$ indices that we need to map to, and for each value in our domain it can map to any one of these indices (hence the $(k - i)^n$.
+> $$
+> = k! S(n,k) \Longrightarrow S(n,k) = \frac{1}{k!} \sum_{i=1}^k (-1)^k \binom{k}{i} (k - i)^n
+> $$
+> Which is a formula for Stirling numbers we found from earlier!
+
+> [!Example]- Example: Inclusion-Exclusion (3)
+> The Euler totient function is given as
+> $$
+> \phi(n)= | \{ i \in \mathbb{Z}^+ : \text{GCD}(i,n) = 1, 1 \le i \le n \} | 
+> $$
+> Which is equivalent to the total number of values in $[n]$ that are relatively prime to $n$ (meaning they have no common divisors besides 1).
+> 
+> Let the prime factorization of $n$ be $n = p_1^{e_1} p_2^{e_2} \dots p_t^{e_t}, e_i \ge 1$. Let
+> $$
+> A_i  = \{ a \in [n] : p_i \text{ divides } a \}
+> $$
+> So, for example, if we have $p = 7$, $n = 70$, $|A_1|$ would be the number of numbers where 7 divides $a$, $1 \le a \le 70$. In other words, the number of multiples of 7!
+> 
+> So, 
+> $$
+> \begin{align*}
+> \phi(n) = | \bigcap_{i=1}^t \bar{A}_i | 
+> &= \sum_{I \subseteq [t]} (-1)^{|I|} |A_I| \\ 
+> &= n - \left( \frac{n}{p_1} + \frac{n}{p_2} + \dots + \frac{n}{p_t} \right) + \left( \frac{n}{p_1 p_2} + \dots + \frac{n}{p_1 p_3} + \dots \right) \\
+> &\qquad + \left( \frac{n}{p_1 p_2 p_3} + \frac{n}{p_1 p_2 p_4} + \dots \right) \\
+> &= n \left[ 1 - \sum_{i=1}^t \frac{1}{p_i} + \sum_{1 \le i < j \le t} \frac{1}{p_i p_j} - \sum_{1 \le i < j < k \le t} \frac{1}{p_i p_j p_k} + \dots \right] \\
+> &= n \prod_{i=1}^t \left( 1 - \frac{1}{p_i} \right)
+> \end{align*}
+> $$
+> Between the last two steps, we find that this is equal to the ugly summations, as we're basically choosing $p_i$'s to find all possible combinations!
+
+> [!Example] 
+> Twenty couples attend counseling. They sit at a circular, unlabeled table (exactly 40 chairs).
+>
+> How many seatings assure no one sits next to their significant other?
+>
+> Let $A_i$ be the set where couple $1 \le i \le 20$ sits next to each other.

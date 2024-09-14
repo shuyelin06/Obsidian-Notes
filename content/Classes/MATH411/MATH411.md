@@ -749,6 +749,88 @@ We say that the set $A$ has the **Intermediate Value Property (IVP)** if for any
 
 It can be shown that if $A$ is path connected, it has the intermediate value property!
 
+Set $A \subseteq \mathbb{R}^n$ is **not connected** if $\exists U,V$ open sets such that:
+1. $U \cap A \ne \varnothing, V \cap A \ne \varnothing$
+2. $(U \cap A) \cap (V \cap A) = \varnothing$
+3. $(U \cap A) \cup (V \cap A) = A$
+
+If $U,V$ satisfy 1,2,3, then $U,V$ are said to **separate** $A$.
+
+> [!Abstract] Theorem: Connected Sets and IVP
+> $A$ is connected if and only if $A$ has the Intermediate Value Property.
+>
+> > [!Note] Proof
+> > 
+> > We want to show that if $A$ is not connected if and only if A does not have the intermediate value property. In other words, $\exists f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
+> > 
+> > #### Proof ($\rightarrow$)
+> > Assume that $A$ is not connected, and let $U,V$ open separate $A$.
+> > 
+> > Define
+> > $$
+> > f(x) = 
+> > \begin{cases}
+> >     1 & x \in A \cap U \\
+> >     0 & x \in A \cap V
+> > \end{cases}
+> > $$
+> > Note the following:
+> > - $f$ is defined $\forall x \in A$ because of property (3) of not connected
+> > - The value $f(x)$ is unique because of (2).
+> > - $f(A) = \{ 0 , 1 \}$ because of (1), because there is at least one element of $U$ in $A$, and one element of $V$ in $A$.
+> > 
+> > To show $f$ is continuous at $x_0 \in U \cap A$, we want to show that $\exists \delta > 0$ such that $B_\delta (x_0) \subseteq U$. Then, if $x \in A$ and $||x - x_0|| < \delta$, then $f(x) = f(x_0)$, so $| f(x) - f(x_0) | < \epsilon$ trivially.
+> > 
+> > So we found $f : A \to \mathbb{R}$, continuous, where $f(A)$ is not on an interval.
+> > 
+> > #### Proof ($\leftarrow$).
+> > Assume $A$ does not have the intermediate value property. Let $f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
+> > 
+> > Then, $\exists c \in \mathbb{R}$ such that $c \not\in f(A)$, $f(A) \cap (-\infty, c) \ne \varnothing$, $f(A) \cap (c, \infty) \ne \varnothing$.
+> > 
+> > To construct $U,V$ separating $A$, let
+> > $$
+> > \tilde{U} = f^{-1} ( (-\infty, c) ), \tilde{V} = f^{-1} ( (c,\infty) )
+> > $$
+> > Then, $\tilde{U} \ne \varnothing, \tilde{V} \ne \varnothing$.
+> > - $\tilde{U} \cup \tilde{V} = A$ because we know that $c \not\in f(A)$.
+> > - $\tilde{U} \cap \tilde{V} = \varnothing$, as there are no points that are in both $(-\infty, c)$ and $(c, \infty)$.
+> > 
+> > To finish, we will find $U,V$ open such that $\tilde{U} = U \cap A$, $\tilde{V} = V \cap A$.
+> > 
+> > Let $x \in \tilde{U}$. Then, $f(x) < c$. Since $f$ is continuous, $\exists r > 0$ such that $\forall y \in B_r (x) \cap A$, $f(y) < c$. Let $U = \cup_{x \in \tilde{U}} B_r (x)$. 
+> > 
+> > Notice that $U \cap A = \tilde{U}$, so $\bigcup_{x\in\tilde{U}} (B_r(x) \cap A) = \tilde{U}$. 
+
+We show that if $A$ is path connected, then $A$ is connected.
+> Note that the converse is **not true**. If $A$ is connected, it may not be path connected. For example, let $A = \{0\} \times [-1,1] \cup \{ (x, \sin(1/x)) : 0 < x \le 1 \}$, which oscillates as we get closer to the $y$ axis, but never touches! Thus, even if $A$ is connected, it is not path connected.
+
+> [!Info] Corollary
+> IF $U \subseteq \mathbb{R}^n$ is both open and closed, then $U = \mathbb{R}^n$, or $U = \varnothing$
+> 
+> > [!Note]- Proof
+> > 
+> > $\mathbb{R}^n$ is path connected $\to $\mathbb{R}$ is connected.
+> > 
+> > Let $U$ be both open and closed. Let $V = U^c$. Because $U$ is open, $V$ is also open.
+> > 
+> > In this case, $U \cap V = \varnothing$, and $U \cup V = \mathbb{R}^n$! 
+> > 
+> > So, $U \ne \varnothing, V \ne \varnothing$ is impossible! So, it must be true that either $U = \mathbb{R}^n, V = \varnothing$, or $U = \varnothing, V = \mathbb{R}^n$.
+
 ---
 
--- WIP (Next time), we show that A connected iff IVP, and path connected implies connectivity!
+Set $K \subseteq \mathbb{R}^n$ is **compact** if for every family of open sets $\{V_\alpha\}$, if $K \subseteq \bigcup_\alpha V_\alpha$, then there exist infinitely many $V_{\alpha_1}, \dots, V_{\alpha_l}$ such that
+$$
+K \subseteq V_{\alpha_1} \cup \dots \cup V_{\alpha_l}
+$$
+
+
+> [!Abstract] Theorem:
+> $K$ is compact if and only if $K$ is closed and bounded.
+>
+> > [!Info] Proposition 1
+> > 
+> > $K$ compact implies $K$ bounded. 
+> > 
+> > Let $V_\alpha$ be the balls of radius $\alpha$ centered around 0, $V_\alpha = B_\alpha (0)$. We have an infinite family of "balls". Then, there exists $\alpha_1 < \alpha_2 \dots < \alpha_l$ such that $K \subseteq V_{\alpha_1} \cup \dots V_{\alpha_n} = B_{\alpha_n} (0)$.

@@ -237,7 +237,7 @@ Percentiles and critical values let us make inferences about exceptional scores 
 
 But what is a "low" probability? Generally, the standard, recommended by satistician Fisher, is to take $\alpha = 0.05$. Thus, for a value to be exceptional, it should be within the top 5% of the distribution.
 
-## Deducations with $\bar{X}$
+## Deductions with $\bar{X}$
 So given $\bar{X} \sim N(\mu_x, \sigma_x)$, what is an exceptional observation on this distribution?
 
 If we know what $\mu_x$ and $\sigma_x$ are, we can **deduce** information about $\bar{X}$!
@@ -293,6 +293,82 @@ P\left( u_x \in \left[ \bar{X} - Z_{0.025} \frac{\sigma_x}{\sqrt{n}}, \bar{X} + 
 $$
 So, we have found our probability that our population parameter is within this interval to give us a 95% probability of being right! We call this the **95% confidence interval**.
 
+In general, the key problem is to find
+$$
+P( |\hat{\theta} - \theta| \le \epsilon ) = (1 - \alpha)
+\Longrightarrow 
+P( \theta \in [L(X), U(X)] ) = (1 - \alpha) 
+$$
+Where $[L(X), U(X)]$ is known as the $(1 - \alpha) 100\%$ interval for $\theta$.
+
+We can use confidence intervals to roughly find our parameters of interest for a population! We start by listing some of the common population parameters, their estimators, and the corresponding sampling distribution.
+
+... TODO...
+
+Where:
+- $\hat{p}$ is the sample proportion, a special case of the sample mean on Bernoulli distributions ($\hat{p} = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}}$).
+- $\bar{X}$ is the sample mean
+- $S^2$ is the sample variance
+- $T_{n-1}$ is the **Student's $t$ distribution** with $n - 1$ degrees of freedom
+- $\chi^2_{n-1}$ is the **Chi-Squared distribution** with $n - 1$ degrees of freedom
+
+Observe that the student's $t$ distribution has greater area in the tails than the standard normal distribution! Therefore, the critical values are further from the mean (to get a significant result, we need something that deviates a lot more).
+
+However, as our degrees of freedom increase, the density of the $t$ distribution will converge to that of the standard normal distribution! So, if $n$ is sufficiently large, our $t$ distribution approximately becomes the standard normal distribution!
+
+> [!Example] Example: 
+> Suppose the population distribution takes on Bernoulli(p). We want to use confidence intervals to find $p$, the proportion of people with a particular characteristic. 
+
+We will use the sample mean estimator, which in this context becomes
+$$
+\hat{p} = \frac{\sum_{i=1}^n X_i}{n}
+$$
+
+When the sample size $n$ is large enough, the normal approximation to the binomial distribution suggests that we can find
+$$
+\hat{p} \sim^\text{approx} N(p, \sigma_{\hat{p}}^2)
+$$
+Where $\sigma_{\hat{p}}^2 = \frac{\hat{p} (1 - \hat{p})}{n}$.
+
+We consider the following probability equation
+$$
+P( -z_{\alpha / 2} \le Z \le z_{\alpha / 2} ) = (1 - \alpha)
+$$
+Using our approximation theorem, we can standardize our distribution to become
+$$
+\begin{align*}
+P ( -z_{\alpha / 2} \le \frac{\hat{p} - p}{\sigma_{\hat{p}}} \le z_{\alpha / 2} ) 
+&= (1 - \alpha) \\
+P ( -z_{\alpha / 2} \sigma_{\hat{p}} \le \hat{p} - p \le z_{\alpha / 2} \sigma_{\hat{p}} ) 
+&= (1 - \alpha) \\
+P ( z_{\alpha / 2} \sigma_{\hat{p}} \ge p - \hat{p} \ge -z_{\alpha / 2} \sigma_{\hat{p}} ) 
+&= (1 - \alpha) \\
+P ( \hat{p} - z_{\alpha / 2} \sigma_{\hat{p}} \le p \le \hat{p} + z_{\alpha / 2} \sigma_{\hat{p}} ) 
+&= (1 - \alpha) \\
+P( p \in [\hat{p} - z_{\alpha / 2} \sigma_{\hat{p}}, \hat{p} + z_{\alpha / 2} \sigma_{\hat{p}} ) 
+&= (1 - \alpha)
+\end{align*}
+$$
+We have found our confidence interval! We can now use this.
+
+This confidence interval has the following properties:
+- $\hat{p}$ is the point estimate for $p$, and is where the interval is centered.
+- The **margin of error** for the confidence interval is $m = z_{\alpha / 2} * \sigma_{\hat{p}}$, the distance from our estimate to one of the bounds.
+- The **width** of the confidence interval is $w = 2 z_{\alpha / 2} * \sigma_{\hat{p}} = 2m$.
+- The sample size needed to get a 95% confidence interval with width $w$ is given by 
+  $$
+  n = \left( \frac{1}{w / 2} \right)^2 = \frac{1}{m^2}
+  $$
+  
+  This can be derived as follows:
+  $$
+  w = 2 z_{\alpha / 2} \sigma_{\hat{p}} = 2 z_{\alpha / 2} \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}}
+  $$
+  We know that $p (1 - p)$ attains a max at $p = 1/2$, bounding our width
+  $$
+  w \le z_{\alpha / 2} \frac{1}{\sqrt{n}} \Longrightarrow n \le \left( \frac{z_{\alpha / 2}}{w} \right)^2 = \left( \frac{2}{m/2} \right)^2
+  $$
+  As $z_{\alpha / 2} = 1.96 \approx 2$.
 
 ---
 

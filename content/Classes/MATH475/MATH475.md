@@ -8,7 +8,7 @@ Combinatorics and graph theory
 
 ---
 
-# Section 1: 
+# Section 1: Counting and Enumeration
 ## 1.1: The Basics
 ### Permutations
 A **permutation** on an $n$-element set is an arrangement of the elements in a specific order. A **$k$-permutation** is an arragement of $k$ elements from the set.
@@ -510,8 +510,9 @@ This forms 12 cases total, which can be solved with the methods described previo
 > 
 > Applying Demorgan's Law on this, we obtain 
 > $$
-> \left| \bigcap_{i=1}^n A_i \right| = \sum_{I \subseteq [n]} (-1)^{|I|} |A_I|
+> \left| \bigcap_{i=1}^n \bar{A}_i \right| = \sum_{I \subseteq [n]} (-1)^{|I|} |A_I|
 > $$
+> Where $\bar{A}_i$ is the complement of $A_i$.
 
 Basically, sometimes when we want to find something, we can find it by considering its complements (which can be easer to solve)!
 
@@ -611,9 +612,82 @@ This principle is very useful in simplifying problems that may be quite complex,
 > $$
 > Between the last two steps, we find that this is equal to the ugly summations, as we're basically choosing $p_i$'s to find all possible combinations!
 
-> [!Example] 
+> [!Example] Example: Inclusion-Exclusion (4)
 > Twenty couples attend counseling. They sit at a circular, unlabeled table (exactly 40 chairs).
 >
 > How many seatings assure no one sits next to their significant other?
 >
-> Let $A_i$ be the set where couple $1 \le i \le 20$ sits next to each other.
+> Let $A_i$ denote the set where couple $1 \le i \le 20$ sits next to each other. We want
+> $$
+> \begin{align*}
+> \left| \bigcap_{i=1}^{20} \bar{A}_i \right| 
+> &= \sum_{I \subseteq [20]} (-1)^{|I|} |A_I| \\
+> &= \sum_{i=0}^{20} \binom{20}{i} (-1)^i \frac{(40 - i)!}{40 - i}
+> \end{align*}
+> $$
+> 
+> Note that what we are doing per term is selecting $i$ couples, then finding the number of orderings of our "40" people given that the $i$ couples are tied together ($40 - i$, because for each tied couple they're 1 entity). Furthermore, we need to multiply by $2^i$, as each couple pair could be swapped in order. Finaly, we divide by the number of rotations.
+> > Note that we start at $i = 0$ to include the empty set.
+
+
+# Section 2
+## 2.1, 2.2: Power Series Review, Intro to Ordinary Generating Functions
+A **formal power series** is an infinite sum 
+$$
+\sum_{n=0}^\infty a_n x^n
+$$
+whose coefficients represent a sequence $\{a_n\}$.
+
+The function $F(x) = \sum_{n=0}^\infty a_n x^n$ is the **ordinary generating function** of $\{a_n\}_{n=0}^\infty$, sometimes denoted the OGF.
+> These functions are quite interesting! Oftentimes, we can manipulate these functions into something else that we can recognize.
+
+> [!Example]+ Example: Ordinary Generating Functions of Sequences
+> Let $\{a_n\}$ be given by
+> $$
+> \frac{1}{2!}, \frac{1}{3!}, \frac{1}{4!}, \dots
+> $$
+> 
+> What is $F(x)$?
+> 
+> We can find $F(x)$ as
+> $$
+> \begin{align*}
+> F(x) &= \frac{1}{2!} + \frac{1}{3!} x + \frac{1}{4!} x^2 + \dots \\
+> &= \frac{1}{x^2} \left( \frac{1}{2!} x^2 + \frac{1}{3!} x^3 + \dots \right) \\
+> &= \frac{1}{x^2} (e^x - x - 1)
+> \end{align*}
+> $$
+
+> [!Example]+ Example: Sequences of Ordinary Generating Functions
+> Find $\{a_n\}$ if the OGF is
+> $$
+> F(x) = \frac{-4x + 3}{(1 - x)(1 - 2x)}
+> $$
+> 
+> Note that our denominator looks like the output of a geometric series, but as a product! So, we apply partial fractions to get separate geometric series.
+> 
+> $$
+> \begin{align*}
+> \frac{-4x + 3}{(1 - x)(1 - 2x)} 
+> &= \frac{A}{(1 - x)} + \frac{B}{(1 - 2x)} \\ 
+> -4x + 3 
+> &= A (1 - 2x) + B(1 - x) \\
+> A = 1&, B = 2
+> \end{align*}
+> $$
+> 
+> So, we get
+> $$
+> \begin{align*}
+> F(x) 
+> &= \frac{-4x + 3}{(1 - x)(1 - 2x)} = \frac{1}{1 - x} + \frac{2}{1 - 2x} \\
+> &= \sum_{n=0}^\infty x^n + 2 \sum_{n=0}^\infty (2x)^n \\
+> &= \sum{n=0}^\infty (1 + 2^{n + 1}) x^n
+> \end{align*}
+> $$
+> So we find our sequence to be
+> $$
+> \{a_n\} = \{1 + 2^{n+1}\}
+> $$
+
+Given a **recurrence**, say $a_n = a_{n-1} + a_{n-2}$ (the fibonacci recurrence) where we are given a term in terms of the previous ones, we can obtain the closed form OGF, and then use a series expansion to get an explicit closed form formula for our sequence $\{a_n\}$. 

@@ -513,3 +513,4 @@ Where for any $(x,y,z)$ point, we convert it to homogeneous coordinates $\vec{v}
 > \end{bmatrix}
 > $$
 > Our transformation was $(3,3,3) \to (\frac{9}{2}, \frac{9}{2}, 0)$!
+

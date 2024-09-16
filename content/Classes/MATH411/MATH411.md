@@ -759,7 +759,7 @@ If $U,V$ satisfy 1,2,3, then $U,V$ are said to **separate** $A$.
 > [!Abstract] Theorem: Connected Sets and IVP
 > $A$ is connected if and only if $A$ has the Intermediate Value Property.
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > We want to show that if $A$ is not connected if and only if A does not have the intermediate value property. In other words, $\exists f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
 > > 
@@ -820,17 +820,112 @@ We show that if $A$ is path connected, then $A$ is connected.
 
 ---
 
-Set $K \subseteq \mathbb{R}^n$ is **compact** if for every family of open sets $\{V_\alpha\}$, if $K \subseteq \bigcup_\alpha V_\alpha$, then there exist infinitely many $V_{\alpha_1}, \dots, V_{\alpha_l}$ such that
+Set $K \subseteq \mathbb{R}^n$ is **compact** if for every family of open sets $\{V_\alpha\}$ such that $K \subseteq \bigcup_\alpha V_\alpha$,  then there exist finitely many sets $V_{\alpha_1}, \dots, V_{\alpha_l}$ such that
 $$
 K \subseteq V_{\alpha_1} \cup \dots \cup V_{\alpha_l}
 $$
+> If $K \subseteq \bigcup_\alpha V_\alpha$, we say that $\bigcup_\alpha V_\alpha$ **covers** $K$.
 
 
-> [!Abstract] Theorem:
+> [!Abstract] Theorem: Compactness vs. Closure and Boundedness
 > $K$ is compact if and only if $K$ is closed and bounded.
 >
-> > [!Info] Proposition 1
+> > [!Info]- Proposition 1: $K$ compact implies $K$ bounded. 
 > > 
-> > $K$ compact implies $K$ bounded. 
+> > Let $K \subseteq \bigcup_{l=1}^\infty B_l (0)$ (this is always true, as this union is all of $\mathbb{R}^n$). Then by definition, there must exist some "largest" ball that contains $K$ given by a finite value. So, there is a $l_0$ such that $K \subseteq B_{l_0}$. 
 > > 
-> > Let $V_\alpha$ be the balls of radius $\alpha$ centered around 0, $V_\alpha = B_\alpha (0)$. We have an infinite family of "balls". Then, there exists $\alpha_1 < \alpha_2 \dots < \alpha_l$ such that $K \subseteq V_{\alpha_1} \cup \dots V_{\alpha_n} = B_{\alpha_n} (0)$.
+> > So, $K$ is bounded.
+> > 
+>
+> > [!Info]- Proposition 2: $K$ compact implies $K$ closed.
+> > 
+> > Let $K$ be compact, and let $\{u_k\}$ be a sequence of points in $K$, where $\{u_k\} \to u \in \mathbb{R}^n$. We wish to show that $u \in K$.
+> > 
+> > Assume by contradiction that $u \not\in K$.
+> > 
+> > Now, we must make a family of open sets whose union is guaranteed to cover (contain) $K$, so we can apply our definition. 
+> > 
+> > Let $V_l = \{ x \in \mathbb{R}^n : || x - u || > 1/l \}$. Then, the union of all $V_l$'s is all of $\mathbb{R}^n$, with the exception of the point $u$.
+> > > We are looking at the set of points outside of circles that are closing in on $u$.
+> > 
+> > $$
+> > \bigcup_l V_l = \{ x \in \mathbb{R}^n : x \ne u \}
+> > $$
+> > Therefore $K$ must be contained in this family of open sets. By definition, there must exist a finite amount of sets that contains $K$. But since each of these sets contain each other, their union is the same as the largest set, meaning we can find a $V_{l_0}$ such that
+> > $$
+> > K \subseteq V_{l_0}
+> > $$
+> > This contradicts $\{u_k\} \subseteq K$, $\{u_k\} \to u$, as there cannot be any $\{u_k\}$ in the ball $V_{l_0}$! 
+> > > We can choose an epsilon to show that convergence fails, as there is an open ball around $u$ that $K$ is NOT a part of.
+> 
+> > [!Info]- Proposition 3: If the set $L$ is compact, and $K \subseteq L$, $K$ is closed, then $K$ is compact.
+> > 
+> > Let $V_\alpha$ be a family of open sets where $K \subseteq \bigcup_\alpha V_\alpha$. We wish to find a finite amount of sets in this family containing $K$.
+> > 
+> > For any $x$, if it is in $K$, then it is in $\bigcup_\alpha V_\alpha$. Otherwise, if must be in $K^c$. Because $K$ is closed, $K^c$ must be open. So,
+> > $$
+> > L \subseteq \bigcup_\alpha V_\alpha \cup K^c
+> > $$
+> > Since $L$ is compact, there must exist a finite amount of sets $V_{\alpha_1}, V_{\alpha_2}, \dots, V_{\alpha_l}$ from this family such that
+> > $$
+> > L \subseteq \bigcup_{i=1}^l V_{\alpha_i}
+> > $$
+> > As $K \subseteq L$, then,
+> > $$
+> > K \subseteq \bigcup_{i=1}^l V_{\alpha_i}
+> > $$
+> > 
+> > But this union could contain $K^c$! So, we show that $K^c$ cannot be in this union, to find a finite amount of sets from $\{V_\alpha\}$ covering $K$.
+> > 
+> > By definition, a point in $K$ cannot be in $K^c$! So, $K$ is contained in a finite number of the $V_\alpha$.
+> 
+> > [!Note]- Proof ($\leftarrow$)
+> > 
+> > Note that this proof heavily relies on the fact that $K$ is in finitely many dimensions.
+> > 
+> > Let $K$ be closed and bounded. Since $K$ is bounded, $K$ is contained in some closed cube in $\mathbb{R}^n$. Without loss of generality, assume $K \subseteq C = [0,1] \times [0,1] \dots \times [0,1]$.
+> > 
+> > It suffices to show that this cube is compact, after which we apply the previous theorem (because $K$ is closed) to get our result. 
+> > 
+> > Let $\{V_\alpha\}$ be open sets such that $C \subseteq \bigcup_\alpha V_\alpha$. Assume by contradiction that we cannot find a finite number of sets from $\{V_\alpha\}$ containing $C$. 
+> > 
+> > Divide $C$ into $2^n$ subcubes of size $\frac{1}{2}$. We show that these subcubes can be contained in finitely many sets, and therefore, so can $C$.
+> > 
+> > By assumption, we must be able to find a closed subcube $C_1$ which cannot be covered by finitely many $V_\alpha$'s. Continue, dividing $C_1$ into $2^n$ subcubes of size $\frac{1}{4}$. Then, among these subcubes, there must be one that cannot be covered by finitely many sets. Repeating this, we get
+> > $$
+> > C_i \subseteq \dots \subseteq C_2 \subseteq C_1 \subseteq C
+> > $$
+> > Where no $C_i$ can be covered by finitely many sets.
+> > 
+> > By a generalization of the nested interval theorem, there must exist a single unique point contained within all nested cubes- formally, $\exists ! x_0 \in C_i \forall i$.
+> > 
+> > We know that as $x_0 \in C$, the point must exist in at least one of the $V_\alpha$'s, say $V_{\alpha_0}$. By definition of an open set, there exists a ball around $x_0$ completely contained within $V_{\alpha_0}$.
+> > 
+> > So, we can find some $C_i \in V_{\alpha_0}$, which is covered by finitely many sets. This is a contradiction!
+
+---
+
+
+# Metric Spaces
+A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a **metric space** if the following 3 properties hold:
+1. $d(u,v) = d(v,u)$, $\forall u,v \in X$\
+2. $d(u,v) \ge 0$, and $d(u,v) = 0$ if and only if $u = v$
+3. $d(u,v) \le d(u, w) + d(w, v)$, $\forall u,v,w \in X$.
+
+> $d$ is known as a **metric**!
+
+> [!Example]+ Example: Common Metric Space
+> $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$
+> 
+> In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
+> 1. $||u|| \ge 0$, $\forall u \in V$, and $||u|| = 0$ if and only if $u = 0$.
+> 2. $||u + v|| \le ||u|| + ||v||$
+> 3. $|| \alpha u || \le |\alpha| ||u||$
+> 
+> We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metric.
+> 
+> > [!Note] Proof
+> > 
+1. $d(u,v) = ||u - v|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = 1$.
+
+...

@@ -691,3 +691,109 @@ The function $F(x) = \sum_{n=0}^\infty a_n x^n$ is the **ordinary generating fun
 > $$
 
 Given a **recurrence**, say $a_n = a_{n-1} + a_{n-2}$ (the fibonacci recurrence) where we are given a term in terms of the previous ones, we can obtain the closed form OGF, and then use a series expansion to get an explicit closed form formula for our sequence $\{a_n\}$. 
+
+> [!Info] Lemma
+> We have
+> $$
+> h(x) = 1 - x - x^2 = - \left( x + \frac{1 + \sqrt{5}}{2} \right) \left( x + \frac{1 - \sqrt{5}}{2} \right)
+> $$
+> Moreover, if $r_1 = \frac{1 + \sqrt{5}}{2}$, $r_2 = \frac{1 - \sqrt{5}}{2}$, then $r_2 = -\frac{1}{r_1}$.
+
+> [!Example] Example: Closed Form Fibonacci Sequence
+> $$
+> a_n = a_{n-1} + a_{n-2} \qquad a_0 = 0, a_1 = 1
+> $$
+> 
+> Find a closed form ogf for the sequence, and find a closed form for $a_n$ with it.
+> 
+> Our goal is first to find the closed form OGF.
+> 
+> We first start with the ogf, and then apply our sequence definition to the $a_n$ term. Note that we need to take out the base case as the definition for $a_n$ is only defined for $n \ge 2$.
+> $$
+> \begin{align*}
+> F(x) 
+> &= \sum_{n=0}^\infty a_n x^n = 0 + 1x + \sum_{n=2}^\infty a_n x^n \\
+> &= x + \sum_{n=2}^\infty (a_{n-1} + a_{n-2}) x^n \\
+> &= x + \sum_{n=2}^\infty a_{n-1} x^n + \sum_{n=2}^\infty a_{n-2} x^n \\
+> &= x + x \sum_{n=2}^\infty a_{n-1} x^{n-1} + x^2 \sum_{n=2}^\infty a_{n-2} x^{n-2}
+> \end{align*}
+> $$
+> We can use this to express $F(x)$ as a function of itself. Note that the first summation is $F(x)$ without the $a_0$ term, and the second summation is just $F(x)$.
+> $$
+> \begin{align*}
+> F(x)
+> &= x + x \sum_{n=2}^\infty a_{n-1} x^{n-1} + x^2 \sum_{n=2}^\infty a_{n-2} x^{n-2} \\
+> &= x + x (F(x) - a_0) + x^2 F(x) \\
+> &= x + x F(x) + x^2 F(x) \\
+> F(x)
+> &= \frac{x}{1 - x - x^2}
+> \end{align*}
+> $$
+> We have found a closed form ogf. We can now use this to find our closed form sequence. We do this by applying partial fraction decomposition and converting the result into a geometric series.
+> > Here, we apply our lemma.
+> $$
+> \begin{align*}
+> F(x)
+> &= \frac{x}{1 - x - x^2} \\
+> &= \frac{-x}{\left( x + \frac{1 + \sqrt{5}}{2} \right) \left( x + \frac{1 - \sqrt{5}}{2} \right)} \\
+> &= \frac{-x}{(x + r_1) (x + r_2)} = \frac{A}{x + r_1} + \frac{B}{x + r_2} \\
+> &= \frac{-1}{\sqrt{5}} \left( \frac{r_1}{x + r_1} - \frac{r_2}{x + r_2} \right) \\
+> &= \frac{1}{\sqrt{5}} \left( \frac{r_2}{x + r_2} - \frac{r_1}{x + r_1} \right) \\
+> &= \frac{1}{\sqrt{5}} \left( \frac{1}{1 - (-x / r_2)} - \frac{1}{1 - (-x / r_1)} \right) \\ 
+> &= \frac{1}{\sqrt{5}} \left( \sum_{n=0}^\infty (r_2 x)^n - \sum_{n=0}^\infty (r_1 x)^n \right) \\
+> &= \sum_{n=0}^\infty \frac{1}{\sqrt{5}} (r_2^n - r_1^n) x^n 
+> \end{align*}
+> $$
+> We've found our closed form sequence!
+> $$
+> \{a_n\} = \frac{1}{\sqrt{5}} (r_2^n - r_1^n) =  \frac{1}{\sqrt{5}} \left( \left( \frac{1 - \sqrt{5}}{2} \right)^n - \left(  \frac{1 + \sqrt{5}}{2} \right)^n \right)
+> $$
+
+> [!Example]
+> Consider codes of length $n$ using $A,B,C,D$. Let $a_n$ denote the total codes with an even number of $A$'s. 
+> 1. Find a recurence of $a_n$ in terms of $a_{n-1}$
+> 2. Find a closed form ogf.
+> 3. Find a closed form for $a_n$.
+> 
+> We first find a recurrence. If we have $n - 1$ length strings, we could add a $B,C,D$ to get a $n$ length string. Or, with $n - 1$ length strings, we need an odd number of $A$'s to add an extra $A$ onto, which we can find as all strings minus the even ones.
+> $$
+> a_n = a_{n-1} + a_{n-1} + a_{n-1} + (4^{n-1} - a_{n-1}) = 2a_{n-1} + 4^{n-1}
+> $$
+> We now need to find our base case. Clearly, $a_1 = 3$, as the string can only be a $B,C,D$. So, $a_0 = 1$.
+> 
+> We now use our recurrence to find a closed form ogf.
+> $$
+> \begin{align*}
+> F(x) 
+> &= \sum_{n=0}^\infty a_n x^n = 1 + \sum_{n=1}^\infty a_n x^n \\
+> &= 1 + \sum_{n=0}^\infty (2a_{n-1} + 4^{n-1}) x^n \\
+> &= 1 + 2 \sum_{n=1}^\infty a_{n-1} x^n + \sum_{n=1}^\infty 4^{n-1} x^n \\
+> &= 1 + 2 x \sum_{n=1}^\infty a_{n-1} x^{n-1} + x \sum_{n=1}^\infty 4^{n-1} x^{n-1} \\
+> &= 1 + 2 x \sum_{n=1}^\infty a_{n-1} x^{n-1} + x \sum_{n=1}^\infty 4^{n-1} x^{n-1} \\
+> &= 1 + 2x F(x) + x \frac{1}{1 - 4x} \\
+> F(x) 
+> &= \frac{1}{1 - 2x} \left(1 + \frac{x}{1 - 4x} \right) \\
+> &= \frac{1}{1 - 2x} + \frac{x}{(1 - 4x) (1 - 2x)}
+> \end{align*}
+> $$
+> 
+> We now use our closed form ogf to find a closed form sequence.
+> $$
+> \begin{align*}
+> F(x) 
+> &= \frac{1}{1 - 2x} + \frac{x}{(1 - 4x) (1 - 2x)} \\
+> &= \frac{1}{2(1 - 2x)} + \frac{1}{2(1 - 4x)} \\
+> &= \frac{1}{2} \sum_{n=0}^\infty (2x)^n + \frac{1}{2} \sum_{n=0}^\infty (4x)^n \\
+> &= \sum_{n=0}^\infty \frac{1}{2} (2^n + 4^n) x^n
+> \end{align*}
+> $$
+> We found our closed form solution as
+> $$
+> \{a_n\} = \left\{ \frac{1}{2} (2^n + 4^n) \right\}
+> $$
+
+What if $a_n$ is a combinatorial value, like $S(n,k)$? Well, using our techniques, we can actually find the closed form solution of $S(n,k)$ (at least in some cases)!
+
+
+--- End of Exam 1 Content ---
+

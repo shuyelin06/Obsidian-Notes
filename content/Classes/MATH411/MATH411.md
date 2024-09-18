@@ -754,7 +754,8 @@ Set $A \subseteq \mathbb{R}^n$ is **not connected** if $\exists U,V$ open sets s
 2. $(U \cap A) \cap (V \cap A) = \varnothing$
 3. $(U \cap A) \cup (V \cap A) = A$
 
-If $U,V$ satisfy 1,2,3, then $U,V$ are said to **separate** $A$.
+If $U,V$ satisfy 1,2,3, then $U,V$ are said to **separate** $A$. In other words, a set is connected if we cannot find two disjoint open sets that make up $A$.
+> Note that by this more intuitive definition, we can deduce that $\mathbb{R}^n$ is connected, as we cannot form 2 disjoint open sets by partitioning the space- there must be one with a boundary.
 
 > [!Abstract] Theorem: Connected Sets and IVP
 > $A$ is connected if and only if $A$ has the Intermediate Value Property.
@@ -908,13 +909,13 @@ $$
 
 # Metric Spaces
 A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a **metric space** if the following 3 properties hold:
-1. $d(u,v) = d(v,u)$, $\forall u,v \in X$\
+1. $d(u,v) = d(v,u)$, $\forall u,v \in X$
 2. $d(u,v) \ge 0$, and $d(u,v) = 0$ if and only if $u = v$
 3. $d(u,v) \le d(u, w) + d(w, v)$, $\forall u,v,w \in X$.
 
 > $d$ is known as a **metric**!
 
-> [!Example]+ Example: Common Metric Space
+> [!Example]+ Example: Vector Spaces
 > $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$
 > 
 > In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
@@ -924,8 +925,66 @@ A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a *
 > 
 > We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metric.
 > 
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
-1. $d(u,v) = ||u - v|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = 1$.
+> > We check our 3 axioms.
+> > 1. $d(u,v) = ||u - v|| = |-1| ||v - u|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = -1$.
+> > 2. $d(u,v) \ge 0$, by (1), and $d(u,v) = 0$ if and only if $||x - y|| = 0$, if and only if $x - y = 0$, by (1) again. 
+> > 3. Let $x,y,z \in V$.
+> >    $$
+> >    \begin{align*}
+> >    d(x,y) 
+> >    &= ||x - y|| = ||x - y + z - z|| \\
+> >    &\le ||x - z|| + ||z - y|| = d(x,z) + d(z,y) \\
+> >    \end{align*}
+> >    $$
 
 ...
+
+
+---
+
+> [!Example]
+Let $f : \mathbb{R} \to \mathbb{R}$ continuous. Prove that $G = \{ (x, f(x)) : x \in \mathbb{R} \}$ is closed.
+
+Suppose we have a sequence of points $\{ (x_k, y_k) \} \in G$, where $\{ (x_k, y_k) \} \to (x, y)$. We want to show that $(x,y) \in G$. We know that because $\{x_k\} \to x$, by continuity on $f$, then $f(x_k) \to f(x)$! Note that because $y_k = f(x_k)$ (by definition), then
+$$
+\{ (x_k, y_k) \} \to (x,y) = (x, f(x)) \in G
+$$
+
+> [!Example]
+Let $f : \mathbb{R} \to \mathbb{R}$. Assume $G = \{ (x, f(x)) : x \in \mathbb{R} \}$ is closed. Does it follow that $f$ is continuous?
+
+Let $\{x_k\} \in \mathbb{R}$, where $\{x_k\} \to x$. We want to show that $\{f(x_k)\} \to f(x)$. 
+
+Using this, we can form a sequence $\{(x_k, f(x_k))\} \subseteq G$. Then, if $\{ (x_k, f(x_k) \} \to (x,y)$, then $f(x) = y$. So, if there exists a $y$ such that $\{f(x_k)\} \to y$, then $y = f(x)$ where $\{x_k\} \to x$.
+
+But do we know if $\{f(x_k)\}$ converges? In fact, closure only says that **if** the sequence converges, then its result is in the set! However, we may be able to find a function that fails to satisfy this.
+
+Let 
+$$
+f(x) = \frac{1}{x}, f(0) = 0 \qquad x_k = \frac{1}{k}
+$$
+Then, $f(x)$ is not continuous at $x = 0$, yet the set $G$ is still closed!
+
+> [!Example]
+Let $C \subseteq \mathbb{R}$ with the property that any $f : C \to \mathbb{R}$ which is continuous, has to be uniformly continuous.
+
+Is it true that $C$ must be closed?
+
+Let $\{x_k\} \subseteq C$, where $\{x_k\} \to x_0 \in \mathbb{R}$. Assume by contradiction that $x_0 \not\in C$. Try $f(x) = \frac{1}{|x - x_0|}$. Then, $f$ is continuous on $C$, but is not uniformly continuous!
+
+Let $\epsilon = 1$. We ask, if we can find a $\delta > 0$ such that for $|x - y| < \delta$, $| f(x) - f(y) | < 1$. Let $x = x_k, y = x_l$, chosen so that $|x_k - x_0| < \frac{\delta}{2}, |x_l - x_0| < \frac{\delta}{2}$, so $|x_k - x_l| < \delta$.
+
+Keep $x_k$ fixed, but let $l \to \infty$. Then, $f(x_l)$ goes to infinity, so $| f(x) - f(y) | < 1$ is not possible!
+
+So, $C$ must be closed.
+
+> [!Example]
+Let $C \subseteq \mathbb{R}$ with the property that any $f : C \to \mathbb{R}$ which is continuous, has to be uniformly continuous. Does $C$ have to be bounded?
+
+Try $C = \mathbb{N}$. Let $f : \mathbb{N} \to \mathbb{R}$, some fixed function. Then, $f$ is automatically continuous and uniformly continuous, since as we're dealing with the integers, any convergent sequence for $\epsilon$ will be the same integer value (due to the spacing between integers).
+> Let $\epsilon > 0$. Let $\delta = 1/2$. If $x,y \in \mathbb{N}$, then if $|x - y| < 1/2$, then $x = y$, so $f(x) = f(y)$, so $|f(x) - f(y)| = 0 < \epsilon$.
+
+However, $C$ is not bounded! So, $C$ does not have to be bounded.
+

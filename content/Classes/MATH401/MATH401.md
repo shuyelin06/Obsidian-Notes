@@ -514,3 +514,71 @@ Where for any $(x,y,z)$ point, we convert it to homogeneous coordinates $\vec{v}
 > $$
 > Our transformation was $(3,3,3) \to (\frac{9}{2}, \frac{9}{2}, 0)$!
 
+
+# Least Squares / Curve Fitting 
+Given a set of data in space, we ask: how do we find a "best fit line"?
+> Finding such a line would let us make generalizations and inferences from our data!
+
+## Least Squares Solutions
+Suppose we have an inconsistent linear system $A \vec{x} = \vec{b}$. As it is inconsistent, we simply cannot find an $\vec{x}$ satisfying the system. 
+
+This makes sense for our purposes! It's often impossible to find an exact solution for a line passing through all points (points may not be co-linear). However, it is possible to find an exact solution for a line **minimizing** its distance to all points! This is the idea behind least squares.
+
+A **least squares solution** of $A \vec{x} = \vec{b}$ is a vector $\hat{x}$ that minimizes the distance from $A \hat{x}$ to $\vec{b}$.
+$$
+|| A \hat{x} - \vec{b} ||
+$$
+This is called the **least squares error**. Note that with this minimizer, for any other $\vec{x}$,
+$$
+|| A \vec{x} - \vec{b} || \ge || A \hat{x} - \vec{b} ||
+$$
+
+We first build up some context below.
+
+> [!Info] Dot Products
+> Given $\vec{v}, \vec{w}$ in $\mathbb{R}^n$, their **dot product** is
+> $$
+> \vec{v} \cdot \vec{w} = \vec{v}^T \vec{w} = v_1 w_1 + v_2 w_2 + \dots
+> $$
+>
+> The dot product relates to a handful of geometric quantities like lengths and angles.
+>
+> The **length** (**norm**) of a vector $\vec{v}$ is given as
+> $$
+> || \vec{v} || = \sqrt{\vec{v} \cdot \vec{v}} = \sqrt{v_1^2 + v_2^2 + \dots}
+> $$
+>
+> And for any $\vec{v}, \vec{w}$ in $\mathbb{R}^n$, we have
+> $$
+> \vec{v} \cdot \vec{w} = || \vec{v} || || \vec{w} || \cos\theta
+> $$
+> where $\theta$ is the angle between $\vec{v}$ and $\vec{w}$. 
+>
+> We say $\vec{v}, \vec{w}$ are **orthogonal** if $\vec{v} \cdot \vec{w} = 0$.
+> > Note that this means that $\vec{0}$ is uniquely orthogonal to every vector $\vec{w}$ in $\mathbb{R}^n$.
+
+> [!Info] Orthogonal Projections
+> Let $W$ be a subspace of $\mathbb{R}^n$ ($W$ is some span of a collection of vectors, a line through the origin, a plane through the origin, etc).
+> 
+> The **orthogonal projection** of $\vec{v}$ onto a subspace $W$, denoted $\text{proj}_w \vec{v}$, is the closest vector in $W$ to $\vec{v}$. It satisfies
+> $$
+> || \vec{v} - \text{proj}_W \vec{v} || \le || \vec{v} - \vec{w} ||
+> $$
+> 
+> $\vec{v} - \text{proj}_W \vec{v}$ is orthogonal to every possible $\vec{w}$ in $W$.
+
+The **column space** of an $m \times n$ matrix $A$ is the span of its columns (the set of all linear combinations of its columns). Note that $\text{Col}A$ is a subspace of $\mathbb{R}^m$.
+
+Every linear combination of the columns of $A$ has the form $A \vec{x}$ for some $\vec{x}$ in $\mathbb{R}^n$. So
+$$
+\text{Col}A = \{ A \vec{x} : \vec{x} \in \mathbb{R}^n \}
+$$
+Here, $\vec{b} \in \text{Col}A$ if and only if there is some $\vec{x} \in \mathbb{R}^n$ such that $A \vec{x} = \vec{b}$ if and only if $A \vec{x} = \vec{b}$ is a consistent linear system.
+
+Now suppose $A \vec{x} = \vec{b}$ is inconsistent. So, by above, if there is no solution then $\vec{b} \not\in \text{Col}A$. Let $\hat{b} = \text{Proj}_{\text{Col} A} \vec{b}$. Then, because $\hat{b} \in \text{Col}A$, we found the existence of an $\hat{x}$ such that
+$$
+A \hat{x} = \hat{b}
+$$
+Such an $\hat{x}$ is a least squares solution, because $\hat{b}$ is the closest vector in $A$'s column space to $\vec{b}$!
+
+

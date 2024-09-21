@@ -915,34 +915,133 @@ A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a *
 
 > $d$ is known as a **metric**!
 
-> [!Example]+ Example: Vector Spaces
-> $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$
-> 
-> In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
-> 1. $||u|| \ge 0$, $\forall u \in V$, and $||u|| = 0$ if and only if $u = 0$.
-> 2. $||u + v|| \le ||u|| + ||v||$
-> 3. $|| \alpha u || \le |\alpha| ||u||$
-> 
-> We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metric.
-> 
-> > [!Note]- Proof
-> > 
-> > We check our 3 axioms.
-> > 1. $d(u,v) = ||u - v|| = |-1| ||v - u|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = -1$.
-> > 2. $d(u,v) \ge 0$, by (1), and $d(u,v) = 0$ if and only if $||x - y|| = 0$, if and only if $x - y = 0$, by (1) again. 
-> > 3. Let $x,y,z \in V$.
-> >    $$
-> >    \begin{align*}
-> >    d(x,y) 
-> >    &= ||x - y|| = ||x - y + z - z|| \\
-> >    &\le ||x - z|| + ||z - y|| = d(x,z) + d(z,y) \\
-> >    \end{align*}
-> >    $$
+Let $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$. In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
+1. $||u|| \ge 0$, $\forall u \in V$, and $||u|| = 0$ if and only if $u = 0$.
+2. $||u + v|| \le ||u|| + ||v||$
+3. $|| \alpha u || \le |\alpha| ||u||$
 
-...
+We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metric.
+
+> [!Note]- Proof
+> 
+> We check our 3 axioms.
+> 1. $d(u,v) = ||u - v|| = |-1| ||v - u|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = -1$.
+> 2. $d(u,v) \ge 0$, by (1), and $d(u,v) = 0$ if and only if $||x - y|| = 0$, if and only if $x - y = 0$, by (1) again. 
+> 3. Let $x,y,z \in V$.
+>    $$
+>    \begin{align*}
+>    d(x,y) 
+>    &= ||x - y|| = ||x - y + z - z|| \\
+>    &\le ||x - z|| + ||z - y|| = d(x,z) + d(z,y) \\
+>    \end{align*}
+>    $$
+
+> [!Example]
+> In $\mathbb{R}^2$, some of the following are examples of norms.
+>
+> We have the typical norm we are used to, $||x|| = \sqrt{x_1^2 + x_2^2}$.
+> 
+> But we also have other options for norms! For example,
+> $$
+> \begin{align*}
+> || x ||_1 = |x_1| + |x_2| \\
+> || x ||_\infty = \max( |x_1|, |x_2| )
+> \end{align*}
+> $$
+>
+> The proof for the former is trivial. For (3) of the latter, note that
+> $$
+> \begin{align*}
+> || x + y ||_\infty &= \max\{ |x_1 + y_1|, |x_2 + y_2| \} \\ &\le \max\{ |x_1| + |y_1|, |x_2| + |y_2| \} \\ &\le \max\{ |x_1|, |x_2| \} + \max\{ |y_1|, |y_2| \}
+> \end{align*}
+> $$
+>
+> And comparing the norms, we find that
+> $$
+> \max\{ |x_1|, |x_2| \} \le \sqrt{x_1^2 + x_2^2} \le |x_1| + |x_2| \le 2 \max\{|x_1|, |x_2| \}
+> $$
+> So in finite dimensions, we find that convergence along any one of the norms implies convergence along the others, by squeeze!
+> > This fails to hold in infinite dimenions!
+
+> [!Example] 
+> Let $X$ be a set of continuous functions on $[a,b]$ to $\mathbb{R}$.
+> $$
+> x = C ( [a,b],\mathbb{R} ) = \{ f : [a,b] \to \mathbb{R}, f \text{ continuous} \}
+> $$
+> 
+> We can define the following norms and verify them. Note that we only verify their triangle inequalities, as the rest is obvious to show.
+>
+> We define the norm $||f|| = ||f||_\infty = \max_{x \in [a,b]} |f(x)|$. 
+> $$
+> \begin{align*}
+> \max_{x \in [a,b]} |f_1 (x) + f_2 (x)| \le \max_{x\in[a,b]} |f_1(x)| + \max_{x\in[a,b]} |f_2(x)|
+> \end{align*}
+> $$
+> 
+> We can also define the norm $||f||_1 = \int_a^b |f(x)| dx$.
+> $$
+> \int_a^b | f_1(x) + f_2(x) | dx \le \int_a^b |f_1(x)| dx + \int_a^b |f_2(x)| dx
+> $$
+> 
+> We can also define $||f||_2 = \left( \int_a^b f^2 (x) dx \right)^{1/2}$.
+> $$
+> \begin{align*}
+> \left( \int_a^b (f_1(x) + f_2(x))^2 \right)^{1/2} 
+> &= \left( \int_a^b f_1(x)^2 + \int_a^b 2 f_1(x) f_2(x) + \int_a^b f_2(x)^2 \right)^{1/2} \\
+> &\le \left( \int_a^b f_1(x)^2 + 2 \int_a^b (f_1^2 (x))^{1/2} (f_2^2(x))^{1/2} + \int_a^b f_2(x)^2 \right)^{1/2} \\
+> &\le \left( \int_a^b f_1^2 (x) \right)^{1/2} + \left( \int_a^b f_2^2 (x) \right)^{1/2}
+> \end{align*}
+> $$
+
+It can be found that if $Y$ is a metric space with metric $d$, then any $X \subseteq Y$ is also a metric space.
+
+We can make some generalities with metric spaces to obtain the definitions we had in previous chapters!
+- If $X$ is a metric space, then we can define the ball around $p$ as  $B_r (p) = \{ g \in X | d(P,g) < R \}$
+- $A \subseteq X$ is **open** if $\forall p \in X$, $\exists r > 0$ such that $B_r(p) \subseteq X$.
+- $A \subseteq X$ is **closed** if $\forall \{p_k\} \subseteq A$, if $\{p_k\} \to p \in X$, then $p \in A$.
+
+If $X$ is a metric space, then $X$ is open in $X$, and $X$ is closed in $X$!
+
+> [!Example] 
+> Define $X = [0,1)$ with $d(x,y) = |x-y|$. Then, $X$ is open and closed (in itself).
+
+We say that if $\{f_k\} \subseteq C([a,b], \mathbb{R})$, $\{f_k\} \to f$ with respect to 
+$$
+d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|
+$$
+If $f_k \to f$ uniformly.
+
+A sequence of point $\{p_k\} \in X$ is **Cauchy** if $\forall \epsilon > 0$, $\exists K$ such that $d(p_k, p_l) < \epsilon$ for all $k,l \ge K$.
+> $\{f_k\}$ is Cauchy with respect to $d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|$, if and only if $\{f_k\}$ is uniformly Cauchy.
+
+$X$ is **complete** if $\forall \{p_k\}$ Cauchy sequence in $X$, $\exists p \in X$ such that $\{p_k \to p\}$.
+
+
+Let's look at continuous functions $f \in C([a,b], \mathbb{R}$. Then, we know there exist
+$$
+\int_a^b |f(x)| dx \le (b - a) \max_{x\in[a,b]} |f(x)|
+$$
+But does there exist a constant such that
+$$
+\max_{x\in[a,b]} |f(x)| \le \alpha \int_a^b |f(x)|
+$$
+In infinite dimensions, this is not possible! Let $f_k (x) = x^k$. Then,
+$$
+\max_{x \in [0,1]} f_k (x) = 1
+$$ 
+But
+$$
+\int_0^1 x^k dx = \frac{1}{k + 1}
+$$
+Where as $k \to \infty$ (which is possible as we are in the space of ALL continuous functions), this goes to 0! 
+
+Is $C([0,1], \mathbb{R})$ with $d(f,g) = \int_0^a |f - g|$ complete? In other words, if $f_k$ is Cauchy in our space, does there exist a function $f \in C([0,1],\mathbb{R})$ such that $\int_0^1 |f_k - f| = 0$?
+
 
 
 ---
+
+In class examples
 
 > [!Example]
 Let $f : \mathbb{R} \to \mathbb{R}$ continuous. Prove that $G = \{ (x, f(x)) : x \in \mathbb{R} \}$ is closed.

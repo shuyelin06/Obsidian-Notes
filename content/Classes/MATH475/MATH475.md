@@ -699,7 +699,7 @@ Given a **recurrence**, say $a_n = a_{n-1} + a_{n-2}$ (the fibonacci recurrence)
 > $$
 > Moreover, if $r_1 = \frac{1 + \sqrt{5}}{2}$, $r_2 = \frac{1 - \sqrt{5}}{2}$, then $r_2 = -\frac{1}{r_1}$.
 
-> [!Example] Example: Closed Form Fibonacci Sequence
+> [!Example]- Example: Closed Form Fibonacci Sequence
 > $$
 > a_n = a_{n-1} + a_{n-2} \qquad a_0 = 0, a_1 = 1
 > $$
@@ -749,7 +749,7 @@ Given a **recurrence**, say $a_n = a_{n-1} + a_{n-2}$ (the fibonacci recurrence)
 > \{a_n\} = \frac{1}{\sqrt{5}} (r_2^n - r_1^n) =  \frac{1}{\sqrt{5}} \left( \left( \frac{1 - \sqrt{5}}{2} \right)^n - \left(  \frac{1 + \sqrt{5}}{2} \right)^n \right)
 > $$
 
-> [!Example]
+> [!Example]- Example: Solving Recurrence Relations
 > Consider codes of length $n$ using $A,B,C,D$. Let $a_n$ denote the total codes with an even number of $A$'s. 
 > 1. Find a recurence of $a_n$ in terms of $a_{n-1}$
 > 2. Find a closed form ogf.
@@ -792,8 +792,114 @@ Given a **recurrence**, say $a_n = a_{n-1} + a_{n-2}$ (the fibonacci recurrence)
 > \{a_n\} = \left\{ \frac{1}{2} (2^n + 4^n) \right\}
 > $$
 
-What if $a_n$ is a combinatorial value, like $S(n,k)$? Well, using our techniques, we can actually find the closed form solution of $S(n,k)$ (at least in some cases)!
-
 
 --- End of Exam 1 Content ---
+
+## 2.3: Ordinary Generating Functions and Counting
+What if $a_n$ is a combinatorial value, like $S(n,k)$? Well, using our techniques, we can actually find the closed form solution of $S(n,k)$ (at least in some cases)!
+
+We describe various combinatorial objects that can be used to solve counting problems.
+
+### Weak Compostions with Contraints
+We have 
+$$
+\frac{1}{1-x} = \sum_{n=0}^\infty x^n
+$$
+Differentiating this, we get
+$$
+\begin{align*}
+&\frac{1}{(1-x)^2} = \sum_{n=1}^\infty n x^{n-1} = 1 + 2x + 3x^2 + \dots = \sum_{n=0}^\infty (n+1) x^n \\
+&\frac{2}{(1-x)^3} = \sum_{n=2}^\infty (n-1) x^{n-2} = \sum_{n=0}^\infty (n+2)(n+1) x^n \\
+&\vdots
+\end{align*}
+$$
+Generalizing this, we find that at the $m^{th}$ derivative,
+$$
+\begin{align*}
+\frac{m!}{(1-x)^{m+1}} 
+&= \sum_{n=0}^\infty (n+m)(n+m-1) \dots (n+1) x^n \\
+&= \sum_{n=0}^\infty \frac{(n+m)!}{n!} x^n \\
+\frac{1}{(1-x)^{m+1}}
+&= \sum_{n=0}^\infty \frac{(n+m)!}{n! m!} x^n = \sum_{n=0}^\infty \binom{n+m}{m} x^n
+\end{align*}
+$$
+Letting $m = k - 1$, we find 
+$$
+\frac{1}{(1-x)^k} \sum_{n=0}^\infty \binom{n+k-1}{k-1} x^n
+$$
+Now observe that
+$$
+\frac{1}{(1-x)^k} = \left( \frac{1}{1-x} \right)^k = (1 + x + x^2 + \dots) (1 + x + x^2 + \dots) \dots
+$$
+We can find that the coefficient of any $x^n$ is $\binom{n+k-1}{k-1}$! And in fact, our disgusting product can actually just be seen as all possible ways we can choose $x^{n_1}$ in group 1, $x^{n_2}$ in group 2, ... $x^{n_k}$ in group $k$ where 
+$$
+x^{n_1} x^{n_2} \dots x^{n_k} = x^{n_1 + n_2 + \dots n_k} = x^n
+$$
+Which is in fact weak compositions! With this relation, we can actually solve any weak composition problem (with any constraints)! 
+> Each exponent represents one "dollar" we can give, and each series represents one entity we could give dollars to, where the series depends on the constraints we have!
+
+> [!Example]+ Example: Model for Solving Weak Compositions
+> Find the ordinary generating function and state the coefficient that would count the total ways to distribute $100 to 4 kids so that kid 1 gets at most 5 dollars, kid 2 gets at least 3 dollars, kid 3 gets an even number of dollars, and kid 4 gets any amount.
+> 
+> We want the coefficient of $x^{100}$ such that
+> $$
+> (1 + x + x^2 + x^3 + x^4 + x^5) (x^3 + x^4 + x^5 + \dots ) (1 + x^2 + x^4 + \dots) (1 + x + x^2 + x^3 + \dots)
+> $$
+> Each series is given in terms of the ways we can give dollars to each of the kids. For example because kid 2 gets at least 3 dollars, the series is $x^3, x^4, \dots$ as when we make a "choice" in our product, the exponent (dollars) we wantt to select for kid 2 must be 3 or more. 
+>
+> Its hard to solve this by hand, but we could easily solve this by a computer!
+
+### Stirling Numbers 
+> [!Abstract] Theorem: OGF for Stirling Numbers
+> Let $k$ be a fixed positive integer. Then the OGF for $\{a_n\} = \{S(n,k)\}$ is
+> $$
+> F_k (x) = \sum_{n=0}^\infty a_n x^n = \frac{x^k}{(1-x)(1-2x) \dots (1-kx)}
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > Recall that
+> > $$
+> > S(0,0) = 1 \qquad S(n,0) = S(0,k) = 0 \qquad S(n,k) = S(n-1,k-1) + kS(n-1, k)
+> > $$
+> > 
+> > Then, $F_k (x) = \sum a_n x^n = \sum_{n=0}^\infty S(n,k) x^n$. We solve for a closed form solution.
+> > $$
+> > \begin{align*}
+> > \sum_{n=0}^\infty S(n,k) x^n 
+> > &= \sum_{n=0}^\infty (S(n-1,k-1) + kS(n-1, k)) x^n \\
+> > &= \sum_{n=1}^\infty S(n-1,k-1) x^n + \sum_{n=1}^\infty kS(n-1, k) x^n \\
+> > &= x \sum_{n=1}^\infty S(n-1,k-1) x^{n-1} + x k\sum_{=1}^\infty S(n-1, k) x^{n-1} \\
+> > &= x F_{k-1} (x) + x kF_k (x)
+> > \end{align*}
+> > $$
+> > This yields us a recursion of $F_k$ in terms of $F_{k-1}$.
+> > $$
+> > F_k (x) = \frac{x F_{k-1} (x)}{1-kx}
+> > $$
+> > So, if I repeat this recursion, I will get my definition above!
+> > $$
+> > F_k (x) = \frac{x}{1-kx} F_{k-1} = \frac{x}{1-kx} \frac{x}{1-(k-1)x} F_{k-2} = \dots = \frac{x^k}{(1-x)(1-2x) \dots (1-kx)}
+> > $$
+
+### Integer Partitions
+> [!Abstract] Theorem: 
+> The OGF for the total integer partitions of $n$, $p(n)$, is
+> $$
+> F(x) = \sum_{n=0}^\infty p(n) x^n = \frac{1}{(1-x)(1-x^2)(1-x^3)\dots} = \prod_{k=1}^\infty \frac{1}{1-x^k}
+> $$
+>
+> > [!Note] Proof (Sketch)
+> > 
+$$
+\begin{align*}
+F(x) 
+&= \frac{1}{1-x} \frac{1}{1-x^2} \frac{1}{1-x^3} \dots \\
+&= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + x^6 + \dots) (1 + x^3 + x^6 + x^9 + \dots)
+\end{align*}
+$$
+Notice that each product gives us multiples of $k$, and if we select one of them, we are choosing the number of $k$'s we want in our integer partition! For example, if we chose $x^6$ in our $k = 2$ product (2nd one), we are choosing $2 + 2 + 2$, or in other words, 3 integers of 2! So,
+1. Group 1 relates to how many 1s are in the sum
+2. Group 2 relates to how many 2s are in the sum
+3. ...
 

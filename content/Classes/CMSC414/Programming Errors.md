@@ -339,3 +339,373 @@ One example of pivoting (with Docker) is given below.
 > - Say a trusted user runs some server on a container. Then, the bad user could copy files from that server, as they have access to the container!
 > - Say a trusted user runs some container in privileged mode. Then, the bad user could use this container to access device information!
 > - With access to Docker, the bad user could simply run a malicious attack on their own container!
+
+# SQL Injection Attacks
+**SQL (Structed Query Language)** is the de-facto standard language for creating structured databases. It can be used to populate, modify, and query databases- its a general purpose language for interacting with databases.
+
+Oftentimes, web servers are backed by a database that can provide dynamic content, as well as store and manipulate data on behalf of the user. Sometimes, these queries come from the server itself, but othertimes it may pass through some sort of user-provided input.
+
+## Database Overview
+Here, we will briefly look at an overview of databases.
+
+In structured databases, our data is stored in a **table**, which has columns, cells, and rows. 
+- Each **column** names a variable or property, and could be typed.
+- Each **row** represents an individual record, and generally contains a **primary key** which is a unique identifier typically used for sorting.
+- Each **cell**, at any intersection of a column and row, stores a variable or property in an individual record.
+
+Databases generally have the following management structure:
+- The **database managers** are the ones who configure / populate the database. They have access to everything, and can be seen as the database equivalent of the root user on systems.
+- The **programmer** writes APIs to interface with this database through queries.
+- The **database management system** defines semantics for the database design, telling us how transactions should be done, the query language, and how permissions should be managed. 
+
+A **transaction (tx)** in a database is the basic unit of work in a database. They define something to be done in a database, and can consist of numerous reads or writes.
+
+For transactions to be robust, they need to follow the following rules, known as **ACID**:
+- **Atomicity**: Transactions should either completely complete, or have nothing complete.
+- **Consistency**: The database state should always be valid, even if not correct. There is always a sequence of transactions that can produce the current database state.
+- **Isolation**: Transaction results are not visible until the transaction is complete.
+- **Durability**: Once committed, the transaction remains even after any fault.
+
+## SQL
+Some standard SQL queries are as follows.
+
+To read data from the database, we can use
+```sql
+SELECT <comma-delimited columns, or * for all>
+FROM <table>
+WHERE <rows to match values on>
+GROUP BY <columns to group rows on based on common values>
+ODER BY <columns to order based on>
+```
+> During our selection, we can also do basic statistics on columns, such as `AVG(), COUNT()` 
+
+To insert data into a database, we can use
+```sql
+INSERT INTO <table>
+Values( <expr>, <expr>, ... )
+```
+
+To modify existing rows in a database, we can use
+```sql
+UPDATE <table>
+SET <col> = <expr>
+WHERE <conditions>
+```
+
+In these queries, we have the following operators:
+- `=`, `<>`, `<`, `>`, `>=`, `<=`: Standard binary comparison operators
+- `AND`, `OR`: Logical operators
+- `<expr> BETWEEN <min> AND <max>`: Range selection
+- `<expr> LIKE <pattern>`: Match a pattern
+- `<expr> IN (<val1>, <val2>, ...)`: Match one in a set of values
+- `<expr> IS [NOT] NULL | TRUE | FALSE`: Null or truth testing
+- `SELECT <expr> AS <newcol>`: Rename a column / expression in the output
+- `CASE WHEN <pred1> THEN <expr1> WHEN <pred2> THEN <expr2> ELSE <expr> END`: Cascading if statement
+
+## Overview to HTTP
+To interact with a web server the client will first specify a **URL (Uniform Resource Locator**. This will generally take on the form:
+
+```
+<protocol>://<host>/<path to resource>[?<arguments>]
+```
+> Common protocols include `http`, `https`, `ftp`, `mailto`, `tor`.
+
+The `?` lets us supply query parameters to the webpage, which can be used to supply dynamic content to users.
+
+Commonly, we use `http` to connect to websites. The two most common `HTTP` requests are the **GET** and **POST** request:
+- The **GET** request has no request body, and gets all data from the URL without supposedly having side effects (or at least, that is the expectation).
+- The **POST** request has a request body for extra data, and often has side effects.
+
+> There are many REST clients on our browser we could use to experiment with this type of stuff!
+
+In addition to the URL, **headers** can provide extra information for the request. This can include type of client, cookies (if relevant), language / file encodings, and more. URLS, combined with headers (and a request body on POST requests) form an entire HTTP request.
+
+> [!Example]+ Example: GET Request
+> One example of a get request to `https://cs.umd.edu/class/fall2017/cmsc414/` is as follows:
+> ```
+> GET /class/fall2017/cmsc414/ HTTP/1.1
+> Host: cs.umd.edu
+> User-Agent: Mozilla/5.0 ...
+> Accept: text/html, application/xhtml+xml, ...
+> Accept-Language: en-US,en; q=0.5
+> Accept-Encoding: gzip, deflate
+> Connection: keep-alive
+> ```
+> 
+> Note that the first thing we have is the type of request we are making. Followed by this, are the headers for the request. These headers are:
+> - The host we are making the request to
+> - Who we are
+> - The formats we want back
+> - The language we want
+> - The compressions we are okay with if the server wants to save bandwidth
+> - A request to keep the connection alive after this request. We may reuse this connection to send additional requests.
+> 
+> > User-Agent can be an arbitrary string, but generally identifies the browser, command-line client, or however the user is accessing the web.
+
+Note that in the above example, if we wanted to include queries (`?`), they would be included in the URL of the GET request. This has important implications.
+
+> [!Example] Example: POST Request
+> An example of a POST request is as follows. First, we could have the following headers.
+> ```
+> POST /class HTTP/1.1
+> Host: piazza.com
+> User-Agent: Mozilla/5.0 ...
+> Accept: text/html...
+> Accept-Language: en-US, en...
+> Accept-Encoding: gzip
+> Referer: https://piazza.com/
+> Cookie: ...
+> Connection: keep-alive
+> ```
+> Generally, the cookie can contain authentication information to identify the user. 
+> 
+> These headers would then be followed by a body (the data of the request)
+> ```
+> email=mmarsh@cs.umd.edu
+> from=/signup
+> password=****
+> ```
+
+After making a request, the server will send us back a **response**. These contain:
+- A status code, telling us if successful, and if not why it failed
+- Headers for the response
+- Data to be sent back to the client (ex. the HTML code)
+- (Optional) Cookies that the browser will store on the server's behalf
+
+A critical feature of HTTP is that it is **stateless**. In a typical session, the following happens:
+1. The client will connect to the server
+2. The client will issue a request to the server
+3. The server will respond
+4. The client will issue additional requests (if `Connection: keep-alive` header is present)
+5. The client will disconnect
+
+The server does not store any other information about the client in the basic HTTP model, so HTTP **does not have notion of a returning client**. This would require a client has to log in every time it communicates to the server, which is extremely inconvenient!
+
+This is why we have **cookies**, which can be exploited! This is discussed later in web attacks.
+
+## SQL Injection
+Sometimes, requests are served using a SQL query which defines the behavior of the server. If not properly done right, these requests could be hijacked for our own deeds! 
+
+> [!Example]+ Example: SQL Injection
+> For example, consider the following query on a server, which displays information for a user if they have the right password.
+> ```sql
+> $result = mysql_query("select * from USERS where (name='$user' and password='$pass');");
+> ```
+> Say we entered `frank' OR 1=1); --` for the username. Then, we have query
+> ```sql
+> $result = mysql_query("select * from USERS where (name='frank' OR 1=1); -- ' and password='$pass');");
+> ```
+> Then, because `1=1` is always true, we will match everything in the table. This will let us bypass the server authentication and even see the entire database!
+
+This is an example of SQL injection. On poorly configured systems, we can inject our own SQL code into the prompts, creating behaviors that the original creator did not intend to happen. 
+
+Generally speaking, SQL injection is happening because code and data is in the same string, which creates potential for one to be interpreted as the other!
+
+### Preventing SQL Injection
+So how can we prevent against these attacks? There are several approaches, which are discussed below.
+
+**Deny-listing** is based on the fact that there are a number of characters that cause "problems" in user-prompted queries. These include `,`, `--` (comments), and `;` (end of statement). Then, we could simply delete them to solve our problem! 
+
+This, however, doesn't always work well. Sometimes these characters are valid to use, and determining when they are bad is quite difficult.
+
+---
+
+**Allow-listing** verifies that the user-provided input is in a valid (safe) set. Using regular expressions or other pattern matching, we can check to see that the input is valid, and reject bad inputs to fail safely.
+
+Sometimes, however, its difficult to find this known safe set. For example, names can be almost arbitrary, so there really isn't a known safe set!
+
+---
+
+**Escape characters** replaces potentially harmful characters with escaped versions. For example, `'` turns into `\'`, `;` turns into `\;`, and so on and so forth. This prevents these characters from being used in the SQL query, so that they're instead just interpreted as text / data!
+
+This lets us use these characters without having them form legitimate SQL. However, it can easily get confusing with multiple escapes happening at once.
+
+---
+
+Using **prepared statements** and **bind variables**, we can decouple our SQL code and data, so that they cannot be interpreted as each other.
+
+A query such as
+```sql
+$result = mysql_query("select * from Users where (name='$user' and password='$pass');");
+```
+Could become
+```sql
+$db = new mysqli("localhost", "dbuser", "dbpass", "DB");
+$statement = $db->prepare("select * from Users where (name=? and password=?);");
+```
+In the above statement, we have a **prepared statement**, where the `?`s denote **bind variables**, which are placeholders for actual values.
+
+To use our statement, we can then bind our parameters to the statemet, and then execute it! By doing this, we have already parsed our SQL statement before the data is inserted, preventing the injection of SQL through the variables. In other words, this lets us separate our code and data, so that data cannot be interpreted as code.
+```sql
+$statement->bind_param("ss", $user, $pass);
+$statement->execute()
+```
+> This also makes queries more efficient, as we don't need to reparse the SQL!
+
+`bind_param` takes a type string as the first argument, where each character denotes the type of the $i^{th}$ parameter (given in order of the `?`s defined). The types are as follows:
+- `i`: Integer
+- `d`: Double
+- `s`: String
+- `b`: Blob (generic binary data)
+
+> Above, `bind_param` is being supplied with two strings!
+
+If `bind_param` is given parameters that cannot be interpreted as the following types, it rejects the input!
+
+---
+
+In addition to these techniques, we should apply extra layers of defense in case these techniques fail (defense in depth!)
+- **Principle of Least Privilege**: We should require user authentication, and limit the number of commands and tables a user can access.
+- **Confidentiality**: We should encrypt sensitive data, even when it's inside the tables. 
+
+
+# Web Attacks
+We will now look at several types of web based attacks.
+
+## Directory Listing Attacks
+It used to be common for web servers to be configured to allow director listings. This would be a useful way to share files together without putting together an HTML file for people to download from.
+
+In some of these servers, you could specify the URL with more interesting paths, to traverse through this directory system! This could let us find files that have valuable data. 
+> For example, we could find files related to the users on a system, and try to brute force their passwords!
+
+> [!Info] `/etc/passwd`
+> It used to be the case that the password file, `/etc/passwd`, used to contain password hashes, which would give attackers an **offline cracking attempt**, as they could take this file, and try passwords offline to see what hashes to this password. This is really bad, so the hashes are now stored in `/etc/shadow`, which is not world-readable.
+>
+> This now forces password attempts online, making these attempts more detectable!
+
+## Hack-By-Google (Google Hacking)
+In the modern day, Google, and many other search engines see everything. Thus, if we prompt the search engines in particular ways, we may be able to find information about our target! 
+> For example, we could look for indexed directory listings to find vulnerable targets or gain information.
+
+Goolge provides advances operators like `inurl:`, `intitle:`, `site:`, `intext:` that makes these searches a lot easier. We can use these to find specific services, or configuration files in servers. 
+
+> [!Example] Example: Simple Query
+> For example, searching `inurl: apache2.conf` could give us servers that use the Apache Httpd 2 service, which may yield vulnerable targets!
+
+This is particularly useful, as we could break into services that we find:
+- Some configurations have known insecurities
+- Many services run with default (unchanged) admin passwords
+
+## Phishing 
+**Phishing** attacks are attacks where a legitimate site is impersonated, in order to steal credentials. Victims unaware of the attack will attempt to log in through these sites, inadvertently giving away their login information.
+> Sometimes, attackers will even try to have URLS that look very similar to the legit site, like `www.paypa1.com`! This is known as **typo squatting**.
+
+Generally, if you can receive messages from the service, someone will eventually try to phish you through it.
+
+- **Spear Phishing** is phishing that is specifically targetted. They know who you are (and what organization you are part of), and can cater the attack to be more convincing to you.
+- **Whale Phishing** is spear phishing on high-profile targets, such as executives, politicians, and more.
+
+> [!Info] Man-in-the-Middle with Phishing
+> **Man in the middle attacks** are attacks where your connection to the right server passes through a middle man that intercepts your communications. 
+> 
+> This commonly is used together with phishing attacks. In these cases, the fake server acts as the "server" to us, but the "client" to the actual server we want to communicate with. While to us, we're communicating with the actual server, we're still giving up our data as it's being intercepted by an unknown entity.
+
+Protecting from phishing is quite simple:
+- Don't click on links that could route you elsewhere
+- Type in URLs instead of trusting shady sources
+- Bookmark important URLs so you don't click on the wrong ones by accident
+- Check the browser! Oftentimes, the browser will help you try to verify if the website is legitimate
+
+## Session State and Cookies
+The HTTP lifecycle is generally as follows. In a single session:
+1. The client will connect to the server
+2. The client will issue a request to the server
+3. The server will respond
+4. The client will issue additional requests
+5. The client will disconnect
+
+In this model, users don't want to have to log in again for every request! This is very inconvenient. To allow users to stay logged in, we need some way to track their "state" of interaction. 
+
+A good way to do this is by building up the state over a series of requests between the client and server. This is done using **sessions**, where the server maintains a state for each client, where messages between the two can update this state (but not determine it). To do this, we need some way to identify the client across requests.
+
+HTTP supports this through **cookies**! Cookies are really just a key-value store, which use HTTP headers to store keys and values. 
+- On the first connection to a server, the server can ask the client to `Set-Cookie`, telling it to store a list of key-values and options. 
+- On subsequent visits, the client sends this cookie to the server for identification
+
+Some common cookie options are as follows:
+- `expires`: When the cookie is no longer valid
+- `domain`: What hosts should receive this cookie
+- `path`: What URLs shoudl receive this cookie
+
+Cookies are frequently used to store authentication tokens! These are long hexa-decimal strings that are difficult to guess, so the server can reasonably be sure that you're the same client.
+
+> [!Info] Tracking via Cookies
+> Cookies can also be used in unwanted manners! Depending on how we store data in them, cookies can also be used to **track users across sites**! 
+> 
+> This is commonly done for tailored ads.
+
+Use of cookies, despite their convenience, has major implications in some form of attacks.
+
+## Remote File Inclusion
+**Remote file inclusion (RFI)** attacks are based off the fact that server code often incorporates unvalidated user input. Languages like PHP have features like `include`, which essentally paste contents of files in the current location. 
+> These can commonly be done using the `<img>` tag, with links that aren't images!
+
+This is often useful for forms (ex. say we want different translations of a form), but could also be easily exploited! We could rewrite the query to include our own file instead of the originally intended file! This can let us modify what the server is executing.
+
+### Cross-Site Scripting
+**Cross-site scripting (XSS)** is essentially the client-side version of a remote file inclusion. A server could have code that can have text queried such that it readily causes code to execute.
+
+Using tags that include other HTML files, the client could then accidentally  perform drive-by downloads, popups, and a lot more. 
+
+What's notable about this is that in such an injection, the client thinks the code is from the target server, not the attacker (as everything was essentially "copy and pasted"). This lets us do many things through the client, such as:
+- Read browser data, including HTML docs and cookies
+- Modify browser data, including HTML docs and cookies
+- Access filesystem (with user permissions)
+- Send network requests
+
+There are 3 main types of XSS.
+- **Stored XSS**: The attacker stores malicious script on the target server, which is served automatically to clients. This can be served through ads, comments, images, and more. For example, an attacker could set their "avatar" which contains some script, and this is served to other users who sees the attacker's avatar.
+- **Reflected XSS**: The attacker presents a malicious link to the client, which includes code. The client will follow the link to the legitimate server, which echos back the code, causing the client to run it.  For example, the attacker presents the client with a URL to a server with code in the URL, and the server unknowingly returns HTML with this code injected inside. The client then executes this code.
+- **DOM XSS**: The attacker changes the document object representation (DOM) in the client's own browser, from the client side.
+
+ > [!Info] Cross Site Request Forgery
+> In, **Cross-Site Request Forgery**, attackers take advantage of authentication cookies and URLs with side effects to achieve behaviors in the client.
+> 
+> For example, an attacker could use an XSS attack to have the client make a GET request to a URL where "transfer money" is specified in the URL. The client would knowingly make this request, use its authentication cookie for this request, causing the money transfer to be successful. 
+
+XSS and CSRF are among the most common web attacks. 
+
+To defend against XSS, servers could:
+1. Deny untrusted data except in specific locations
+2. Perform **HTML escaping** of data before insertion, so that insertion is unable to insert new HTML text.
+3. Perform **Javascript escaping** by quoting untrusted data in a script.
+4. Perform **HTML sanitization** of untrusted HTML data.
+5. Perform **URL escaping** before putting data in URL parameters.
+
+To defend against CSRF, servers could:
+1. Verify **same-origin** from important pages, asserting that the user came from someplace else in the website.
+2. Use **synchronizer token**, using a cyptographically secure **nonce** in requests that the client returns to verify that there was a back and forth exchange.
+3. Require cookies to be **double submitted** in request parameters as well, since the attackers don't know our cookies.
+4. Use **encrypted tokens**, which are similar to synchronizer tokens excep thte client only has the encrypted version.
+5. Using **custom request headers** for REST services so that normal attackers are made invalid.
+
+> Note that this all places burden on the site designer, and most will lack the incentive to do this!
+
+On our side, however, we can do the following;
+1. Log out of trusted sites as soon as you're done using them, to clear cookies.
+2. Don't visited trusted and untrusted sites in the same browser
+3. Don't let your browser save usernames and passwords
+4. Use plugins toblock XSS and CSRF
+
+## Clickjacking
+**Clickjacking** uses CSS and transparent overlays to make users unknowingly click on something malicious.
+
+One way this is done is by loading the trusted page, and then loading another malicious page on top of it (that is transparent). Then, an unsuspecting user may click on this invisible malicious page to be redirected somewhere else. 
+
+Another way this is done is by loading the malicious page, and then loading the trusted page on top of it (that is transparent). Then, an unsuspecting user could click on the trusted page, issuing a request and user cookie to the trusted server, which can be stolen! This stolen cookie can be used as the user's credentials to perform some actions.
+> This is often called **stolen delegation**. The attacker may not have learned our credentials, but can still use it!
+
+Some examples of clickjacking are as follows.
+
+> [!Example]+ Amazon One-Click Purchases
+> Malicious sellers could trust people in Amazon to unknowingly purchase their products (using a "one-click purchase").
+> 
+> This works, as many people view Amazon purchases as "surprise" gifts, and may unknowingly assume that they intended to buy it in the past, when they were actually tricked into buying the product.
+
+There are many ways to defend against clickjacking.
+- Websites can set a **same-origin policy**, making communication on a page only allowed if the user came from somewhere else on the site.
+- Websites can ask for explicit **user confirmation** for things like purchases
+- Websites can **randomize UI** so that the trusted page doesn't align well with malicious pages (though users can often hate this)
+- Websites can be configured to do **framebusting**, which disallows targets to be embedded in `iframe`s
+- On user click, we can perform **visibility detection**
+- We can compare the **visible UI** and the actual **active element** using the operating system's screenshoot facility and rendering information from the browser.

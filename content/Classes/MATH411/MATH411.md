@@ -1036,6 +1036,136 @@ $$
 Where as $k \to \infty$ (which is possible as we are in the space of ALL continuous functions), this goes to 0! 
 
 Is $C([0,1], \mathbb{R})$ with $d(f,g) = \int_0^a |f - g|$ complete? In other words, if $f_k$ is Cauchy in our space, does there exist a function $f \in C([0,1],\mathbb{R})$ such that $\int_0^1 |f_k - f| = 0$?
+> Discussion if continuous functions on these L2 norms are a metric space?
+
+
+We have the space of continuous functions $C([a,b], \mathbb{R})$, and a norm 
+$$
+|| f ||_1 \int_a^b |f(x)| dx
+$$
+Note that if $||f|| = 0$, $f = 0$ if $f$ is continuous.
+> If $f$ is a general Riemann integrable function, the above may fail (consider a function with a jump discontinuity).
+
+> [!Example] Example: Incomplete Space
+> We can find that $C([a,b], \mathbb{R})$ and 
+> $$
+> d_1 (f,g) = \int_a^b | f(x) - g(x) | dx
+> $$ is not complete.
+> 
+> We form a series of functions that converge to a function that is not continuous (and thus not in our space).
+> 
+> Lets consider $f_n : [0,2] \to \mathbb{R}$ where
+> $$
+> f_n (x) =
+> \begin{cases}
+> x^n & 0 \le x \le 1 \\
+> 1 & 1 \le x \le 2
+> \end{cases}
+> $$
+> Then,
+> $$
+> \int_0^2 | f_n (x) - f(x) | dx = 0
+> $$
+> If $f(x) = 0$ for $0 \le x < 1$, $f(x) = 1$ for $1 \le x \le 2$.
+> 
+> So, $f_n \to f$ with respect to the $d_1$ metric, so $f_n$ is Cauchy. However, there does not exist a $g$ that is continuous from $[0,2]$ with real values such that
+> $$
+> \int_0^2 | f - g | dx = 0
+> $$
+
+^^ 11.3... 12.1
+
+---
+
+*proving the  Existence and Uniqueness Theorem*
+
+## Lipschitz Functions
+Let $X$ be a metric space, and $T : X \to X$ be a function. Then, $T$ is **Lipschitz** if $\exists M \ge 0$ such that
+$$
+d(T(p), T(q)) \le M d(p, q)
+$$
+For all $p,q \in X$.
+> Note that the same $M$ must work for all $p,q$ pairs.
+
+> [!Info] Lipschitz Functions on $\mathbb{R}$
+> If $f : \mathbb{R} \to \mathbb{R}$ differentiable, then $f$ is Lipschitz with constant $M$ if and only if $|f'(x)| \le M$.
+> 
+> > [!Note]- Proof
+> > 
+> > #### Proof $\rightarrow$
+> > If $f$ is differentiable and Lipschitz, then by definition of Lipschitz functions, $\forall x,y \in \mathbb{R}$,
+> > $$
+> > | f(x) - f(y) | \le M |x - y|
+> > $$
+> > 
+> > And
+> > $$
+> > f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}
+> > $$
+> > So, applying our Lipschitz definition,
+> > $$
+> > |f'(x)| \le \lim_{h \to 0} \left| \frac{f(x + h) - f(x)}{h} \right| \le M 
+> > $$
+> > 
+> > #### Proof $\leftarrow$
+> > Conversely, if $\forall x \in \mathbb{R}$, $|f'(x)| \le M$, then we want to show that $\forall x,y$,
+> > $$
+> > | f(x) - f(y) | \le M |x - y| 
+> > $$
+> > As $f$ is differentiable, by the mean value theorem, there exists a $c$ between $x,y$ such that
+> > $$
+> > |f'(c)| = \left| \frac{f(x) - f(y)}{x - y} \right| \le M
+> > $$
+> > We multiply $x - y$ on either side to find our result.
+
+$T : X \to X$ is a **contraction** if there exists a $0 \le c < 1$ such that
+$$
+d(T(p), T(q)) \le c \cdot d(p,q)
+$$
+> Contractions are Lipschitz functions, but with a constraint on what $M$ is!
+
+> [!Abstract] Theorem: Existence and Uniqueness Theorem
+> Let $X$ be a complete metric space, and $T : X \to X$ be a contraction. Then, there exists a unique $p \in X$ such that $T(p) = p$, called the **fixed point**.
+> 
+> > [!Note]- Proof
+> > 
+> > #### Proof (Uniqueness)
+> > Say $T(p_1) = p_1$, and $T(p_2) = p_2$. By contraction, we find a $0 \le c < 1$ such that
+> > $$
+> > | T(p_1) - T(p_2) | \le c | p_1 - p_2 | \Longrightarrow |p_1 - p_2| \le c |p_1 - p_2|
+> > $$
+> > This is only possible if $p_1 = p_2$.
+> > 
+> > #### Proof (Existence)
+> > Start with any $p_0 \in X$. Let $p_1 = T(p_0), p_2 = T(p_1), \dots$. We show that the sequence of points $\{p_k\}$ is Cauchy, thus there exists a $p$ where $\{p_k\} \to p$, and $T(p) = p$.
+> > 
+> > First, look at the distance between adjacent terms in the sequence.
+> > $$
+> > \begin{align*}
+> > &d(p_2, p_1) = d(T(p_1), T(p_0)) \le C d(p_1, p_0) \\
+> > &d(p_3, p_2) = d(T(p_2), T(p_1)) \le C d(p_2, p_1) \le C^2 d (p_1, p_0) \\
+> > &\vdots \\
+> > &d(p_{k+1}, p_k) \le C^k d(p_1, p_0)
+> > \end{align*}
+> > $$
+> > Thus, we find that
+> > $$
+> > \begin{align*}
+> > d(p_{k+l}, p_k) 
+> > &\le d(p_{k+l}, p_{k+l-1}) + d(p_{k+l-1}, p) \\
+> > &\le d(p_{k+l}, p_{k+l-1}) + d(p_{k+l-1}, p_{k+l-2}) + d(p_{k+l-1}, p) \\
+> > &\le \dots \\
+> > &\le (C^{k+l-1} + C^{k+l-2} + \dots + C^k) d(p_1, p_0) \\
+> > &\le C^k \left( \sum_{m=0}^\infty C^m \right) d(p_1, p_0) \\
+> > &= C^k \frac{1}{1-C}
+> > \end{align*}
+> > $$
+> > Thus, our sequence is Cauchy!
+
+
+
+
+
 
 
 

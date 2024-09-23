@@ -370,6 +370,50 @@ This confidence interval has the following properties:
   $$
   As $z_{\alpha / 2} = 1.96 \approx 2$.
 
+
+# Confidence Intervals for $\mu$
+We can calculate confidence intervals for the population mean in 3 ways:
+- $\sigma$ is known and the population is normally distributed
+- $\sigma$ is not known, and we don't know if $n$ is large, but the population is normally distributed.
+- $\sigma$ is not known, but $n$ is large.
+
+We discuss these below.
+
+---
+
+If $\sigma$ is known and the population is normally distributed, we find
+$$
+\begin{align*}
+P (-z_{\alpha/2} \le \sqrt{n} \frac{\bar{X} - \mu}{\sigma} \le z_{\alpha/2}) = (1 - \alpha) \\
+P(\bar{X} - z_{\alpha/2} \frac{\sigma}{\sqrt{n}} \le \mu \le \bar{X} + z_{\alpha/2} \frac{\sigma}{\sqrt{n}} = (1 - \alpha)
+\end{align*}
+$$
+
+This is the probability that our interval covers $\mu$!
+> Note that its wrong to think of it as the the opposite (probability that $\mu$ is in our interval), as $\mu$ is fixed.
+
+We find the width of our confidence interval to be
+$$
+w = 2 z_{\alpha/2} \frac{\sigma}{\sqrt{n}} 
+$$
+> There are two wats to reduce our width: either by decreasing our confidence level, or by increasing the sample size.
+
+We can control the width of the sample with sample size as so:
+$$
+n = (2z_{\alpha/2} \frac{\sigma}{w})^2 
+$$
+
+## $\sigma$ Known, Normally Distributed Population
+In this case, we find
+$$
+
+$$
+
+> It is a fact that $t_{(n-1), \alpha / 2}$ is always > $z_{\alpha/2}$. So, the $T$ confidence interval will always have a larger width!
+
+
+
+
 ---
 
 > Point estimation tells us how close our estimator is to the actual paramter! Later, we do interval estimation, which tells us if our estiamtor is within some interval of the actual parameter.

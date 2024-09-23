@@ -889,17 +889,126 @@ Which is in fact weak compositions! With this relation, we can actually solve an
 > F(x) = \sum_{n=0}^\infty p(n) x^n = \frac{1}{(1-x)(1-x^2)(1-x^3)\dots} = \prod_{k=1}^\infty \frac{1}{1-x^k}
 > $$
 >
-> > [!Note] Proof (Sketch)
+> > [!Note]- Proof (Sketch)
 > > 
-$$
-\begin{align*}
-F(x) 
-&= \frac{1}{1-x} \frac{1}{1-x^2} \frac{1}{1-x^3} \dots \\
-&= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + x^6 + \dots) (1 + x^3 + x^6 + x^9 + \dots)
-\end{align*}
-$$
-Notice that each product gives us multiples of $k$, and if we select one of them, we are choosing the number of $k$'s we want in our integer partition! For example, if we chose $x^6$ in our $k = 2$ product (2nd one), we are choosing $2 + 2 + 2$, or in other words, 3 integers of 2! So,
-1. Group 1 relates to how many 1s are in the sum
-2. Group 2 relates to how many 2s are in the sum
-3. ...
+> > $$
+> > \begin{align*}
+> > F(x) 
+> > &= \frac{1}{1-x} \frac{1}{1-x^2} \frac{1}{1-x^3} \dots \\
+> > &= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + x^6 + \dots) (1 + x^3 + x^6 + x^9 + \dots)
+> > \end{align*}
+> > $$
+> > Notice that each product gives us multiples of $k$, and if we select one of them, we are choosing the number of $k$'s we want in our integer partition! For example, if we chose $x^6$ in our $k = 2$ product (2nd one), we are choosing $2 + 2 + 2$, or in other words, 3 integers of 2! So,
+> > 1. Group 1 relates to how many 1s are in the sum
+> > 2. Group 2 relates to how many 2s are in the sum
+> > 3. ...
+> > 
+> > More generally, the $k^{th}$ group in the ogf is given as
+> > $$
+> > 1 + x^k + x^{2k} + \dots + x^{t(k)} + \dots
+> > $$
+> > Where the term $x^{k(t)}$ which represents us choosing the "$t$" number of $k$'s to the integer partition of $n$.
 
+> [!Example]+ Example: Integer Partitions
+> How many ways can you make \$1 using any number of pennies, nickels, dimes, quarters, and half dollars?
+>
+> We can formulate this as the following OGF, where we are looking for the coefficient of $x^{100}$.
+> 
+> $$
+> \begin{align*}
+> &(1 + x + x^2 + \dots) (1 + x^5 + x^{10} + \dots) (1 + x^{10} + x^{20} + \dots) \\
+> &\qquad (1 + x^{25} + x^{50} + \dots) (1 + x^{50} + x^{100} + \dots)
+> \end{align*}
+> $$
+> 
+> By computer, we get 292.
+> > Same as in weak compositions, with such a model, we can now manipulate this expression for any constraints! Say, if we wanted to use at least 5 pennies, we could replace the first group with $(x^5 + x^6 + \dots)$!
+
+> [!Abstract] Theorem: Distinct Integer Partitions
+> The total ways to partition integer $n$ into parts where every number is distinct equals the total ways to partition integer $n$ where each part is an odd number.
+> 
+> > [!Note]- Proof
+> >
+> > The ogf for partitions into **distinct parts** is
+> > $$
+> > F(x) = (1 + x) (1 + x^2) (1 + x^3) \dots
+> > $$
+> > 
+> > As this ensures we choose any integer at most once. We change them using difference of squares.
+> > $$
+> > \begin{align*}
+> > &= \frac{1-x^2}{1-x} \frac{1-x^4}{1-x^2} \frac{1-x^6}{1-x^3} \dots \\
+> > &= \frac{1}{(1-x) (1-x^3) (1-x^5) \dots} \\
+> > &= (1 + x + x^2 + \dots) (1 + x^3 + x^6 + \dots) (1 + x^5 + x^10 + \dots) \dots
+> > \end{align*}
+> > $$
+> > 
+> > This is the ogf for integer partitions of odd integers!
+
+> [!Example]+ Example: Distinct Integer Partitions
+> $n = 6$. The distinct integer partitions vs. the odd integer partitions are given as
+> $$
+> \begin{align*}
+> 6 = 2 + 4 = 1 + 5 = 1 + 2 + 3 \\
+> 1 + 1 + 1 + 1 + 1 + 1 = 1 + 5 = 3 + 3 = 1 + 1 + 1 + 3
+> \end{align*}
+> $$
+> Both have 4 cases!
+
+## Integer Partitions into $k$ Parts
+> [!Abstract] Theorem: Integer Partitions into $k$ Parts
+> The OGF for $p_k (n)$, the ways to partition $n$ into exactly $k$ parts, is given as
+> $$
+> \begin{align*}
+> F(x)
+> &= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + \dots) \dots \\ 
+> &\qquad (1 + x^{k-1} + x^{2k-2} + \dots) (x^k + x^{2k} + \dots) \\
+> &= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + \dots) \dots (1 + x^k + x^{2k} + \dots) x^k
+> \end{align*}
+> $$
+>
+> > [!Note]- Proof / Intuition
+> > 
+> > First, we find the ogf for the partitions of integer $n$ into parts with size at most $k$. To do this, we stop our product at the $k^{th}$ term.
+> > $$
+> > F(x) = (1 + x + x^2 + \dots) (1 + x^2 + x^4 + \dots) \dots (1 + x^k + x^{2k} + \dots)
+> > $$
+> > 
+> > If we look at a Ferrers diagram, we find that the conjugate of this is integer partitions into at most $k$ parts!
+> > 
+> > Then, with this, we can get integer partitions into exactly $k$ parts by subtracting partitions of at most $k - 1$ parts from partitions of at most $k$ parts.
+> > > We can also think of this as, to force exactly $k$ parts, we must always choose 1 part to be of size $k$! This way, when we take the conjugate, we will have exactly $k$ parts.
+> > $$
+> > \begin{align*}
+> > F(x) 
+> > &= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + \dots) \dots (1 + x^k + x^{2k} + \dots) \\
+> > &\qquad - (1 + x + x^2 + \dots) (1 + x^2 + x^4 + \dots) \dots (1 + x^{k-1} + x^{2k-2} + \dots) \\
+> > &= (1 + x + x^2 + \dots) (1 + x^2 + x^4 + \dots) \dots \\ 
+> > &\qquad (1 + x^{k-1} + x^{2k-2} + \dots) (x^k + x^{2k} + \dots)
+> > \end{align*}
+> > $$
+
+
+## 2.4: Exponential Generating Functions
+The **exponential generating function** for sequence $\{a_n\}$ is
+$$
+F(x) = \sum_{n=0}^\infty a_n \frac{x^n}{n!}
+$$
+
+> [!Info] Lemma
+> Let 
+> $$
+> F(x) = \sum_{n=0}^\infty \bar{a}_n \frac{x^n}{n!} \qquad G(x) = \sum_{n=0}^\infty \bar{b}_n \frac{x^n}{n!}
+> $$
+>
+> Then, 
+> $$
+> F(x) \cdot G(x) = \sum_{n=0}^\infty \bar{c}_n \frac{x^n}{n!}
+> $$
+> Where $\bar{c}_n = \sum_{i=0}^n \binom{n}{i} \bar{a}_i \bar{b}_{n-i}$
+>
+> > [!Note]- Proof 
+> > 
+> > Recall that if $A(x) = \sum a_n x^n, B(x) = \sum b_n x^n$, then $A(x) \cdot B(x) = \sum c_n x^n$, $c_n = \sum_{i=0}^n a_i b_{n-i}$.
+> > 
+> > Let $a_n = \bar{a}_n / n!, b_n = \bar{b}_n / n!$ to get our lemma.

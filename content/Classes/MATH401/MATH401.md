@@ -524,11 +524,13 @@ Suppose we have an inconsistent linear system $A \vec{x} = \vec{b}$. As it is in
 
 This makes sense for our purposes! It's often impossible to find an exact solution for a line passing through all points (points may not be co-linear). However, it is possible to find an exact solution for a line **minimizing** its distance to all points! This is the idea behind least squares.
 
-A **least squares solution** of $A \vec{x} = \vec{b}$ is a vector $\hat{x}$ that minimizes the distance from $A \hat{x}$ to $\vec{b}$.
+A **least squares solution** of $A \vec{x} = \vec{b}$ is a vector $\hat{x}$ that minimizes the distance from $A \hat{x}$ to $\vec{b}$, known as the **least squares error**.
 $$
 || A \hat{x} - \vec{b} ||
 $$
-This is called the **least squares error**. Note that with this minimizer, for any other $\vec{x}$,
+> For some $\hat{x}$, this yields us the sum of the squares of the vertical distances between our line and the true collection of points.
+
+Note that with this minimizer, for any other $\vec{x}$,
 $$
 || A \vec{x} - \vec{b} || \ge || A \hat{x} - \vec{b} ||
 $$
@@ -581,4 +583,73 @@ A \hat{x} = \hat{b}
 $$
 Such an $\hat{x}$ is a least squares solution, because $\hat{b}$ is the closest vector in $A$'s column space to $\vec{b}$!
 
+We know that the vector $\vec{b} - \hat{b}$ is orthogonal to every vector $\vec{w} \in A$. In other words, it is orthogonal to every $A \vec{y}$ for any $\vec{y}$. So,
+$$
+\begin{align*}
+(A \vec{y}) \cdot (\vec{b} - A \hat{x}) = 0 \\
+(A \vec{y})^T (\vec{b} - A \vec{x}) = 0 \\
+\vec{y}^T A^T (b - A \hat{x} 0 = 0 \\
+\vec{y}^T (A^T \vec{b} - A^T A \vec{x}) = 0 \\
+\vec{y} \cdot (A^T \vec{b} - A^T A \hat{x}) = 0
+\end{align*}
+$$
+For every $\vec{y}$. This means that $A^T \vec{b} - A^T A \hat{x}$ **must** be the 0 vector, so
+$$
+A^T \vec{b} - A^T A \hat{x} = 0 \Longrightarrow A^T A \hat{x} = A^T \vec{b}
+$$
+This is the equation that least squares must satisfy! So, to find $\hat{x}$, we solve the linear system
+$$
+A^T A \hat{x} = A^T \vec{b}
+$$
+Note the following:
+1. $A^T A \hat{x} = A^T \vec{b}$ is always consistent (has a solution)
+2. $A^T A \hat{x} = A^T \vec{b}$ has a unique solution if and only if $A^T A$ is invertible, if and only if $A$ has linearly independent columns.
 
+> [!Example]+ Example: Least Squares
+> Find the least squares solutions to
+> $$
+> \begin{cases}
+> x_1 + x_2 = 6  \\
+> -x_1 + x_2 = 3 \\
+> 2x_1 + 3x_2 = 9
+> \end{cases}
+> $$
+> 
+> We can represent this as the system
+> $$
+> A \hat{x} = \vec{b} \Longrightarrow
+> \begin{bmatrix}
+> 1 & 1 \\
+> -1 & 1 \\
+> 2 & 3
+> \end{bmatrix}
+> \begin{bmatrix}
+> x_1 \\ x_2
+> \end{bmatrix}
+> = 
+> \begin{bmatrix}
+> 6 \\ 3 \\ 9
+> \end{bmatrix}
+> $$
+> We now solve $A^T A \hat{x} = A^T \vec{b}$.
+> $$
+> \begin{bmatrix}
+> 6 & 6 \\ 6 & 11
+> \end{bmatrix}
+> \hat{x} = 
+> \begin{bmatrix}
+> 21 \\ 36
+> \end{bmatrix}
+> $$
+
+> [!Example]- Example: Least Squares (2) 
+> | X | Y |
+> | :-: | :-: |
+> | 1 | 1 |
+> | 2 | 2.4 | 
+> | 3 | 3.6 |
+> | 4 | 4 |
+>
+> Find a line best fitting the data.
+>
+> What we can do is assume we have a line $y = B_0 + B_1 x$, and then sub in the points. This will yield us vectors that we can solve with least squares! 

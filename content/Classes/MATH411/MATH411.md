@@ -1160,7 +1160,124 @@ $$
 > > &= C^k \frac{1}{1-C}
 > > \end{align*}
 > > $$
-> > Thus, our sequence is Cauchy!
+> > Thus, our sequence is Cauchy! 
+> > 
+> > #### Bringing it Together
+> > Let $\{p_k\} \to p$. We show that $T(p) = p$.
+> > 
+> > We essentially show that $T$ is continuous, so that if $\{p_k\} \to p$, then $\{T(p_k)\} \to T(p)$.
+> > $$
+> > d(T(p_k), T(p)) \le C d(p_k, p) \to 0
+> > $$
+> > By squeeze. So, $\{T(p_k)\} \to T(p)$.
+> > 
+> > We know that $\{p_k\} \to p$, and $\{p_{k+1}\} \to T(p)$, so $T(p) = p$ by the uniqueness of limits.
+> > > Note that by this, Lipschitz functions are essentially a stronger form of continuity!
+
+Now consider the following setup. We have an open set $O \subseteq \mathbb{R}^2$, and we have a point in $O$ $(x_0, y_0)$. Now consider a function $g : O \to \mathbb{R}$ continuous.
+
+Now let $I$ be an interval, and defint the function $f : I \to \mathbb{R}$ such that $\{ (x,f(x)) : x \in I \} \subseteq O$.
+
+We use this setup from here on.
+
+> [!Abstract] Lemma
+> The following are equivalent.
+> 
+> $f$ is differentiable and 
+> $$
+> \begin{align*}
+> f'(x) = g(x, f(x)) \\
+> f(x_0) = y_0
+> \end{align*}
+> $$
+> $f$ is continuous and 
+> $$
+> f(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt 
+> $$
+> 
+> > [!Note]- Proof 
+> > 
+> > #### Proof $\rightarrow$
+> > Assume (1). Then, $f$ differentiable implies $f$ continuous, and because $f'(x) = g(x, f(x))$ (a composition of continuous functions), $f'$ is also continuous. So, by the fundamental theorem of calculus, we find
+> > $$
+> > \begin{align*}
+> > f(x) - y_0 = f(x) - f(x_0) = \int_{x_0}^x f'(t) dt = \int_{x_0}^x g(t, f(t)) dt
+> > \end{align*}
+> > $$
+> > Which is formula 2.
+> > 
+> > #### Proof $\leftarrow$
+> > Assume (2). Since $f(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt$, and $g$ is continuous (as remarked earlier), we know the integral of a continuous function is differentiable. So, $f$ is differentiable, and
+> > $$
+> > f'(x) = g(x, f(x))
+> > $$
+> > Also, $f(x_0) = y_0$ can be obtained as $\int_{x_0}^{x_0} g(t, f(t)) dt = 0$.
+
+Say $T(f)$ is defined as the equation in (2) of the lemma.
+
+> [!Abstract] Theorem
+> Assume an additional constraint, that $\exists M$ such that $g(x, y_1) - g(x, y_2) \le M |y_1 - y_2|$ for all $(x, y_1), (x, y_2) \in O$.
+> 
+> Also let $a,b > 0$ such that we have a box contained in $O$: $[x_0 - a, x_0 + a] \times [y_0 - b, y_0 + b] \subseteq O$.
+> 
+> Define, for $0 < l \le a$, $x_l = \{ f : [x_0 - l, x_0 + l] \to [y_0 - b, y_0 + b], \text{continuous} \}$ (the set of all continuous functions in this box). Then, $\exists l > 0$ such that 
+> $$
+> T(f)(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt
+> $$
+> maps $x_l$ into $x_l$, and is a contraction.
+>
+> Thus, there exists a unique $f \in x_l$ such that
+> $$
+> \begin{align*}
+> f(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt \\
+> f'(x) = g(x, f(x)) \\
+> f(x_0) = y_0
+> \end{align*}
+> $$
+> In other words, the solution.
+> > This is how we prove that this general class of differentiable functions has a unique solution!
+>
+> > [!Note]- Proof
+> > 
+> > Because we have a continuous function on a compact set, we know that $\exists K$ such that $|g(x,y)| \le K$ for all $(x,y)$ in our box.
+> > 
+> > First, we show that $T: x_l \to x_l$ if $l$ is sufficiently small. Look at 
+> > $$
+> > \begin{align*}
+> > T(f)(x) - y_0 
+> > &= \left| \int_{x_0}^x g(t, f(t)) dt \right| \\
+> > &\le |x - x_0| \max_{t \in [x_0 - l, x_0 + l]} | g(t), f(t) | \\
+> > &\le |x - x_0| K & \text{Bounds} \\
+> > &\le l * K &\text{Domain of Function}
+> > \end{align*}
+> > $$
+> > So, our statement is true if $Kl \le b$.
+> > 
+> > Next, show that $T : x_l \to x_l$ is a contraction provided $l$ is sufficiently small. We want
+> > $$
+> > d(T(f_1), T(f_2)) \le C d(f_1, d_2)
+> > $$
+> > Where $d$ is the uniform metric. 
+> > $$
+> > \begin{align*}
+> > T(f_1)(x) - T(f_2)(x) &= \int_{x_0}^x g(t, f_1 (t)) dt - g(t, f_2 (t)) dt \\
+> > | T(f_1)(x) - T(f_2)(x) | &= \left| \int_{x_0}^x g(t, f_1 (t)) dt - g(t, f_2 (t)) dt \right| \\
+> > &\le \int_{x_0}^x | g(t, f_1 (t)) dt - g(t, f_2 (t)) | dt \\
+> > &\le \int_{x_0}^x M(f_1(t) - f_2(t)) dt \\
+> > &\le M l \max_{t \in [x_0 - l, x_0 + l]} | f_1(t) - f_2(t) | = M l d(f_1, f_2)\\
+> > \end{align*}
+> > $$
+> > So, we found that
+> > $$
+> > d(T(f_1), T(f_2)) \le M l d(f_1, f_2)
+> > $$
+> > We can make $l$ as small as we want! So, provided that $Ml < 1$, we have a contraction.
+> > 
+> > So, if $l$ satisfies the conditions in both part (1) and (2), we have a contraction. 
+> >
+> > Thus, there exists a unique $f : (x_0 - l, x_0 + l) \to (y_0 - l, y_0 + l)$ such that $f(x) = g(x, f(x)), $f(x_0) = y_0$.
+
+
 
 
 

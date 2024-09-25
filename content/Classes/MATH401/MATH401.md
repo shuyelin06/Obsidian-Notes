@@ -653,3 +653,65 @@ Note the following:
 > Find a line best fitting the data.
 >
 > What we can do is assume we have a line $y = B_0 + B_1 x$, and then sub in the points. This will yield us vectors that we can solve with least squares! 
+
+We can use least squares to solve a multitude of problems! As long as we can find a corresponding system of equations, we can solve the system with least squares.
+
+> [!Example]+ Example: Best-Fit Parabola
+> | x | y | 
+> | :-: | :-: |
+> | 1 | -0.15 | 
+> | 2 | 0.68 | 
+> | 3 | 1.21 |
+> | 4 | 0.86 | 
+> | 5 | -0.08 |
+> 
+> Find a best fit parabola taking on the form
+> $$
+> y = \beta_0 + \beta_1 x + \beta_2 x^2
+> $$
+> 
+> We can form a linear system by plugging in our x and y values.
+> $$
+> \begin{align*}
+> -0.15 = \beta_0 + \beta_1 (1) + \beta_2 (1)^2 \\
+> 0.68 = \beta_0 + \beta_1 (2) + \beta_2 (2)^2 \\
+> 1.21 = \beta_0 + \beta_1 (3) + \beta_2 (3)^2 \\
+> 0.86 = \beta_0 + \beta_1 (4) + \beta_2 (4)^2 \\
+> -0.08 = \beta_0 + \beta_1 (5) + \beta_2 (5)^2
+> \end{align*}
+> $$
+> 
+> This is a linear system! We can write $A, x$, and $b$ as follows
+> $$
+> A = 
+> \begin{bmatrix}
+> 1 & 1 & 1 \\
+> 1 & 2 & 4 \\
+> 1 & 3 & 9 \\
+> 1 & 4 & 16 \\
+> 1 & 5 & 25
+> \end{bmatrix}
+> \qquad
+> x =
+> \begin{bmatrix}
+> \beta_0 \\ \beta_1 \\ \beta_2
+> \end{bmatrix}
+> \qquad
+> b = 
+> \begin{bmatrix}
+> -0.15 \\ 0.68 \\ 1.21 \\ 0.86 \\ -0.08
+> \end{bmatrix}
+> $$
+> We can use least squares to solve this!
+
+But not all models will work with least squares! Least squares requires that we have a linear system, so anything that cannot form a linear system after subbing in x,y will not work.
+
+> [!Example] Example: Applying Least-Squares to Non-Linear Systems
+> Suppose we have a non-linear model
+> $$
+> y = \beta_0 + \beta_1 e^{\beta_2 x}
+> $$
+> 
+> For non-linear systems, one work around is to make an educated guess for the non-linear variables, and solving the subsequent linear system! So, we make a guess for $\beta_2$, and then solve $\beta_0$ and and $\beta_1$!
+> 
+> We can then compare the least squares errors to find which combination of variables works best!

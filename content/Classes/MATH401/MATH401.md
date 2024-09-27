@@ -537,6 +537,7 @@ $$
 
 We first build up some context below.
 
+## Finding the Least Squares Solution
 > [!Info] Dot Products
 > Given $\vec{v}, \vec{w}$ in $\mathbb{R}^n$, their **dot product** is
 > $$
@@ -715,3 +716,76 @@ But not all models will work with least squares! Least squares requires that we 
 > For non-linear systems, one work around is to make an educated guess for the non-linear variables, and solving the subsequent linear system! So, we make a guess for $\beta_2$, and then solve $\beta_0$ and and $\beta_1$!
 > 
 > We can then compare the least squares errors to find which combination of variables works best!
+
+
+# Team Ranking
+Suppose there is a league of sports teams who play each other. We want to be able to rank them from best to worst.
+
+Rather than looking at their win/loss records, we would like to instead base our rankings on margins of victory, as this will give us less ambiguous results.
+> The general idea we will use was developed by Kenneth Massey, in his undergraduate thesis.
+
+> [!Example]+ Example: Looking at Margins of Victory
+> Consider 3 teams T1, T2, T3
+> 1. T1 beats T2
+> 2. T2 beats T3
+> 3. T3 beats T1
+> 
+> In this case, we can't really say which team is best, as the situation is completely symmetric! But if we instead had
+> 1. T1 beats T2 by 10 points
+> 2. T2 beats T3 by 2 points
+> 3. T3 beats T1 by 1 point
+> 
+> Then we have more information, and we can say as T1 completely crushed T2 and barely lost to T3, T1 seems to be the best!
+
+The idea is to somehow assign each team a value, say $r_i$ (for team $i$), such that **if team $i$ plays team $j$, then the expected margin of victory (or defeat) for team $i$ is given by the difference $r_i - r_j$.**
+
+> [!Example]+ Example: From Massey's Thesis
+> Suppose we have 4 teams:
+> 1. (T1) The Beast Squares
+> 2. (T2) The Gaussian Eliminators
+> 3. (T3) The Likelihood Loggers
+> 4. (T4) The Linear Regressors
+> 
+> Now suppose that T1 beats T2 by 4, T1 beats T4 by 2, T2 beats T3 by 1, T2 loses to T4 by 7, and T3 ties with T4. The idea is that we want to find each team a $r_i$ value where
+> $$
+> \begin{align*}
+> &r_1 - r_2 = 4 &r_1 - r_4 = 2 \\
+> &r_2 - r_3 = 1 &r_2 - r_4 = -7 \\
+> &r_3 - r_4 = 0
+> \end{align*}
+> $$
+> 
+> This gives us a linear system, where we can solve for $r_1, r_2, r_3, r_4$! Generally these systems are inconsistent, but we can still find the best $r_i$'s using **least squares**!
+> $$
+> \begin{bmatrix}
+> 1 & -1 & 0 & 0 \\
+> 0 & 1 & -1 & 0 \\
+> 0 & 0 & 1 & -1 \\
+> 1 & 0 & 0 & -1 \\
+> 0 & 1 & 0 & -1
+> \end{bmatrix}
+> \begin{bmatrix}
+> r_1 \\ r_2 \\ r_3 \\ r_4
+> \end{bmatrix}
+> =
+> \begin{bmatrix}
+> 4 \\ 2 \\ 1 \\ -7 \\ 0
+> \end{bmatrix}
+> $$
+> 
+> One issue that happens is when we take $A^T A$, we don't get an invertible matrix (as there are infinite solutions)! So, we can't simply find $r = (A^T A)^{-1} A^T b$. 
+>
+> Instead, let's just row reduce and find all solutions $r$ can possibly take on! Here, we find our solution as
+> $$
+> \begin{bmatrix} 
+> 1.125 \\ -3.75 \\ -2.375 \\ 0
+> \end{bmatrix} 
+> + r_4
+> \begin{bmatrix} 
+> 1 \\ 1 \\ 1 \\ 1
+> \end{bmatrix} 
+> $$
+> We find that $r_1 > r_4 > r_3 > r_2$, no matter what $r_4$ we choose! This is our team order. 
+> > Note that we can also use this to predict matches, even if they didn't occur! For example, $r_1 - r_3 = 3.5$, so we can predict that team 1 would beat team 3 by 3.5 points!
+>
+> To remove the (infinite) choces of free variables, we can also impose the constraint that $r_1 + r_2 + r_3 + r_4 = 0$ (force the average to be 0) and add that as an additional requirement to our initial linear system.

@@ -4,15 +4,17 @@ tags:
 - math411
 ---
 
-MATH411 is a continuation of MATH410, but into $n$ dimensions ($\mathbb{R}^n$). 
+MATH411 is a continuation of MATH410, but into higher dimensions.
 
+# Generalizations in $\mathbb{R}^n$
+We first generalize many of the concepts we learned about in MATH410 to higher dimensions.
+
+## Vector Spaces 
 $R^n$ is a vector space, with vectors and scalars (respectively) given as
 $$
 u = (u_1, u_2, \dots u_n) \in \mathbb{R}^n, u_i \in \mathbb{R}
 $$
-Satisfying vector addition and scalar multiplication.
-
-with an inner product commonly known as the **dot product**
+Satisfying vector addition and scalar multiplication, and inner product commonly known as the **dot product**
 $$
 <u, v> = u_1 v_1 + \dots + u_n v_n
 $$
@@ -139,60 +141,62 @@ We say that $u$ is **orthogonal** to $v$, $u \perp v$, if $<u, v> = 0$.
 > > ||v - u|| \le ||v|| - ||u||
 > > $$
 
----
+## Sequences and Convergence
+Consider a **sequence in $\mathbb{R}^n$**, denoted $\{u_k\}$ for all $k \in \mathbb{N}$. In other words, each entry in the sequence is a point in $\mathbb{R}^n$.
+> Note that by convention we will denote $u^i$ as the projection of the $i^{th}$ element of $u$ ($u$'s $i^{th}$ element).
 
-# Sequences and Limits in $\mathbb{R}^n$
-Consider a sequence in $\mathbb{R}^n$ $\{u_k\}$, $k \in \mathbb{N}$. In other words, each entry in the sequence is a point in $\mathbb{R}^n$.
-> Note that we will denote $u^i$ as the projection of the $i^{th}$ element of $u$ ($u$'s $i^{th}$ element).
-
-If $\{u_k\}$ is a sequence in $\mathbb{R}^n$, $u \in \mathbb{R}^n$, then we define the **limit**
+If $\{u_k\}$ is a sequence in $\mathbb{R}^n$, and for some $u \in \mathbb{R}^n$ the following holds:
 $$
 \lim_{k\to\infty} u_k = u \quad \text{if} \quad \lim_{k\to\infty} || u_k - u || = 0
 $$
-We alternatively can write this as **$\{u_k\} \to u$ in the norm**. This is similar in idea to convergence in 1-dimensional series!
+Then we call this the **limit** of the sequence, alternatively written as $\{u_k\} \to u$ ($u_k$ converges to $u$) **in the norm**. 
+> This is similar in idea to convergence in 1-dimensional series!
 
-But in higher dimensions, this is not the only notion of convergence that we have! We can also say that $\{u_k\} \to u$ **componentwise**, if each $u_k^i \to u^i$ as $k \to \infty$.
+But in $\mathbb{R}^n$, this is not the only notion of convergence that we have! We can also say that $\{u_k\} \to u$ **componentwise**, if each $u_k^i \to u^i$ as $k \to \infty$.
 
-> [!Abstract] Theorem: Notions of Convergence
+> [!Abstract] Theorem: Synonymous Notions of Convergence
 > $\{u_k\} \to u$ in norm if and only if $\{u_k\} \to u$ componentwise.
 >
 > > [!Note]-  Proof
 > > 
-> > #### Proof $\rightarrow$
+> > #### Proof ($\rightarrow$) 
 > > Assume that $\{u_k\} \to u$ in norm. Then, for each $1 \le i \le n$, 
 > > $$
 > > 0 \le | u_k^i - u^i | \le \sqrt{ (u_k^1 - u^1)^2 + \dots + (u_k^n - u^n)^2 } = || u_k - u || \to 0
 > > $$
 > > So by the squeeze theorem, $|u_k^i - u^i| \to 0$.
 > > 
-> > #### Proof $\leftarrow$
+> > #### Proof ($\leftarrow$)
 > > Assume that $\{u_k^i\} \to u^i$. Then,
 > > $$
 > > || u_k - u || = \sqrt{ (u_k^1 - u^1)^2 + \dots + (u_k^n - u^n)^2 }
 > > $$
 > > As each component converges to 0 by definition, and sums of sequences converging to 0 also converge to 0, we know that $|| u_k - u || \to 0$.
 
-Note that this does not hold for infinite dimensions! In particular, component-wise convergence does not imply convergence in norm.
+Note that this does not hold if we have infinite dimensions ($n$ not fixed)! In particular, component-wise convergence does not imply convergence in norm.
 
-For example, say we have a sequence $\{u_k\}$, where for any $k$ the $k^{th}$ element is 1, all other 0. So,
-$$
-\begin{align*}
-    u_1 &= (1, 0, 0 \dots) \\
-    u_2 &= (0, 1, 0, \dots)
-\end{align*}
-$$
-We can see that as $k \to \infty$, $\{u_k\} \to \vec{0}$, the 0 vector! However, $||u_k|| \to 1$, so it does not converge in norm to 0.
+> [!Info] Remark: Dissimilarity of Convergence in Infinite Dimensions
+> Say we have a sequence $\{u_k\}$, where for any $k$ the $k^{th}$ element is 1, all other 0. So,
+> $$
+> \begin{align*}
+>     u_1 &= (1, 0, 0 \dots) \\
+>     u_2 &= (0, 1, 0, \dots) \\
+>     u_3 &= (0, 0, 1, \dots) \\
+> \end{align*}
+> $$
+> We can see that as $k \to \infty$, $\{u_k\} \to \vec{0}$, the 0 vector! However, $||u_k|| \to 1$, so it does not converge in norm to 0.
 
-# Closed and Open Sets in $\mathbb{R}^n$
+## Closed and Open Sets
 Let $r > 0$, $u \in \mathbb{R}^n$. We define the **open ball of radius $r$, centered at $u$** as
 $$
 B_r(u) = \{ v \in \mathbb{R}^n : || u - v || < \mathbb{R} \}
 $$
 In other words, the set of all $n$-dimensional points that are within some predetermined hypersphere of $u$.
+> In $\mathbb{R}$, this is the open interval around a value $u$!
 
 We say that a set $A \subseteq \mathbb{R}^n$ is **open** if $\forall u \in A$, $\exists r > 0$ such that $B_r(u) \subseteq A$. In other words, for all vectors in $A$, we can find an open ball around the vector such that all vectors in the ball are in $A$.
 
-> [!Abstract] Open Balls and Open Sets
+> [!Abstract] Theorem: Open Balls and Open Sets
 > For $r > 0$, $u \in \mathbb{R}^n$, the open ball $B_r(u)$ is an open set.
 > > Intuitively, this makes sense as for any vector inside the open ball, we can find a ball contained within our original ball. As our vectors get closer and closer to the ball's edge, our containing ball will shrink!
 >
@@ -218,16 +222,15 @@ We say that a set $A \subseteq \mathbb{R}^n$ is **open** if $\forall u \in A$, $
 > > $$
 > > Thus, $w \in B_r (u)$!
 
-We say that a set $A \subseteq \mathbb{R}^n$ is **closed** if for any sequence in $A$, $\{u_k\} \subseteq A$ such that $\{u_k\} \to u$, $u \in \mathbb{R}^n$, then $u \in A$. 
+We say that a set $A \subseteq \mathbb{R}^n$ is **closed** if for any sequence in $A$, $\{u_k\} \subseteq A$, such that $\{u_k\} \to u$, $u \in \mathbb{R}^n$, then $u \in A$. In other words, for any convergent sequence in $A$, the vector it converges to is also in $A$.
 
-Furthermore, if $A \in \mathbb{R}^n$, then we call $A^c$ the **complement** of $A$, 
+Furthermore, if $A \in \mathbb{R}^n$, then we call $A^c$ the **complement** of $A$, the set of all vectors not in $A$.
 $$
 A^c = \mathbb{R}^n \backslash A = \{ u \in \mathbb{R}^n | u \not\in A \}
 $$
 
-> [!Abstract] Theorem: Properties of Open Sets
+> [!Abstract] Theorem: Open Sets and their Complements
 > $A$ is an open set if and only if its complement, $A^c$, is closed.
-> > The statement that "$A$ is open if and only if it is not closed" is NOT TRUE. There exist sets that are neither open or closed, and there exist sets that are both open and closed (ex. the empty set and $\mathbb{R}^n$)!
 >
 > > [!Note]- Proof
 > > 
@@ -251,53 +254,57 @@ $$
 > > $$
 > > However, as $a \to \infty$, $r \to 0$! This tells us that  $\{v_a\} \to u, u \in A$, violating our assumption that $A^c$ is closed.
 
-We continue by discussing intersections and unions of these sets.
+Note that the statement ``$A$ is open if and only if it is not closed" is **not true**. There exist sets that are neither open or closed, and there exist sets that are both open and closed (ex. the empty set and $\mathbb{R}^n$)!
 
-If $\{ V_s \}_s$ is a (possibly infinite) family of open sets, then the **union of these open sets $\bigcup_{s \in S} V_s$ is open**.
+We continue by discussing intersections and unions of open and closed sets.
 
-Similarly, if $V_1, \dots V_k$ are open sets, then **the intersection of these sets  $V_1 \cap \dots \cap V_k$ is also open**.
-> Note that the intersection clause only works for finite sets. In the infinite case, we could find a counterexample by choosing open balls with radius $r = 1/a$, so as $a \to \infty$, we are left with a point.
-
-Let $\{F_s\}_{s} \in S$ be a possibly infinite family of closed sets. Then, $\bigcap_{s \in S} F_s$ is closed.
-
-Let $F_1, \dots F_k$ be closed sets. Then their union $F_1 \cup \dots F_k$ is closed.
-
-> [!Note]- Proof: Intersections and Unions of Open Sets
-> #### Union of Open Sets
-> Pick $u \in \bigcup_{s \in S} V_s$. We know that $\exists s_0 \in S$ such that $u \in V_{s_0}$. Since $V_{s_0}$ is open, we know that $\exists r > 0$ such that $B_r(u) \in V_{s_0} \subseteq \bigcup_{s \in S} V_s$.
->
-> #### Intersection of Open Sets
-> Let $u \in V_1 \cap \dots V_k$. We know that by definition,
-> - Because $u \in V_1$, $\exists r_1 > 0$ such that the ball $B_{r_1} (u) \subseteq V_1$
-> - Because $u \in V_2$, $\exists r_2 > 0$ such that $B_{r_2} (u) \subseteq V_2$
-> - $\dots$
+> [!Info] Intersections / Unions of Open Sets
+> Let $\{ V_s \}_s$ be a (possibly infinite) family of open sets. Then, the **union of these open sets $\bigcup_{s \in S} V_s$ is also open**.
 > 
-> Continue this argument for all $k$. Now let $r = \min(r_1, \dots r_k)$. Then $B_r (u) \subseteq B_{r_i} u$ for all $i = 1 \dots k$, meaning $B_r (u) \subseteq \bigcap_{i=1}^k V_i$.
+> Let $V_1, \dots V_k$ be a finite family of open sets. Then, **the intersection of these sets  $V_1 \cap \dots \cap V_k$ is also open**.
+> > Note that the intersection clause only works for finite sets. We can find a counterexample for an infinite family by choosing open balls with radius $r = 1/a$, so that as $a \to \infty$, we are left with a point.
+>
+> > [!Note]- Proof: Intersections and Unions of Open Sets
+> > #### Union of Open Sets
+> > Pick $u \in \bigcup_{s \in S} V_s$. We know that $\exists s_0 \in S$ such that $u \in V_{s_0}$. Since $V_{s_0}$ is open, we know that $\exists r > 0$ such that $B_r(u) \in V_{s_0} \subseteq \bigcup_{s \in S} V_s$.
+> >
+> > #### Intersection of Open Sets
+> > Let $u \in V_1 \cap \dots V_k$. We know that by definition,
+> > - Because $u \in V_1$, $\exists r_1 > 0$ such that the ball $B_{r_1} (u) \subseteq V_1$
+> > - Because $u \in V_2$, $\exists r_2 > 0$ such that $B_{r_2} (u) \subseteq V_2$
+> > - $\dots$
+> > 
+> > Continue this argument for all $k$. Now let $r = \min(r_1, \dots r_k)$. Then $B_r (u) \subseteq B_{r_i} u$ for all $i = 1 \dots k$, meaning $B_r (u) \subseteq \bigcap_{i=1}^k V_i$.
 
-> [!Note]- Proof: Intersections and Unions of Closed Sets
-> #### Intersection Proof (1)
-> We know that by Demorgan's Law, $\left( \bigcap_{s \in S} F_s \right)^c = \bigcup_{s \in S} F_s^c$. We also know from an earlier theorem that each $F_s^c$ is open, and any union of open sets is open. So $\left( \bigcap_{s \in S} F_s \right)^c$ is open, and therefore $\bigcap_{s \in S} F_s$ is closed.
+> [!Info] Intersections / Unions of Closed Sets 
+> Let $F_1, \dots F_k$ be a finite family of closed sets. Then their union $F_1 \cup \dots F_k$ is closed.
 > 
-> #### Intersection Proof (2)
-> Let us have a sequence $\{u_k\} \subseteq \bigcap_{s \in S} F_s$, and assume $\{u_k\} \to u \in \mathbb{R}^n$. By definition of intersection, we know that $u_k \in F_s$ for all $s \in S$! So, by definition of a closed set, $u \in F_s$ for all $s \in S$.
-> 
-> This means that $u \in \bigcap_{s \in S} F_s$. 
+> Let $\{F_s\}_{s} \in S$ be a possibly infinite family of closed sets. Then, their intersection $\bigcap_{s \in S} F_s$ is closed.
 >
-> #### Union Proof (1)
-> We know that by Demorgan's Law, $\left( F_1 \cup \dots F_k \right)^c = F_1^c \cap \dots F_k^c$. Each set is, by an earlier theorem, open.
->
-> As etablished previously, the intersection of open sets yields an open set, so $\left( F_1 \cup \dots F_k \right)^c$ is open. By an earlier theorem, this means that $F_1 \cup \dots F_k$ is closed.
->
-> #### Union Proof (2)
-> Let us define a sequence in this union, $\{u_i\} \subseteq F_1 \cup \dots F_k$, where $\{u_i\} \to u \in \mathbb{R}^n$.
-> 
-> Because we have infinitely many $u_i$'s, and a finitely many sets $F$, at least one of these sets must contain infinitely many $u_i$ by the Pidgeonhole Principle. Let this set be $F_j$.
->
-> So, there exists a subsequence $\{ u_{i_l} \}_{l \in \mathbb{N}}$ contained in $F_j$. As $\{u_i\} \to u$, it must be true that this subsequence converges to $u$ as well, and as $F_j$ is closed (by definition), $u \in F_j$. So, $u \in F_1 \cup \dots F_k$.
+> > [!Note]- Proof: Intersections and Unions of Closed Sets
+> > #### Intersection Proof (1)
+> > We know that by Demorgan's Law, $\left( \bigcap_{s \in S} F_s \right)^c = \bigcup_{s \in S} F_s^c$. We also know from an earlier theorem that each $F_s^c$ is open, and any union of open sets is open. So $\left( \bigcap_{s \in S} F_s \right)^c$ is open, and therefore $\bigcap_{s \in S} F_s$ is closed.
+> > 
+> > #### Intersection Proof (2)
+> > Let us have a sequence $\{u_k\} \subseteq \bigcap_{s \in S} F_s$, and assume $\{u_k\} \to u \in \mathbb{R}^n$. By definition of intersection, we know that $u_k \in F_s$ for all $s \in S$! So, by definition of a closed set, $u \in F_s$ for all $s \in S$.
+> > 
+> > This means that $u \in \bigcap_{s \in S} F_s$. 
+> >
+> > #### Union Proof (1)
+> > We know that by Demorgan's Law, $\left( F_1 \cup \dots F_k \right)^c = F_1^c \cap \dots F_k^c$. Each set is, by an earlier theorem, open.
+> >
+> > As etablished previously, the intersection of open sets yields an open set, so $\left( F_1 \cup \dots F_k \right)^c$ is open. By an earlier theorem, this means that $F_1 \cup \dots F_k$ is closed.
+> >
+> > #### Union Proof (2)
+> > Let us define a sequence in this union, $\{u_i\} \subseteq F_1 \cup \dots F_k$, where $\{u_i\} \to u \in \mathbb{R}^n$.
+> > 
+> > Because we have infinitely many $u_i$'s, and a finitely many sets $F$, at least one of these sets must contain infinitely many $u_i$ by the Pidgeonhole Principle. Let this set be $F_j$.
+> >
+> > So, there exists a subsequence $\{ u_{i_l} \}_{l \in \mathbb{N}}$ contained in $F_j$. As $\{u_i\} \to u$, it must be true that this subsequence converges to $u$ as well, and as $F_j$ is closed (by definition), $u \in F_j$. So, $u \in F_1 \cup \dots F_k$.
 
-Let $A \subseteq \mathbb{R}^n$.
+Using the concept of an open ball, we can formally define the interior, exterior, and boundary of a set. Let $A \subseteq \mathbb{R}^n$.
 
-We define the **interior** of the set as
+We define the **interior** of $A$ as
 $$
 \text{int} A = \{ u \in \mathbb{R}^n : \exists r > 0 \; \text{s.t.} \; B_r(u) \subseteq A \} \subseteq A
 $$
@@ -316,12 +323,11 @@ These 3 sets are mutually exclusive, and form all of $R^n$!
 - The boundary of $A$
 
 
-# Functions and Continuity in $\mathbb{R}^n$
-## Continuity
-Define the function $F : A \to \mathbb{R}^m$, where $A \subseteq \mathbb{R}^n$. 
+## Continuity and Compactness
+### Continuity of Functions
+Let $A \subseteq \mathbb{R}^n$ be a set, and define the function $F : A \to \mathbb{R}^m$.
 
-Then, $F$ is **continuous** at $u \in A$ if $\forall \{ u_k \} \to u$ where $\{u_k\} \subseteq A$, it follows that $\{F(u_k)\} \to F(u)$.
-> In other words, for any sequence converging to $u$, the sequence evaluated in the function $F(u_k)$ should converge to $F(u)$!
+We say $F$ is **continuous** at $u \in A$ if $\forall \{ u_k \} \to u$ where $\{u_k\} \subseteq A$, it follows that $\{F(u_k)\} \to F(u)$. In other words, for any sequence in $A$ converging to $u$, the sequence evaluated in the function $F(u_k)$ should converge to $F(u)$!
 
 > [!Example]+ Example: Continuity
 > Let $f : \{1,2\} \cup [3, \infty) \to \mathbb{R}$ such that
@@ -381,9 +387,9 @@ Then, $F$ is **continuous** at $u \in A$ if $\forall \{ u_k \} \to u$ where $\{u
 > > 
 > > Let $\{u_k\} \to u$. We know that $\{F(u_k)\} \to F(u)$ by definition and $\{G(F(u_k))\} \to G(F(u))\}$, i.e. $\{ (G \circ F) (u_k) \} \to G \circ F(u)$.
 
-We can also prove continuity using the following $\epsilon$-$\delta$ definition.
+We can also prove continuity using what's known as an **$\epsilon$-$\delta$ definition**. 
 
-It can be shown that $F : A \to \mathbb{R}^m$, $A \subseteq \mathbb{R}^n$ is continuous at $u \in A$ if and only if $\forall \epsilon > 0$, $\exists \delta > 0$ such that 
+By $\epsilon$-$\delta$, $F : A \to \mathbb{R}^m$, $A \subseteq \mathbb{R}^n$ is continuous at $u \in A$ if and only if $\forall \epsilon > 0$, $\exists \delta > 0$ such that 
 $$
 || u - v || < \delta \to || F(u) - F(v) || < \epsilon
 $$
@@ -420,7 +426,7 @@ $$
 > $$
 > So the sequence $\{F(v_k)\}$ does not converge to $F(u)$, which is a contradiction!
 
-Recall that if $F : A \to \mathbb{R}^m$, if $B \subseteq A$, then we define
+We also find the following equivalence definitions for epsilon-delta. First, recall that if $F : A \to \mathbb{R}^m$, then for $B \subseteq A$, we define
 $$
 F(B) = \{ F(b) : b \in B \}
 $$
@@ -428,41 +434,45 @@ And if $C \subseteq \mathbb{R}^m$, then
 $$
 F^{-1} (C) = \{ u \in A : F(u) \in C \}
 $$
-Or in other words, the set of all inputs to $F$ yielding possible outputs in $C$. Note that this does not require the function inverse to exist.
+Or in other words, the set of all inputs to $F$ yielding possible outputs in $C$. 
+> Note that this does not require the function inverse to exist. We're just defining the set of all inputs in $A$ yielding something in $C$.
 
----
-
-Using this definition, we claim that the epsilon-delta deinition is also equivalent to saying $\forall \epsilon > 0$, $\exists \delta > 0$ such that:
+Using these definitions, we claim that the epsilon-delta deinition is also equivalent to saying $\forall \epsilon > 0$, $\exists \delta > 0$,
 1. $$
    F( B_\delta(u) \cap A ) \subseteq B_\epsilon (F(u))
    $$
-   Or in other words, all inputs of the function in a $\delta$ ball centered around $u$ must have an output which is within the ball of all all possible outputs of the function in the $\epsilon$ ball centered around $u$.
+   In other words, all inputs of the function in a $\delta$ ball centered around $u$ must have an output which is within the set of all possible outputs of the function in the $\epsilon$ ball centered around $u$. 
+   
+   > Note that we intersect with $A$ to guarantee that we have an input for the function, as not all vectors in a ball around $u$ may be an input for the function.
 
 2. $$
    B_\delta(u) \cap A \subseteq F^{-1} (B_\epsilon(F(u)))
    $$
-   Or in other words, all possible inputs in $A$ within the $\delta$ ball of $u$ are within the set of inputs yielding the $\epsilon$ ball of $F$ around $u$.
+   In other words, all possible inputs within the $\delta$ ball of $u$ are contained within the set of inputs that yield the $\epsilon$ ball of $F$ around $u$.
    
-> [!Abstract] Theorem
-> Let $O$ be open in $\mathbb{R}^n$, and let $F: O \to \mathbb{R}^m$. Then, $F$ is continuous (at every point of $O$) if and only if $F^{-1} (V)$ is open $\forall V \subseteq \mathbb{R}^m$, open.
+> [!Abstract] Theorem: Continuity and Open Sets
+> Let $O$ be open in $\mathbb{R}^n$, and let $F: O \to \mathbb{R}^m$. 
+> 
+> Then, $F$ is continuous at every point of $O$ if and only if the set of inputs $F^{-1} (V)$ is open for all $V \subseteq \mathbb{R}^m$ open.
 >
 > > [!Note]- Proof
 > >
-> > If $F^{-1} (V)$ is open $\forall V$ open, then $F$ is continuous (and it follows that $O = F^{-1} (\mathbb{R}^m)$ must be open).
+> > #### Proof ($\leftarrow$)
+> > We show that if $F^{-1} (V)$ is open $\forall V$ open, then $F$ is continuous (and it follows that $O = F^{-1} (\mathbb{R}^m)$ must be open).
 > > 
 > > Assume $F^{-1} (V)$ is open $\forall V$ open. We want to show that $\forall \epsilon > 0$, $\exists \delta > 0$ such that
 > > $$
 > > B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u)))
 > > $$
 > > 
-> > Take $V = B_\epsilon (F(u))$. Then, by assumption, $F^{-1} (B_\epsilon (F(u)))$ is open. As we know $u \in F^{-1} (B_\epsilon (F(u)))$, there $\exists \delta > 0$ such that $B_\delta (u) \subseteq F^{-1} (B_\epsilon (F(u)))$.
+> > Take $V = B_\epsilon (F(u))$. Because open balls are open sets, by assumption, $F^{-1} (B_\epsilon (F(u)))$ is open. As we know $u \in F^{-1} (B_\epsilon (F(u)))$, there $\exists \delta > 0$ such that $B_\delta (u) \subseteq F^{-1} (B_\epsilon (F(u)))$.
 > > > Note that we did not use the $O$ open fact, but $O = F^{-1} (\mathbb{R}^m)$ is open!
 > > 
-> > ---
 > > 
+> > #### Proof ($\rightarrow$)
 > > Conversely, assume $F$ is continuous at every $u \in O$. Let $V \subseteq \mathbb{R}^m$ open. We want $F^{-1} (V)$ open.
 > > 
-> > Fix a point $u \in F^{-1}(V)$. To show openness, we want to show that $\exists r > 0$ such that $B_r (u) \subseteq F^{-1}(V)$. We know that $F(u) \subseteq V$. 
+> > Fix a point $u \in F^{-1}(V)$. To show openness, we want to show that $\exists r > 0$ such that $B_r (u) \subseteq F^{-1}(V)$. We know that $F(u) \subseteq V$ by assumption. 
 > > 
 > > Since $V$ is open by assumption, there $\exists \epsilon > 0$ such that $B_\epsilon (F(u)) \subseteq V$. Since $F$ is continuous at $u$, $\exists \delta > 0$ such that
 > > $$
@@ -477,27 +487,35 @@ Using this definition, we claim that the epsilon-delta deinition is also equival
 > > B_r(u) \subseteq B_\delta(u) \cap O \subseteq F^{-1} (V)
 > > $$
 
-Let $f : \mathbb{R}^n \to \mathbb{R}$. If $f$ is continuous, $\alpha \in \mathbb{R}$ fixed, then the sets
-$$
-\begin{align*}
-f^{-1} ( (-\infty, a) ) = \{ u \in \mathbb{R}^n : f(u) < \alpha \} \\
-f^{-1}( (\alpha, \infty) ) = \{ u : \mathbb{R}^n : f(u) > \alpha \}
-\end{align*}
-$$
-are open. Similarly, $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}$ is closed because $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}^c = \{ u \in \mathbb{R}^n : f(u) > \alpha \}$ is open.
+We end with a small remark.
 
-## Compactness
-$K \subseteq \mathbb{R}^n$ is **sequentially compact** if for all sequences $\{ u_l \} \subseteq K$, there exists a subsequence $\{u_{l_m}\}$ and $u \in K$ such that
-$$
-\{u_{l_m}\} \to u
-$$
+> [!Info] Remark
+> Let $f : \mathbb{R}^n \to \mathbb{R}$. If $f$ is continuous, $\alpha \in \mathbb{R}$ fixed, then the following sets are open.
+> $$
+> \begin{align*}
+> f^{-1} ( (-\infty, a) ) = \{ u \in \mathbb{R}^n : f(u) < \alpha \} \\
+> f^{-1}( (\alpha, \infty) ) = \{ u : \mathbb{R}^n : f(u) > \alpha \}
+> \end{align*}
+> $$
+> 
+> Similarly, $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}$ is closed because $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}^c = \{ u \in \mathbb{R}^n : f(u) > \alpha \}$ is open.
 
+### Sequential Compactness
 A set $A \subseteq \mathbb{R}^n$ is **bounded** if $\exists M$ such that
 $$
 || u || \le M \quad \forall u \in A
 $$
+In other words, there exists an $M$ which is an upper bound for all vector lengths in the set.
 
-> [!Abstract] Theorem: Sequential Compactness and Bounded
+We say set $K \subseteq \mathbb{R}^n$ is **sequentially compact** if for all sequences $\{ u_l \} \subseteq K$, there exists a subsequence $\{u_{l_m}\}$ and $u \in K$ such that
+$$
+\{u_{l_m}\} \to u
+$$
+In other words, all sequences have a convergent subsequence that converge to something in $K$.
+
+We show that sequential compactness is synonymous with closure and boundedness (together).
+
+> [!Abstract] Theorem: Sequential Compactness and Boundedness
 > If $K \subseteq \mathbb{R}^n$ is sequentially compact, then $K$ is bounded.
 >
 > > [!Note]- Proof
@@ -506,19 +524,19 @@ $$
 > > $$
 > > ||u|| \le M \quad u \in K
 > > $$
-> > By way of contraction, assume that $K$ is sequetially compact but not bounded.
+> > By way of contradiction, assume that $K$ is sequentially compact but not bounded.
 > > 
 > > Then, $\forall M > 0$, $\exists u \in K$ such that
 > > $$
-> > ||u|| \le M
+> > ||u|| > M
 > > $$
-> > Now let $M$ = m \in \mathbb{N}$, to get a sequence $u_m \in K$ such that $$|| u_m || > M$. For any subsequence in this sequence,
+> > Now let $M = m \in \mathbb{N}$, to get a sequence $u_m \in K$ such that $|| u_m || > M$. For any subsequence in this sequence,
 > > $$
 > > || m_{m_l} || > m_l \to \infty
 > > $$
 > > So $u_{m_l}$ cannot converge! This is a contradiction.
 
-> [!Abstract] Theorem: Sequential Compactness and Closed
+> [!Abstract] Theorem: Sequential Compactness and Closure
 > If $K \subseteq \mathbb{R}^n$ is sequentially compact, then $K$ is closed.
 >
 > > [!Note]- Proof
@@ -582,7 +600,7 @@ We find that functions on sequentially compact sets have some guaranteed propert
 > > $$
 > > By sequential compactness on $K$, there is a subsequence $\{u_{k_l}\} \to u \in K$, and furthermore, $\{ F(u_{k_l}) \} \to F(u)$ as $F$ is continuous.
 
-Note that both properties must hold for this to be true! They do not hold on their own.
+Note that both closure and boundedness (implying compactness) must hold for this to be true! They do not hold on their own.
 
 > [!Example]+ Example: Failure of Image Closure and  of Images
 > If $C \subseteq \mathbb{R}^n$ is closed, $F : C \to \mathbb{R}^m$ is continuous, is $F(C)$ closed?
@@ -595,9 +613,11 @@ Note that both properties must hold for this to be true! They do not hold on the
 >
 > > Note the specific wording on the domain.
 > > 
-> > If $B \subseteq \mathbb{R}$ is bounded and $f : \mathbb{R} \to \mathbb{R}$ is continuous (domain is now $\mathbb{R}$), now $f(B)$ is bounded! We can find a sequentiall compact domain containing $B$, and find that $f$ on this domain is sequentially compact (and thus bounded!).
+> > If $B \subseteq \mathbb{R}$ is bounded and $f : \mathbb{R} \to \mathbb{R}$ is continuous (domain is now $\mathbb{R}$), now $f(B)$ is bounded! We can find a sequentially compact domain containing $B$, and find that $f$ on this domain is sequentially compact (and thus bounded!).
 
-> [!Abstract] Theorem: Minimums and Maximums on Sequentially Compact Domains
+We also find that functions on sequentially compact sets obey the extreme value theorem.
+
+> [!Abstract] Theorem: Extreme Value Theorem (Generalization)
 > Let $K$ be sequentially compact, $f : K \to \mathbb{R}$ continuous.
 > 
 > Then $f$ has a minimum and maximum value.
@@ -632,201 +652,14 @@ Interestingly enough, the converse of the above theorem can actually be used to 
 > > 
 > > Let $f(x) = ||x - u||$. Note that $f$'s infimum is 0. Thus, the minimum of $f$ is also 0! But the minimum can only be attained at $x = u$, so $u \in A$.
 
-## Uniform Continuity
-The function $F : A \to \mathbb{R}^n$, $A \subseteq \mathbb{R}^m$ is **uniformly continuous** if for any two sequences $\{u_i\}, \{v_i\} \subseteq A$, if
-$$
-\{ || u_i - v_i || \} \to 0
-$$
-Then,
-$$
-\{ || f(u_i) - f(v_i) || \} \to 0
-$$
-
-
-Note that uniform continuity implies continuity. This is because we can let $v_i$ be the sequence of whatever $\{u_i\}$ converges to, to get our continuity definition! 
-> The converse is not true. As a counterexample, let $f(x) = x^2$. Then, for $u_i = \frac{1}{i} + i$, $v_i = i$, we have that $u_i - v_i \to 0$, but $f(u_i) - f(v_i) = 2 + \frac{1}{i^2} \not\to 0$!
-
-> [!Abstract] Theorem: Uniform Continuity and Sequential Compactness
-> If $K$ is sequentially compact, and $F: K \to \mathbb{R}^n$ is continuous, then $F$ is uniformly continuous.
->
-> > [!Note]- Proof
-> > 
-> > Suppose by way of contradiction that $F: K \to \mathbb{R}^n$ is continuous, $K$ sequentially compact, but $F$ is **not** uniformly continuous.
-> > 
-> > By definition, $\exists \{u_i\}, \{v_i\}$ with
-> > $$
-> > || u_i - v_i || \to 0
-> > $$
-> > With
-> > $$
-> > || F(u_i) - F(v_i) || \not\to 0
-> > $$
-> > By negating the definition of convergence, we can rewrite this as meaning $\exists \epsilon > 0$, such that $\forall I$, $\forall i \ge I$,
-> > $$
-> > || F(u_i) - F(v_i) || \ge \epsilon
-> > $$
-> > 
-> > Choose this $\epsilon$. For a subsequence starting at $i \ge I$, we find subsequences $\{u_{i_j}\}, \{v_{i_j}\}$, such that $\forall j$,
-> > $$
-> > || F(u_{i_j}) - F(v_{i_j}) || \ge \epsilon
-> > $$
-> > > So, all terms in the subsequence are greater than $\epsilon$!
-> > 
-> > Because $K$ is sequentially compact, we can find a subsequence in our subsequence such that $\{u_{i_{j_k}}\} \to u \in K, \{v_{i_{j_k}}\} \to u$. By continuity, we find that
-> > $$
-> > \{F(u_{i_{j_k}}\} \to F(u) \qquad \{F(v_{i_{j_k}}\} \to F(u)
-> > $$
-> > Thus, the difference converges to 0, but this is a contradiction!
-
-Like continuity, we also have a $\epsilon-\delta$ definition for uniform continuity too!
-
-Let $F : A \to \mathbb{R}^m$. Then, the following are equivalent.
-1. If $\{u_i\}, \{v_i\} \subseteq A$ with $\{ ||u_i - v_i|| \} \to 0$, then $\{ || F(u_i) - F(v_i) || \} \to 0$.
-2. $\forall \epsilon > 0$, $\exists \delta > 0$ such that if $u,v \in A$ with $|| u - v || < \delta$, then $|| F(u) - F(v) || < \epsilon$.
-
-The latter is the **$\epsilon-\delta$ definition for uniform continuity**.
-
-> [!Note]- Proof
-> #### Proof (1 to 2)
-> We prove this by contrapositive. Assume that (2) is not true. We wish to show that as a result, (1) cannot be true.
->
-> By the negation of (2), $\exists \epsilon > 0$ such that $\forall \delta > 0$, $\exists u,v \in A$, $|| u - v || < \delta$ with $|| F(u) - F(v) || \ge \epsilon$. 
->
-> Choose $\delta = \frac{1}{k}$, and let $k \in \mathbb{N}$ to create sequences $\{u_k\}, \{v_k\}$ such that $|| u_k - v_k || < \frac{1}{k} \to 0$, where $|| F(u_k) - F(v_k) || \ge \epsilon$.
-> 
-> Thus, (1) is not true.
-> 
-> #### Proof (2 to 1)
-> Assume (2). Let $\{u_i\}, \{v_i\} \subseteq A$ with $\{ ||u_i - v_i|| \} \to 0$. We wish to show that $\{ || F(u_i) - F(v_i) || \} \to 0$.
->
-> Let $\epsilon > 0$. Then, $\exists \delta > 0$ such that (2) holds. Let $I$ such that $|| u_i - v_i || < \delta$. Then, by (2), $\forall i \ge I$, $|| F(u_i) - F(v_i) || < \epsilon$.
-
-
-
-# Convexity
-We say the set $A$ is **convex** if $\forall u,v \in A$, 
-$$
-t(u) + (1 - t) v \in A
-$$
-$\forall 0 \le t \le 1$. In other words, for any two points in the set, all points along the line between these two points are also within the set.
-> In lower dimensions, this defines a convex shape!
-
-We say $A \subseteq \mathbb{R}^n$ is **path connected** if $\forall u,v \in A$, if there exists a continuous function $\gamma : [a,b] \to A$, with 
-$$
-\gamma(a) = u \qquad \gamma(b) = v
-$$
-In other words, for any two points in the set, we can define a function (a "path") between these two points that remains completely within the shape! We call $\gamma$ (gamma) the **parameterized path**.
-> In lower dimensions, this defines a completely connected shape!
-
-> [!Abstract] Theorem: Path Connected Sets on Continuous Functions
-> If $A \subseteq \mathbb{R}^n$ is path connected and $F: A \to \mathbb{R}^m$ is continuous, then the set $F(A)$ is also path connected.
-> > Continuity preserves path connectedness!
-> 
-> > [!Note]- Proof
-> > 
-> > Let $u,v \in F(A)$. We wish to find a parameterized path between $u$ and $v$.
-> > 
-> > By definition of an image, we can find $x,y \in A$ such that $F(x) = u, F(y) = v$. By path connectedness of $A$, we can find an interval $[a,b]$ with a parameterized function $\gamma$ such that $\gamma(a) = x, \gamma(b) = y$.
-> > 
-> > Then, as $F$ is also continuous, we can find a composition of the functions $F \circ \gamma : [a,b] \to F(A)$, which is continuous such that $F \circ \gamma (a) = F (x) = u$, and $F \circ \gamma (b) = F(y) = v$. We have found a parameterized path from $u$ to $v$.
-
-> [!Abstract] Theorem: Path Connected Subsets of the Real Line
-> On the real line, $A \subseteq \mathbb{R}$ is path connected if and only if $A$ is an interval.
->
-> > [!Note]- Proof
-> > 
-> > #### Proof ($\leftarrow$)
-> > If $A$ is an interval, let $u,v$ be points in this interval. Define function $\gamma (t) = tu + (1 - t) v$ for $0 \le t \le 1$. We can trivially show that $\gamma(0) = u, \gamma(1) = v$, and furthermore, $\gamma$ is continuous. We have our parameterized path.
-> > 
-> > #### Proof ($\rightarrow$)
-> > Conversely, if $A \subseteq \mathbb{R}$ is path connected, let $u,v \in A$. We wish to show that the interval $[u,v] \subseteq A$, which implies that $A$ is an interval (as we chose $u,v$ arbitrarily).
-> > 
-> > We know that $\exists \gamma : [a,b] \to A$ continuous with $\gamma[a] = u, \gamma[b] = v$. Choose any $w \in (u,v)$. We wish to show that $w \in A$, which then shows that $[u,v] \subseteq A$ ($u,v$ are trivially in $A$).
-> > 
-> > By the intermediate value theorem, $\exists c \in (a,b)$ such that $\gamma(c) = w$! Thus, $w \in A$ as it is in the image of $\gamma$, which is defined to be $A$. 
-
-We say that the set $A$ has the **Intermediate Value Property (IVP)** if for any function $f : A \to \mathbb{R}$ continuous, $f(A)$ is an interval.
-
-It can be shown that if $A$ is path connected, it has the intermediate value property!
-
-Set $A \subseteq \mathbb{R}^n$ is **not connected** if $\exists U,V$ open sets such that:
-1. $U \cap A \ne \varnothing, V \cap A \ne \varnothing$
-2. $(U \cap A) \cap (V \cap A) = \varnothing$
-3. $(U \cap A) \cup (V \cap A) = A$
-
-If $U,V$ satisfy 1,2,3, then $U,V$ are said to **separate** $A$. In other words, a set is connected if we cannot find two disjoint open sets that make up $A$.
-> Note that by this more intuitive definition, we can deduce that $\mathbb{R}^n$ is connected, as we cannot form 2 disjoint open sets by partitioning the space- there must be one with a boundary.
-
-> [!Abstract] Theorem: Connected Sets and IVP
-> $A$ is connected if and only if $A$ has the Intermediate Value Property.
->
-> > [!Note]- Proof
-> > 
-> > We want to show that if $A$ is not connected if and only if A does not have the intermediate value property. In other words, $\exists f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
-> > 
-> > #### Proof ($\rightarrow$)
-> > Assume that $A$ is not connected, and let $U,V$ open separate $A$.
-> > 
-> > Define
-> > $$
-> > f(x) = 
-> > \begin{cases}
-> >     1 & x \in A \cap U \\
-> >     0 & x \in A \cap V
-> > \end{cases}
-> > $$
-> > Note the following:
-> > - $f$ is defined $\forall x \in A$ because of property (3) of not connected
-> > - The value $f(x)$ is unique because of (2).
-> > - $f(A) = \{ 0 , 1 \}$ because of (1), because there is at least one element of $U$ in $A$, and one element of $V$ in $A$.
-> > 
-> > To show $f$ is continuous at $x_0 \in U \cap A$, we want to show that $\exists \delta > 0$ such that $B_\delta (x_0) \subseteq U$. Then, if $x \in A$ and $||x - x_0|| < \delta$, then $f(x) = f(x_0)$, so $| f(x) - f(x_0) | < \epsilon$ trivially.
-> > 
-> > So we found $f : A \to \mathbb{R}$, continuous, where $f(A)$ is not on an interval.
-> > 
-> > #### Proof ($\leftarrow$).
-> > Assume $A$ does not have the intermediate value property. Let $f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
-> > 
-> > Then, $\exists c \in \mathbb{R}$ such that $c \not\in f(A)$, $f(A) \cap (-\infty, c) \ne \varnothing$, $f(A) \cap (c, \infty) \ne \varnothing$.
-> > 
-> > To construct $U,V$ separating $A$, let
-> > $$
-> > \tilde{U} = f^{-1} ( (-\infty, c) ), \tilde{V} = f^{-1} ( (c,\infty) )
-> > $$
-> > Then, $\tilde{U} \ne \varnothing, \tilde{V} \ne \varnothing$.
-> > - $\tilde{U} \cup \tilde{V} = A$ because we know that $c \not\in f(A)$.
-> > - $\tilde{U} \cap \tilde{V} = \varnothing$, as there are no points that are in both $(-\infty, c)$ and $(c, \infty)$.
-> > 
-> > To finish, we will find $U,V$ open such that $\tilde{U} = U \cap A$, $\tilde{V} = V \cap A$.
-> > 
-> > Let $x \in \tilde{U}$. Then, $f(x) < c$. Since $f$ is continuous, $\exists r > 0$ such that $\forall y \in B_r (x) \cap A$, $f(y) < c$. Let $U = \cup_{x \in \tilde{U}} B_r (x)$. 
-> > 
-> > Notice that $U \cap A = \tilde{U}$, so $\bigcup_{x\in\tilde{U}} (B_r(x) \cap A) = \tilde{U}$. 
-
-We show that if $A$ is path connected, then $A$ is connected.
-> Note that the converse is **not true**. If $A$ is connected, it may not be path connected. For example, let $A = \{0\} \times [-1,1] \cup \{ (x, \sin(1/x)) : 0 < x \le 1 \}$, which oscillates as we get closer to the $y$ axis, but never touches! Thus, even if $A$ is connected, it is not path connected.
-
-> [!Info] Corollary
-> IF $U \subseteq \mathbb{R}^n$ is both open and closed, then $U = \mathbb{R}^n$, or $U = \varnothing$
-> 
-> > [!Note]- Proof
-> > 
-> > $\mathbb{R}^n$ is path connected $\to $\mathbb{R}$ is connected.
-> > 
-> > Let $U$ be both open and closed. Let $V = U^c$. Because $U$ is open, $V$ is also open.
-> > 
-> > In this case, $U \cap V = \varnothing$, and $U \cup V = \mathbb{R}^n$! 
-> > 
-> > So, $U \ne \varnothing, V \ne \varnothing$ is impossible! So, it must be true that either $U = \mathbb{R}^n, V = \varnothing$, or $U = \varnothing, V = \mathbb{R}^n$.
-
----
-
-Set $K \subseteq \mathbb{R}^n$ is **compact** if for every family of open sets $\{V_\alpha\}$ such that $K \subseteq \bigcup_\alpha V_\alpha$,  then there exist finitely many sets $V_{\alpha_1}, \dots, V_{\alpha_l}$ such that
+We also say set $K \subseteq \mathbb{R}^n$ is **compact** if for every family of open sets $\{V_\alpha\}$ such that $K \subseteq \bigcup_\alpha V_\alpha$,  then there exist finitely many sets $V_{\alpha_1}, \dots, V_{\alpha_l}$ such that
 $$
 K \subseteq V_{\alpha_1} \cup \dots \cup V_{\alpha_l}
 $$
+In other words, $K$ is compact if for any family of (possibly infinite) open sets covering $K$, we can find a finite number of sets that cover $K$.
 > If $K \subseteq \bigcup_\alpha V_\alpha$, we say that $\bigcup_\alpha V_\alpha$ **covers** $K$.
 
+We similarly prove compactness with respect to closure and boundedness.
 
 > [!Abstract] Theorem: Compactness vs. Closure and Boundedness
 > $K$ is compact if and only if $K$ is closed and bounded.
@@ -904,16 +737,401 @@ $$
 > > 
 > > So, we can find some $C_i \in V_{\alpha_0}$, which is covered by finitely many sets. This is a contradiction!
 
----
 
+### Uniform Continuity
+The function $F : A \to \mathbb{R}^n$, $A \subseteq \mathbb{R}^m$ is **uniformly continuous** if for any two sequences $\{u_i\}, \{v_i\} \subseteq A$, if
+$$
+\{ || u_i - v_i || \} \to 0
+$$
+Then,
+$$
+\{ || f(u_i) - f(v_i) || \} \to 0
+$$
+
+Note that uniform continuity implies continuity. Simply let $v_i$ be the sequence of whatever $\{u_i\}$ converges to so we get our continuity definition! 
+> The converse is not true. See the example below.
+
+> [!Example]+ Example: Continuity Doesn't Imply Uniform Continuity
+> Let $f(x) = x^2$, which is a continuous function.
+> 
+> Then, for $u_i = \frac{1}{i} + i$, $v_i = i$, we have that $u_i - v_i \to 0$, but $f(u_i) - f(v_i) = 2 + \frac{1}{i^2} \not\to 0$!
+
+> [!Abstract] Theorem: Uniform Continuity and Sequential Compactness
+> If $K$ is sequentially compact, and $F: K \to \mathbb{R}^n$ is continuous, then $F$ is uniformly continuous.
+>
+> > [!Note]- Proof
+> > 
+> > Suppose by way of contradiction that $F: K \to \mathbb{R}^n$ is continuous, $K$ sequentially compact, but $F$ is **not** uniformly continuous.
+> > 
+> > By definition, $\exists \{u_i\}, \{v_i\}$ with
+> > $$
+> > || u_i - v_i || \to 0
+> > $$
+> > With
+> > $$
+> > || F(u_i) - F(v_i) || \not\to 0
+> > $$
+> > By negating the definition of convergence, we can rewrite this as meaning $\exists \epsilon > 0$, such that $\forall I$, $\forall i \ge I$,
+> > $$
+> > || F(u_i) - F(v_i) || \ge \epsilon
+> > $$
+> > 
+> > Choose this $\epsilon$. For a subsequence starting at $i \ge I$, we find subsequences $\{u_{i_j}\}, \{v_{i_j}\}$, such that $\forall j$,
+> > $$
+> > || F(u_{i_j}) - F(v_{i_j}) || \ge \epsilon
+> > $$
+> > > So, all terms in the subsequence are greater than $\epsilon$!
+> > 
+> > Because $K$ is sequentially compact, we can find a subsequence in our subsequence such that $\{u_{i_{j_k}}\} \to u \in K, \{v_{i_{j_k}}\} \to u$. By continuity, we find that
+> > $$
+> > \{F(u_{i_{j_k}}\} \to F(u) \qquad \{F(v_{i_{j_k}}\} \to F(u)
+> > $$
+> > Thus, the difference converges to 0, but this is a contradiction!
+
+Like continuity, we also have a $\epsilon-\delta$ definition for uniform continuity too!
+
+Let $F : A \to \mathbb{R}^m$. Then, the following are equivalent.
+1. If $\{u_i\}, \{v_i\} \subseteq A$ with $\{ ||u_i - v_i|| \} \to 0$, then $\{ || F(u_i) - F(v_i) || \} \to 0$.
+2. $\forall \epsilon > 0$, $\exists \delta > 0$ such that if $u,v \in A$ with $|| u - v || < \delta$, then $|| F(u) - F(v) || < \epsilon$.
+
+The latter is the **$\epsilon-\delta$ definition for uniform continuity**.
+
+> [!Note]- Proof
+> #### Proof (1 to 2)
+> We prove this by contrapositive. Assume that (2) is not true. We wish to show that as a result, (1) cannot be true.
+>
+> By the negation of (2), $\exists \epsilon > 0$ such that $\forall \delta > 0$, $\exists u,v \in A$, $|| u - v || < \delta$ with $|| F(u) - F(v) || \ge \epsilon$. 
+>
+> Choose $\delta = \frac{1}{k}$, and let $k \in \mathbb{N}$ to create sequences $\{u_k\}, \{v_k\}$ such that $|| u_k - v_k || < \frac{1}{k} \to 0$, where $|| F(u_k) - F(v_k) || \ge \epsilon$.
+> 
+> Thus, (1) is not true.
+> 
+> #### Proof (2 to 1)
+> Assume (2). Let $\{u_i\}, \{v_i\} \subseteq A$ with $\{ ||u_i - v_i|| \} \to 0$. We wish to show that $\{ || F(u_i) - F(v_i) || \} \to 0$.
+>
+> Let $\epsilon > 0$. Then, $\exists \delta > 0$ such that (2) holds. Let $I$ such that $|| u_i - v_i || < \delta$. Then, by (2), $\forall i \ge I$, $|| F(u_i) - F(v_i) || < \epsilon$.
+
+
+## Convexity and Connectedness
+We say the set $A$ is **convex** if $\forall u,v \in A$, $\forall 0 \le t \le 1$,
+$$
+t(u) + (1 - t) v \in A
+$$
+In other words, for any two points in the set, all points along the line between these two points are also within the set.
+> In lower dimensions, this defines a convex shape!
+
+We say $A \subseteq \mathbb{R}^n$ is **path connected** if $\forall u,v \in A$, if there exists a continuous function $\gamma : [a,b] \to A$, with 
+$$
+\gamma(a) = u \qquad \gamma(b) = v
+$$
+In other words, for any two points in the set, we can define a function (a "path") between these two points that remains completely within the shape! We call $\gamma$ (gamma) the **parameterized path**.
+> In lower dimensions, this defines a completely connected shape!
+
+> [!Abstract] Theorem: Path Connected Subsets of the Real Line
+> On the real line, $A \subseteq \mathbb{R}$ is path connected if and only if $A$ is an interval.
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\leftarrow$)
+> > If $A$ is an interval, let $u,v$ be points in this interval. Define function $\gamma (t) = tu + (1 - t) v$ for $0 \le t \le 1$. We can trivially show that $\gamma(0) = u, \gamma(1) = v$, and furthermore, $\gamma$ is continuous. We have our parameterized path.
+> > 
+> > #### Proof ($\rightarrow$)
+> > Conversely, if $A \subseteq \mathbb{R}$ is path connected, let $u,v \in A$. We wish to show that the interval $[u,v] \subseteq A$, which implies that $A$ is an interval (as we chose $u,v$ arbitrarily).
+> > 
+> > We know that $\exists \gamma : [a,b] \to A$ continuous with $\gamma[a] = u, \gamma[b] = v$. Choose any $w \in (u,v)$. We wish to show that $w \in A$, which then shows that $[u,v] \subseteq A$ ($u,v$ are trivially in $A$).
+> > 
+> > By the intermediate value theorem, $\exists c \in (a,b)$ such that $\gamma(c) = w$! Thus, $w \in A$ as it is in the image of $\gamma$, which is defined to be $A$. 
+
+> [!Abstract] Theorem: Path Connected Sets on Continuous Functions
+> If $A \subseteq \mathbb{R}^n$ is path connected and $F: A \to \mathbb{R}^m$ is continuous, then the image $F(A)$ is also path connected. In other words, continuity preserves path connectedness!
+> 
+> > [!Note]- Proof
+> > 
+> > Let $u,v \in F(A)$. We wish to find a parameterized path between $u$ and $v$.
+> > 
+> > By definition of an image, we can find $x,y \in A$ such that $F(x) = u, F(y) = v$. By path connectedness of $A$, we can find an interval $[a,b]$ with a parameterized function $\gamma$ such that $\gamma(a) = x, \gamma(b) = y$.
+> > 
+> > Then, as $F$ is also continuous, we can find a composition of the functions $F \circ \gamma : [a,b] \to F(A)$, which is continuous such that $F \circ \gamma (a) = F (x) = u$, and $F \circ \gamma (b) = F(y) = v$. We have found a parameterized path from $u$ to $v$.
+
+We say that the set $A$ has the **Intermediate Value Property (IVP)** if for any continuous function defined on the set, $f : A \to \mathbb{R}$, the image $f(A)$ is an interval.
+> It can be shown that if $A$ is path connected, it has the intermediate value property!
+
+Set $A \subseteq \mathbb{R}^n$ is **not connected** if $\exists U,V$ open sets such that:
+1. $U \cap A \ne \varnothing, V \cap A \ne \varnothing$
+2. $(U \cap A) \cap (V \cap A) = \varnothing$
+3. $(U \cap A) \cup (V \cap A) = A$
+
+In other words, we can find two disjoint open sets that make up $A$. If $U,V$ satisfythese conditions, then we say $U,V$ **separate** $A$. 
+
+Thus, by this definition, a set is **connected** if we cannot find two disjoint open sets that make up $A$.
+> Note that by this more intuitive definition, we can deduce that $\mathbb{R}^n$ is connected, as we cannot form 2 disjoint open sets by partitioning the space- there must be one with a boundary.
+
+> [!Abstract] Theorem: Connected Sets and IVP
+> $A$ is connected if and only if $A$ has the Intermediate Value Property.
+>
+> > [!Note]- Proof
+> > 
+> > We want to show that if $A$ is not connected if and only if A does not have the intermediate value property. In other words, $\exists f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
+> > 
+> > #### Proof ($\rightarrow$)
+> > Assume that $A$ is not connected, and let $U,V$ open separate $A$.
+> > 
+> > Define
+> > $$
+> > f(x) = 
+> > \begin{cases}
+> >     1 & x \in A \cap U \\
+> >     0 & x \in A \cap V
+> > \end{cases}
+> > $$
+> > Note the following:
+> > - $f$ is defined $\forall x \in A$ because of property (3) of not connected
+> > - The value $f(x)$ is unique because of (2).
+> > - $f(A) = \{ 0 , 1 \}$ because of (1), because there is at least one element of $U$ in $A$, and one element of $V$ in $A$.
+> > 
+> > To show $f$ is continuous at $x_0 \in U \cap A$, we want to show that $\exists \delta > 0$ such that $B_\delta (x_0) \subseteq U$. Then, if $x \in A$ and $||x - x_0|| < \delta$, then $f(x) = f(x_0)$, so $| f(x) - f(x_0) | < \epsilon$ trivially.
+> > 
+> > So we found $f : A \to \mathbb{R}$, continuous, where $f(A)$ is not on an interval.
+> > 
+> > #### Proof ($\leftarrow$).
+> > Assume $A$ does not have the intermediate value property. Let $f : A \to \mathbb{R}$ continuous, with $f(A)$ not an interval.
+> > 
+> > Then, $\exists c \in \mathbb{R}$ such that $c \not\in f(A)$, $f(A) \cap (-\infty, c) \ne \varnothing$, $f(A) \cap (c, \infty) \ne \varnothing$.
+> > 
+> > To construct $U,V$ separating $A$, let
+> > $$
+> > \tilde{U} = f^{-1} ( (-\infty, c) ), \tilde{V} = f^{-1} ( (c,\infty) )
+> > $$
+> > Then, $\tilde{U} \ne \varnothing, \tilde{V} \ne \varnothing$.
+> > - $\tilde{U} \cup \tilde{V} = A$ because we know that $c \not\in f(A)$.
+> > - $\tilde{U} \cap \tilde{V} = \varnothing$, as there are no points that are in both $(-\infty, c)$ and $(c, \infty)$.
+> > 
+> > To finish, we will find $U,V$ open such that $\tilde{U} = U \cap A$, $\tilde{V} = V \cap A$.
+> > 
+> > Let $x \in \tilde{U}$. Then, $f(x) < c$. Since $f$ is continuous, $\exists r > 0$ such that $\forall y \in B_r (x) \cap A$, $f(y) < c$. Let $U = \cup_{x \in \tilde{U}} B_r (x)$. 
+> > 
+> > Notice that $U \cap A = \tilde{U}$, so $\bigcup_{x\in\tilde{U}} (B_r(x) \cap A) = \tilde{U}$. 
+
+We can also find that if $A$ is path connected, then $A$ is connected.
+
+> [!Info] Remark: Connected $\not\to$ Path Connected
+> Note that the converse is **not true**. If $A$ is connected, it may not be path connected. 
+> 
+> For example, let $A = \{0\} \times [-1,1] \cup \{ (x, \sin(1/x)) : 0 < x \le 1 \}$, which oscillates as we get closer to the $y$ axis, but never touches! Thus, even if $A$ is connected, it is not path connected.
+
+Thus, we end with the following graph of implications. Below, an arrow indicates that the source implies the destination.
+
+```mermaid
+graph LR
+1[Path Connected];
+2[Connected];
+3[Intermediate Value Property];
+
+1 -.-> 2 & 3;
+2 -.-> 3;
+3 -.-> 2;
+```
+
+We can use the idea of path connectedness to prove a remark earlier about sets that are both open and closed!
+
+> [!Info] Corollary
+> IF $U \subseteq \mathbb{R}^n$ is both open and closed, then $U = \mathbb{R}^n$, or $U = \varnothing$
+> 
+> > [!Note]- Proof
+> > 
+> > We know that $\mathbb{R}^n$ is path connected, so $\mathbb{R}$ is connected.
+> > 
+> > Let $U$ be both open and closed. Let $V = U^c$. Because $U$ is open, $V$ is also open.
+> > 
+> > In this case, $U \cap V = \varnothing$, and $U \cup V = \mathbb{R}^n$! 
+> > 
+> > So, $U \ne \varnothing, V \ne \varnothing$ is impossible! So, it must be true that either $U = \mathbb{R}^n, V = \varnothing$, or $U = \varnothing, V = \mathbb{R}^n$.
 
 # Metric Spaces
-A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a **metric space** if the following 3 properties hold:
-1. $d(u,v) = d(v,u)$, $\forall u,v \in X$
-2. $d(u,v) \ge 0$, and $d(u,v) = 0$ if and only if $u = v$
-3. $d(u,v) \le d(u, w) + d(w, v)$, $\forall u,v,w \in X$.
+## Introduction and Common Metrics
+A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a **metric space** if for for all $u,v,w \in X$, the following 3 properties are true: 
+1. **Non-Negativity**: $d(u,v) \ge 0$, and $d(u,v) = 0$ if and only if $u = v$
+2. **Symmetry**: $d(u,v) = d(v,u)$, $\forall u,v \in X$
+3. **Triangle Inequality**: $d(u,v) \le d(u, w) + d(w, v)$, $\forall u,v,w \in X$.
 
-> $d$ is known as a **metric**!
+In this case, we call $d$ a **metric** on $X$. Note that a single set could have multiple valid metrics, though there are some metrics that are more commonly used than others.
+> Note that if $Y$ is a metric space with metric $d$, then any $X \subseteq Y$ is also a metric space with metric $d$.
+
+We describe 3 of the most important metric spaces in the below theorems.
+
+> [!Abstract] Theorem: Common Metric on $\mathbb{R}$
+> For any two real numbers $p, q \in \mathbb{R}$, we have the metric on $\mathbb{R}$
+> $$
+> d(p,q) = | p - q |
+> $$
+> 
+> > The proof for the metric is trivial, as it all follows from properties of absolute values.
+
+> [!Abstract] Theorem: Common Metric on $\mathbb{R}^n$
+> For any two points $p,q \in \mathbb{R}^n$, we have the metric on $\mathbb{R}^n$, otherwise known as the **norm**,
+> $$
+> d(p,q) = || p - q || = \sqrt{\sum_{i=1}^n (p_i - q_i)^2}
+> $$
+> 
+> > Like the prior metric, the properties for the norm can be proven fairly easily. 
+
+> [!Abstract] Theorem: Common Metric on $C([a,b], \mathbb{R})$
+> Let $C([a,b], \mathbb{R})$ be the set of all continuous functions $f : [a,b] \to \mathbb{R}$.
+> 
+> For any two functions $f,g \in C([a,b], \mathbb{R}$, we have the metric
+> $$
+> d(f,g) = \max_{x \in [a,b]} |f(x) - g(x)|
+> $$
+> > This finds the maximum single difference between the functions in the interval $[a,b]$!
+
+> [!Abstract] Theorem: The Discrete Metric
+> Let $X$ be any set. For any two points $p, q \in X$, we have metric known as **discrete metric**
+> $$
+> d(p,q) = 
+> \begin{cases}
+> 0 & p = q \\ 1 & p \ne q
+> \end{cases}
+> $$
+
+## Generalized Metric Space Definitions
+With metric spaces, we can generalize many of the definitions we had previously, by using our metric as a "distance" function! In fact, many of our definitions (ex. open sets) were given in terms of the norm $|| \cdot ||$.
+
+Let $X$ be a metric space. 
+
+A sequence $\{p_k\} \subseteq X$ is said to **converge** to a point $p \in X$, if $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that
+$$
+d(p_k, p) < \epsilon \qquad \forall k \ge N
+$$
+We call $p$ the **limit** of the sequence $\{p_k\}$. Note that by this definition, we can see that a sequence converges if and only if the real sequence $\{d(p_k, p)\} \to 0$.
+
+We also have the following set definitions:
+- For a point $p \in X$, $r > 0$, the set
+  $$
+  B_r (p) = \{ q \in X : d(q,p) < r \}
+  $$
+  is the **open ball** around $p$ in $X$.
+- $A \subseteq X$ is **open** if $\forall p \in X$, $\exists r > 0$ such that $B_r(p) \subseteq X$.
+- $A \subseteq X$ is **closed** if $\forall \{p_k\} \subseteq A$, if $\{p_k\} \to p \in X$, then $p \in A$.
+- For $A \subseteq X$, a point $p \in A$ is an **interior point** if $\exists r > 0$ where $B_r (p) \subseteq A$.
+
+> [!Abstract] Theorem: The Complementing Characterization
+> Let $X$ be a metric space, and $A \subseteq X$. Then, $A$ is open if and only if $A^c$ is closed in $X$.
+
+> [!Abstract] Theorem: Open and Closure of $X$ in Itself
+> Let $X$ be a metric space. Then, $X$ is open in $X$, and $X$ is also closed in $X$!
+
+> [!Abstract] Theorem: Intersection and Union of Closed / Open Sets
+> Let $X$ be a metric space.
+>
+> Then, 
+> - The union of a (potentially infinite) collection of open subsets of $X$ is open. 
+> - The intersection of a finite collection of open subsets of $X$ is open.
+>
+> Also,
+> - The union of a finite collection of closed subsets of $X$ is closed.
+> - The intersection of a (potentially infinite) collection of closed subsets of $X$ is closed.
+
+## Completeness and the Contraction Mapping Principle 
+Let $X$ be a metric space. Then, a sequence $\{p_k\} \subseteq X$ is **Cauchy** if $\forall \epsilon > 0$, $\exists K$ such that
+$$
+d(p_k, p_l) < \epsilon \qquad \forall k,l \ge K
+$$
+
+> [!Abstract] Theorem: Convergence and Cauchy Sequences
+> Every convergent sequence is a Cauchy sequence.
+
+> [!Example] Example: Cauchy Sequences in $C([a,b], \mathbb{R})$
+> Consider a sequence $\{f_k\} \subseteq C([a,b], \mathbb{R})$. Then, from definition of the metric, $\{f_k\}$ is a Cauchy sequence if and only if $\forall \epsilon > 0$, $\exists N \in \mathbb{N}$ such that
+> $$
+> | f_k (x) - f_l (x) | < \epsilon \qquad \forall x \in [a,b] \quad k, l \ge N
+> $$
+> > Note that this must hold, as the metric takes the maximum difference between the functions.
+>
+> In other words, $\{f_k\}$ is cauchy if and only if it is **uniformly cauchy** (converges uniformly).
+
+We say metric space $X$ is **complete**, if $\forall \{p_k\}$ Cauchy sequence in $X$, $\exists p \in X$ such that $\{p_k\} \to p$. In other words, all Cauchy sequences converge to a point in $X$. 
+
+> [!Info] Remark
+> The metric spaces $\mathbb{R}, \mathbb{R}^n, C([a,b], \mathbb{R})$ are complete.
+
+> [!Abstract] Theorem: Complete Subspaces
+> Let $X$ be a complete metric space, and $Y$ a subspace of $X$. Then, $Y$ is a complete metric space if and only if $Y$ is a closed subset of $X$.
+> > A corollary from this is that, every closed subset of $R, \mathbb{R}^n, C([a,b], \mathbb{R})$ is a complete metric space (from the previous remark).
+
+WIP FROM HERE --- page 324 ---
+
+
+
+> [!Example] 
+> Define $X = [0,1)$ with $d(x,y) = |x-y|$. Then, $X$ is open and closed (in itself).
+
+We say that if $\{f_k\} \subseteq C([a,b], \mathbb{R})$, $\{f_k\} \to f$ with respect to 
+$$
+d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|
+$$
+If $f_k \to f$ uniformly.
+
+
+Let's look at continuous functions $f \in C([a,b], \mathbb{R}$. Then, we know there exist
+$$
+\int_a^b |f(x)| dx \le (b - a) \max_{x\in[a,b]} |f(x)|
+$$
+But does there exist a constant such that
+$$
+\max_{x\in[a,b]} |f(x)| \le \alpha \int_a^b |f(x)|
+$$
+In infinite dimensions, this is not possible! Let $f_k (x) = x^k$. Then,
+$$
+\max_{x \in [0,1]} f_k (x) = 1
+$$ 
+But
+$$
+\int_0^1 x^k dx = \frac{1}{k + 1}
+$$
+Where as $k \to \infty$ (which is possible as we are in the space of ALL continuous functions), this goes to 0! 
+
+Is $C([0,1], \mathbb{R})$ with $d(f,g) = \int_0^a |f - g|$ complete? In other words, if $f_k$ is Cauchy in our space, does there exist a function $f \in C([0,1],\mathbb{R})$ such that $\int_0^1 |f_k - f| = 0$?
+> Discussion if continuous functions on these L2 norms are a metric space?
+
+
+We have the space of continuous functions $C([a,b], \mathbb{R})$, and a norm 
+$$
+|| f ||_1 \int_a^b |f(x)| dx
+$$
+Note that if $||f|| = 0$, $f = 0$ if $f$ is continuous.
+> If $f$ is a general Riemann integrable function, the above may fail (consider a function with a jump discontinuity).
+
+> [!Example] Example: Incomplete Space
+> We can find that $C([a,b], \mathbb{R})$ and 
+> $$
+> d_1 (f,g) = \int_a^b | f(x) - g(x) | dx
+> $$ is not complete.
+> 
+> We form a series of functions that converge to a function that is not continuous (and thus not in our space).
+> 
+> Lets consider $f_n : [0,2] \to \mathbb{R}$ where
+> $$
+> f_n (x) =
+> \begin{cases}
+> x^n & 0 \le x \le 1 \\
+> 1 & 1 \le x \le 2
+> \end{cases}
+> $$
+> Then,
+> $$
+> \int_0^2 | f_n (x) - f(x) | dx = 0
+> $$
+> If $f(x) = 0$ for $0 \le x < 1$, $f(x) = 1$ for $1 \le x \le 2$.
+> 
+> So, $f_n \to f$ with respect to the $d_1$ metric, so $f_n$ is Cauchy. However, there does not exist a $g$ that is continuous from $[0,2]$ with real values such that
+> $$
+> \int_0^2 | f - g | dx = 0
+> $$
+
+^^ 11.3... 12.1
+
+
+
 
 Let $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$. In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
 1. $||u|| \ge 0$, $\forall u \in V$, and $||u|| = 0$ if and only if $u = 0$.
@@ -993,89 +1211,6 @@ We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metri
 > \end{align*}
 > $$
 
-It can be found that if $Y$ is a metric space with metric $d$, then any $X \subseteq Y$ is also a metric space.
-
-We can make some generalities with metric spaces to obtain the definitions we had in previous chapters!
-- If $X$ is a metric space, then we can define the ball around $p$ as  $B_r (p) = \{ g \in X | d(P,g) < R \}$
-- $A \subseteq X$ is **open** if $\forall p \in X$, $\exists r > 0$ such that $B_r(p) \subseteq X$.
-- $A \subseteq X$ is **closed** if $\forall \{p_k\} \subseteq A$, if $\{p_k\} \to p \in X$, then $p \in A$.
-
-If $X$ is a metric space, then $X$ is open in $X$, and $X$ is closed in $X$!
-
-> [!Example] 
-> Define $X = [0,1)$ with $d(x,y) = |x-y|$. Then, $X$ is open and closed (in itself).
-
-We say that if $\{f_k\} \subseteq C([a,b], \mathbb{R})$, $\{f_k\} \to f$ with respect to 
-$$
-d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|
-$$
-If $f_k \to f$ uniformly.
-
-A sequence of point $\{p_k\} \in X$ is **Cauchy** if $\forall \epsilon > 0$, $\exists K$ such that $d(p_k, p_l) < \epsilon$ for all $k,l \ge K$.
-> $\{f_k\}$ is Cauchy with respect to $d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|$, if and only if $\{f_k\}$ is uniformly Cauchy.
-
-$X$ is **complete** if $\forall \{p_k\}$ Cauchy sequence in $X$, $\exists p \in X$ such that $\{p_k \to p\}$.
-
-
-Let's look at continuous functions $f \in C([a,b], \mathbb{R}$. Then, we know there exist
-$$
-\int_a^b |f(x)| dx \le (b - a) \max_{x\in[a,b]} |f(x)|
-$$
-But does there exist a constant such that
-$$
-\max_{x\in[a,b]} |f(x)| \le \alpha \int_a^b |f(x)|
-$$
-In infinite dimensions, this is not possible! Let $f_k (x) = x^k$. Then,
-$$
-\max_{x \in [0,1]} f_k (x) = 1
-$$ 
-But
-$$
-\int_0^1 x^k dx = \frac{1}{k + 1}
-$$
-Where as $k \to \infty$ (which is possible as we are in the space of ALL continuous functions), this goes to 0! 
-
-Is $C([0,1], \mathbb{R})$ with $d(f,g) = \int_0^a |f - g|$ complete? In other words, if $f_k$ is Cauchy in our space, does there exist a function $f \in C([0,1],\mathbb{R})$ such that $\int_0^1 |f_k - f| = 0$?
-> Discussion if continuous functions on these L2 norms are a metric space?
-
-
-We have the space of continuous functions $C([a,b], \mathbb{R})$, and a norm 
-$$
-|| f ||_1 \int_a^b |f(x)| dx
-$$
-Note that if $||f|| = 0$, $f = 0$ if $f$ is continuous.
-> If $f$ is a general Riemann integrable function, the above may fail (consider a function with a jump discontinuity).
-
-> [!Example] Example: Incomplete Space
-> We can find that $C([a,b], \mathbb{R})$ and 
-> $$
-> d_1 (f,g) = \int_a^b | f(x) - g(x) | dx
-> $$ is not complete.
-> 
-> We form a series of functions that converge to a function that is not continuous (and thus not in our space).
-> 
-> Lets consider $f_n : [0,2] \to \mathbb{R}$ where
-> $$
-> f_n (x) =
-> \begin{cases}
-> x^n & 0 \le x \le 1 \\
-> 1 & 1 \le x \le 2
-> \end{cases}
-> $$
-> Then,
-> $$
-> \int_0^2 | f_n (x) - f(x) | dx = 0
-> $$
-> If $f(x) = 0$ for $0 \le x < 1$, $f(x) = 1$ for $1 \le x \le 2$.
-> 
-> So, $f_n \to f$ with respect to the $d_1$ metric, so $f_n$ is Cauchy. However, there does not exist a $g$ that is continuous from $[0,2]$ with real values such that
-> $$
-> \int_0^2 | f - g | dx = 0
-> $$
-
-^^ 11.3... 12.1
-
----
 
 *proving the  Existence and Uniqueness Theorem*
 
@@ -1275,15 +1410,113 @@ Say $T(f)$ is defined as the equation in (2) of the lemma.
 > > 
 > > So, if $l$ satisfies the conditions in both part (1) and (2), we have a contraction. 
 > >
-> > Thus, there exists a unique $f : (x_0 - l, x_0 + l) \to (y_0 - l, y_0 + l)$ such that $f(x) = g(x, f(x)), $f(x_0) = y_0$.
+> > Thus, there exists a unique $f : (x_0 - l, x_0 + l) \to (y_0 - l, y_0 + l)$ such that $f(x) = g(x, f(x)), f(x_0) = y_0$.
 
+> [!Info] Remark: Failure of Uniqueness 
+> There are examples of continuous $g$ for which uniqueness fails. Consider 
+> $$
+> f'(t) = 3 f(t)^{2/3} \qquad f(0) = 0
+> $$
+> 
+> Then, we can find the following solutions that are non-unique.
+> $$
+> f(t)
+> = 
+> \begin{cases}
+> 0 & t \le 0 \\
+> t^3 & t \ge 0 
+> \end{cases} \qquad f(t) = 0
+> $$
+>
+> In fact, we can find any solution of the form
+> $$
+> f(t) = \begin{cases}
+> 0 & t \le C \\
+> (t - C)^3 & t \ge C
+> \end{cases}
+> $$
+> 
+> And find that in fact, our initial problem fails the Lipschitz condition, as for $g(t,y) = 3 y^{2/3}$, $g_y$ is **unbounded** as $y \to 0$.
 
+> [!Info] Remark: Existence is a Local Property
+> Consider system
+> $$
+> f'(t) = f^2 (t) \qquad f(0) = 0
+> $$
+>
+> Note that one solution to this is $f(t) = 1 / (1 - t)$, which only works for $(-\infty < t < 1)$.
 
+> [!Info] Remark 3
+> Let $g : \mathbb{R}^2 \to \mathbb{R}$, and assume that
+> $$
+> | g(t,y_1) - g(t,y_2) | \le M |y_1 - y_2| 
+> $$
+> For some $M > 0$, and for all $(x,y_1), (x,y_2)$.
+> 
+> If $f_1' (t) = g(t, f_1(t))$ $f_1 (t_0) = y_0$, and $f_2' (t) = g(t, f_2(t))$ $f_2 (t_0) = y_0$, then $f_1(t) = f_2(t)$ for all $t$.
+> 
+> > [!Note] Proof
+> > 
+> > Look at $E(t) = (f_1 (t) - f_2 (t))^2$. We find that
+> > $$
+> > \begin{align*}
+> > E'(t) 
+> > &= 2 (f_1(t) - f_2(t)) (f_1'(t) - f_2'(t)) \\
+> > &\le 2 | f_1 (t) - f_2 (t) | | g(t, f_1(t)) - g(t, f_2(t)) | \\
+> > &\le 2M | f_1 (t) - f_2 (t) | | f_1 (t) - f_2 (t) | = 2M E(t)
+> > \end{align*}
+> > $$
+> > 
+> > Thus, $E'(t) \le 2M E(t)$, $E(t_0) = 0$.
+> > $$
+> > \begin{align*}
+> > E'(t) - 2ME(t) \le 0 \\
+> > \frac{d}{dt} E(t) e^{-2Mt} = E'(t) e^{-2Mt} - 2M E(t) e^{-2Mt} \le 0
+> > \end{align*}
+> > $$
+> > Because $E(t) e^{-2Mt}$ is monotonically decreasing, and it is 0 at $t_0$, and $E(t) e^{-2t} \ge 0$ for all $t$, we know that
+> > $$
+> > E(t) = 0
+> > $$
+> > Which forces $f_1 (t) = f_2 (t)$.
+>
+> > [!Note] Proof (2)
+> > 
+> > Let $f_1, f_2 : \mathbb{R} \to \mathbb{R}$ differentiable, satisfying
+> > $$
+> > f_1'(t) = g(t, f_1(t)) \qquad f_2'(t) = g(t, f_2(t))
+> > $$
+> > And $f_1(t_0) = f_2(t_0) = y_0$. Also assume the Lipschitz condition
+> > $$
+> > | g(t,y_1) - g(t, y_0) | \le M |y_1 -  y_2|
+> > $$
+> > 
+> > From our main theorem, $\exists l > 0$ such that $f_1 (t) = f_2 (t)$ $\forall |t - t_0| < l$.We wish to show that this holds for all $t$. 
+> > 
+> > Look at the set $S = \{ t : f_1(t) = f_2(t) \}$. We find that
+> > - Because $f_1, f_2$ are continuous, then $S$ is closed! 
+> > - $S$ is open. Let $t_1 \in S$. Thus, $f_1 (t_1) = f_2 (t_1)$, and there exists a $\delta > 0$ such that $f_1(t) = f_2(t)$ $\forall |t - t_1| < \delta$, by from the local uniqueness theorem applied to $t_1$.
+> > 
+> > Because $S$ is open and closed, the only set that satisfies this is the empty set, or the entire space! Because $t_0 \in S$, we find that $S$ must be the entire space. 
 
+-- End of Exam 1 ---
 
-
-
-
+> [!Example] 
+> In the metric space $C([0,1], \mathbb{R})$, with norm 
+> $$
+> ||f|| = \max_{x \in [0,1]} |f(x)|
+> $$
+> We find that closed and bounded sets need not be sequentially compact.
+> 
+> For example, consider the set $B =  \{ f : ||f|| \le 1 \}$, and take sequence $f_k (x) = x^k$ in $B$. Then, 
+> $$
+> f_k (x) = 
+> \begin{cases}
+> 0 & 0 \le x < 1 \\
+> 1 & x = 1
+> \end{cases}
+> $$
+> Converges pointwise. However, there does not exist a convergent $f_{k_l}$!
 
 
 ---
@@ -1333,4 +1566,6 @@ Try $C = \mathbb{N}$. Let $f : \mathbb{N} \to \mathbb{R}$, some fixed function. 
 > Let $\epsilon > 0$. Let $\delta = 1/2$. If $x,y \in \mathbb{N}$, then if $|x - y| < 1/2$, then $x = y$, so $f(x) = f(y)$, so $|f(x) - f(y)| = 0 < \epsilon$.
 
 However, $C$ is not bounded! So, $C$ does not have to be bounded.
+
+
 

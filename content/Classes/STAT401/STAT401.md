@@ -531,3 +531,18 @@ $$
 
 ---
 
+
+# Hypothesis Tests
+>
+
+
+deez nuts
+
+> [!Example]
+> Say we tossed a coin 100 times, and the coin landed heads 55 times.
+>
+> The question: is the coin fair? 
+
+**Hypothesis**:
+
+1. Null

@@ -1569,3 +1569,133 @@ However, $C$ is not bounded! So, $C$ does not have to be bounded.
 
 
 
+---
+
+Supplemental problems 8
+
+Fixed point will guaranteed be on the exam o.o..
+
+> [!Example]
+> Define the set of functions 
+> $$
+> X = \{ f \in C([0,1],\mathbb{R}) : 1 - \pi \le f(x) \le 1 + \pi, \forall x \in [0, \pi] \}
+> $$
+> 
+> Now define the function $T : X \to C([0,\pi], \mathbb{R})$, where 
+> $$
+> (Tf) (x) = 1 + \int_{0}^x \cos(f(t)) dt
+> $$
+> 
+> #### Problem 1
+> Prove that $T : X \to X$.
+> 
+> Let $f \in X$. We want to show that $(Tf)(x) \in X$ as well. We can trivially see that $T$, by definition, maps to a continuous function on $[0,\pi]$. We must show that $(Tf)(x)$'s range is bounded between $[1 - \pi, 1 + \pi]$
+> $$
+> \begin{align*}
+> &1 - \pi \le 1 + \int_0^x \cos(f(t)) dt \le 1 + \pi &\forall x \in [0, \pi] \\
+> &-\pi \le \int_0^x \cos(f(t)) dt \le \pi &\forall x \in [0, \pi] \\
+> &\left| \int_0^x \cos(f(t)) \right| \le \pi \\
+> \end{align*}
+> $$
+> We know that this is true, as
+> $$
+> \left| \int_0^x \cos(f(t)) \right| \le \left| \int_0^\pi \cos(f(t)) \right| \le \left| \int_0^\pi 1 \right| \le \pi
+> $$
+> 
+> #### Problem 2
+> Is $T$ a contraction?
+> 
+> Let $f_1, f_2 \in X$. We know that by definition,
+> $$
+> \begin{align*}
+> (Tf_1) (x) = 1 + \int_0^x \cos(f_1(t)) dt \\
+> (Tf_2) (x) = 1 + \int_0^x \cos(f_2(t)) dt
+> \end{align*}
+> $$
+> 
+> We find that
+> $$
+> \begin{align*}
+> d(Tf_1, Tf_2) 
+> &= \max_{x \in [0,\pi]} \left| \int_0^x \cos(f_1(t)) - cos(f_2(t)) dt\right| \\
+> &\le \int_0^\pi | \cos(f_1(t)) - \cos(f_2(t)) | dt \\
+> &\le C d(f_1, f_2)
+> \end{align*}
+> $$
+> We wish to find a $C$ satisfying this. We choose $C = \pi$ and find that this works, as $d(f_1, f_2)$ is defined as the maximum difference of $\cos(f_1(t)) - \cos(f_2(t))$.
+> 
+> Unfortunately, we need a $C < 1$ to prove that we have a contraction. So, this seems to suggest that $T$ is not a contraction! To show this, we need to find a $f_1, f_2$ such that
+> $$
+> d(Tf_1, Tf_2) > d(f_1, f_2)
+> $$
+> 
+> Let $f_1 = \pi$, $f_2 = 0$. Then,
+> $$
+> \begin{align*}
+> d(Tf_1, Tf_2) 
+> &= \max_{x \in [0, \pi]} \left| \int_0^x \cos(f_1(t)) - \cos(f_2(t)) dt \right| \\
+> &= \max_{x \in [0, \pi]} \left| \int_0^x 2 dt \right| \\
+> &= 2 \pi \\
+> d(f_1, f_2) 
+> &= \max_{x \in [0,\pi]} | f_1(t) - f_2(t) | \\
+> &= \max_{x \in [0,\pi]} | \pi | \\
+> &= \pi
+> \end{align*}
+> $$
+> Thus, $d(Tf_1, Tf_2) = 2d(f_1, f_2)$, meaning $T$ fails to be a contraction.
+> 
+> #### Problem 3
+> If $f$ is a fixed point of $T$, what differential equation does $T$ satisfy?
+> 
+> A fixed point means that $Tf(x) = f(x)$. So,
+> $$
+> f(x) = 1 + \int_0^x \cos(f(t)) dt
+> $$
+> We make this into a differential equation by differentiating.
+> $$
+> f'(x) = \cos(f(x)), f(0) = 1
+> $$
+> 
+> We ask, does the solution above exist for all $x \ge 0$?
+> 
+> We have $g(x,y) = \cos(y)$, and bound $|g(x,y)| \le K = 1$. By the mean value theorem applied to this function with respect to $y$,
+> $$
+> | g(x, y_1) - g(x, y_2) | \le M |y_1 - y_2| \qquad \forall (x,y_1), (x,y_2)
+> $$
+> For $M = 1$. Thus, there exists an $h = h(K,M)$ such that the solution to $f'(x) = \cos(f(x))$, with any initial conditions, $f(x_0) = y_0$, exists and is unique in $[x_0 - h, x_0 + h]$. We extend this argument to show that the solution exits and is unique on $[x_0 + h, x_0 + 2h]$, and continue for all $x$.
+> > The length of the intervals that we extend our solution does not get shorter, so we can repeat this to encompass all values of $x$!
+
+> [!Info] Remark
+> Let $g : \mathbb{R}^2 \to \mathbb{R}$ be continuous, such that $\exists M, K$ with
+> $$
+> \begin{align*}
+> &g(x,y) \le K &\forall (x,y) \in \mathbb{R}^2 \\
+> &| g(x, y_1) - g(x, y_2) | \le M |y_1 - y_2| &\forall (x,y_1), (x,y_2)
+> \end{align*}
+> $$
+> Then, the solution to $f'(x) = g(x,f(x))$, $f(x_0) = y_0$ exists for all $x \in \mathbb{R}$.
+> > This happens because $K, M$ do not depend on $x_0$ and $y_0$! 
+
+Define $X = \{ f \in C([0,1], \mathbb{R}) : 0 \le f(x) \le 1, \forall x \in [0,1] \}$. Define $T$ as
+$$
+Tf(x) = \int_0^x f(t)^{2/3} dt
+$$
+
+#### Problem 1
+Prove that $T : X \to X$. We see that if $0 \le f(x) \le 1$, then
+$$
+0 \le \int_0^x f^{2/3} dt \le 1
+$$
+
+#### Problem 2
+We show that $T$ is not a contraction.
+
+Let $f_1 (t) = 0$, $f_2(t) = 1$. Then,
+$$
+T(f_1) (x) = 0 \forall x \qquad T(f_2) (x) = x
+$$
+So, 
+$$
+d(f_1, f_2) = 1 \qquad d(Tf_1, Tf_2) = 1
+$$
+So we fail to have a contraction.

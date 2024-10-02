@@ -533,16 +533,24 @@ $$
 
 
 # Hypothesis Tests
+Given a sample that we've taken from the population, we often times want to inferreasonable information about the population. Hypothesis tests are very handy for doing this!
+
+Let $\theta$ be a population parameter. A **hypothesis** is a statement about some population parameter $\theta$. We make two types of hypotheses for $\theta$:
+- The **null hypothesis ($H_0$)**: A statement about $\theta$ that is assumed to be true in the status quo.
+- The **alternative hypothesis ($H_a$)**: The complementary statement to the null hypothesis. This is typically what we want to find evidence to show.
+
+Given these two hypotheses, we wish to determine which is more reasonable. This is where hypothesis tests come in!
+
+A **hypothesis test** is a procedure that uses sample data to either reject or fail to reject (accept) the null hypothesis, $H_0$.
+
+> [!Example] Example: Hypotheses
+> Suppose we are testing a drug, and want to know if it works. Then, our hypotheses are as follows:
+> - $H_1$: The drug works
+> - $H_2$: THe drug does not work
 >
-
-
-deez nuts
-
-> [!Example]
-> Say we tossed a coin 100 times, and the coin landed heads 55 times.
+> If $H_1$ is the null, then we need to test to find evidence to reject $H_1$, or in other words, the drug actually does not work. In the status quo, the drug works!
 >
-> The question: is the coin fair? 
+> Otherwise, if $H_2$ is the null, then we need to test to find evidence to reject $H_2$, or in other words, the drug actually does work. In the status quo, the drug does not work!
+> > Note how our test changes depending on what we set the null hypothesis!
 
-**Hypothesis**:
 
-1. Null

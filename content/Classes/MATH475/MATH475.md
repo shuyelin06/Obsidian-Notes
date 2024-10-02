@@ -375,7 +375,14 @@ $$
 F(x) = \sum_{n=0}^\infty a_n \frac{x^n}{n!}
 $$
 
-> [!Info] Lemma
+> [!Info] Lemma: Product of OGFs
+> Let $f(x) = \sum_{n=0}^\infty a_n x^n$, $g(x) = \sum_{n=0}^\infty b_n x^n$. Then,
+> $$
+> f(x) g(x) = \sum_{n=0}^\infty c_n x^n
+> $$
+> Where $c_n = \sum_{i=0}^n a_i b_{n-i}$.
+
+> [!Info] Lemma: Product of EGFs
 > Let 
 > $$
 > F(x) = \sum_{n=0}^\infty \bar{a}_n \frac{x^n}{n!} \qquad G(x) = \sum_{n=0}^\infty \bar{b}_n \frac{x^n}{n!}
@@ -486,4 +493,99 @@ $$
 > 
 > One way we could count this directly is by rearranging the books, and then using stars and bars!
 > 
-> Alternatively, we could use egfs! ...
+> Alternatively, we can use egfs to find all ways to arrange books so each shelf has at least 1 book.
+> 
+> The egf for one shelf with $i$ books is given as
+> $$
+> \sum_{i=1}^\infty a_i \frac{x^i}{i!} = \sum_{i=1}^\infty i! \frac{x^i}{i!} = \sum_{i=1}^\infty x^i
+> $$
+> 
+> This problem is asking for the coefficient of $x^n / n!$ in
+> $$
+> \left( \sum_{i=1}^\infty x^i \right)^3 = \left( \frac{x}{1-x} \right)^3 = x^3 \frac{1}{(1-x)^3}
+> $$
+> Note that $1 / (1-x)^3$ is the ogf for weak compositions into 3 parts. 
+> $$
+> \begin{align*}
+> = \sum_{i=0}^\infty \binom{i + 3 - 1}{3 - 1} x^{i+3} \\
+> = \sum_{n=3}^\infty \binom{n-1}{2} x^n & n = i + 3 \\
+> = \sum_{n=3}^\infty \binom{n-1}{2} n! \frac{x^n}{n!}
+> \end{align*}
+> $$
+> We find that the coefficient of $\frac{x^n}{n!}$, the total ways, is 
+> $$
+> \binom{n-1}{2} n!
+> $$
+
+> [!Example] Example:
+> Recall $D_n$ is the total derangements of $[n]$ bijections such that $f(i) \ne i$ for all $i \in [n]$.
+>
+> First, what is the egf for the total bijections where $f(i) = i$ for all $i \in [n]$? We find the EGF is
+> $$
+> \sum_{n=0}^\infty 1 \frac{x^n}{n!} = e^x
+> $$
+> As everything is fixed, so there is only one possible bijection.
+>
+> Let $D(x)$ be the egf for derangements: 
+> $$
+> D(x) = \sum D_n \frac{x^n}{n!}
+> $$
+> What is the meaning of $e^x D(x)$? The coefficient of $x^n / n!$ counts all possible permutations! From the $e^x$, we have the number of fixed inputs, and from $D(x)$ we have the number of deranged inputs!
+> 
+> $$
+> \begin{align*}
+> D(x) e^x 
+> &= \sum_{n=0}^\infty n! \frac{x^n}{n!} \\
+> &= \sum_{n=0}^\infty x^n = \frac{1}{1-x} \\
+> D(x) 
+> &= e^{-x} \frac{1}{1-x} \\
+> &= \left( \sum_{j=0}^\infty \frac{(-x)^j}{j!} \right) \left( \sum_{i=0}^\infty x^i \right) \\
+> &= \sum_{n=0}^\infty \left( \sum_{i=0}^n \frac{(-1)^i}{i!} 1 \right) x^n \\
+> &= \sum_{n=0}^\infty \left( n! \sum_{i=0}^n \frac{(-1)^i}{i!} \right) \frac{x^n}{n!}
+> \end{align*}
+> $$
+> Thus, 
+> $$
+> D_n = n! \sum_{i=0}^n \frac{(-1)^i}{i!} 
+> $$
+> > Note that above, we applied the product of ogf theorem discussed earlier.
+
+> [!Example] Example:
+> How many ways can we split up "n" people into any number of groups, where each group sits at an unlabeled circular table? We assume the tables are not distinguishable, and every table has at least 1 person. 
+>
+> We let the case of 0 tables be 1 way.
+>
+> In the $n = 4$ case, observe that we have the following number of ways:
+> $$
+> \begin{matrix}
+> 1 & \star & | & \star & | & \star & | & \star \\
+> \binom{4}{2} \frac{2!}{2} & | & \star & \star & | & \star & | & \star \\
+> \binom{4}{2} \frac{1}{2} & \star & \star & | & \star & \star \\
+> \binom{4}{3} \frac{3!}{3} & \star & \star & \star & | & \star \\
+> \frac{4!}{4} & \star & \star & \star & \star
+> \end{matrix}
+> $$
+> In total, we have 24 ways.
+>
+> First, the egf for 1 table with $n$ people is
+> $$
+> \begin{align*}
+> G(x) 
+> &= \sum_{n=1}^\infty a_n \frac{x^n}{n!} = \sum_{n=1}^\infty \frac{n!}{n} \frac{x^n}{n!} \\
+> &= \sum_{n=1}^\infty \frac{x^n}{n} = \sum_{n=0}^\infty \frac{x^{n+1}}{n+1} \\
+> &= \int \sum_{n=0}^\infty x^n dx = \int \frac{1}{1-x} dx \\
+> &= \ln \left( \frac{1}{1-x} \right)
+> \end{align*}
+> $$
+>
+> Thus, for $k$ tables, we want the coefficient of $x^n / n!$ in
+> $$
+> \frac{1}{k!} \ln \left( \frac{1}{1-x} \right) \ln \left( \frac{1}{1-x} \right) \dots \ln \left( \frac{1}{1-x} \right)
+> $$
+> We divide by $k!$ as there is no ordering on the tables.
+>
+> But we can use any number of tables! So, we want
+> $$
+> \sum_{k=0}^\infty \frac{1}{k!} \left[ \ln\left( \frac{1}{1-x} \right) \right]^k = e^{\ln(1 / (1 - x))} = \sum_{n=0}^\infty n! \frac{x^n}{n!}
+> $$
+> We have $n!$ ways.

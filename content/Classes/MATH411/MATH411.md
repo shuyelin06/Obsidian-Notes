@@ -947,6 +947,10 @@ We can use the idea of path connectedness to prove a remark earlier about sets t
 > > 
 > > So, $U \ne \varnothing, V \ne \varnothing$ is impossible! So, it must be true that either $U = \mathbb{R}^n, V = \varnothing$, or $U = \varnothing, V = \mathbb{R}^n$.
 
+
+
+
+
 # Metric Spaces
 ## Introduction and Common Metrics
 A set $X$ and a function of two variables $d : X \times X \to \mathbb{R}$ is a **metric space** if for for all $u,v,w \in X$, the following 3 properties are true: 

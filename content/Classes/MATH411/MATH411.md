@@ -1062,169 +1062,17 @@ We say metric space $X$ is **complete**, if $\forall \{p_k\}$ Cauchy sequence in
 > Let $X$ be a complete metric space, and $Y$ a subspace of $X$. Then, $Y$ is a complete metric space if and only if $Y$ is a closed subset of $X$.
 > > A corollary from this is that, every closed subset of $R, \mathbb{R}^n, C([a,b], \mathbb{R})$ is a complete metric space (from the previous remark).
 
-WIP FROM HERE --- page 324 ---
-
-
-
-> [!Example] 
-> Define $X = [0,1)$ with $d(x,y) = |x-y|$. Then, $X$ is open and closed (in itself).
-
-We say that if $\{f_k\} \subseteq C([a,b], \mathbb{R})$, $\{f_k\} \to f$ with respect to 
-$$
-d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|
-$$
-If $f_k \to f$ uniformly.
-
-
-Let's look at continuous functions $f \in C([a,b], \mathbb{R}$. Then, we know there exist
-$$
-\int_a^b |f(x)| dx \le (b - a) \max_{x\in[a,b]} |f(x)|
-$$
-But does there exist a constant such that
-$$
-\max_{x\in[a,b]} |f(x)| \le \alpha \int_a^b |f(x)|
-$$
-In infinite dimensions, this is not possible! Let $f_k (x) = x^k$. Then,
-$$
-\max_{x \in [0,1]} f_k (x) = 1
-$$ 
-But
-$$
-\int_0^1 x^k dx = \frac{1}{k + 1}
-$$
-Where as $k \to \infty$ (which is possible as we are in the space of ALL continuous functions), this goes to 0! 
-
-Is $C([0,1], \mathbb{R})$ with $d(f,g) = \int_0^a |f - g|$ complete? In other words, if $f_k$ is Cauchy in our space, does there exist a function $f \in C([0,1],\mathbb{R})$ such that $\int_0^1 |f_k - f| = 0$?
-> Discussion if continuous functions on these L2 norms are a metric space?
-
-
-We have the space of continuous functions $C([a,b], \mathbb{R})$, and a norm 
-$$
-|| f ||_1 \int_a^b |f(x)| dx
-$$
-Note that if $||f|| = 0$, $f = 0$ if $f$ is continuous.
-> If $f$ is a general Riemann integrable function, the above may fail (consider a function with a jump discontinuity).
-
-> [!Example] Example: Incomplete Space
-> We can find that $C([a,b], \mathbb{R})$ and 
-> $$
-> d_1 (f,g) = \int_a^b | f(x) - g(x) | dx
-> $$ is not complete.
-> 
-> We form a series of functions that converge to a function that is not continuous (and thus not in our space).
-> 
-> Lets consider $f_n : [0,2] \to \mathbb{R}$ where
-> $$
-> f_n (x) =
-> \begin{cases}
-> x^n & 0 \le x \le 1 \\
-> 1 & 1 \le x \le 2
-> \end{cases}
-> $$
-> Then,
-> $$
-> \int_0^2 | f_n (x) - f(x) | dx = 0
-> $$
-> If $f(x) = 0$ for $0 \le x < 1$, $f(x) = 1$ for $1 \le x \le 2$.
-> 
-> So, $f_n \to f$ with respect to the $d_1$ metric, so $f_n$ is Cauchy. However, there does not exist a $g$ that is continuous from $[0,2]$ with real values such that
-> $$
-> \int_0^2 | f - g | dx = 0
-> $$
-
-^^ 11.3... 12.1
-
-
-
-
-Let $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$. In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
-1. $||u|| \ge 0$, $\forall u \in V$, and $||u|| = 0$ if and only if $u = 0$.
-2. $||u + v|| \le ||u|| + ||v||$
-3. $|| \alpha u || \le |\alpha| ||u||$
-
-We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metric.
-
-> [!Note]- Proof
-> 
-> We check our 3 axioms.
-> 1. $d(u,v) = ||u - v|| = |-1| ||v - u|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = -1$.
-> 2. $d(u,v) \ge 0$, by (1), and $d(u,v) = 0$ if and only if $||x - y|| = 0$, if and only if $x - y = 0$, by (1) again. 
-> 3. Let $x,y,z \in V$.
->    $$
->    \begin{align*}
->    d(x,y) 
->    &= ||x - y|| = ||x - y + z - z|| \\
->    &\le ||x - z|| + ||z - y|| = d(x,z) + d(z,y) \\
->    \end{align*}
->    $$
-
-> [!Example]
-> In $\mathbb{R}^2$, some of the following are examples of norms.
->
-> We have the typical norm we are used to, $||x|| = \sqrt{x_1^2 + x_2^2}$.
-> 
-> But we also have other options for norms! For example,
-> $$
-> \begin{align*}
-> || x ||_1 = |x_1| + |x_2| \\
-> || x ||_\infty = \max( |x_1|, |x_2| )
-> \end{align*}
-> $$
->
-> The proof for the former is trivial. For (3) of the latter, note that
-> $$
-> \begin{align*}
-> || x + y ||_\infty &= \max\{ |x_1 + y_1|, |x_2 + y_2| \} \\ &\le \max\{ |x_1| + |y_1|, |x_2| + |y_2| \} \\ &\le \max\{ |x_1|, |x_2| \} + \max\{ |y_1|, |y_2| \}
-> \end{align*}
-> $$
->
-> And comparing the norms, we find that
-> $$
-> \max\{ |x_1|, |x_2| \} \le \sqrt{x_1^2 + x_2^2} \le |x_1| + |x_2| \le 2 \max\{|x_1|, |x_2| \}
-> $$
-> So in finite dimensions, we find that convergence along any one of the norms implies convergence along the others, by squeeze!
-> > This fails to hold in infinite dimenions!
-
-> [!Example] 
-> Let $X$ be a set of continuous functions on $[a,b]$ to $\mathbb{R}$.
-> $$
-> x = C ( [a,b],\mathbb{R} ) = \{ f : [a,b] \to \mathbb{R}, f \text{ continuous} \}
-> $$
-> 
-> We can define the following norms and verify them. Note that we only verify their triangle inequalities, as the rest is obvious to show.
->
-> We define the norm $||f|| = ||f||_\infty = \max_{x \in [a,b]} |f(x)|$. 
-> $$
-> \begin{align*}
-> \max_{x \in [a,b]} |f_1 (x) + f_2 (x)| \le \max_{x\in[a,b]} |f_1(x)| + \max_{x\in[a,b]} |f_2(x)|
-> \end{align*}
-> $$
-> 
-> We can also define the norm $||f||_1 = \int_a^b |f(x)| dx$.
-> $$
-> \int_a^b | f_1(x) + f_2(x) | dx \le \int_a^b |f_1(x)| dx + \int_a^b |f_2(x)| dx
-> $$
-> 
-> We can also define $||f||_2 = \left( \int_a^b f^2 (x) dx \right)^{1/2}$.
-> $$
-> \begin{align*}
-> \left( \int_a^b (f_1(x) + f_2(x))^2 \right)^{1/2} 
-> &= \left( \int_a^b f_1(x)^2 + \int_a^b 2 f_1(x) f_2(x) + \int_a^b f_2(x)^2 \right)^{1/2} \\
-> &\le \left( \int_a^b f_1(x)^2 + 2 \int_a^b (f_1^2 (x))^{1/2} (f_2^2(x))^{1/2} + \int_a^b f_2(x)^2 \right)^{1/2} \\
-> &\le \left( \int_a^b f_1^2 (x) \right)^{1/2} + \left( \int_a^b f_2^2 (x) \right)^{1/2}
-> \end{align*}
-> $$
-
-
-*proving the  Existence and Uniqueness Theorem*
-
-## Lipschitz Functions
 Let $X$ be a metric space, and $T : X \to X$ be a function. Then, $T$ is **Lipschitz** if $\exists M \ge 0$ such that
 $$
 d(T(p), T(q)) \le M d(p, q)
 $$
-For all $p,q \in X$.
+For all $p,q \in X$. In other words, the change in distance between any two points $p,q$ after the mapping is bounded by some value.
 > Note that the same $M$ must work for all $p,q$ pairs.
+
+A Lipschitz function $T : X \to X$ is a **contraction** if $M < 1$. That is, there exists a $0 \le c < 1$ such that
+$$
+d(T(p), T(q)) \le c \cdot d(p,q)
+$$
 
 > [!Info] Lipschitz Functions on $\mathbb{R}$
 > If $f : \mathbb{R} \to \mathbb{R}$ differentiable, then $f$ is Lipschitz with constant $M$ if and only if $|f'(x)| \le M$.
@@ -1257,14 +1105,16 @@ For all $p,q \in X$.
 > > $$
 > > We multiply $x - y$ on either side to find our result.
 
-$T : X \to X$ is a **contraction** if there exists a $0 \le c < 1$ such that
+If $X$ is a metric space, and $T : X \to X$ is a function, then $p \in X$ is called a **fixed point** if
 $$
-d(T(p), T(q)) \le c \cdot d(p,q)
+T(p) = p
 $$
-> Contractions are Lipschitz functions, but with a constraint on what $M$ is!
+In other words, the point after being mapped does not change.
 
-> [!Abstract] Theorem: Existence and Uniqueness Theorem
-> Let $X$ be a complete metric space, and $T : X \to X$ be a contraction. Then, there exists a unique $p \in X$ such that $T(p) = p$, called the **fixed point**.
+With some assumptions on $T$, we can guarantee the existence of a fixed point for a function $T$.
+
+> [!Abstract] Theorem: The Contraction Mapping Principle
+> Let $X$ be a complete metric space, and suppose $T : X \to X$ is a contraction. Then, $T : X \to X$ has exactly one fixed point.
 > 
 > > [!Note]- Proof
 > > 
@@ -1313,26 +1163,59 @@ $$
 > > We know that $\{p_k\} \to p$, and $\{p_{k+1}\} \to T(p)$, so $T(p) = p$ by the uniqueness of limits.
 > > > Note that by this, Lipschitz functions are essentially a stronger form of continuity!
 
-Now consider the following setup. We have an open set $O \subseteq \mathbb{R}^2$, and we have a point in $O$ $(x_0, y_0)$. Now consider a function $g : O \to \mathbb{R}$ continuous.
+This theorem is quite important in differential equations!
 
-Now let $I$ be an interval, and defint the function $f : I \to \mathbb{R}$ such that $\{ (x,f(x)) : x \in I \} \subseteq O$.
+## The Existence Theorem for Nonlinear Differential Equations
+Let $I$ be an open interval of real numbers, $x_0 \in I$. Then, for $y_0$ and a function $h : I \to \mathbb{R}$, consider the differential system.
+$$
+\begin{cases}
+f'(x) = h(x) & \forall x \in I \\
+f(x_0) = y_0 
+\end{cases}
+$$
+
+We ask, does there exist a differentiable function $f : I \to \mathbb{R}$ that satisfies the above differential equation?
+
+Previously, we established that given $h$ continuous, there does exist an $f$, and this $f$ is unique with formula
+$$
+f(x) = y_0 + \int_{x_0}^x h(t) dt \qquad \forall x \in I
+$$
+
+Now, we consider much more general differential systems. 
+
+Suppose $O$ is an open subset of $\mathbb{R}^2$, and let $(x_0, y_0) \in O$. Also suppose that we have a continuous function $g : O \to \mathbb{R}$. 
+
+Let $I$ be an interval in $\mathbb{R}$, and define the function $f : I \to \mathbb{R}$ such that the set of inputs/outputs is contained within $O$.
+$$
+\{ (x,f(x)) : x \in I\} \subseteq O
+$$
+
+We ask, can we find this interval $I$ containing $x_0$, and a differentiable function $f(x)$ satisfying
+$$
+\begin{cases}
+f'(x) = g(x,f(x)) \\
+f(x_0) = y_0
+\end{cases}
+$$
+> Note how now, the derivative of our $f$ is given in terms of $f$ as well!
 
 We use this setup from here on.
 
-> [!Abstract] Lemma
-> The following are equivalent.
-> 
-> $f$ is differentiable and 
-> $$
-> \begin{align*}
-> f'(x) = g(x, f(x)) \\
-> f(x_0) = y_0
-> \end{align*}
-> $$
-> $f$ is continuous and 
-> $$
-> f(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt 
-> $$
+> [!Abstract] Lemma: The Equivalence Lemma
+> Let $O$ be an open subset of $\mathbb{R}^2$ with the point $(x_0, y_0)$, and suppose we have $g : O \to \mathbb{R}$ continuous.
+>
+> If $I$ is a neighborhood of the point $x_0$, and $f : I \to \mathbb{R}$ has the property that $(x, f(x)) \in O$ for all $x \in I$, then the following two are equivalent:
+> - The function $f : I \to \mathbb{R}$ is differentiable and is a solution of the differential equation
+>   $$
+>   \begin{cases}
+>   f'(x) = g(x,f(x)) & \forall x \in I \\
+>   f(x_0) = y_0 
+>   \end{cases}
+>   $$
+> - The function $f : I \to \mathbb{R}$ is continuous and is a solution of the integral equation
+>   $$
+>   f(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt \qquad \forall x \in I
+>   $$
 > 
 > > [!Note]- Proof 
 > > 
@@ -1352,47 +1235,72 @@ We use this setup from here on.
 > > $$
 > > Also, $f(x_0) = y_0$ can be obtained as $\int_{x_0}^{x_0} g(t, f(t)) dt = 0$.
 
-Say $T(f)$ is defined as the equation in (2) of the lemma.
+Let's define a function $T(f)$ as the equation in point 2 of the equivalence lemma.
+$$
+T(f) = y_0 + \int_{x_0}^x g(t,f(t)) dt
+$$
 
-> [!Abstract] Theorem
-> Assume an additional constraint, that $\exists M$ such that $g(x, y_1) - g(x, y_2) \le M |y_1 - y_2|$ for all $(x, y_1), (x, y_2) \in O$.
-> 
-> Also let $a,b > 0$ such that we have a box contained in $O$: $[x_0 - a, x_0 + a] \times [y_0 - b, y_0 + b] \subseteq O$.
-> 
-> Define, for $0 < l \le a$, $x_l = \{ f : [x_0 - l, x_0 + l] \to [y_0 - b, y_0 + b], \text{continuous} \}$ (the set of all continuous functions in this box). Then, $\exists l > 0$ such that 
-> $$
-> T(f)(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt
-> $$
-> maps $x_l$ into $x_l$, and is a contraction.
+Using this function $T(f)$, with an additional constraint on $g$, we can guarantee the existence of a unique solution for our system! This is known as the Existence and Uniqueness Theorem. 
+
+> [!Abstract] Theorem: Existence and Uniqueness
+> Let $O$ be an open subset of the plane $\mathbb{R}^2$ that contains the point $(x_0, y_0)$. Suppose that the function $g : O \to \mathbb{R}^2$ is continuous.
 >
-> Thus, there exists a unique $f \in x_l$ such that
+> Now, assume an additional constraint, that $\exists M > 0$ such that $\forall (x,y_1), (x, y_2) \in O$,
 > $$
-> \begin{align*}
-> f(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt \\
-> f'(x) = g(x, f(x)) \\
+> | g(x,y_1) - g(x,y_2) | \le M | y_1 - y_2 |
+> $$
+> 
+> Then, there is an open interval $I$ with $x_0$ such that the differential equation
+> $$
+> \begin{cases}
+> f'(x) = g(x,f(x)) & x \in I \\
 > f(x_0) = y_0
-> \end{align*}
+> \end{cases}
 > $$
-> In other words, the solution.
-> > This is how we prove that this general class of differentiable functions has a unique solution!
->
-> > [!Note]- Proof
+> Has exactly one solution.
+> 
+> > [!Note]- Proof: Existence and Uniqueness
 > > 
-> > Because we have a continuous function on a compact set, we know that $\exists K$ such that $|g(x,y)| \le K$ for all $(x,y)$ in our box.
+> > Because $O$ is open, we can choose numbers $a, b > 0$ such that the box of width $2a$, height $2b$ centered around $(x_0, y_0)$ is contained within $O$.
+> > $$
+> > R = [x_0 - a, x_0 + a] \times [y_0 - b, y_0 + b] \subseteq O
+> > $$
 > > 
-> > First, we show that $T: x_l \to x_l$ if $l$ is sufficiently small. Look at 
+> > For some positive number $0 < l \le a$, let $I_l$ be the closed interval $[x_0 - l, x_0 + l]$, and define
+> > $$
+> > X_l = \{ f : [x_0 - l, x_0 + l] \to [y_0 - b, y_0 + b], \text{Continuous} \}
+> > $$
+> > Or in other words, the set of all continuous functions along our interval $I_l$. Note that the domain and image of these functions are contained within our box $R$ by assumption. 
+> > 
+> > For a function $f \in X_l$, we define the function $T(f)$ in $C(I_l, \mathbb{R}$ as
+> > $$
+> > T(f)(x) = y_0 + \int_{x_0}^x g(t, f(t)) dt \qquad \forall x \in I_l
+> > $$
+> > 
+> > We now prove two conditions: 
+> > 1. $T$ maps the space $X_l$ to itself
+> > 2. $T : X_l \to X_l$ is a contraction
+> > 
+> > Then, by the Contraction Mapping Principle, we have a unique fixed point.
+> > 
+> > #### $T : X_l \to X_l$
+> > Because we $g(x,y)$ is continuous on a compact set, we know that $\exists K$ such that $|g(x,y)| \le K$ for all $(x,y)$ in our box $R$.
+> > 
+> > Then, if $f \in X_l$, and $x \in I_l$ (so $x \in [x_0 - l, x_0 + l]$), we have
 > > $$
 > > \begin{align*}
-> > T(f)(x) - y_0 
+> > | T(f)(x) - y_0 |
 > > &= \left| \int_{x_0}^x g(t, f(t)) dt \right| \\
-> > &\le |x - x_0| \max_{t \in [x_0 - l, x_0 + l]} | g(t), f(t) | \\
+> > &\le |x - x_0| \max_{t \in [x_0 - l, x_0 + l]} | g(t, f(t)) | \\
 > > &\le |x - x_0| K & \text{Bounds} \\
 > > &\le l * K &\text{Domain of Function}
 > > \end{align*}
 > > $$
-> > So, our statement is true if $Kl \le b$.
+> > So, if $Kl \le b$, the range of our function is bounded between $[y_0 - b, y_0 + b]$, meaning $T : X_l \to X_l$. We choose $l$ small enough to make this happen.
+> >
 > > 
-> > Next, show that $T : x_l \to x_l$ is a contraction provided $l$ is sufficiently small. We want
+> > #### $T$ is a Contraction
+> > We now show that $T : X_l \to X_l$ is a contraction provided $l$ is sufficiently small. We want
 > > $$
 > > d(T(f_1), T(f_2)) \le C d(f_1, d_2)
 > > $$
@@ -1401,20 +1309,23 @@ Say $T(f)$ is defined as the equation in (2) of the lemma.
 > > \begin{align*}
 > > T(f_1)(x) - T(f_2)(x) &= \int_{x_0}^x g(t, f_1 (t)) dt - g(t, f_2 (t)) dt \\
 > > | T(f_1)(x) - T(f_2)(x) | &= \left| \int_{x_0}^x g(t, f_1 (t)) dt - g(t, f_2 (t)) dt \right| \\
-> > &\le \int_{x_0}^x | g(t, f_1 (t)) dt - g(t, f_2 (t)) | dt \\
-> > &\le \int_{x_0}^x M(f_1(t) - f_2(t)) dt \\
-> > &\le M l \max_{t \in [x_0 - l, x_0 + l]} | f_1(t) - f_2(t) | = M l d(f_1, f_2)\\
+> > &\le \int_{x_0}^x | g(t, f_1 (t)) dt - g(t, f_2 (t)) | dt &\text{Integral Property} \\
+> > &\le \int_{x_0}^x M(f_1(t) - f_2(t)) dt &\text{Assumption on g} \\
+> > &\le M (x - x_0) \max_{t \in [x_0 - l, x_0 + l]} | f_1(t) - f_2(t) | \\
+> > &\le M \cdot l \cdot \max_{t \in [x_0 - l, x_0 + l]} | f_1(t) - f_2(t) | = M \cdot l \cdot d(f_1, f_2)\\
 > > \end{align*}
 > > $$
 > > So, we found that
 > > $$
 > > d(T(f_1), T(f_2)) \le M l d(f_1, f_2)
 > > $$
-> > We can make $l$ as small as we want! So, provided that $Ml < 1$, we have a contraction.
-> > 
-> > So, if $l$ satisfies the conditions in both part (1) and (2), we have a contraction. 
+> > As $M$ is fixed, and we can determine $l > 0$, we make $l$ as small as we want! So, provided that $Ml < 1$, we have a contraction.
 > >
-> > Thus, there exists a unique $f : (x_0 - l, x_0 + l) \to (y_0 - l, y_0 + l)$ such that $f(x) = g(x, f(x)), f(x_0) = y_0$.
+> > Thus, by the Contraction Mapping Principle, there is exactly one fixed point for $T$. In other words, there exists a unique $f : (x_0 - l, x_0 + l) \to (y_0 - b, y_0 + b)$ such that $f'(x) = g(x, f(x)), f(x_0) = y_0$.
+
+This is a really important proof!
+
+Note that there are many constraints that this theorem assumes in order for our result to hold; below, we address some common misconceptions.
 
 > [!Info] Remark: Failure of Uniqueness 
 > There are examples of continuous $g$ for which uniqueness fails. Consider 
@@ -1457,9 +1368,9 @@ Say $T(f)$ is defined as the equation in (2) of the lemma.
 > $$
 > For some $M > 0$, and for all $(x,y_1), (x,y_2)$.
 > 
-> If $f_1' (t) = g(t, f_1(t))$ $f_1 (t_0) = y_0$, and $f_2' (t) = g(t, f_2(t))$ $f_2 (t_0) = y_0$, then $f_1(t) = f_2(t)$ for all $t$.
+> If $f_1' (t) = g(t, f_1(t))$, $f_1 (t_0) = y_0$, and $f_2' (t) = g(t, f_2(t))$, $f_2 (t_0) = y_0$, then $f_1(t) = f_2(t)$ for all $t$.
 > 
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > Look at $E(t) = (f_1 (t) - f_2 (t))^2$. We find that
 > > $$
@@ -1484,7 +1395,7 @@ Say $T(f)$ is defined as the equation in (2) of the lemma.
 > > $$
 > > Which forces $f_1 (t) = f_2 (t)$.
 >
-> > [!Note] Proof (2)
+> > [!Note]- Proof (2)
 > > 
 > > Let $f_1, f_2 : \mathbb{R} \to \mathbb{R}$ differentiable, satisfying
 > > $$
@@ -1503,7 +1414,9 @@ Say $T(f)$ is defined as the equation in (2) of the lemma.
 > > 
 > > Because $S$ is open and closed, the only set that satisfies this is the empty set, or the entire space! Because $t_0 \in S$, we find that $S$ must be the entire space. 
 
--- End of Exam 1 ---
+--- End of Exam 1 ---
+
+Many examples are given below.
 
 > [!Example] 
 > In the metric space $C([0,1], \mathbb{R})$, with norm 
@@ -1703,3 +1616,154 @@ $$
 d(f_1, f_2) = 1 \qquad d(Tf_1, Tf_2) = 1
 $$
 So we fail to have a contraction.
+
+
+
+> [!Example] 
+> Define $X = [0,1)$ with $d(x,y) = |x-y|$. Then, $X$ is open and closed (in itself).
+
+We say that if $\{f_k\} \subseteq C([a,b], \mathbb{R})$, $\{f_k\} \to f$ with respect to 
+$$
+d(f,g) = \max_{x\in[a,b]} |f(x) - g(x)|
+$$
+If $f_k \to f$ uniformly.
+
+
+Let's look at continuous functions $f \in C([a,b], \mathbb{R}$. Then, we know there exist
+$$
+\int_a^b |f(x)| dx \le (b - a) \max_{x\in[a,b]} |f(x)|
+$$
+But does there exist a constant such that
+$$
+\max_{x\in[a,b]} |f(x)| \le \alpha \int_a^b |f(x)|
+$$
+In infinite dimensions, this is not possible! Let $f_k (x) = x^k$. Then,
+$$
+\max_{x \in [0,1]} f_k (x) = 1
+$$ 
+But
+$$
+\int_0^1 x^k dx = \frac{1}{k + 1}
+$$
+Where as $k \to \infty$ (which is possible as we are in the space of ALL continuous functions), this goes to 0! 
+
+Is $C([0,1], \mathbb{R})$ with $d(f,g) = \int_0^a |f - g|$ complete? In other words, if $f_k$ is Cauchy in our space, does there exist a function $f \in C([0,1],\mathbb{R})$ such that $\int_0^1 |f_k - f| = 0$?
+> Discussion if continuous functions on these L2 norms are a metric space?
+
+
+We have the space of continuous functions $C([a,b], \mathbb{R})$, and a norm 
+$$
+|| f ||_1 \int_a^b |f(x)| dx
+$$
+Note that if $||f|| = 0$, $f = 0$ if $f$ is continuous.
+> If $f$ is a general Riemann integrable function, the above may fail (consider a function with a jump discontinuity).
+
+> [!Example] Example: Incomplete Space
+> We can find that $C([a,b], \mathbb{R})$ and 
+> $$
+> d_1 (f,g) = \int_a^b | f(x) - g(x) | dx
+> $$ is not complete.
+> 
+> We form a series of functions that converge to a function that is not continuous (and thus not in our space).
+> 
+> Lets consider $f_n : [0,2] \to \mathbb{R}$ where
+> $$
+> f_n (x) =
+> \begin{cases}
+> x^n & 0 \le x \le 1 \\
+> 1 & 1 \le x \le 2
+> \end{cases}
+> $$
+> Then,
+> $$
+> \int_0^2 | f_n (x) - f(x) | dx = 0
+> $$
+> If $f(x) = 0$ for $0 \le x < 1$, $f(x) = 1$ for $1 \le x \le 2$.
+> 
+> So, $f_n \to f$ with respect to the $d_1$ metric, so $f_n$ is Cauchy. However, there does not exist a $g$ that is continuous from $[0,2]$ with real values such that
+> $$
+> \int_0^2 | f - g | dx = 0
+> $$
+
+^^ 11.3... 12.1
+
+
+
+
+Let $X = \mathbb{R}^n$, $d(u,v) = ||u - v||$. In general, if $V$ is a vector space, $|| \cdot ||$ is called a **norm**, if
+1. $||u|| \ge 0$, $\forall u \in V$, and $||u|| = 0$ if and only if $u = 0$.
+2. $||u + v|| \le ||u|| + ||v||$
+3. $|| \alpha u || \le |\alpha| ||u||$
+
+We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metric.
+
+> [!Note]- Proof
+> 
+> We check our 3 axioms.
+> 1. $d(u,v) = ||u - v|| = |-1| ||v - u|| = ||v - u|| = d(v,u)$, by (3) where we take $\alpha = -1$.
+> 2. $d(u,v) \ge 0$, by (1), and $d(u,v) = 0$ if and only if $||x - y|| = 0$, if and only if $x - y = 0$, by (1) again. 
+> 3. Let $x,y,z \in V$.
+>    $$
+>    \begin{align*}
+>    d(x,y) 
+>    &= ||x - y|| = ||x - y + z - z|| \\
+>    &\le ||x - z|| + ||z - y|| = d(x,z) + d(z,y) \\
+>    \end{align*}
+>    $$
+
+> [!Example]
+> In $\mathbb{R}^2$, some of the following are examples of norms.
+>
+> We have the typical norm we are used to, $||x|| = \sqrt{x_1^2 + x_2^2}$.
+> 
+> But we also have other options for norms! For example,
+> $$
+> \begin{align*}
+> || x ||_1 = |x_1| + |x_2| \\
+> || x ||_\infty = \max( |x_1|, |x_2| )
+> \end{align*}
+> $$
+>
+> The proof for the former is trivial. For (3) of the latter, note that
+> $$
+> \begin{align*}
+> || x + y ||_\infty &= \max\{ |x_1 + y_1|, |x_2 + y_2| \} \\ &\le \max\{ |x_1| + |y_1|, |x_2| + |y_2| \} \\ &\le \max\{ |x_1|, |x_2| \} + \max\{ |y_1|, |y_2| \}
+> \end{align*}
+> $$
+>
+> And comparing the norms, we find that
+> $$
+> \max\{ |x_1|, |x_2| \} \le \sqrt{x_1^2 + x_2^2} \le |x_1| + |x_2| \le 2 \max\{|x_1|, |x_2| \}
+> $$
+> So in finite dimensions, we find that convergence along any one of the norms implies convergence along the others, by squeeze!
+> > This fails to hold in infinite dimenions!
+
+> [!Example] 
+> Let $X$ be a set of continuous functions on $[a,b]$ to $\mathbb{R}$.
+> $$
+> x = C ( [a,b],\mathbb{R} ) = \{ f : [a,b] \to \mathbb{R}, f \text{ continuous} \}
+> $$
+> 
+> We can define the following norms and verify them. Note that we only verify their triangle inequalities, as the rest is obvious to show.
+>
+> We define the norm $||f|| = ||f||_\infty = \max_{x \in [a,b]} |f(x)|$. 
+> $$
+> \begin{align*}
+> \max_{x \in [a,b]} |f_1 (x) + f_2 (x)| \le \max_{x\in[a,b]} |f_1(x)| + \max_{x\in[a,b]} |f_2(x)|
+> \end{align*}
+> $$
+> 
+> We can also define the norm $||f||_1 = \int_a^b |f(x)| dx$.
+> $$
+> \int_a^b | f_1(x) + f_2(x) | dx \le \int_a^b |f_1(x)| dx + \int_a^b |f_2(x)| dx
+> $$
+> 
+> We can also define $||f||_2 = \left( \int_a^b f^2 (x) dx \right)^{1/2}$.
+> $$
+> \begin{align*}
+> \left( \int_a^b (f_1(x) + f_2(x))^2 \right)^{1/2} 
+> &= \left( \int_a^b f_1(x)^2 + \int_a^b 2 f_1(x) f_2(x) + \int_a^b f_2(x)^2 \right)^{1/2} \\
+> &\le \left( \int_a^b f_1(x)^2 + 2 \int_a^b (f_1^2 (x))^{1/2} (f_2^2(x))^{1/2} + \int_a^b f_2(x)^2 \right)^{1/2} \\
+> &\le \left( \int_a^b f_1^2 (x) \right)^{1/2} + \left( \int_a^b f_2^2 (x) \right)^{1/2}
+> \end{align*}
+> $$

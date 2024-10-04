@@ -109,16 +109,110 @@ Let's see how we can use these concepts.
 
 Suppose we have a population of predators (ex. hawks), who live among a population of prey (ex. rats). Let $H_k$ be the number of hawks after $k$ months have passed, and $R_k$ be the number of rats (in thousands) after $k$ months. We'll only consider integers of $k$ months.
 
-Assume that these populations evolve according to some sort of model as follows:
+We can represent and make inferences about this system as follows:
+
+> [!Example] Example: Finding $\vec{x}_k$
+> Assume that these populations evolve according to some sort of model as follows:
+> $$
+> \begin{align*}
+> H_{k+1} = (0.4) H_k + (0.5) R_k \\
+> R_{k+1} = (-0.2) H_k + (1.2) R_k
+> \end{align*}
+> $$
+> > Note that if we know this, then given the populations in some month $k$, we should be able to compute the populations in the next month!
+> 
+> Now say we know initial populations $H_0 = 500$, $R_0 = 250$, and
+> $$
+> \begin{align*}
+> H_{k+1} = 0.4 H_k + 0.5 R_k \\
+> R_{k+1} = -0.2 H_k + 1.2 R_k
+> \end{align*}
+> $$
+> 
+> To find $x_{k+1}$, we find that
+> $$
+> \vec{x}_{k+1} = 
+> \begin{bmatrix}
+> H_{k+1} \\ R_{k+1} 
+> \end{bmatrix}
+> = 
+> \begin{bmatrix} 
+> 0.4 H_k + 0.5 R_k \\
+> -0.2 H_k + 1.2 R_k
+> \end{bmatrix}
+> = 
+> \begin{bmatrix} 
+> 0.4 & 0.5 \\
+> -0.2 & 1.2
+> \end{bmatrix}
+> \begin{bmatrix} 
+> H_k \\ R_k
+> \end{bmatrix}
+> = A \vec{x}_k 
+> $$
+> 
+> This gives us a nice way to find any $\vec{x}_k$ given our initial conditions $\vec{x}_0 = (500, 250)^T$! 
+> $$
+> \vec{x}_k = A^k \vec{x}_0
+> $$
+> > We can plug in our values to find what the populations are for any month $k$.
+
+For this to be useful for large $k$, we want to be able to find a formula for $A^k$. How could we do this?
+
+> [!Info] Diagonal Matrices
+> If $A$ was diagonal, this would be really easy to solve! The power of any diagonal matrix is just it's entries raised to each power individually.
+
+What if $A$ is diagonalizable?
+$$
+A = P D P^{-1}
+$$
+Then, interestingly enough,
 $$
 \begin{align*}
-H_{k+1} = (0.4) H_k + (0.5) R_k \\
-R_{k+1} = (-0.2) H_k + (1.2) R_k
+A^k &= (P D P^{-1}) (P D P^{-1}) \dots (P D P^{-1}) \\
+A^k &= P D^k P^{-1}
 \end{align*}
 $$
-> Note that if we know this, then given the populations in some month $k$, we should be able to compute the populations in the next month!
+This can be used to conveniently find $A^k$! We can then multiply this with $\vec{x}_0$ to find a closed formula for $\vec{x}_k$.
 
-> [!Example] 
-> Say we know initial populations $H_0 = 500$, $R_0 = 250$.
+> [!Example]+ Example: Finding $A^k$
+> In our above system, we can diagonalize our matrix as
+> $$
+> A = 
+> \begin{bmatrix}
+> 0.613 & 0.955 \\ 0.790 & 0.295
+> \end{bmatrix}
+> \begin{bmatrix}
+> 1.045^k & 0 \\ 0 & 0.555^k
+> \end{bmatrix}
+> \begin{bmatrix}
+> -0.517 & 1.666 \\ 1.378 & -1.069
+> \end{bmatrix}
+> $$
+> And find
+> $$
+> \vec{x}_k = P D^k P^{-1} \vec{x}_0 = 
+> \begin{bmatrix}
+> 96.91 (1.045)^k + 403.1 (0.555)^k \\
+> 125 (1.045)^k + 125 (0.555)^k
+> \end{bmatrix}
+> $$
+> We can see that as $k \to \infty$, both populations will go to $\infty$, so they won't die off! For large $k$,
+> $$
+> H_k \approx 96.91 (1.045)^k \qquad R_k \approx 125 (1.045)^k
+> $$
+> Note that 
+> $$
+> \frac{H_k}{R_k} \approx \frac{96.91}{125}
+> $$
+> Which tells us what the stable proportion of hawks to rats is in the long term!
+
+Another application of these systems is in Recurrence Relations. Consider the following example.
+
+> [!Example] Example: Recurrence Relations
+> THe Fibonacci Numbers are given as
+> $$
+> F_0 = 0 \qquad F_1 = 1 \qquad F_n = F_{n-1} + F_{n-2}
+> $$
 >
-> We can find closed formulas for $H_k$, $R_k$ using our model above, and determine their limits as $k \to \infty$.
+> Can we find a closed formula for $F_k$?

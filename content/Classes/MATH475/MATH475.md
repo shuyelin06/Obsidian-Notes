@@ -394,7 +394,7 @@ $$
 > $$
 > Where $\bar{c}_n = \sum_{i=0}^n \binom{n}{i} \bar{a}_i \bar{b}_{n-i}$
 >
-> What's important about this is that $\bar{c}_n$ gives us the total ways to separate $[n]$ into two blocks, such that block 1 does something in $\bar{a}_i$ ways, and block 2 does something in $\bar{b}_{n-i}$ ways! This can be used to solve more problems.
+> What's important about this is that $\bar{c}_n$ gives us the total ways to separate $[n]$ into two blocks, such that we do a task in $\bar{a}_i$ ways to block 1, and a task in $\bar{b}_{n-i}$ ways to block 2! This can be used to solve more problems.
 >
 > > [!Note]- Proof 
 > > 
@@ -488,7 +488,7 @@ $$
 > \end{align*}
 > $$
 
-> [!Example] Example
+> [!Example]- Example
 > There are 3 bookshelves and $n$ books. How many ways can you arrange the books on shelves such that each shelf has at least 1 book? 
 > 
 > One way we could count this directly is by rearranging the books, and then using stars and bars!
@@ -517,7 +517,7 @@ $$
 > \binom{n-1}{2} n!
 > $$
 
-> [!Example] Example:
+> [!Example]- Example
 > Recall $D_n$ is the total derangements of $[n]$ bijections such that $f(i) \ne i$ for all $i \in [n]$.
 >
 > First, what is the egf for the total bijections where $f(i) = i$ for all $i \in [n]$? We find the EGF is
@@ -550,7 +550,7 @@ $$
 > $$
 > > Note that above, we applied the product of ogf theorem discussed earlier.
 
-> [!Example] Example:
+> [!Example]- Example
 > How many ways can we split up "n" people into any number of groups, where each group sits at an unlabeled circular table? We assume the tables are not distinguishable, and every table has at least 1 person. 
 >
 > We let the case of 0 tables be 1 way.
@@ -589,3 +589,81 @@ $$
 > \sum_{k=0}^\infty \frac{1}{k!} \left[ \ln\left( \frac{1}{1-x} \right) \right]^k = e^{\ln(1 / (1 - x))} = \sum_{n=0}^\infty n! \frac{x^n}{n!}
 > $$
 > We have $n!$ ways.
+
+> [!Example]- Example
+> Now consider partitioning $[n]$ into non-empty blocks, doing a task to each block (ex. seat them at a table), and then do a task to the set of blocks (ex. each table either gets white or red wine).
+>
+> If $F(x)$ and $G(x)$ are the egfs of the two tasks, with $F(x)$ being the ways to do task 1, then if $h_n$ is the total ways to partition $[n]$ and apply these tasks, the egf of $h(n)$ is
+> $$
+> h(x) = G(F(x)) = \sum_{n=0}^\infty h_n \frac{x^n}{n!}
+> $$
+> 
+> > [!Example]- Simple Example
+> > 
+> > Lets first look at a simple example. What if $F(x)$ and $G(x)$ are trivial?
+> > $$
+> > \begin{align*}
+> > F(x) = \sum_{i=1}^\infty 1 \frac{x^i}{i!} \\
+> > G(x) = \sum_{j=0}^\infty 1 \frac{x^j}{j!}
+> > \end{align*}
+> > $$
+> > > Note that $F(x)$ starts from 1, as we cannot partition $[n]$ into 0 blocks.
+> > 
+> > This is the total ways to partition $[n]$, "do nothing" to each block, and then arrange the blocks in 1 way. In other words, we partition, and then look at the blocks in "1 way". Note that $F(x) = e^x - 1, G(x) = e^x$, so
+> > $$
+> > G(F(x)) = e^{e^x - 1}
+> > $$
+> > Which is the egf for the Bell Number!
+> 
+> For seating $i$ people, the egf is
+> $$
+> F(x) = \sum_{i=1}^\infty (i - 1)! \frac{x^i}{i!} = \ln\left( \frac{1}{1-x} \right)
+> $$
+> Now, the egf for total ways to serve the wine to $k$ tables is
+> $$
+> G(x) = \sum_{k=0}^\infty 2^k \frac{x^k}{k!}
+> $$
+> 
+> The egf we want is
+> $$
+> \begin{align*}
+> H(x) 
+> &= G(F(x)) = e^{2 \ln(\frac{1}{1-x})} \\
+> &= \frac{1}{(1-x)^2} = \frac{d}{dx} \left( \frac{1}{1-x} \right) \\
+> &= \frac{d}{dx} \sum_{n=0}^\infty x^n \\
+> &= \sum_{n=0}^\infty (n+1) x^n \\
+> &= \sum_{n=0}^\infty (n+1) n! \frac{x^n}{n!} \\
+> &= \sum_{n=0}^\infty (n+1)! \frac{x^n}{n!}
+> \end{align*}
+> $$
+> Thus, the total number of ways is $(n + 1)!$
+
+
+## Section 2.5: The Catalan Numbers
+Given an $n \times m$ lattice, how many up-right paths go from $(0,0)$ to $(n,m)$? 
+
+Note that regardless of the path we take, we always do $n + m$ steps. Out of them, choose $m$ positions to be "right", the rest being "up.
+$$
+\binom{n + m}{m}
+$$
+
+Now consider an $n \times n$ lattice. How many of the up-right paths never cross over the diagonal? 
+
+Let $c_n$ denote the total paths satisfying this. We partition these paths into classes, where they **last** touched the diagonal $(r,r)$, for $1 \le r \le n - 1$.
+
+Say we last touched $(i,i)$. Then,
+- To get from $(0,0)$ to $(i,i)$, we have $c_i$ ways. 
+- To get to $(i,i)$ to $(n,n)$, we must go right once, then take any $c_{n-i-1}$ paths. Finally, we go up once to $(n,n)$. 
+
+Therefore, we find
+$$
+c_n = \sum_{i=0}^{n-1} c_i c_{n-i-1} \qquad c_0 = 1
+$$
+
+We can use generating functions to find an explicit closed form solution for this recurrence!
+
+Here, the closed form ogf is
+$$
+F(x) = \frac{1 - \sqrt{1 - 4x}}{2x}
+$$
+We must define $\binom{a}{k}, a \in \mathbb{R}$.

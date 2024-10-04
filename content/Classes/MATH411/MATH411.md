@@ -1414,6 +1414,9 @@ Note that there are many constraints that this theorem assumes in order for our 
 > > 
 > > Because $S$ is open and closed, the only set that satisfies this is the empty set, or the entire space! Because $t_0 \in S$, we find that $S$ must be the entire space. 
 
+
+
+
 --- End of Exam 1 ---
 
 Many examples are given below.
@@ -1434,6 +1437,7 @@ Many examples are given below.
 > \end{cases}
 > $$
 > Converges pointwise. However, there does not exist a convergent $f_{k_l}$!
+
 
 
 ---
@@ -1767,3 +1771,148 @@ We find that if $||\cdot||$ if a norm on $V$, then $d(u,v) = ||u-v||$ is a metri
 > &\le \left( \int_a^b f_1^2 (x) \right)^{1/2} + \left( \int_a^b f_2^2 (x) \right)^{1/2}
 > \end{align*}
 > $$
+
+
+---
+
+Chapter 13
+
+$x^*$ is a limit point of $A \subseteq \mathbb{R}^n$ if there is a sequence  $\exists \{ x_k \} \subseteq A / \{x^*\}$ such that $\{x_k\} \to x^*$. In other words, there is a sequence not containing $x^*$ converging to it.
+
+If a function $f : A \to \mathbb{R}$, and $x^*$ is a limit point of $A$, then **the limit of the function** is defined as $\lim_{x \to x^*} f(x) = l$ if $\forall \{x_k\} \subseteq A / \{x^*\}$, 
+$$
+\lim_{k \to \infty} f(x_k) = l
+$$
+
+> [!Example] 
+> $$
+> f(x,y) = \frac{xy}{x^2 + y^2}
+> $$
+>
+> $f : \mathbb{R}^2 \to \{(0,0)\}$. 
+>
+> $\lim_{(x,y) \to (0,0)} f(x,y)$ does not exist, as we can chose $\{x_k\} = (1/k, 0)$, and $\{x_k\} = (1/k, 1/k)$, which have different limits as $k \to \infty$. 
+
+> [!Example] 
+> $$
+> g(x,y) = \frac{x^2 y}{x^2 + y^2}
+> $$
+> In this case, $\lim_{(x,y) \to (0,0)} g(x,y)$ exists and equals 0.
+> 
+> Let $(x_k, y_k) \to (0,0)$ not containing $(0,0)$. Then, 
+> $$
+> | g(x_k, y_k) | \le |x_k| \frac{ |x_k y_k| }{x_k^2 + y_k^2} \le |x_k| \frac{1}{2} \to 0
+> $$
+
+
+A function $f : \mathbb{R}^n / \{0\} \to \mathbb{R}$ is **homogeneous of degree $k$** if
+$$
+f(tx) = t^k f(x) \qquad \forall t > 0, \forall x \in \mathbb{R}^n / \{0\}
+$$
+> Basically, we should be able to replace $x,y$ with $t$, and take out the $t$ into a $t^k$ term.
+
+> [!Example] Example: Homogenoeus Functions
+> $$
+> g(x,y) = \frac{x^2 y}{x^2 + y^2}
+> $$
+> Is homogeneous of degree 1, because
+> $$
+> g(tx, ty) = \frac{t^3 xy}{t^2 (x^2 + y^2)} = t g(x,y)
+> $$
+> 
+> $$
+> f(x,y) = \frac{xy}{x^2 + y^2}
+> $$
+> Is homogeneous of degree 0, because
+> $$
+> f(tx, ty) = t^0 f(x,y)
+> $$
+
+Notice how above, $g$ is homogeneous of degree 1 and has a limit to $(0,0)$, whereas $f$ is homogeneous of degree 0 and doesn't. Does there exist some generalizaiton for this?
+
+> [!Abstract] Proposition: Limits of Homogeneous Functions
+> If $f : \mathbb{R}^n / \{0\} \to \mathbb{R}$ is continuous, and homogeneous of degree $k > 0$, then
+> $$
+> \lim_{x \to 0} f(x) = 0
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > We look at $f(x)$, and we try to make the case that as $x \to 0$, $f(x) \to 0$.
+> > $$
+> > f(x) = f \left( ||x|| \frac{x}{||x||} \right)
+> > $$
+> > We write this as a product of something that approaches 0 and something that is bounded. 
+> > 
+> > By assumption, $f(x)$ is homogeneous of degree $k$, so letting $t = ||x||$,
+> > $$
+> > f \left( ||x|| \frac{x}{||x||} \right) = ||x||^k f \left( \frac{x}{||x||} \right)
+> > $$
+> > As $x \to 0$, $||x||^k \to 0$! Also, as $\frac{x}{||x||} \in S^{n-1}$ (the unit sphere of dimension $n - 1$), which is a sequentially compact, then continuous functions on sequentially compact sets are bounded. 
+> > $$
+> > ||x||^k f \left( \frac{x}{||x||} \right) \to 0 
+> > $$
+
+This does not necessarily mean that homogeneous functions of degree $k = 0$ don't have a limit at 0! Just that some don't. 
+> Any constant function (ex. $f(x) = 1$) have defined limits as $x \to 0$!
+
+## 13.2
+Let $f : O \to \mathbb{R}$, $x = (x_1, \dots x_n) \in O$. We define the **partial derivative of $f$ with respect to $x_i$ as**
+$$
+\frac{\partial f}{\partial x_i} (x) = \lim_{t \to 0} \frac{f(x + t e_i) - f(x)}{t}
+$$
+if the latter limit exists.
+> Keep all variables constant except $x_i$, and take $\frac{d}{dx_i}$!
+
+> [!Example]+ Example: Partial Derivatives and Continuity
+> Let $f : \mathbb{R}^2 \to \mathbb{R}$,
+> $$
+> f(x,y) = 
+> \begin{cases}
+> \frac{xy}{x^2 + y^2} & (x,y) \ne (0,0) \\
+> 0 & (x,y) = (0,0)
+> \end{cases}
+> $$
+> 
+> We noticed that $f$ is not continuous at $(0,0)$, and $\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}$ exist (by the quotient rule) at all $(x,y) \ne (0,0)$.
+> 
+> Then, does $\frac{\partial f}{\partial x}$ exist at $(0,0)$?
+> $$
+> \lim_{t \to 0} \frac{f(t,0) - f(0,0)}{t} = \lim_{t \to 0} \frac{0 - 0}{t}
+> $$
+> Yes! It exists and is equal to 0.
+> 
+> Similarly, we can find $\frac{\partial f}{\partial y} = 0$.
+> 
+> This is very interesting! Even though $f(x,y)$ is not continuous at $(0,0)$, our partial derivatives still exist! This goes against our understanding of differentiability and continuity in the single variable case. 
+
+If all $\frac{\partial f}{\partial x_i} (x)$ exist for all $x \in O$ open, then we can define
+$$
+\frac{d}{d x_i} \left( \frac{\partial f}{\partial x_j} \right) (x) = \frac{\partial^2 f}{\partal x_i \partial x_j} (x)
+$$
+
+Typically, these mixed partials are equal in any order, but there are some cases where they're not! The following theorem tells us when they are equivalent.
+
+> [!Abstract] Theorem:
+> If $\frac{d}{d x_i} \left( \frac{\partial f}{\partial x_j} \right)$ and $\frac{d}{d x_j} \left( \frac{\partial f}{\partial x_i} \right)$ exists and are continuous in $O$, then
+> $$
+> \frac{d}{d x_i} \left( \frac{\partial f}{\partial x_j} \right) = \frac{d}{d x_j} \left( \frac{\partial f}{\partial x_i} \right)
+> $$
+>
+> > [!Note] Proof 
+> > 
+Let $x = x_i, y = x_j$. Then,
+$$
+A = f(x_0 + r, y_0 + r) - f(x_0 + r, y_0) - f(x_0, y_0 + r) + f(x_0, y_0)
+$$
+Define $\phi(x) = f(x, y_0 + r) - f(x, y_0)$. Then,
+$$
+A = \phi(x_0 + r) - \phi(x_0)
+$$
+By the mean value theorem, this is equal to
+$$
+\begin{align*}
+= \phi' (x_0 + \theta_1) * r = \frac{\partial}{\partial x} [ f(x_0 + \theta_1, y_0 + r) - f(x_0 + \theta_1, y_0) ] R 
+\end{align*}
+$$
+> We create two equivalent functions that converge to the two partial derivatives, respectively, forcing equality.

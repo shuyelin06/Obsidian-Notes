@@ -851,39 +851,26 @@ Note that uniform continuity implies continuity. Simply let $v_i$ be the sequenc
 >
 > > [!Note]- Proof
 > >
-TODO
-
-Let $K$ be sequentially compact, $F
-
-
-> > [!Note]- Proof
+> > Let $K$ be sequentially compact, and $F : K \to \mathbb{R}^n$ continuous. We wish to show that $F$ is uniformly continuous.
 > > 
-> > Suppose by way of contradiction that $F: K \to \mathbb{R}^n$ is continuous, $K$ sequentially compact, but $F$ is **not** uniformly continuous.
-> > 
-> > By definition, $\exists \{u_i\}, \{v_i\}$ with
+> > By way of contradiction, suppose that $F$ is not uniformly continuous. Then, there exists some $\{x_k\}, \{y_k\}$ such that $\{x_k - y_k\} \to 0$, but
 > > $$
-> > || u_i - v_i || \to 0
-> > $$
-> > With
-> > $$
-> > || F(u_i) - F(v_i) || \not\to 0
-> > $$
-> > By negating the definition of convergence, we can rewrite this as meaning $\exists \epsilon > 0$, such that $\forall I$, $\forall i \ge I$,
-> > $$
-> > || F(u_i) - F(v_i) || \ge \epsilon
+> > \{ f(x_k) - f(y_k) \} \not\to 0
 > > $$
 > > 
-> > Choose this $\epsilon$. For a subsequence starting at $i \ge I$, we find subsequences $\{u_{i_j}\}, \{v_{i_j}\}$, such that $\forall j$,
+> > By definition of continuity, $\exists \epsilon > 0$ such that $\forall N \in \mathbb{N}$, $\forall k \ge N$,
 > > $$
-> > || F(u_{i_j}) - F(v_{i_j}) || \ge \epsilon
+> > || f(x_k) - f(y_k) || \ge \epsilon
 > > $$
-> > > So, all terms in the subsequence are greater than $\epsilon$!
-> > 
-> > Because $K$ is sequentially compact, we can find a subsequence in our subsequence such that $\{u_{i_{j_k}}\} \to u \in K, \{v_{i_{j_k}}\} \to u$. By continuity, we find that
+> > Choose this $\epsilon$. Then, by sequential compactness of $K$, we can find a subsequence such that for $i \ge N$, all terms have a difference greater than $\epsilon$.
 > > $$
-> > \{F(u_{i_{j_k}}\} \to F(u) \qquad \{F(v_{i_{j_k}}\} \to F(u)
+> > || f(x_{k_i}) - f(y_{k_i}) || \ge \epsilon
 > > $$
-> > Thus, the difference converges to 0, but this is a contradiction!
+> > But by sequential compactness on each $f(x_{k_i})$, $f(y_{k_i})$, we can find convergent subsequences
+> > $$
+> > \{ f(x_{k_{i_j}}) \} \to u_1 \qquad \{ f(y_{k_{i_j}}) \} \to u_2
+> > $$
+> > As $f$ is continuous, and $\{x_k\}, \{y_k\}$ converge, then $u_1 = u_2$. This means that our subsequence $f(x_{k_i}) - f(y_{k_i})$ converges to 0, but this is a contradiction! 
 
 Like continuity, we also have a $\epsilon-\delta$ definition for uniform continuity too!
 

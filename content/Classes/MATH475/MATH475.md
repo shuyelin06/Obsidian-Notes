@@ -667,3 +667,98 @@ $$
 F(x) = \frac{1 - \sqrt{1 - 4x}}{2x}
 $$
 We must define $\binom{a}{k}, a \in \mathbb{R}$.
+
+> [!Abstract] Theorem
+> If $c_n$ denotes the total up-right paths that don't cross over the diagonal, 
+> $$
+> c_n = \sum_{i=0}^{n-1} c_i c_{n-i-1}
+> $$
+> And the ogf for $\{c_n\}$ is
+> $$
+> F(x) = \frac{1 - \sqrt{1 - 4x}}{2x}
+> $$
+> 
+> Lastly, we can find the closed-form solution for $c_n$ as
+> $$
+> c_n = \frac{\binom{2n}{n}}{n+1}
+> $$
+> Called the $n^{th}$ **catalan number**.
+>
+> > [!Note]- Proof (Algebra)
+> > 
+> > We have
+> > $$
+> > \begin{align*}
+> > F(x) 
+> > &= \sum_{n=0}^\infty c_n x^n \\
+> > &= 1 + \sum_{n=1}^\infty c_n x^n \\
+> > &= 1 + \sum_{n=1}^\infty \left( \sum_{i=0}^{n-1} c_i c_{n-i-1} \right) x^n \\
+> > &= 1 + x \sum_{n=1}^\infty \left( \sum_{i=0}^{n-1} c_i c_{n-i-1} \right) x^{n-1} \\ 
+> > &= 1 + x [F(x)]^2 \\ 
+> > x (F(x))^2 - F(x) + 1 &= 0
+> > \end{align*}
+> > $$
+> > We have a quadratic in terms of $F(x)$! We can solve for $F(x)$ using the quadratic formula to find
+> > $$
+> > F(x) = \frac{1 \pm \sqrt{1 - 4x}}{2x}
+> > $$
+> > We find that $\lim_{x \to 0} F(x) = 1$ when the $\pm$ is negative, so we choose the negative variant as $F(0) = c_0 = 1$.
+> > 
+> > By a Lemma,
+> > $$
+> > \begin{align*}
+> > F(x) 
+> > &= \frac{1 - \sqrt{1 - 4x}}{2x} \\
+> > &= \frac{1 - (1 - 2 \sum_{n=1}^\infty \frac{\binom{2n - 2}{n-1}}{n} x^n )}{2x} \\
+> > &= \sum_{n=1}^\infty \frac{\binom{2n - 2}{n-1}}{n} x^{n-1} \\
+> > &= \sum_{n=0}^\infty \frac{\binom{2n}{n}}{n + 1} x^{n} \\
+> > \end{align*}
+> > $$
+> > 
+> > Giving us $c_n = \frac{\binom{2n}{n}}{n+1}$.
+>
+> > [!Note]- Proof (Combinatorial)
+> > 
+> > Consider a "bad" diagonal, which is the diagonal 1 unit above our diagonal.
+> > 
+> > Any "bad" path to $(n,n)$ touches the bad diagonal. Let $(i, i+1)$ be the first time you touch the bad diagonal. For any path from $(1,1)$ to $(n,n)$ touching the bad diagonal, we reflect the path after it touches the bad diagonal (an UP turns into a right, and vice versa).
+> > 
+> > At $(i, i + 1)$ we need $n - i$ RIGHTs and $n - (i + 1)$ UPs to get to $(n,n)$. After reflecting, we now have $n - i$ UPs and $n - (i + 1)$ RIGHTs. Accounting for the number of UPs and RIGHTs we needed to get to $(i, i+1)$, we have $n - (i + 1) + i + 1 = n + 1$ UPs, $n - (i + 1) - i = n - 1$ RIGHTs.
+> > 
+> > Now, a reflected path ends at $(n - 1, n + 1)$! 
+> > 
+> > We find that the number of UP-RIGHT paths ending at $(n - 1, n + 1)$ (ignoring anything with the diagonals) is
+> > $$
+> > \binom{(n-1) + (n+1)}{(n-1)} = \binom{2n}{n-1}
+> > $$
+> > But by the reflection, each of these paths corresponds to a bad path from $(0,0)$ to $(n,n)$!
+> > 
+> > We delete all of these bad paths from $(0,0)$ to $(n,n)$, to get all good paths from $(0,0)$ to $(n,n)$.
+> > $$
+> > \binom{n + n}{n} + \binom{2n}{n-1} = \frac{\binom{2n}{n}}{n+1}
+> > $$
+
+> [!Example]+ Example: Using the Catalan Numbers (1, Stanley Combinatorics)
+> What are the total ways to order "n" pairs of parentheses.
+>
+> Let's consider an opening parenthes as a "RIGHT", and closing as an "UP". We can't, at any point, have too many closing parentheses than opening parentheses. In other words, we cannot cross the diagonal!
+>
+> This gives us
+> $$
+> c_n = \frac{\binom{2n}{n}}{n+1}
+> $$
+> ways.
+
+
+> [!Example] Example: Using the Catalan Numbers (2, Stanley Combinatorics)
+> What are the total ways to triangulate an $n + 2$ sided polygon (labeled)?
+>
+> Note that for any given polygon, all triangulations include a triangle with two vertices $n+2 \sim n+1$ as a base, and some other point $k$. This splits the polygon into two sections.
+> - $n + 2, 1, 2, \dots k \to k + 1$ vertices on one side, so $k - 1$ triangulations.
+> - $k, k + 1, \dots n + 1 \to n + 1 - k + 1 = n + 2 - k$$ vertices on the other side, so $n - k$ triangulations.
+> 
+> 
+> So, the total triangulations of the $n + 2$ polygon is
+> $$
+> \sum_{k=1}^n c_{k-1} c_{n-k} = c_n
+> $$

@@ -92,6 +92,57 @@ We say that $u$ is **orthogonal** to $v$, $u \perp v$, if $<u, v> = 0$.
 > > \end{align*}
 > > $$
 
+> [!Example]+ Example: Cauchy-Schwarz (1)
+> Find the maximum value of
+> $$
+> \frac{x + 2y}{\sqrt{x^2 + y^2}}
+> $$
+> 
+> Let $\vec{v}_1 = (x,y)$, $\vec{v}_2 = (1,2)$. Then, by Cauchy-Schwarz,
+> $$
+> \begin{align*}
+> |\vec{v}_1 \cdot \vec{v}_2|
+> &\le || \vec{v}_1 || \cdot || \vec{v}_2 || \\
+> x + 2y 
+> &\le \sqrt{x^2 + y^2} \sqrt{5} \\
+> \frac{x + 2y}{\sqrt{x^2 + y^2}} &\le \sqrt{5}
+> \end{align*}
+> $$
+> 
+> We find our maximium is $\sqrt{5}$! Now, we find our maximizer.
+> 
+> Cauchy-Schwarz is only equal when $\vec{v}_1 = \vec{v}_2$. So,
+> $$
+> x = 1 \qquad y = 2
+> $$
+> We have maximizer $(1,2)$!
+
+> [!Example]- Example: Cauchy-Schwarz (2)
+> Find the maximum value of
+> $$
+> \frac{x + y}{\sqrt{x^2 + 4y^2}}
+> $$
+> 
+> Let $\vec{v}_1 = (x, 2y)$, and $\vec{v}_2 = (1, 1/2)$. Then, by Cauchy Schwarz,
+> $$
+> \begin{align*}
+> |\vec{v}_1 \cdot \vec{v}_2|
+> &\le || \vec{v}_1 || \cdot || \vec{v}_2 || \\
+> x + y 
+> &\le \sqrt{x^2 + 4y^2} \sqrt{5/4} \\
+> \frac{x + y}{\sqrt{x^2 + 4y^2}}
+> &\le \sqrt{5/4}
+> \end{align*}
+> $$
+> 
+> We have found a maximum value! Now, we find our maximizer.
+> 
+> For Cauchy-Schwarz to be equal, it must be true that $\vec{v}_1 = \vec{v}_2$. So,
+> $$
+> x = 1 \qquad 2y = 1/2 \Longrightarrow y = 1/4
+> $$
+> Our maximizer is $(1, 1/4)$!
+
 > [!Info] Corollary
 > Note that equality holds if and only if $\exists \alpha \in \mathbb{R}$ such that $u = \alpha v$ (or $v = \alpha u$).
 >
@@ -456,38 +507,77 @@ Using these definitions, we claim that the epsilon-delta deinition is also equiv
 > Then, $F$ is continuous at every point of $O$ if and only if the set of inputs $F^{-1} (V)$ is open for all $V \subseteq \mathbb{R}^m$ open.
 >
 > > [!Note]- Proof
-> >
+> > 
+> > #### Proof $\rightarrow$
+> > Let $F$ be continuous for all $x \in O$. We wish to show that the set of inputs $F^{-1} (V)$ is open $\forall V \in \mathbb{R}^n$.
+> > 
+> > Let $V \in \mathbb{R}^n$. We want to show that $F^{-1} (V)$ is open. In other words, $\forall x \in F^{-1}(V)$, $\exists r > 0$ such that $B_r (x) \subseteq F^{-1} (V)$.
+> > 
+> > Because $x \in F^{-1} (V)$, $F(x) \in V$. By the openness on $V$, we can find a $r > 0$ such that
+> > $$
+> > B_r (F(x)) \subseteq V
+> > $$
+> > Because all values of $B_r (F(x))$ are in $V$, all values of the domain mapping to values $B_r (F(x))$ also map to values in $V$. Thus, taking the inverse $F^{-1}$ maintains the subset property.
+> > $$
+> > F^{-1} (B_r (F(x))) \subseteq F^{-1} (V)
+> > $$
+> > 
+> > Because $F$ is continuous, we find that $\forall \epsilon > 0$, $\exists \delta > 0$ 
+> > $$
+> > B_\delta (x) \cap O \subseteq F^{-1} (B_\epsilon (F(x)))
+> > $$
+> > We let $\epsilon = r$, to find a $\delta_1 > 0$ such that
+> > $$
+> > B_{\delta_1} (x) \cap O \subseteq F^{-1} (B_r (F(x))) \subseteq F^{-1} (V)
+> > $$
+> > 
+> > We now end by modifying our $\delta$ to guarantee that $B_\delta (x) \subseteq O$. Because $x \in F^{-1} (V)$, it is in the domain of $F$ ($O$), and as $O$ is open, we can find a $\delta_2 > 0$ such that $B_{\delta_2} \subseteq O$. Choose $\delta = \min(\delta_1, \delta_2)$. Then, we find tha
+> > $$
+> > B_\delta (x) \cap O = B_\delta (x) \subseteq F^{-1} (B_r (F(x))) \subseteq F^{-1} (V)
+> > $$
+> > 
+> > Thus, $F^{-1} (V)$ is open. 
+> > 
+> > 
 > > #### Proof ($\leftarrow$)
-> > We show that if $F^{-1} (V)$ is open $\forall V$ open, then $F$ is continuous (and it follows that $O = F^{-1} (\mathbb{R}^m)$ must be open).
+> > Suppose that for all $V \subseteq \mathbb{R}^m$ open, we have that $F^{-1} (V)$ is also open. We want to show that $F$ is continuous.
 > > 
-> > Assume $F^{-1} (V)$ is open $\forall V$ open. We want to show that $\forall \epsilon > 0$, $\exists \delta > 0$ such that
+> > Let $x \in O$. Now let $\epsilon > 0$. We want to find a $\delta > 0$ such that
 > > $$
-> > B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u)))
+> > F(B_\delta (x) \cap O) \subseteq B_\epsilon (F(x))
 > > $$
+> > Take the ball $B_\epsilon (F(x))$. Because open balls are always open, and $B_\epsilon (F(x)) \subseteq \mathbb{R}^m$, we know that $F^{-1} (B_\epsilon (F(x)))$ is open by assumption.
 > > 
-> > Take $V = B_\epsilon (F(u))$. Because open balls are open sets, by assumption, $F^{-1} (B_\epsilon (F(u)))$ is open. As we know $u \in F^{-1} (B_\epsilon (F(u)))$, there $\exists \delta > 0$ such that $B_\delta (u) \subseteq F^{-1} (B_\epsilon (F(u)))$.
-> > > Note that we did not use the $O$ open fact, but $O = F^{-1} (\mathbb{R}^m)$ is open!
+> > Because this is open, and $x \in F^{-1} (B_\epsilon (F(x))$, by definition, we can find a $r > 0$ such that
+> > $$
+> > B_r (x) \subseteq F^{-1} (B_\epsilon (F(x))
+> > $$
+> > Let $\delta = r$. We have found our $\delta$!
 > > 
-> > 
-> > #### Proof ($\rightarrow$)
-> > Conversely, assume $F$ is continuous at every $u \in O$. Let $V \subseteq \mathbb{R}^m$ open. We want $F^{-1} (V)$ open.
-> > 
-> > Fix a point $u \in F^{-1}(V)$. To show openness, we want to show that $\exists r > 0$ such that $B_r (u) \subseteq F^{-1}(V)$. We know that $F(u) \subseteq V$ by assumption. 
-> > 
-> > Since $V$ is open by assumption, there $\exists \epsilon > 0$ such that $B_\epsilon (F(u)) \subseteq V$. Since $F$ is continuous at $u$, $\exists \delta > 0$ such that
 > > $$
-> > B_\delta (u) \cap O \subseteq F^{-1} (B_\epsilon (F(u))) \subseteq F^{-1}(V)
-> > $$
-> > This is close to what we want, except for the $\cap O$! We use the assumption that $O$ is open, and $u \in O$, to find a $\delta_1$ such that
-> > $$
-> > B_\delta (u) \subseteq O
-> > $$
-> > We find our $r = \min(\delta, \delta_1)$, finding a ball centered around $u$ to be contained within $F^{-1} (V)$.
-> > $$
-> > B_r(u) \subseteq B_\delta(u) \cap O \subseteq F^{-1} (V)
+> > B_r (x) \cap O \subseteq B_r (x) \subseteq F^{-1} (B_\epsilon (F(x))
 > > $$
 
-We end with a small remark.
+We have a similar case with closed sets.
+
+> [!Abstract] Theorem: Continuity and Closed Sets
+> Let $F : \mathbb{R}^n \to \mathbb{R}^m$.
+> 
+> Then, $F$ is continuous at every point of $O$ if and only if the set of inputs $F^{-1} (V)$ is closed for all $V \subseteq \mathbb{R}^m$ closed.
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\rightarrow$)
+> > Let $F$ be continuous. We want to show that $F^{-1} (V)$ is closed for all $V \subseteq \mathbb{R}^m$ closed.
+> > 
+> > Choose some $V \subseteq \mathbb{R}^m$ closed, and take its complement, $V^c$ which is open. Because $V^c$ is open and $F$ is continuous, by the previous theorem it must hold that $F^{-1} (V^c)$ is open.
+> > 
+> > Note that if $x \in F^{-1} (V^c)$, then it cannot be in $F^{-1} (V)$, as $V^c \cap V = \varnothing$ and a single domain value cannot map to two values. Thus, $F^{-1} (V^c) = F^{-1} (V)^c$! As $F^{-1} (V)^c$ is open, it therefore must hold that $F^{-1} (V)$ is closed. 
+> > 
+> > #### Proof ($\leftarrow$)
+> > Suppose that for all $V \subseteq \mathbb{R}^m$ closed, $F^{-1} (V)$ is closed. We wish to show that $F$ is continuous.
+> > 
+> > We show that if for any $V \subseteq \mathbb{R}^m$ open, $F^{-1} (V)$ is open, then $F$ is continuous. Let $V \subseteq \mathbb{R}^m$ open. Then, $V^c$ is closed, so by assumption, $F^{-1} (V^c)$ is closed. By a similar argument from before, $F^{-1} (V^c) = F^{-1} (V)^c$, so $F^{-1} (V)$ is open.
 
 > [!Info] Remark
 > Let $f : \mathbb{R}^n \to \mathbb{R}$. If $f$ is continuous, $\alpha \in \mathbb{R}$ fixed, then the following sets are open.
@@ -759,6 +849,13 @@ Note that uniform continuity implies continuity. Simply let $v_i$ be the sequenc
 > [!Abstract] Theorem: Uniform Continuity and Sequential Compactness
 > If $K$ is sequentially compact, and $F: K \to \mathbb{R}^n$ is continuous, then $F$ is uniformly continuous.
 >
+> > [!Note]- Proof
+> >
+TODO
+
+Let $K$ be sequentially compact, $F
+
+
 > > [!Note]- Proof
 > > 
 > > Suppose by way of contradiction that $F: K \to \mathbb{R}^n$ is continuous, $K$ sequentially compact, but $F$ is **not** uniformly continuous.
@@ -1162,6 +1259,69 @@ With some assumptions on $T$, we can guarantee the existence of a fixed point fo
 > > 
 > > We know that $\{p_k\} \to p$, and $\{p_{k+1}\} \to T(p)$, so $T(p) = p$ by the uniqueness of limits.
 > > > Note that by this, Lipschitz functions are essentially a stronger form of continuity!
+
+> [!Example]- Example: The Contraction Mapping Principle
+> Let $X = \{ F \in C([0, \frac{1}{2}],\mathbb{R}) : 0 \le f(x) \le 4 \quad \forall x \in [0, \frac{1}{2}] \}$. Let $T : X \to C([0, \frac{1}{2}], \mathbb{R})$ be given as
+> $$
+> T(f(x)) = 1 + \int_0^x f(t) dt
+> $$
+> 
+> #### Part 1
+> Show that $T$ maps $X$ onto $X$.
+> 
+> Take any $f \in X$. We wish to show that $T(f) \in X$.
+> $$
+> \begin{align*}
+> T(f) 
+> &= 1 + \int_0^x f(t) dt \\
+> &\le 1 + \frac{1}{2} \max_{x \in [0,1/2]} f(x) \\
+> &\le 1 + \frac{1}{2} 4 \\
+> &\le 3
+> \end{align*}
+> $$
+> 
+> And furthermore, because $f(x) \ge 0$, 
+> $$
+> T(f) = 1 + \int_0^x f(t) dt \ge 1
+> $$
+> 
+> So, $1 \le T(f) \le 3$, meaning $T(f) \in X$! 
+> 
+> #### Part 2
+> Is $T: X \to X$ a contraction?
+> 
+> Take any $f_1, f_2 \in X$. To show that $T$ is a contraction, we wish to show that for some $M < 1$,
+> $$
+> \begin{align*}
+> d(T(f_1), T(f_2)) 
+> &\le M d(f_1, f_2) \\
+> \max_{x \in [0,\frac{1}{2}]} \left| \int_0^x f_1 (t) - f_2 (t) dt \right| 
+> &\le 
+> \max_{x \in [0,\frac{1}{2}]} \int_0^x |f_1(t) - f_2(t)| dt \\
+> &\le
+> \frac{1}{2} \max_{x \in [0,\frac{1}{2}]} |f_1(t) - f_2(t)|
+> \end{align*}
+> $$
+> 
+> We find $M = 1/2$! So, $T$ is a contraction.
+> 
+> #### Part 3
+> Write down a fixed point of $T$.
+> 
+> For a fixed point of $T$,
+> $$
+> T(f) = f \Longrightarrow f(x) = 1 + \int_0^x f(t) dt
+> $$
+> This gives us system
+> $$
+> \begin{cases}
+> f'(x) = f(x) \\
+> f(0) = 1
+> \end{cases}
+> $$
+> 
+> Which has a solution of $e^x$. $e^x$ is a fixed point of our system! 
+
 
 This theorem is quite important in differential equations!
 
@@ -1916,3 +2076,187 @@ $$
 \end{align*}
 $$
 > We create two equivalent functions that converge to the two partial derivatives, respectively, forcing equality.
+
+## 13.3
+From prior courses, we learned to define the **directional derivative** of a function $f$ as
+$$
+\frac{d}{dt} \bigg|_{t = 0} [ f(x + th) ] = \langle \nabla f(x), h \rangle
+$$
+For $x \in \mathbb{R}^n, h \in \mathbb{R}^n$. Where the **gradient** of the function**, $\nabla f$, is given as
+$$
+\nabla f(x) = \left( \frac{\partial f}{\partial x_1}, \dots, \frac{\partial f}{\partial x_n} \right)
+$$
+
+But this may not actually hold for all functions! Consider
+$$
+f(x,y) =
+\begin{cases}
+\frac{xy}{x^2 + y^2} & (x, y) \ne 0 \\
+0 & (x,y) = 0
+\end{cases}
+$$
+Then, for $x = (0,0)$, $h = (1,1)$, the directional derivative does not exist, even though $\langle \nabla f(x), h \rangle = 0$!
+
+We prove the above definition, and show the conditions in which it holds.
+
+> [!Abstract] Proposition
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, and assume all $\frac{\partial f}{\partial x_i}$ exist $\forall x \in \mathbb{R}^n$, $\forall i \in \{1, \dots n\}$.
+> 
+> Fix $x, h \ne 0$ ($h \in \mathbb{R}^n$). Then, there exists a $z_1, \dots z_n \in B_{||h||} (x)$ such that
+> $$
+> f(x + h) - f(x) = \frac{\partial f}{\partial x_1} (z_1) h_1 + \dots + \frac{\partial f}{\partial x_n} (z_n) h_n
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > We prove this for $n = 2$, though the proof can very easily be extended to more dimensions.
+> > 
+> > Consider the points $(x_1, x_2)$, $(x_1 + h, x_2 + h)$, and look at
+> > $$
+> > f(x_1 + h, x_2 + h) - f(x_1, x_2) = f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) + f(x_1, x_2 + h_2) - f(x_1, x_2)
+> > $$
+> > 
+> > By doing this, we convert our problem into 1 dimensions, where we can solve for the differences
+> > $$
+> > f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) \qquad f(x_1, x_2 + h_2) - f(x_1, x_2)
+> > $$
+> > separately.
+> > 
+> > By the Mean Value Theorem, 
+> > $$
+> > \begin{align*}
+> > f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) = \frac{\partial f}{\partial x_1} (x_1 + \theta h_1, x_2 + h_2) h_1 \\
+> > f(x_1, x_2 + h_2) - f(x_1, x_2) = \frac{\partial f}{\partial x_2} (x_1, x_2 + \theta_2 h_2) h_2 \\
+> > f(x_1 + h, x_2 + h) - f(x_1, x_2) = \frac{\partial f}{\partial x_1} (x_1 + \theta h_1, x_2 + h_2) h_1 + \frac{\partial f}{\partial x_2} (x_1, x_2 + \theta_2 h_2) h_2
+> > \end{align*}
+> > $$
+> > 
+> > Let $z_1 = (x_1 + \theta_1 h_1, x_2 + h_2)$, and $z_2 = (x_1, x_2 + \theta_2 h_2)$. We are done.
+
+If $f : O \to \mathbb{R}^n$, $O$ open, and all $\frac{\partial f}{\partial x_i} (x)$ exist $\forall x \in O$, and are continuous, $f$ is called **continuously differentiable**, called $C^1 (O)$.
+
+> [!Abstract] Theorem: Formula for The Directional Derivative
+> If $f : \mathbb{R}^n \to \mathbb{R}$ is $C^1$, then $\forall x \in \mathbb{R}^n$, $\forall h \ne 0$, the limit
+> $$
+> \frac{d}{dt} \bigg|_{t=0} f(x + th) = \lim_{t \to 0} \frac{f(x + th) - f(x)}{t}
+> $$
+> Exists and equals $\langle \nabla f(x), h \rangle$.
+> $$
+> \langle \nabla f(x), h \rangle = \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x) h_i
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > By our previous proposition, 
+> > $$
+> > \begin{align*}
+> > \frac{f(x + th) - f(x)}{t} 
+> > &= \frac{1}{t} \left( \frac{\partial f}{\partial x_1} (z_1) t h_1 + \dots + \frac{\partial f}{\partial x_n} (z_n) t h_n \right) \\
+> > &= \frac{\partial f}{\partial x_1} (z_1) h_1 + \dots + \frac{\partial f}{\partial x_n} (z_n) h_n
+> > \end{align*}
+> > $$
+> > For $z_1, \dots z_n \in B_{||th||} (x)$. Let $t \to 0$. Then, the ball of $B_{||th||} (x)$ will shrink towards $x$, forcing all $z_i$'s to converge to $x$! Thus, as $t \to 0,$ we have
+> > $$
+> > \frac{\partial f}{\partial x_1} (x) h_1 + \dots + \frac{\partial f}{\partial x_n} (x) h_n
+> > $$
+
+Let $P \ne 0$, $P \in \mathbb{R}^n$, $f : \mathbb{R}^n \to \mathbb{R}$. Then, **the partial derivative in direction $P$** of $f$ is given as
+$$
+\frac{\partial f}{\partial P} (x) = \frac{d}{dt} \bigg|_{t=0} f(x + tP)
+$$
+If it exists. By the previous theorem, the partial derivative of $f$ in the direction $P$ exists and equals $\langle \nabla f, P \rangle \rangle$ if $f \in C^1$.
+
+> [!Abstract] Proposition
+> Let $f : \mathbb{R}^n \to \mathbb{R}, C^1$, $x \in \mathbb{R}^n$, $h \in \mathbb{R}^n$ where $h \ne 0$. 
+> 
+> Then, there exists $0 < \theta < 1$ such that
+> $$
+> f(x + h) - f(x) = \langle \nabla f(x + \theta h), h \rangle
+> $$
+>
+> > This is similar to the first proposition we have, except all $z_1, \dots z_n$ are assumed to be at the point.
+>
+> > [!Note]- Proof
+> > 
+> > Let $\phi : \mathbb{R} \to \mathbb{R}$, $\phi(t) = f(x + th)$ so that 
+> > $$
+> > \phi(1) = f(x + h) \qquad \phi(0) = f(x)
+> > $$
+> > 
+> > Then, $f(x + h) - f(x) = \phi(1) - \phi(0) = \phi'(\theta) (1 - 0)$ by the mean value theorem (for $0 < \theta < 1$) and furthermore, as the derivative of $\phi(t)$ is the directional derivative,
+> > $$
+> > f(x + h) - f(x) = \phi'(\theta) = \langle \nabla f(x + \theta h), h \rangle
+> > $$
+
+> [!Abstract] Theorem: Partial Derivatives and Continuity
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, and assume all $\frac{\partial f}{\partial x_i} (x)$ exist and are continuous. 
+>
+> Then, $f$ is continuous.
+>
+> > [!Note] Proof (? Missing something) 
+> > 
+> > Look at $f(x + h) - f(x)$. We would like to claim that as $h \to 0$, $f(x + h) \to f(x)$.
+> > 
+> > By the previous proposition, for some $0 < \theta < 1$
+> > $$
+> > | f(x + h) - f(x) | = | \langle \nabla f(x + \theta h, h) \rangle |
+> > $$
+> > By Cauchy Schwarz, this is less than or equal to
+> > $$
+> > \le || \nabla f(x + \theta h) || \cdot || h ||
+> > $$
+> > But as c, we can bound the first term! 
+> > $$
+> > || \nabla f(x + \theta h) || \le \max || \nabla f(y) || \cdot || x - y || \le C
+> > $$
+> > So, this drops to 0.
+> 
+> > By this proof, in fact, if all the partials exist $\forall x \in O$ and are bounded, then $f$ is still continuous!
+
+Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^1$. Fix $x$, and assume $\nabla f \ne 0$. Then, the maximum of the directional derivative at $x$ is given as
+$$
+\max_{||P|| = 1} \frac{\partial f}{\partial P} (x)
+$$
+Is attained for
+$$
+P = \frac{\nabla f(x)}{|| \nabla f (x) ||}
+$$
+In other words, the direction of the gradient.
+
+> [!Note] Proof
+> If $||P|| = 1$, we have
+> $$
+> \frac{\partial f}{\partial P} (x) = \langle \nabla f(x), P \rangle
+> $$
+> By Cauchy-Schwarz, this is
+> $$
+> \le || \nabla f(x) || \cdot || P || = || \nabla f(x) ||
+> $$
+> We have an upper bound on our directional derivative! We can attain our upper bound if $P = \frac{\nabla f(x)}{|| \nabla f(x) ||}$.
+> $$
+> \begin{align*}
+> \langle \nabla f(x), P \rangle 
+> &= \langle \nabla f(x), \frac{\nabla f(x)}{|| \nabla f(x) ||} \rangle \\ 
+> &= \frac{1}{|| \nabla f(x) ||} \langle \nabla f(x), \nabla f(x) \rangle \\
+> &= || \nabla f(x) ||
+> \end{align*}
+> $$
+> We've found a maximizer.
+
+We end with a small remark that will segway into the next section. Let $f : \mathbb{R}^n \to \mathbb{R}, C^1$. Then,
+$$
+\lim_{h \to 0} \frac{f(x + h) - f(x) - \langle \nabla f(x), h \rangle}{||h||} = 0
+$$
+>  This can be proven by using Cauchy-Schwarz.
+
+We use this to define differentiable functions!
+
+$f : \mathbb{R}^n \to \mathbb{R}$ is **differentiable** at $x$ if $\exists Q \in \mathbb{R}^n$ such that
+$$
+\frac{f(x + h) - f(x) - \langle Q, h \rangle}{||h||} \to 0
+$$
+as $h \to 0$.
+
+This is a stronger notion than partial diffentiation! So, $f \in C^1$ implies that $f$ is differentiable, which implies that all partials of $f$ exist. But, the converses are not true!
+
+--- Chapter 14 ---

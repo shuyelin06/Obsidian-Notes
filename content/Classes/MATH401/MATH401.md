@@ -209,10 +209,26 @@ This can be used to conveniently find $A^k$! We can then multiply this with $\ve
 
 Another application of these systems is in Recurrence Relations. Consider the following example.
 
-> [!Example] Example: Recurrence Relations
+> [!Example]+ Example: Recurrence Relations
 > THe Fibonacci Numbers are given as
 > $$
 > F_0 = 0 \qquad F_1 = 1 \qquad F_n = F_{n-1} + F_{n-2}
 > $$
 >
 > Can we find a closed formula for $F_k$?
+> 
+> To know what comes next, we need a pair of consecutive Fibonacci numbers. Let $\vec{x}_k = (F_k, F_{k+1})$. Then, 
+> $$
+> \vec{x}_{k+1} =
+> \begin{bmatrix} F_{k+1} \\ F_{k+2} \end{bmatrix} = 
+> \begin{bmatrix} F_{k+1} \\ F_{k} + F_{k + 1} \end{bmatrix} = 
+> \begin{bmatrix} 0 & 1 \\ 1 & 1 \end{bmatrix}
+> \begin{bmatrix} F_{k} \\ F_{k+1} \end{bmatrix}
+> $$
+> We've found a formula for $\vec{x}_{k+1}$ in terms of $\vec{x}_k$ (with initial conditions $\vec{x}_0 = [0, 1]$. 
+> 
+> We can solve for $\vec{x}^k$ as
+> $$
+> \vec{x}_k = A^k \vec{x}_0 = P D^k P^{-1} \vec{x}_0
+> $$
+> To find a closed form solution.

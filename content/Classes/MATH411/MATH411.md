@@ -590,6 +590,31 @@ We have a similar case with closed sets.
 > 
 > Similarly, $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}$ is closed because $\{ u \in \mathbb{R}^n : f(u) \le \alpha \}^c = \{ u \in \mathbb{R}^n : f(u) > \alpha \}$ is open.
 
+Consider the following examples.
+
+> [!Example]- Example: Continuity Proof
+> Let $f : \mathbb{R} \to \mathbb{R}$ continuous. Prove that
+> $$
+> G = \{ (x, f(x)) : x \in \mathbb{R} \}
+> $$
+> is closed.
+> 
+> Let $\{a_k\} \in G$, where $\{a_k\} \to a$. We wish to show that $a \in G$.
+> 
+> By definition of $G$, we can express our sequence $\{a_k\}$ as
+> $$
+> \{a_k\} = \{(x_k, f(x_k))\} \to (x,y)
+> $$
+> Because $\{x_k\} \to x$, by continuity on $f$ we know that
+> $$
+> \{f(x_k)\} \to f(x)
+> $$
+> And by the uniqueness of limits, if $\{f(x_k)\} \to f(x), \{f(x_k)\} \to y$, then $y = f(x)$. Thus,
+> $$
+> \{x_k,f(x_k)\} \to (x, f(x)) \in G
+> $$
+> Thus, $G$ is closed.
+
 ### Sequential Compactness
 A set $A \subseteq \mathbb{R}^n$ is **bounded** if $\exists M$ such that
 $$
@@ -827,6 +852,21 @@ We similarly prove compactness with respect to closure and boundedness.
 > > 
 > > So, we can find some $C_i \in V_{\alpha_0}$, which is covered by finitely many sets. This is a contradiction!
 
+> [!Example]- Example
+> Let $f : \mathbb{R} \to \mathbb{R}$. Assume that $f^{-1}(K)$ is closed for every (sequentially) compact set $K$ in $\mathbb{R}$. Is $f$ continuous?
+>
+> Not necessarily. The theorem above requires that all closed sets are closed in $f^{-1}(K)$, but not all closed sets are sequentially compact.
+>
+> Let $f$ be the function
+> $$
+> f(x) =
+> \begin{cases}
+> \frac{1}{x} & x \ne 0 \\
+> 0 & x = 0
+> \end{cases}
+> $$
+> 
+> Then, every sequentially compact set $K$ on $f$'s range maps to a closed set in $f$'s domain, but $f$ is not continuous at 0!
 
 ### Uniform Continuity
 The function $F : A \to \mathbb{R}^n$, $A \subseteq \mathbb{R}^m$ is **uniformly continuous** if for any two sequences $\{u_i\}, \{v_i\} \subseteq A$, if
@@ -871,6 +911,50 @@ Note that uniform continuity implies continuity. Simply let $v_i$ be the sequenc
 > > \{ f(x_{k_{i_j}}) \} \to u_1 \qquad \{ f(y_{k_{i_j}}) \} \to u_2
 > > $$
 > > As $f$ is continuous, and $\{x_k\}, \{y_k\}$ converge, then $u_1 = u_2$. This means that our subsequence $f(x_{k_i}) - f(y_{k_i})$ converges to 0, but this is a contradiction! 
+
+Note that there exist non-compact sets that also satisfy this property! Consider the following example.
+
+> [!Example]- Example
+> Let $C \subseteq \mathbb{R}^n$ with the property that any $f : C \to \mathbb{R}^n$ continuous is uniformly continuous. Is it true that $C$ must be closed and bounded?
+> 
+> #### Must $C$ be Closed?
+> Let $\{x_k\} \in C$, where $\{x_k\} \to x_0$. If $C$ is bounded, then we need to show that $x_0 \in C$.
+> 
+> By way of contradiction, suppose $x_0 \not\in C$. Then, we can define function 
+> $$
+> f(x) = \frac{1}{|x - x_0|}
+> $$
+> Which is continuous on $C$, as $x = x_0$ is by assumption not continuous on $C$.
+> 
+> By assumption, $f(x)$ must be uniformly continuous. So, $\forall \epsilon > 0$, $\exists \delta > 0$ such that $\forall x,y \in C$,
+> $$
+> | x - y | < \delta \to | f(x) - f(y) | < \epsilon
+> $$
+> 
+> Let $\epsilon = 1$. By assumption, we have a delta $\delta > 0$ such that for $|x - y| < \delta$, $|f(x) - f(y)| < 1$ for all $x,y$ satisfying this condition.
+> 
+> Choose $x_k, y_k$ converging to $x_0$ such that
+> $$
+> |x_k - x_0| < \frac{\delta}{2} \qquad |y_k - x_0| < \frac{\delta}{2}
+> $$
+> Then,
+> $$
+> |x_k - y_k| < \delta
+> $$
+> 
+> Fix $x_k$, but let $y_k \to x_0$. Then, our assumptions should still hold as we are within $\delta$, but $f(y_k) \to \infty$! This is a contradiction.
+> 
+> So, $C$ must be closed.
+> 
+> #### Must $C$ be Bounded?
+> Suppose $C = \mathbb{N}$. 
+> 
+> Let $f : \mathbb{N} \to \mathbb{R}$ continuous. Then, $f$ is automatically continuous, as in the integers, any convergent sequence must hover at the same epsilon value (due to the spacing between the integers)- it'll be the same integer value (due to the spacing between integers).
+> > Let $\epsilon > 0$. Let $\delta = 1/2$. If $x,y \in \mathbb{N}$, then if $|x - y| < 1/2$, then $x = y$, so $f(x) = f(y)$, so $|f(x) - f(y)| = 0 < \epsilon$.
+> 
+> However, $C$ is not bounded! So, $C$ does not have to be bounded.
+
+
 
 Like continuity, we also have a $\epsilon-\delta$ definition for uniform continuity too!
 
@@ -1614,26 +1698,6 @@ f(x) = \frac{1}{x}, f(0) = 0 \qquad x_k = \frac{1}{k}
 $$
 Then, $f(x)$ is not continuous at $x = 0$, yet the set $G$ is still closed!
 
-> [!Example]
-Let $C \subseteq \mathbb{R}$ with the property that any $f : C \to \mathbb{R}$ which is continuous, has to be uniformly continuous.
-
-Is it true that $C$ must be closed?
-
-Let $\{x_k\} \subseteq C$, where $\{x_k\} \to x_0 \in \mathbb{R}$. Assume by contradiction that $x_0 \not\in C$. Try $f(x) = \frac{1}{|x - x_0|}$. Then, $f$ is continuous on $C$, but is not uniformly continuous!
-
-Let $\epsilon = 1$. We ask, if we can find a $\delta > 0$ such that for $|x - y| < \delta$, $| f(x) - f(y) | < 1$. Let $x = x_k, y = x_l$, chosen so that $|x_k - x_0| < \frac{\delta}{2}, |x_l - x_0| < \frac{\delta}{2}$, so $|x_k - x_l| < \delta$.
-
-Keep $x_k$ fixed, but let $l \to \infty$. Then, $f(x_l)$ goes to infinity, so $| f(x) - f(y) | < 1$ is not possible!
-
-So, $C$ must be closed.
-
-> [!Example]
-Let $C \subseteq \mathbb{R}$ with the property that any $f : C \to \mathbb{R}$ which is continuous, has to be uniformly continuous. Does $C$ have to be bounded?
-
-Try $C = \mathbb{N}$. Let $f : \mathbb{N} \to \mathbb{R}$, some fixed function. Then, $f$ is automatically continuous and uniformly continuous, since as we're dealing with the integers, any convergent sequence for $\epsilon$ will be the same integer value (due to the spacing between integers).
-> Let $\epsilon > 0$. Let $\delta = 1/2$. If $x,y \in \mathbb{N}$, then if $|x - y| < 1/2$, then $x = y$, so $f(x) = f(y)$, so $|f(x) - f(y)| = 0 < \epsilon$.
-
-However, $C$ is not bounded! So, $C$ does not have to be bounded.
 
 
 

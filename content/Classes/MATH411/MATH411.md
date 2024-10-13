@@ -2311,3 +2311,164 @@ as $h \to 0$.
 This is a stronger notion than partial diffentiation! So, $f \in C^1$ implies that $f$ is differentiable, which implies that all partials of $f$ exist. But, the converses are not true!
 
 --- Chapter 14 ---
+
+# Local Approximation of Real-Valued Functions
+## First Order Approximation
+Recall previously that if $f \in C^1 (\mathbb{R}^n)$, then
+$$
+f(x + h) - f(x) = \langle \nabla f(x + \theta h), h \rangle
+$$
+For some $0 < \theta < 1$.
+
+A consequence of this is that
+$$
+\lim_{h\to 0} \frac{f(x+h) - f(x) - \langle \nabla f(x), h \rangle}{h} = 0
+$$
+Known as the **first order approximation formula**. In other words,
+$$
+f(x + h) = f(x) + \langle \nabla f(x), h \rangle + E(x,h) \qquad \lim_{h\to 0} \frac{E(x,h)}{||h||} = 0
+$$
+As the error drops to 0 when dividing by $||h||$, we can also say that the error is of **first order**, $O(||h||)$.
+
+Letting $y = x+h$, $x$ fixed, this can alternatively be written as
+$$
+f(y) = f(x) + \langle \nabla f(x), (y - x) \rangle + O( ||x - y|| )
+$$
+So if $x$ is fixed, and $y$ is cloed to $x$, then we have a close approximation!
+
+How does this relate to the tangent plane of $g$?
+
+Define $G = \{ (y_1, y_2, f(y_1, y_2)) \}$. Define the tangent directions at $(x_1, x_2)$, as
+$$
+\begin{align*}
+&\gamma_1 (t) = (x_1 + t, x_2, f(x_1 + t, x_2)) &\gamma_1'(0) = (1, 0, \frac{\partial f}{\partial x_1} (x_1, x_2)) \\
+&\gamma_2 (t) = (x_1, x_2 + t, f(x_1, x_2 + t)) &\gamma_1'(0) = (0, 1, \frac{\partial f}{\partial x_2} (x_1, x_2)) \\
+\end{align*}
+$$
+We can find a vector orthogonal to both of these, giving us a vector that is normal to our function.
+$$
+N = \left( -\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, 1 \right)
+$$
+We use this to define the tangent plane at $(x_1, x_2, f(x_1, x_2)$ as
+$$
+\begin{align*}
+&(y_1 - x_1, y_2 - x_2, y_3 - f(x_1,x_2)) \cdot \left( -\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, 1 \right) = 0 \\
+&y_3 - f(x_1, x_2) - \frac{\partial f}{d x_1} (x_1, x_2) (y_1 - x_1) - \frac{\partial f}{\partial x_2} (x_1, x_2) (y_2 - x_2) = 0 \\
+&= y_3 = f(x_1, x_2) + \frac{\partial f}{d x_1} (x_1, x_2) (y_1 - x_1) + \frac{\partial f}{\partial x_2} (x_1, x_2) (y_2 - x_2)
+\end{align*}
+$$
+Thus, we find that $f(y)$ defined before is actually a tangent plane approximation of our function!
+
+## Second Order Approximation
+Let $A$ be an $n \times n$ symmetric matrix (so, $a_{ij} = a_{ji}$ for all $i,j$). Define the function 
+$$
+Q(h) = \langle Ah, h \rangle = \sum_{i,j=1}^n a_{ij} h_i h_j
+$$
+This is the quadratic form for $A$. The main application of this, is when we for when we have the Hessian Matrix of a function (assuming $f \in C^2$)
+$$
+A = \nabla^2 f(x) = 
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} & \dots & \frac{\partial^2 f}{\partial x_1 \partial x_n} \\
+\vdots & & \vdots \\
+\frac{\partial^2 f}{\partial x_n \partial x_i} & \dots & \frac{\partial^2 f}{\partial x_n^2}
+\end{bmatrix}
+$$
+
+If $f \in C^2 (\mathbb{R})$, $x,h$ fixed, then
+1. $$
+   \frac{d}{dt} f(x + th) = \langle \nabla f(x + th), h \rangle = \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x + th) h_i
+   $$
+2. $$
+   \frac{d^2}{dt^2} f(x + th) = \langle \nabla^2 f(x + th, h) \rangle = \sum_{i,j=1}^n \frac{\partial^2 f}{\partial x_i \partial x_j} (x + th) h_i h_j
+   $$
+   
+> [!Info] Remark
+> If $f \in C^3$, then
+> $$
+> \frac{d^3}{dt^3} f(x + th) = \sum_{i,j,k=1}^n \frac{\partial^3 f}{\partial x_i \partial x_j \partial x_k} (x + th) h_i h_j h_k
+> $$
+
+> [!Note]- Proof 
+> For (1), this is a chain rule.
+> 
+> For (2), we have
+> $$
+> \begin{align*}
+> \frac{d}{dt} \left[ \frac{d}{dt} f(x + th) \right] 
+> &= \frac{d}{dt} \left[ \sum_{i=1}^n \left( \frac{\partial f}{\partial x_i} \right) (x + th) h_i \right] \\
+> &= \sum_{i=1}^n \left[ \sum_{j=1}^n \frac{\partial}{\partial x_j} \frac{\partial f}{\partial x_i} (x + th) h_j \right] h_i
+> \end{align*}
+> $$
+
+Let $A$ be an $n \times n$ matrix, $A = (a_{ij})$. Define the **Hilbert-Schmidt norm** of $A$ to be
+$$
+||A|| = \left( \sum_{i,j=1}^n a_{ij}^2 \right)^{1/2}
+$$
+In other words, we think of the matrix as a long vector, and take the vector norm.
+
+> [!Abstract] Generalized Cauchy Schwarz Inequality
+> $$
+> || Ah || \le ||A|| \cdot ||h||
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > $$
+> > \begin{align*}
+> > Ah 
+> > &= 
+> > \begin{bmatrix}
+> > \text{Row 1} \\ \vdots \\ \text{Row n}
+> > \end{bmatrix} h \\
+> > &= 
+> > \begin{bmatrix}
+> > \langle r_1, h \rangle \\ \vdots \\ \langle r_n, h \rangle
+> > \end{bmatrix} \\
+> > ||Ah||^2 &= \left( \langle r_1, h \rangle^2 + \dots + \langle r_n, h \rangle^2 \right) \\
+> > &\le (||r_1||^2 + \dots + ||r_n||^2) ||h||^2 \\
+> > &\le ||h||^2 \sum_{i,j=1}^n a_{ij}^2 \\
+> > &= ||A||^2 ||h||^2
+> > \end{align*}
+> > $$
+
+Let $A : \mathbb{R}^n \to \mathbb{R}^m$. We define the **operator norm** of $A$ as
+$$
+||A||_\text{op} = \max_{||h|| = 1} || Ah || 
+$$
+Based on this, we can find that for $||h|| = 1$,
+$$
+||Ah|| \le ||A||_{HS} \qquad ||A||_{op} \le ||A||_{HS}
+$$
+
+Let $A$ be an $n \times m$, symmetric matrix. $A$ is **positive definite** if 
+$$
+\langle Au, u \rangle > 0
+$$
+For all $u \ne 0$. Conversely, $A$ is negative definite if $\forall u \ne 0$,
+$$
+\langle Au, u \rangle < 0
+$$
+
+> [!Abstract] Lemma
+> Let $A$ be semmtric positive definite matrix. Then, there exists a $c > 0$ such that
+> $$
+> \langle Au , u \rangle \ge c ||u||^2
+> $$
+> For all $u \in \mathbb{R}^n$.
+>
+> > [!Note]- Proof
+> > 
+> > Note that the LHS and the RHS are both homogeneous degree 2.
+> > $$
+> > \langle A(tu), tu \rangle = t^2 \langle Au, u \rangle \qquad ||tu||^2 = t^2 ||u||^2 \quad \forall t > 0, \forall u \in \mathbb{R}^n
+> > $$
+> > Thus, our equation is true for $u$ if and only if it is true for any other $tu$, $(t > 0)$.
+> > 
+> > Thus, it suffices to show that our equation is true for unit vectors $\frac{u}{||u||}$, as by the earlier proposition, the argument applies for all $u$. Then,
+> > $$
+> > \langle Au, u \rangle \ge c \qquad \forall ||u|| = 1
+> > $$
+> > This creates a continuous function along a $S^{n-1}$ hypersphere in $\mathbb{R}^n$, which is sequentially compact. Thus, it must have a minimum and maximum. Choose the minimum to find our $c$.
+> > > In fact, we can find $c$ by taking the minimum of the eigenvalues.
+
+

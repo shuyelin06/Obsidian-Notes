@@ -749,16 +749,173 @@ We must define $\binom{a}{k}, a \in \mathbb{R}$.
 > $$
 > ways.
 
-
-> [!Example] Example: Using the Catalan Numbers (2, Stanley Combinatorics)
+> [!Example]- Example: Using the Catalan Numbers (2, Stanley Combinatorics)
 > What are the total ways to triangulate an $n + 2$ sided polygon (labeled)?
 >
 > Note that for any given polygon, all triangulations include a triangle with two vertices $n+2 \sim n+1$ as a base, and some other point $k$. This splits the polygon into two sections.
 > - $n + 2, 1, 2, \dots k \to k + 1$ vertices on one side, so $k - 1$ triangulations.
-> - $k, k + 1, \dots n + 1 \to n + 1 - k + 1 = n + 2 - k$$ vertices on the other side, so $n - k$ triangulations.
+> - $k, k + 1, \dots n + 1 \to n + 1 - k + 1 = n + 2 - k$ vertices on the other side, so $n - k$ triangulations.
 > 
 > 
 > So, the total triangulations of the $n + 2$ polygon is
 > $$
 > \sum_{k=1}^n c_{k-1} c_{n-k} = c_n
 > $$
+
+
+
+# Section 3: Graphs
+## 3.1 - 3.3: Intro to Graphs, Graph Classes, and Vertex Degree
+... TODO
+
+A graph $G$ is **bipartite** if vertex set $V(G)$ can be partitioned into 2 subsets (partite sets) $A$ and $B$ such that every edge in $G$ has 1 endpoint in $A$ and 1 endpoint in $B$.
+
+> [!Abstract] Theorem: Properties of Bipartite Graphs
+> Graph $G$ is bipartite if and only if $G$ has no odd cycles.
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\rightarrow$)
+> > Let $G$ have an odd cycle $v_1, v_2,  \dots v_{2k + 1}, v_1$. Without loss of generality, let $v_1 \in A$. Then, $v_2 \in B$, and so on and so forth such that $v_{2k+1} \in A$.
+> > 
+> > But $v_1 \sim v_{2k+1}$, so $G$ is not Bipartite.
+> > 
+> > #### Proof ($\leftarrow$)
+> > Let $u \in V(G)$. Let 
+> > $$
+> > A = \{ w : d(u,w) = \text{even} \}
+> > $$
+> > The set of all points that are an even distance (shortest path) to $u$. Note that $u$ is contained within $A$.
+> > 
+> > Similarly, define
+> > $$
+> > B = \{ w : d(u,w) = \text{odd} \}
+> > $$
+> > We show that these are partite sets for a bipartite graph.
+> > 
+> > Assume to the contrary there are two adjacent vertices $w_1, w_2 \in B$, $w_1 \sim w_2$. Thus,
+> > $$
+> > d(u, w_1) = 2s + 1 \qquad d(u, w_2) = 2t + 1
+> > $$
+> > Suppose the (shortest paths) are 
+> > $$
+> > \begin{align*}
+> > u = v_0, v_1, \dots v_{2s + 1} = w_1 \\ 
+> > u = u_0, u_1, \dots u_{2t + 1} = w_2
+> > \end{align*}
+> > $$
+> > Let $x$ be the last vertex these shortest paths share (could be $u$). Then, we must have $x = u_i = v_i$ at some point in the path. But this forces the rest of the paths to $w_1, w_2$ to have the same parity, creating an odd cycle from $x \to w_1 \to w_2 \to x$! This is a contradiction.
+
+A bipartite graph with partite sets $A,B$, $|A| = a$, $|B| = b$ is called a **complete bipartite graph**, denoted $K_{a,b}$, if every vertex in $A$ is adjacent to every vertex in $B$.
+
+```mermaid
+graph LR
+
+subgraph A
+1;
+2;
+3;
+end
+
+subgraph B
+4;
+5;
+end
+
+1 o--o 4 & 5;
+2 o--o 4 & 5;
+3 o--o 4 & 5;
+```
+
+A graph $G$ is **d-regular** if every vertex has degree $d = \delta(G) = \Delta (G)$, where $\delta(G)$ is the minimum degree and $\Delta (G)$ is the maximum degree. In other words, all vertices have the same degree.
+
+> [!Abstract] Theorem: D-Regular Graphs
+> There exists a d-regular graph on "n" vertices if and only if at least 1 $d$ or n$ is even.
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\rightarrow$)
+> > By way of contradiction, assume that $n$ and $d$ are odd. Then,
+> > $$
+> > \sum_{v \in V} \deg(v) = dn = \text{odd}
+> > $$
+> > But the sum of the degrees is 2 times the number of edges, which is even. This is a contradiction!
+> > 
+> > #### Proof ($\leftarrow$)
+> > Suppose first that $d = 2k$ is even.  Arrange our vertices cyclically, $v_0, v_1, \dots v_{n-1}$. Then for any $v$, we can join it (with an edge) to the $k$ preceding vertices, and $k$ succeeding vertices. We have a $d$-regular graph!
+> > 
+> > Now if $d = 2k + 1$, then $n$ is even. Arranging our vertices cyclically, for any $v$, we join it to the $k$ preceding and $k$ succeeding vertices, and also the vertex opposite $v$! Note that this is guaranteed to exist because $n$ is even.
+
+> [!Abstract] Theorem:
+> For any graph $G$, there exists a $d$-regular graph $H$, such that $G$ is an **induced subgraph** of $H$.
+> > An induced subgraph is one where the exact same structure of the vertices exists in $H$!
+
+Given a graph on $v$ vertices, its **degree sequence** is a non-increasing sequence of length $n$ whose $i^{th}$ term is the degree of vertex $i$.
+
+We ask, given an arbitrary degree sequence, when does such a graph exist?
+
+> [!Abstract] Theorem: Existence of Degree Sequences
+> Let $d_1, d_2, \dots d_n$ be a non-increasing sequence. Then, there is a simple graph (no loops, no multiple edges) with this degree sequence (we call the sequence **graphical**) if and only if the sequence $d_2 - 1, d_3 - 1, \dots, d_{d_1 + 1} - 1, d_{d_1 + 2}, d_{d_1 + 3}, \dots d_n$ is graphical. 
+> > The second sequence we form is smaller! So, we can just keep repeating this algorithm down (and resorting) until our sequence is small enough that we can explicitly make a graph!
+>
+> > [!Note]- Proof
+> > 
+> > #### Proof ($\leftarrow$)
+> > We simply add vertex $v$, and join it to the first $d_1$ vertices in the sequence. 
+> > 
+> > #### Proof ($\rightarrow$)
+> > If $v_1$, $\deg (v_1) = d$ is adjacent to vertices all of which are the next highest degree, we are done (just delete $v_1$). But it isn't obvious if such a graph exists!
+> > 
+> > Assume to the contrary that no such graph exists, and among all graphs with this degree sequence, take the one whose sum of degrees of the vertices adjacent to $v_1$ is maximum. Then, there exists some vertex $v_s$ not coming from the highest $d_1$ degree vertices,
+> > $$
+> > s \not\in \{2,3, \dots d_1 + 1\}
+> > $$
+> > Adjacent to $v_1$ such that $\deg (v_s) < \deg (v_r)$, $r \in \{2,3, \dots d_1 + 1\}$.
+> > 
+> > Thus, $v_r$ must be adjacent to some vertex $v_t$ that $v_s$ is not adjacent to (as $v_s$ has lower degree). 
+> > ```mermaid
+> > graph LR
+> > v1 o--o vs;
+> > vr o--o vt
+> > ```
+> > 
+> > If we swap the edges, our degree sequence doesn't change, but we have $v_r$ now connected to $v_1$!
+> > ```mermaid
+> > graph LR
+> > v1 o--o vr;
+> > vs o--o vt
+> > ```
+> > 
+> > We can repeat this argument for any $v_s$, to find a graph where $v_1$ is adjacent to all vertices of the next highest degree. We are done!
+
+> [!Example]+ Example: Existence of a Graph with Degree Sequences
+> $$
+> 3,3,3,2,1
+> $$
+> 
+> Such a degree sequence has a graph if and only if the following sequence also has a graph. Remove the first term, and subtract 1 from the remaining terms up to the $d_1 + 1 = 4$th term. The rest are kept the same.
+> $$
+> 2,2,1,1
+> $$
+> Repeat this.
+> $$
+> 1,0,1
+> $$
+> It's possible to make a graph here! So, our degree sequence does has a graph. 
+> 
+> ```mermaid
+> graph LR
+> 1 o--o 2;
+> 3;
+> ```
+
+## 3.4: Properties of Trees
+A **tree** is a connected, acyclic (no cycles) graph. A **leaf** of a tree is a vertex of degree 1. A **forest** is an acyclic graph (a union of trees)
+
+> [!Abstract] Theorem: Leaves of Trees
+> A tree on at least 2 vertices has at least 2 leaves.
+>
+> > [!Note]- Proof
+> > 
+> > Take the path of longest length. Then, because the graph is acyclic, the vertices on either end must have degree 1, otherwise we could have made a longer path.
+

@@ -232,3 +232,75 @@ Another application of these systems is in Recurrence Relations. Consider the fo
 > \vec{x}_k = A^k \vec{x}_0 = P D^k P^{-1} \vec{x}_0
 > $$
 > To find a closed form solution.
+
+
+# Markov Chains
+Suppose every year, we have changes
+- 10% of those living in the city, decide to move to the suburbs.
+- 5% of those living in the suburbs decide to move to the city.
+
+Let $C_k$ denote the proportion of the total population living in the city after $k$ years, $S_k$ denote the proportion of the tital population living in the suburbs after $k$ years. Note that by this definition,
+$$
+C_k + S_k = 1
+$$
+
+Let $\vec{x}_k = (C_k, S_k)^T$. This gives us system
+$$
+\begin{align*}
+C_{k+1} = 0.9 C_k + 0.05 S_k \\
+S_{k+1} = 0.1 C_k + 0.95 S_k \\
+\vec{x}_{k+1} = 
+\begin{bmatrix}
+0.9 & 0.05 \\ 0.10 & 0.95
+\end{bmatrix} \vec{x}
+\end{align*}
+$$
+Which is a special kind of linear discrete system called a **Markov Chain**! This matrix has the unique property that all column sums equal 1.
+
+Now suppose we initially have 40% of the population in the city, 60% of the population in the suburbs. Then, using our matrix we can deduce unique things about our system! For example, what happens to $\vec{x}_k$ as $k \to \infty$?
+
+While we could diagonalize our matrix like in linear discrete systems, the unique properties of Markov Chains gives us a more convenient way to do this!
+
+> [!Info] Theorem
+> Say we have a Markov Chain such that
+> $$
+> \vec{x} = \lim_{k\to\infty} \vec{x}_k = \lim_{k\to\infty} T^k \vec{x}_0
+> $$ 
+> exists is non-zero. Then, $\vec{x}$ is an eigenvector for $T$ with eigenvalue $\lambda = 1$.
+
+Given the above theorem, we can find what we converge to by solving for the eigenvalues and eigenvectors! In our previous example, we find eigenvalue and eigenvector
+$$
+\lambda = 1 \vec{v} = (1/3,2/3)^T
+$$
+> Note that by the assumption that the proportions should sum to 1, there is only one eigenvector that satisfies our requirements.
+
+This is what our system will converge to for our input, and in fact, for any valid input to the system!
+
+---
+
+A **probability vector** is a vector $\vec{v}$ such for all $i$, $0 \le v_i \le 1$, and
+$$
+v_1 + v_2 + \dots + v_n = 1
+$$
+
+An $n \times n$ matrix $T$ is called a **stochastic matrix** if every column of $T$ is a probability vector.
+
+> [!Abstract] Theorem: Stochastic Matrices and Probability Vectors 
+> If $T$ is $n \times n$ stochastic and $\vec{v}$ is an $n \times 1$ probability vector, then $T \vec{v}$ is a probability vector.
+>
+> Furthermore, the product of two stochastic matrices is stochastic (as multiplying one matrix by another is essentially a bunch of matrix-vector products)
+>
+> So, if $T$ is stochastic, then $T^k$ is stochastic for any positive integer $k$.
+
+A **Markov Chain** is a dynamical system
+$$
+\vec{x}_{k+1} = T \vec{x}_k, \vec{x}_0 = \vec{v}
+$$
+Where $T$ is stochastic, and $\vec{x}_0$ is a probability vector. By the above theorem, it follows that all $\vec{v}_k$ are also probability vectors.
+
+> [!Abstract] Theorem
+> If $A$ is stochastic, then $\lambda = 1$ is an eigenvalue for $A$.
+>
+> > [!Note]- Proof (Sketch)
+> > 
+> > It can be shown that $A$ and $A^T$ always have the same eigenvalues, and because of this, any vector times $A^T$ is itself (as the rows of $A^T$ are probability vectors).

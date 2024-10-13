@@ -644,6 +644,7 @@ This is often useful for forms (ex. say we want different translations of a form
 
 ### Cross-Site Scripting
 **Cross-site scripting (XSS)** is essentially the client-side version of a remote file inclusion. A server could have code that can have text queried such that it readily causes code to execute.
+> One easy way we could do this is by using the `<img src=>` HTML tag, which automatically makes a GET request to the URL given!
 
 Using tags that include other HTML files, the client could then accidentally  perform drive-by downloads, popups, and a lot more. 
 
@@ -658,7 +659,7 @@ There are 3 main types of XSS.
 - **Reflected XSS**: The attacker presents a malicious link to the client, which includes code. The client will follow the link to the legitimate server, which echos back the code, causing the client to run it.  For example, the attacker presents the client with a URL to a server with code in the URL, and the server unknowingly returns HTML with this code injected inside. The client then executes this code.
 - **DOM XSS**: The attacker changes the document object representation (DOM) in the client's own browser, from the client side.
 
- > [!Info] Cross Site Request Forgery
+> [!Info] Cross Site Request Forgery
 > In, **Cross-Site Request Forgery**, attackers take advantage of authentication cookies and URLs with side effects to achieve behaviors in the client.
 > 
 > For example, an attacker could use an XSS attack to have the client make a GET request to a URL where "transfer money" is specified in the URL. The client would knowingly make this request, use its authentication cookie for this request, causing the money transfer to be successful. 

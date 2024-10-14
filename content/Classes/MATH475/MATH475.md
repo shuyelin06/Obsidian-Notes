@@ -919,3 +919,108 @@ A **tree** is a connected, acyclic (no cycles) graph. A **leaf** of a tree is a 
 > > 
 > > Take the path of longest length. Then, because the graph is acyclic, the vertices on either end must have degree 1, otherwise we could have made a longer path.
 
+> [!Abstract] Theorem: Properties of Trees
+> The following are equivalent:
+> 1. $T$ is a tree on $n$ vertices.
+> 2. $T$ is connected with $n - 1$ edges.
+> 3. $T$ is acyclic with $n - 1$ edges.
+> 4. There is a unique $uv$-path for any 2 distinct vertices $u$ and $v$.
+> 
+> > [!Note]- Proof
+> > 
+> > #### $1 \to 2, 1 \to 3$
+> > We prove via induction on $n$. Clearly this holds for $n = 1$ with 0 edges. Assume the statement holds to some $n \ge 2$. 
+> >
+> > Let $G$ be a tree on $n + 1$ vertices. We know $G$ has a leaf $v$, so if we delete $v$ and all edges incident to $v$ ($G / v$), we now have a graph on $n$ vertices. Since this argument holds for $n$, we have a tree of $n$ on $n - 1$ edges. So, add $v$ back on to get a tree of $n + 1$ on $n$ edges (as $v$ is a leaf).
+> >
+> > #### $2 \to 3$
+> > Assume the graph has cycles. Delete edges in each cycle so that $G$ remains conected. Now, $G$ is on fewer than $n - 1$ edges, but is acyclic and connected. This is a tree! But, we showed earlier that the tree must have $n - 1$ edges, which is a contradiction.
+> >
+> > #### $3 \to 1$
+> > Let $C_1, C_2, \dots C_k$ be the components of $G$, and assume $C_i$ has $n_i$ vertices. Each $C_i$ is connected and acyclic, meaning each is a tree.
+> > 
+> > We know by $(1 \to 3)$ that each component must has $n_i - 1$ edges. So, we have
+> > $$
+> > \sum_{i=1}^k (n_i - 1) = n - k
+> > $$
+> > Thus, $k = 1$, so the graph is connected.
+> >
+> > #### $1 \to 4$
+> > Assume there are 2 paths from $u$ to $v$. Let $w$ be the first vertex shared such that the vertex is different along the paths (this could even be $u$). Let $z$ be the first vertex the paths share again after $w$ (this could even be $v$). Note that these are different vertices by assumption that we have two different paths. 
+> >
+> > This creates a cycle in the graph, which is a contradiction!
+> > > $4 \to 1$ has the same idea.
+
+> [!Abstract] Theorem
+> The minimum edges in a connected graph on $n$ vertices is $n - 1$.
+>
+> > [!Note] Proof (By Minimum Counterexample)
+> >
+> > > The idea of this is that if we could find a counterexample, then we can use it to find an even smaller counterexample-- repeating the argument, we find it's not possible to find a minimum counterexample.
+> > 
+> > Let $G$ be the smallest order graph that is connected on $m \le n - 2$ edges. It is easy to check $n \ge 4$. 
+> > 
+> > We claim that $G$ has a leaf. If not, then there are no vertices of degree 1, so every vertex must have at least degree 2.
+> > $$
+> > 2m = \sum_{v \in V(G)} \deg(v)
+> > $$
+> > But that means $m \ge n$, which violates our assumption of $m \le n - 2$!
+> > 
+> > If $v$ is the leaf, then $G / v$ is connected on $n - 1$ vertices with at most $n - 3$ edges. This contradicts the minimality of of $G$.
+
+An edge $e$ is a **bridge** of a connected graph if $G / e$ (removing $e$) becomes disconnected.
+> $G / e$ denotes the graph $G$ without the edge $e$.
+
+> [!Abstract] Theorem
+> An edge $e$ is a bridge if and only if the edge is not in a cycle.
+>
+> > **Corollary**: By this, all edges in a tree are bridges.
+
+> [!Example] Example 
+> Let $G$ be a tree of order 13. 
+> 
+> Suppose $G$ only has vertices of degree $1,2,5$. If $G$ has 3 vertices of degree 2, how many leaves does it have?
+>
+> Let $x$ be the number of leaves we have. Then,
+> $$
+> \begin{align*}
+> 2 * (\text{Number Edges}) 
+> &= 2 (13 - 1) = \sum_{v \in V(G)} \deg(v) \\
+> &= 3(2) + x(1) + (13 - 3 - x) 5 \\
+> 24 &= 56 - 4x \\
+> x &= 8
+> \end{align*}
+> $$
+
+## 3.5: Spanning Trees and Enumeration
+> In this section, we look at many types of trees and try to determine the closed form count of them.
+
+A **spanning tree** of $G$ is a tree $T$ such that
+$$
+V(G) = V(T), E(T) \subseteq E(G)
+$$
+In other words, all vertices are in the tree, but only enough edges are needed (to form a tree).
+
+One question that we may ask is, how many spanning trees exist on $n$ vertices? In other words, how many spanning trees does $K_n$ have?
+> This depends on if we label our tree or not!
+
+> [!Example] Example
+> Say $n = 3$. Then, for an unlabeled graph, we only have 1 tree. 
+> > The first question is generally unsolved.
+>
+> ```mermaid
+> graph LR
+> 1[ ] o--o 2[ ] o--o 3[ ];
+> ```
+> 
+> But for a labeled graph, we have 3 trees!
+> 
+> ```mermaid
+> graph LR
+> 1[1] o--o 2[2] o--o 3[3];
+> 4[2] o--o 5[1] o--o 6[3];
+> 7[1] o--o 8[3] o--o 9[2];
+> ```
+
+
+

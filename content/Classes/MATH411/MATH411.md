@@ -2471,4 +2471,49 @@ $$
 > > This creates a continuous function along a $S^{n-1}$ hypersphere in $\mathbb{R}^n$, which is sequentially compact. Thus, it must have a minimum and maximum. Choose the minimum to find our $c$.
 > > > In fact, we can find $c$ by taking the minimum of the eigenvalues.
 
+Recall if we have $f : \mathbb{R} \to \mathbb{R}$, $f''(x)$ exists for every $x$, then $\forall x,h \in \mathbb{R}$, we have
+$$
+f(x + h) = f(x) + f'(x) h + \frac{1}{2} f''(x + \theta h) h^2 
+$$
+For some $0 < \theta < 1$.
 
+> [!Abstract] Theorem:
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$, and $x,h \in \mathbb{R}^n$. Then, 
+> $$
+> f(x + h) = f(x) + \langle \nabla f(x), h \rangle + \frac{1}{2} \langle \nabla^2 f(x + \theta h) h, h \rangle
+> $$
+> 
+> For some $0 < \theta < 1$.
+>
+> > [!Note] Proof
+> > 
+> > Let $\phi(t) = f(x + th)$. Then,
+> > $$
+> > \phi(1) = \phi(0) + \phi' (0) + \frac{1}{2} \phi''(\theta)
+> > $$
+> > For some $0 < \theta < 1$.
+> > 
+> > Notice that this holds only because we assumed the second order derivatives are continuous.
+> > $$
+> > \begin{align*}
+> > \phi'(0) = \frac{d}{dt}_{t=0} f(x + th) = \langle \nabla f(x), h \rangle \\
+> > \phi''(t) = \frac{d^2}{dt^2} f(x + th) = \langle \nabla^2 f(x + th) h, h \rangle
+> > \end{align*}
+> > $$
+
+> [!Abstract] Theorem
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$. Then,
+> $$
+> \lim_{h \to 0} \frac{f(x + h) - [f(x) + \langle \nabla f(x), h \rangle] + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle}{||h||^2} = 0
+> $$
+> 
+> > [!Note] Proof
+> >
+> > $$
+> > \begin{align*}
+> > &\frac{f(x + h) - [f(x) + \langle \nabla f(x), h \rangle] + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle}{||h||^2} \\
+> > &= \frac{| \frac{1}{2} \langle (\nabla^2 f(x + \theta h) - \nabla^2 f(x)) h, h \rangle | }{||h||^2} \\
+> > &\le \frac{\frac{1}{2}|| (\nabla^2 f(x + \theta h) - \nabla^2 f(x)) h || ||h||}{||h||^2} \\
+> > &\le \frac{1}{2} || \nabla^2 f(x + \theta h) - \theta^2 f(x) || \to 0 
+> > \end{align*}
+> > $$

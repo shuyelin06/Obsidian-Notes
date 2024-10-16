@@ -2444,13 +2444,13 @@ Let $A$ be an $n \times m$, symmetric matrix. $A$ is **positive definite** if
 $$
 \langle Au, u \rangle > 0
 $$
-For all $u \ne 0$. Conversely, $A$ is negative definite if $\forall u \ne 0$,
+For all $u \ne 0$. Similarly, $A$ is negative definite if $\forall u \ne 0$,
 $$
 \langle Au, u \rangle < 0
 $$
 
 > [!Abstract] Lemma
-> Let $A$ be semmtric positive definite matrix. Then, there exists a $c > 0$ such that
+> Let $A$ be symmetric positive definite matrix. Then, there exists a $c > 0$ such that
 > $$
 > \langle Au , u \rangle \ge c ||u||^2
 > $$
@@ -2517,3 +2517,116 @@ For some $0 < \theta < 1$.
 > > &\le \frac{1}{2} || \nabla^2 f(x + \theta h) - \theta^2 f(x) || \to 0 
 > > \end{align*}
 > > $$
+
+Let $f : O \to \mathbb{R}$, $O$ open in $\mathbb{R}^n$. Then, $x$ is a strict local minmizer if there exists a $\delta > 0$ such that
+$$
+f(x) < f(x + h) \qquad \forall 0 < ||h|| < \delta
+$$
+Similarly, $x$ is a strict local maximizer if $\exists \delta > 0$ such that
+$$
+f(x) > f(x + h) \qquad \forall 0 < ||h|| < \delta
+$$
+
+> [!Abstract] Theorem: Strict Local Minimizers
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$. If $x$ is such that $\nabla f(x) = 0$ and the Hassian Matrix $\nabla^2 f(x)$ is positive definite, then $x$ is a strict local minimizer.
+> > If $\nabla  f(x) = 0, \nabla^2 f(x)$ negative definite, then $x$ is a strict local maximizer.
+>
+> > [!Note]- Proof
+> > 
+> > We know 
+> > $$
+> > f(x + h) = f(x) + \langle \nabla f(x), h \rangle + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle + R(h)
+> > $$
+> > With $\lim_{h \to 0} \frac{R(h)}{||h||^2} = 0$.
+> > 
+> > By assumption, $\nabla f(x) = 0$, and $\nabla^2 f(x)$ is positive definite matrix. By definition, $\exists c$ such that $\langle \nabla^2 f(x) h, h \rangle \ge c ||h||^2$.
+> > 
+> > So, 
+> > $$
+> > f(x + h) \ge f(x) + 0 + \frac{c}{2} ||h||^2 + R(h)
+> > $$
+> > But we can't guarantee that $R(h)$ is positive, and in fact, it can be negative! So now, we show that $R(h)$ could be negative, but its magnitude cannot be too large.
+> > 
+> > Since $\lim_{h \to 0$ \frac{R(h)}{||h||} = 0$, $\exists \delta > 0$ such that 
+> > $$
+> > | R(h) | < \frac{c}{2} ||h||^2 \qquad ||h|| < \delta
+> > $$
+> > Thus,
+> > $$
+> > f(x + h) \ge f(x) + \frac{c}{2} ||h||^2 > f(x) \qquad 0 < ||h|| < \delta
+> > $$
+> > By definition, $x$ is a strict local minimizer. 
+
+Is the converse of this theorem also true?
+
+Let $f : \mathbb{R}^n \to \mathbb{R}, C^2$. Assume $x$ is a local minimizer. Then $\nabla f(x) = 0$. But what about $\nabla^2 f(x)$? Does it have to be positive definite? No. As a counterexample, let $f(x,y) = x^4 + y^4$. Then, we have a strict local minimizer at $0$, but the $\nabla^2 f(x)$ is not positive definite.
+
+Let $A$ be a symmetric $n \times n$ matrix. $A$ is **positive semi-definite** if $\langle Ah, h \rangle \ge 0$ for all $h \in \mathbb{R}^n$. Similarly, $A$ is negative semi-definite if $\langle Ah, h \rangle \ge 0$ for all $h \in \mathbb{R}^n$.
+> Note that the inner product can now be 0, compared to the positive definite definition!
+
+> [!Abstract] Theorem
+> If $f : \mathbb{R} \to \mathbb{R}, C^2$ has a minimizer at $x$, then $f'(x) = 0$, $f''(x) \ge 0$ (can be 0). In other words, $\nabla^2 f(x)$ has to be positive semi-definite.
+> 
+> > [!Note]- Proof
+> > 
+> > Look at $\phi(t) = f(x + th)$. Then, $\phi(t) \in C^2$, and has a minimizer at $t = 0$. So, $\phi'(0) = \langle \nabla f, h \rangle = 0$, and $\phi''(0) = \langle \nabla^2 f(x) h, h \rangle \ge 0$. In other words, the matrix is positive semi-definite.
+
+In particular, if $f : \mathbb{R}^n \to \mathbb{R}, C^2$, has a local minimum at $x$, then all
+$$
+\frac{\partial^2}{\partial x_i^2} f(x) \ge 0
+$$
+And similarly, if $f$ has a local maximum at $x$, then all 
+$$
+\frac{\partial^2}{\partial x_i^2} f(x) \le 0
+$$
+
+> [!Abstract] Proposition: (IMPORTANT FOR EXAM)
+> Let $U$ be open in $\mathbb{R}^n$, $f : U \to \mathbb{R}, C^2$. Assume the **Laplacian** of $f$ at $x$ is positive for all $x \in U$.
+> $$
+> \Delta f(x) = \frac{\partial^2 f}{\partial x_1^2} (x) + \dots + \frac{\partial^2 f}{\partial x_n^2} (x) > 0 \qquad \forall x \in U
+> $$
+>
+> Then, $f$ has no maximizer in $U$.
+>
+> > [!Note]- Proof
+> > 
+> > Assume by contradiction that $f$ has a maximizer in $U$, given as $x$. Then, $\nabla f(x) = 0$, and $\nabla^2 f$ is positive semi-definite. So, $\frac{\partial^2 f}{\partial x_i^2} \le 0$, meaning
+> > $$
+> > \Delta f(x) = \frac{\partial^2 f}{\partial x_1^2} (x) + \dots + \frac{\partial^2 f}{\partial x_n^2} (x) \le 0
+> > $$
+> > 
+> > Which is a contradiction.
+
+> [!Abstract] Theorem
+> Let $U$ be a bounded open set, $\bar{U} = U \cup \text{Boundary of U}$ (giving us a sequentially compact set).
+> 
+> Let $f \in C^2 (U)$, $f$ continuous on $\bar{U}$, satisfy
+> $$
+> \Delta f(x) = 0 \qquad \forall x \in U
+> $$
+> 
+> Then,
+> $$
+> \max_{\bar{U}} f = \max_{\text{Boundary U}} f
+> $$
+> In other words, the maximum always occurs at the boundary.
+>
+> > [!Note]- Proof
+> > 
+> > Because $U \subseteq \bar{U}$, $\max_{\text{Boundary U}} f \le \max_{\bar{U}} f$ trivially.
+> > 
+> > Look at $f_\epsilon (x) = f(x) + \epsilon ||x||^2$. Note that by this, $f_\epsilon \ge f$. Then,
+> > $$
+> > \Delta f_\epsilon (x) = \nabla f(x) + 2n\epsilon > 0
+> > $$
+> > Thus, $f_\epsilon$ has no interior maximum, and so the maximum of $f_\epsilon$ occurs at the boundary of $U$.
+> > $$
+> > \max_{\bar{U}} f \le \max_{\bar{U}} f_\epsilon \le \max_{\text{Boundary U}} f + \epsilon ||x||^2 \le \max_{\text{Boundary U}} f + \epsilon K
+> > $$
+> > Where $K$ depends on $U$. Let $\epsilon \to 0$ to get
+> > $$
+> > \max_{\bar{U}} f \le \max_{\text{Boundary U}} f
+> > $$
+> > 
+> > We showed the inequalities in both directions, so we have equality. We are done.
+

@@ -1022,5 +1022,98 @@ One question that we may ask is, how many spanning trees exist on $n$ vertices? 
 > 7[1] o--o 8[3] o--o 9[2];
 > ```
 
+We say that two labeled trees are **different** if their edge set is different.
 
+We construct a sequence of length $n - 2$ where each value is an element of $[n]$. Each sequence, called a **Prufer Code**, will correspond to a labeled tree on $n$ vertices
 
+### Tree to Prufer Code
+1. Delete the leaf of lowest index. Write down the index of the vertex **adjacent** to the leaf as part of the Prufer Code. 
+2. Repeat until the graph reduces to an edge.
+
+> [!Example]- Example: Tree to Prufer Code
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 6 o--o 5;
+> 2 o--o 3 o--o 4;
+> ```
+> 1. Delete 1. Write down 2 as part of the code: $2$
+> 2. Delete 4. Write down 3 as part of the code: $2,3$
+> 3. Delete 3. Write down 2 as part of the code: $2,3,2$
+> 4. Delete 2, write down 6. $2,3,2,6$
+> 
+> ```mermaid
+> graph LR
+> 6 o--o 5;
+> ```
+> We have one edge left so we stop. Our final code is $2,3,2,6$.
+
+### Prufer Code to Tree
+1. Let $a_1, a_2, \dots a_{n-2}$ be our code. Let $b_1$ be the smallest index not in the code. 
+2. Create the edge with $a_1$ and $b_1$. 
+3. Delete $a_1$ from the sequence and append $b_1$ to the end of the sequence.
+4. Let $b_2$ be the smallest number not in the sequence $a_2, a_3, \dots a_{n-2}, b_1$.
+5. Create the edge with $a_2$ and $b_2$. 
+6. Repeat the above until we've deleted all of the orginal sequence's terms $a_1, \dots a_{n-2}$ so that our final sequence is $b_1, \dots b_{n-2}$.
+7. Two values, $i$ and $j$, $1 \le i < j \le n$ will not be in the list $b_1, \dots b_{n-2}$. Create an edge joining $i$ to $j$.
+
+> [!Example]- Example: Prufer Code to Tree
+> $$
+> 2,2,6,4
+> $$
+> 
+> We have $a_1 = 2, b_1 = 1$. 
+> ```mermaid
+> graph LR
+> 2 o--o 1
+> ```
+> Remove $a_1$, append $b_1$ to get $2,6,4,1$. Now, we have $a_2 = 2$, $b_2 = 3$.
+> ```mermaid
+> graph LR
+> 3 o--o 2 o--o 1
+> ```
+> Remove $a_2$, append $b_2$ to get $6,4,1,3$. Now, we have $a_3 = 6$, $b_3 = 2$.
+> ```mermaid
+> graph LR
+> 3 o--o 2 o--o 1;
+> 2 o--o 6;
+> ```
+> Remove $a_3$, append $b_2$ to get $4,1,3,2$. Now, we have $a_4 = 4$, $b_4 = 5$.
+> ```mermaid
+> graph LR
+> 3 o--o 2 o--o 1;
+> 2 o--o 6;
+> 4 o--o 5;
+> ```
+> Remove $a_3$, append $b_2$ to get $1,3,2,5$. We have consumed all of our original sequence. Note that in our sequence, we are missing 4 and 6. Connect these to finish. 
+> ```mermaid
+> graph LR
+> 3 o--o 2 o--o 1;
+> 2 o--o 6;
+> 4 o--o 5 & 6;
+> ```
+
+### Cayley's Formula
+> [!Abstract] Lemma
+> If vertex $j$ has degree $d_j$, then index $j$ will appear exactly $d_j - 1$ times.
+
+> [!Abstract] Theorem: Cayley's Formula
+> Each Prufer Code corresponds to a unique tree. Thus, there are $n^{n-2}$ labeled trees on $n$ vertices $n - 2$ positions, $n$ choices for each).
+>
+> > [!Note] Proof
+> > 
+> > It can easily be shown that a tree corresponds to one unique code, as the algorithm given is unambiguous.
+> > 
+> > We must now show that each code corresponds to one tree, unambiguously. This establishes a bijection and proves our result.
+> > 
+> > By induction on $n$, the statement clearly holds for $n = 3$. Assume the statement holds up to some $n > 3$. Consider the sequence $a_1, a_2, \dots a_{n-1}$ ($n - 2 + 1$). We show this corresponds to a unique tree.
+> > 
+> > Let $x$ be the first deleted leaf, so $x \sim a_1$. Now consider the tree from deleting $x$. This must correspond to sequence $a_2, \dots a_{n-1}$, and as this is of length $n - 2$, we apply our inductive hypothesis to conclude that this tree is unique. Thus, our tree with $x$ must also be unique as there is only one place to put it.
+
+> [!Info] Corollary
+> It follows from this that because we know each vertex is in the sequence $d_j - 1$ times, we can find the number of trees by performing permutations by repetition on the sequence with a given vertex repeated $d_j - 1$ times.
+> $$
+> \frac{(n-2)!}{(d_1 - 1)! (d_2 - 1)! \dots (d_n - 1)!}
+> $$
+
+Spanning Trees of a Graph G?
+... Kirchoff's Matrix Tree Argument

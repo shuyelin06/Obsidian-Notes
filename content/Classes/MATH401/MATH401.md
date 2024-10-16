@@ -298,9 +298,91 @@ $$
 $$
 Where $T$ is stochastic, and $\vec{x}_0$ is a probability vector. By the above theorem, it follows that all $\vec{v}_k$ are also probability vectors.
 
+In a Markov Chain, sometimes the stochastic matrix $T$ is called a **transition matrix**.
+
 > [!Abstract] Theorem
 > If $A$ is stochastic, then $\lambda = 1$ is an eigenvalue for $A$.
 >
 > > [!Note]- Proof (Sketch)
 > > 
 > > It can be shown that $A$ and $A^T$ always have the same eigenvalues, and because of this, any vector times $A^T$ is itself (as the rows of $A^T$ are probability vectors).
+
+A stochastic matrix $T$ is called **regular** if there is some integer $k \ge 1$ such that all entries of $T^k$ are strictly positive (nonzero).
+> If $T^k$ is regular, then it holds that $T^{k + i}$ is regular for all $i \ge 0$. So, one way to verify if a matrix is regular is just to raise it to a high power and check if we get a regular matrix!
+
+> [!Example]+ Example: Regular Stochastic Matrices
+> $$
+> T =
+> \begin{bmatrix}
+> 0.90 & 0.05 \\ 0.1 & 0.95
+> \end{bmatrix}
+> $$
+> $T^1$ has all positive entries, so it is regular with $k = 1$.
+> 
+> $$
+> T = 
+> \begin{bmatrix}
+> 0.9 & 0 & 0.5 \\ 
+> 0 & 0.8 & 0.5 \\
+> 0.1 & 0.2 & 0
+> \end{bmatrix}
+> \qquad
+> T^2 =
+> \begin{bmatrix}
+> 0.86 & 0.10 & 0.45 \\ 
+> 0.05 & 0.74 & 0.4 \\
+> 0.09 & 0.16 & 0.15
+> \end{bmatrix}
+> $$
+> $T^2$ has all positive entries, so $T$ is regular with $k = 2$.
+>
+> $$
+> T = 
+> \begin{bmatrix}
+> 1 & 0.05 \\ 0 & 0.05
+> \end{bmatrix}
+> $$
+> $T$ is upper triangular, and a product of upper triangular matrices is upper triangular. Thus, $T$ is not stochastic.
+
+A **steady state vector** for a stochastic $T$ is a probability vector $\vec{x}$ such that
+$$
+T(\vec{x}) = \vec{x}
+$$
+In other words, a probability vector that is an eigenvector for $T$ for $\lambda = 1$.
+
+> [!Abstract] Theorem
+> Suppose $T$ is a regular stochastic matrix. Then, there is a unique steady state vector $\vec{v}$ for $T$.
+>
+> Further, if $\vec{x}$ is any probability vector, then 
+> $$
+> \lim_{k\to\infty} T^k \vec{x}_0 = \vec{v}
+> $$
+> > This is an important result we use to solve Markov Chains!
+
+> [!Example] Example
+> The weather in Columbus is either good, indifferent, or bad on any given day.
+> - If good today, then for tomorrow we have 60% of good, 30% of indifferent, 10% of bad.
+> - If indifferent today, then for tomorrow we have 40% good, 30% indifferent, 30% bad.
+> - If bad today, then for tomorrow we have 40% good, 50% indifferent, 10% bad.
+>
+> What is the probability that any given day has good weather?
+> 
+> We start by creating transition matrix
+> $$
+> T =
+> \begin{bmatrix}
+> 0.6 & 0.4 & 0.4
+> 0.3 & 0.3 & 0.5
+> 0.1 & 0.3 & 0.1
+> \end{bmatrix}
+> $$
+> 
+> This is a Markov Chain with a regular $T$! So, by our theorem, we can find a unique steady state vector $\vec{v}$.
+> > Recall the steady state vector has to be a probability vector! So, we need to normalize the eigenvector we find for $\lambda = 1$.
+> 
+> $$
+> \vec{v} = (1/2, 1/3, 1/6)^T
+> $$
+> 
+> So in the long term, $1/2$ of the days are good, $1/3$ are indifferent, and $1/6$ of the days are bad.
+> > Note that if $\vec{x}_0$ contains probabilities for the weather today, then $\vec{x}_k = T^k \vec{x}_0$ contains the probabilities $k$ days from now.

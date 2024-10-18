@@ -2064,6 +2064,26 @@ Notice how above, $g$ is homogeneous of degree 1 and has a limit to $(0,0)$, whe
 > > ||x||^k f \left( \frac{x}{||x||} \right) \to 0 
 > > $$
 
+> [!Example] Example: Continuity with Homogeneity
+> $$
+> f(x,y) = \frac{x^3 y}{x^2 + y^2} \qquad \frac{\partial f}{\partial x} (0,0) = 0
+> $$
+> 
+> We show that $f$ is $C^1$ by homogeneity.
+> 
+> We know that $f$ is $C^{\infty}$ in $\mathbb{R}^n / \{(0,0)\}$ is homogeneous of degree 2. So, $\frac{\partial f}{\partial x}$ is homogeneous of degree 1.
+> > It is a fact that if $f \in C^1 (\mathbb{R}^n / \{0\})$ and is homogeneous of degree $k$, then $\frac{\partial f}{\partial x_i}$ is homogeneous of degree $k - 1$.
+> 
+> Let $x \ne 0$, $t > 0$. Then, say $f$ is homogeneous degree $k$.
+> $$
+> \begin{align*}
+> f(t,x) = t^k f(x) \\
+> \frac{\partial}{\partial x_i} f(tx) = \frac{\partial}{\partial x_i} [t^k f(x)] = t^k \frac{\partial f}{\partial x_i} (x) \\
+> t \frac{\partial f}{\partial x_i} (tx) = t^k \frac{\partial}{\partial x_i} t^k f(x) \Longrightarrow \frac{\partial f}{\partial x_i} (tx) = t^{k-1} f(x)
+> \end{align*}
+> $$
+> By a theorem, homogeneous functions of positive degree go to 0 as $x \to 0$. So, $f \in C^1$.
+
 This does not necessarily mean that homogeneous functions of degree $k = 0$ don't have a limit at 0! Just that some don't. 
 > Any constant function (ex. $f(x) = 1$) have defined limits as $x \to 0$!
 
@@ -2629,4 +2649,105 @@ $$
 > > $$
 > > 
 > > We showed the inequalities in both directions, so we have equality. We are done.
+
+---
+
+## Higher Order Approximations
+Let $x \in \mathbb{R}^n$, and let there be a multi-index $\alpha = (\alpha_1, \dots, \alpha_n)$ where $\alpha_i \in \{0,1\}$.
+
+Define
+$$
+\begin{align*}
+|\alpha| = \alpha_1 + \dots + \alpha_n \\ \alpha ! = \alpha_1 ! \dots \alpha_n ! \\
+x^\alpha = x_1^{\alpha_1} \dots x_n^{\alpha_n} \\
+\partial^\alpha f = \left( \frac{\partial^{|\alpha|}}{\partial x_1^{\alpha_1} \dots \partial x_n^{\alpha_n}} f \right) (x)
+\end{align*}
+$$
+
+> [!Abstract] Proposition: Multinomial Formula
+> $$
+> (x_1 + \dots + x_n)^k = \sum_{|\alpha| = k} \frac{k!}{\alpha!} x^\alpha
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > We prove this by induction. Start with $n = 2$. Then, we have
+> > $$
+> > (x_1 + x_2)^k = \sum_{i=0}^k \frac{k!}{i! (k - i)!} x_1^i x_2^{k-i}
+> > $$
+> > 
+> > Now, suppose that our formula is true for $n - 1$ ($n \ge 3$). Prove it for $n$.
+> > $$
+> > \begin{align*}
+> > ((x_1 + \dots + x_{n-1}) + x_n)^k
+> > &= \sum_{i=0}^k \frac{k!}{i! (k - i)!} (x_1 + \dots + x_{n-1})^i x_n^{k-i} \\
+> > &= \sum_{i=0}^k \frac{k!}{i! (k - i)!} \left[ \sum_{|\beta| = i} \frac{i!}{\beta!} \tilde{x}^\beta \right]  x_n^{k-i}
+> > \end{align*}
+> > $$
+> > 
+> > Define $\alpha = (\beta, k - i)$, $\beta$ having length $i$. Then, $\alpha$ has length $k$, and
+> > $$
+> > \begin{align*}
+> > \frac{1}{(k-i)! (\beta)!} = \frac{1}{\alpha!} \\
+> > \tilde{x}^\beta x_n^{k-i} = x_1^{\beta_1} \dots x_{n-1}^{\beta_{n-1}} x_n^{k-i} = x^\alpha
+> > \end{align*}
+> > $$
+> > 
+> > So, 
+> > $$
+> > \sum_{i=0}^k \frac{k!}{i! (k - i)!} \left[ \sum_{|\beta| = i} \frac{i!}{\beta!} \tilde{x}^\beta \right]  x_n^{k-i} = \sum_{|\alpha| = k} \frac{k!}{\alpha!} x^\alpha
+> > $$
+
+Let $f \in C^k (\mathbb{R}^n)$. Look at
+$$
+\phi(t) = f(x + th), \phi : \mathbb{R} \to \mathbb{R}, C^1
+$$
+
+We know that
+$$
+\phi(1) = \phi(0) = \phi'(0) + \frac{1}{2} \phi''(0) + \dots + \frac{1}{(k-1)!} \phi^{k-1} (0)
+$$
+> The one dimensional Taylor expansion!
+
+Express $\phi^k (t)$ in terms of partials of $f$, $k \in \mathbb{N}$.
+$$
+\begin{align*}
+\phi' (t) 
+&= \langle \nabla f (x + th), h \rangle 
+= (h \cdot \nabla) (x + th) 
+= h_1 \frac{\partial f}{\partial x_1} (x_1 + th) + \dots + h_n \frac{\partial f}{\partial x_n} (x + th) \\
+&= [(h_1 \partial_1 + \dots + h_n \partial_n) f ] (x + th) \\
+\phi''(t) 
+&= \langle \nabla^2 f(x + th) h, h \rangle \\
+&= [(h_1 \partial_1 + \dots + h_n \partial_n)^2 f ] (x + th) \\
+\phi^k (t)
+&= [(h_1 \partial_1 + \dots + h_n \partial_n)^k f ] (x + th) 
+= \sum_{|\alpha| = k} \frac{k!}{\alpha!} (h^\alpha \partial^\alpha f) (x + th) \\
+\end{align*}
+$$
+
+Let $t = 0$. Then, we have
+$$
+\frac{1}{i!} \phi^i (0) = \sum_{|\alpha| = i} \frac{1}{\alpha!} \partial^\alpha f(x) h^\alpha
+$$
+
+We have proven the following.
+
+> [!Abstract] Theorem: Higher Order Approximations
+> Let $f : \mathbb{R}^n \to \mathbb{R}, C^k$. Then,
+> $$
+> \begin{align*}
+> f(x + th) 
+> &= \sum_{j=0}^{k-1} \sum_{|\alpha| = j} \frac{1}{\alpha!} \partial^\alpha f(x) h^\alpha + \sum_{|\alpha| = k} \frac{1}{\alpha!} \partial^\alpha f(x + \theta h) h^\alpha \\
+> &= \sum_{j=0}^{k-1} \sum_{|\alpha| \le k - 1} \frac{1}{\alpha!} \partial^\alpha f(x) h^\alpha + \sum_{|\alpha| = k} \frac{1}{\alpha!} \partial^\alpha f(x + \theta h) \\
+> \end{align*}
+> $$
+>
+> For some $0 < \theta < 1$
+>
+> > Notice the similarity with $\phi : \mathbb{R} \to \mathbb{R}, C^k$.
+> > $$
+> > \phi(x + h) = \sum_{i=0}^{k-1} \frac{1}{i!} \phi^i (x) h^i + \frac{1}{k!} \phi^k (x + \theta h) h^k
+> > $$
+> > For $0 < \theta < 1$, which is the 1-dimensional approximation formula!
 

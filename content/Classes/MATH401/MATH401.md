@@ -359,7 +359,7 @@ In other words, a probability vector that is an eigenvector for $T$ for $\lambda
 > $$
 > > This is an important result we use to solve Markov Chains!
 
-> [!Example] Example
+> [!Example]- Example
 > The weather in Columbus is either good, indifferent, or bad on any given day.
 > - If good today, then for tomorrow we have 60% of good, 30% of indifferent, 10% of bad.
 > - If indifferent today, then for tomorrow we have 40% good, 30% indifferent, 30% bad.
@@ -386,3 +386,52 @@ In other words, a probability vector that is an eigenvector for $T$ for $\lambda
 > 
 > So in the long term, $1/2$ of the days are good, $1/3$ are indifferent, and $1/6$ of the days are bad.
 > > Note that if $\vec{x}_0$ contains probabilities for the weather today, then $\vec{x}_k = T^k \vec{x}_0$ contains the probabilities $k$ days from now.
+
+> [!Info] Interpreting $T$
+> The $(i,j)$ entry of $T$, $t_{ij}$, represents the probability of moving from state $j$ to state $i$. What about the entries of $T^k$?
+>
+> The $(i,j)$ entry of $T^k$ represents the probability of starting at state $j$, and ending at state $i$ after $k$ steps.
+> > Based on this, if $T^k$ is regular, then we know that for all $i,j$, there is some integer $k$ such that it is possible to get from $j \to i$!
+
+> [!Example]- Example: Random Walks
+> Consider the following maze with rooms.
+> ```mermaid
+> graph LR
+> 1 o--o 2 & 3;
+> 2 o--o 3 & 4;
+> 4 o--o 3;
+> 5 o--o 3 & 4;
+> ```
+> 
+> A mouse runs through this maze with 5 rooms. At each time step, (every second), the mouse will leave its current room and move to a new room, choosing the next room randomly.
+>
+> This is a particular type of Markov Chain called a **random walk**. This gives us matrix
+> $$
+> T = 
+> \begin{bmatrix}
+> 0 & 1/3 & 1/4 & 0 & 0    \\
+> 1/2 & 0 & 1/4 & 1/3 & 0  \\
+> 1/2 & 1/3 & 0 & 1/3 & 0  \\
+> 0 & 1/3 & 1/4 & 0 & 1/2  \\
+> 0 & 0  & 1/4 & 1/3 & 1/2 \\
+> \end{bmatrix} 
+> $$
+>
+> We can analyze this matrix as we've done previously!
+
+## Google Pagerank Algorithm
+The **Google Pagerank** algorithm is an application of Markov Chains.
+
+Google needs to rank webpages based on which are "important". This will be based entirely on how the webpages link to each other. The basic idea is that a webpage is **important** if many other pages link to it. However, being linked to by an important webpage should carry more weight than being linked to by a page no one cares about.
+
+Google's idea is to **treat websurfing like a random walk** in which the websurfer is rnadomly clicking links. A page is ranked based on the percentage of time the of the random walk is spent on the page (from the steady state).
+
+Some issues with this:
+- Some pages don't have outbound links.
+- Sometimes, websurfers load up a new page without following a link.
+
+We assume the following about the random websurfer (RW):
+1. RW starts at some page.
+2. If there are outbound links, there is an 85% chance that RW chooses one of the links, considered equally likely. There is a 15% chance that RW chooses to visit a page at random from all possible pages (not following a link).
+3. If the page has no outbound links, there is a 100% chance RW visits a random page, chosen from all possible pages.
+4. RW continues this forever.

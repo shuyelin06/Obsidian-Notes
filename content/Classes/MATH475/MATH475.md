@@ -1115,5 +1115,118 @@ We construct a sequence of length $n - 2$ where each value is an element of $[n]
 > \frac{(n-2)!}{(d_1 - 1)! (d_2 - 1)! \dots (d_n - 1)!}
 > $$
 
+> [!Example] 
+> Let $n = 6$. What is the number of trees with degrees $3,3,1,1,1,1$?
+>
+> Note that the labeling of the graph forces the vertices to have specific degrees.
+>
+> ```mermaid
+> graph LR
+> 1;2;3[ ];4[ ];5[ ];6[ ];
+> 
+> 1 o--o 2 & 3 & 4;
+> 2 o--o 5 & 6;
+> ```
+> 
+> Note that once we choose the indices adjacent to vertex 1, it determines the tree! So, we choose any 2 indices from $\{3,4,5,6\}$, to get $\binom{4}{2} = 6$ trees. 
+
+A **plane-rooted tree** is a rooted tree (1 vertex is the root, often drawn at the top) with a left-right ordering of the children. 
+
+```mermaid
+graph TD
+1[ ] o--o 2[ ] & 3[ ];
+2 o--o 4[ ] & 5[ ];
+3 o--o 6[ ] & 7[ ] & 8[ ];
+```
+
+```mermaid
+graph TD
+1[ ] o--o 2[ ] & 3[ ];
+2 o--o 4[ ] & 5[ ] & 6[ ];
+3 o--o 7[ ] & 8[ ];
+```
+> The following two rooted trees are different!
+
+> [!Example] Example
+> For $n = 4$, we have the number of rooted trees
+> 
+> ```mermaid
+> graph TD
+> 1[ ] o--o 2[ ] o--o 3[ ] o--o 4[ ];
+> 5[ ] o--o 6[ ] o--o 7[ ] & 8[ ];
+> 9[ ] o--o 10[ ] & 11[ ]; 10 o--o 12[ ];
+> 13[ ] o--o 14[ ] & 15[ ]; 15 o--o 16[ ];
+> 17[ ] o--o 18[ ] & 19[ ] & 20[ ];
+> ```
+
+What are the total plane rooted trees on $n + 1$ vertices? 
+
+Consider a "walk" on the border of the tree, starting at the root, so that every edge is covered exactly twice, in a clockwise fashion. We are traversing the tree up or down such that the total times you move up can never exceed the times you move down! This is the same setup as the **Catalan Number** (discussed previously)!
+
+So, the total plane rooted trees on $n + 1$ vertices is the $n^{th}$ Catalan number!
+
+> [!Example] Example 
+> How many binary trees have $n$ internal vertices and $n + 1$ leaves, with a left-right ordering? 
+>
+> For any $n$, note that the number of trees is equivalent to
+> 
+> ```mermaid
+> graph TD
+> 1[ ] o--o 2[a i] & 3[a n-i];
+> ```
+> 
+> So,
+> $$
+> a_n = \sum_{i=0}^{n-1} a_i a_{n-1-i}
+> $$
+> 
+> This is the recursive formula for Catalan Numbers!
+
+A **rooted forest** is a forest where each component is a rooted tree, meaning one vertex is labeled as the root, and all vertices are labeled. 
+
+> [!Example] Example: Rooted Forest
+> For $n = 2$,
+> 
+> ```mermaid
+> graph TD
+> subgraph Graph1
+> 1[1]; 2[2];
+> end
+> 
+> subgraph Graph2
+> 3[1] o--o 4[2];
+> end
+> 
+> subgraph Graph3
+> 5[2] o--o 6[1];
+> end
+> ```
+> 
+> Note that 2 and 3 are repeats, because we could choose 1 as the root, or 2 as the root.
+
+Consider a rooted forest on $n$. 
+- Take a new vertex, and for any rooted forest, join the vertex to all of the roots, to get a single labeled tree on $n + 1$. 
+- For a labeled tree on $n + 1$, delete vertex $n + 1$. Then, the vertices adjacent to $n + 1$ give us a rooted forest. 
+
+This is a bijection! 
+
+> [!Abstract] Theorem
+> The number of rooted forests on $n$ is equal to the number of labeled trees on $n + 1$. So, 
+> $$
+> (n + 1)^{n-1}
+> $$
+
+---
+
+Suppose there are $n$ cars driving on a 1 way street. Each car has a favorite parking spot (n total spots). Some cars may share the same favorite parking spot.
+
+Each car first drives to its favorite spot. It parks in the spot if possible. If not, it drives to the next open spot.
+
+For the $n$ parking preferences, how many preferences are good: every car can park?
+
+> As an example, consider 3 cars. If they all prefer 2, then this is not good, since no car will park in spot 1.
+
+
+
 Spanning Trees of a Graph G?
 ... Kirchoff's Matrix Tree Argument

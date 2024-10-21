@@ -2751,3 +2751,107 @@ We have proven the following.
 > > $$
 > > For $0 < \theta < 1$, which is the 1-dimensional approximation formula!
 
+--- 15
+
+# Linear Algebra Review
+Function $T : \mathbb{R}^n \to \mathbb{R}^n$ is linear if
+$$
+T(\alpha u + \beta v) = \alpha T(u) + \beta T(v) 
+$$
+For all $\alpha, \beta \in \mathbb{R}$, $u,v \in \mathbb{R}^n$.
+
+> [!Abstract] Theorem
+> If $T : \mathbb{R}^n \to \mathbb{R}^n$ is linear, then there exists a unique $m \times n$ matrix $A$ such that
+> $$
+> T(u) = Au
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > #### Uniqueness
+> > Let $A,B$ be two non-unique matrices satisfying our property. Then,
+> > $$
+> > Au - Bu = T(u) - T(u) = 0 \Longrightarrow (A - B)u = 0
+> > $$
+> > 
+> > Now, observe that for any row of $(A - B)$, we are taking the dot product of $u$ with that row. Let $u$ be the row, to see that the norm must be 0. This is only possible if the row is the 0 vector.
+> > 
+> > #### Existence
+> > Let $e_1, \dots e_n$ be the standard basis. Represent $u$ as
+> > $$
+> > u = u_1 e_1 + \dots + u_n e_n
+> > $$
+> > 
+> > Then,
+> > $$
+> > \begin{align*}
+> > T(u) 
+> > &= T(u_1 e_1 + \dots + u_n T(e_n) \\
+> > &= u_1 T(e_1) + \dots + u_n T(e_n) \\
+> > &= (T(e_1), \dots T(e_n)) 
+> > \begin{pmatrix}
+> > u_1 \\ \vdots \\ v_n
+> > \end{pmatrix}
+> > \end{align*}
+> > $$
+
+Let us have linear transformations $T : \mathbb{R}^n \to \mathbb{R}^m$, $S: \mathbb{R}^m \to \mathbb{R}^k$. Let $A,B$ be matrices such that
+$$
+T(u) = Au \qquad S(u) = Bu
+$$
+
+Then, the matrix of the composition of these transformations is
+$$
+T(S(u)) = A(Bu) = (AB) u \qquad S(T(u)) = B(Au) = (BA) u
+$$
+Which is the product of the matrices!
+
+> [!Abstract] Theorem: Invertible Transformations
+> $T: \mathbb{R}^n \to \mathbb{R}^n$, linear, is invertible (as a function) if and only if the corresponding matrix $A$ is invertible as a matrix if and only if $\det(A) \ne 0$.
+> > We commonly determine that transformations are invertible by checking the matrices!
+
+> [!Abstract] Theorem
+> Let $A$ be an $n \times n$ matrix. Then, $A$ is invertible if if and only if $\exists c > 0$ such that 
+> $$
+> || Au || \ge c ||u|| \qquad u \in \mathbb{R}^n
+> $$
+> > By definition, $A$ is invertible if there exists a matrix $A^{-1}$ such $A A^{-1} = I$.
+>
+> > [!Note] Proof 
+> > 
+> > #### Proof ($\leftarrow$)
+> > If $||Au|| \ge c||u||$ for all $u \in \mathbb{R}^n$, then the null space of $A$ is $\{0\}$, as if $Au = 0$, then $||Au|| \ge c||u||$ forces $u = 0$.
+> > 
+> > From linear algebra, we know that if $A$ is on finite dimensions $n \times n$, and the null space is $\{0\}$, then the range of $A$ is $\mathbb{R}^n$ and $A$ is invertible.
+> > 
+> > #### Proof ($\rightarrow$)
+> > Conversely, if $\exists A^{-1}$ such that $A A^{-1} = A^{-1} A$, then we wish to find a $c > 0$ such that $||Au|| \ge c ||u||$.
+> > 
+> > Because $A^{-1} A = I$, then $A^{-1} Au = u$. 
+> > $$
+> > u = || A^{-1} A u || \le ||A^{-1}|| ||Au||
+> > $$
+> > This is the generalized Cauchy Schwarz inequality! 
+> > 
+> > Thus,
+> > $$
+> > ||Au|| \ge \frac{1}{||A^{-1}||} ||u|| 
+> > $$
+> > 
+> > Let $c = \frac{1}{||A^{-1}||}$.
+> > > Recall that $||A|| = (\sum a_{ij}^2)^{1/2}$.
+
+Is $V$ is a vector space with bases $v_1, \dots v_n$, and also $w_1, \dots w_n$, and the bases are related by $(v_1, \dots v_n) = (w_1, \dots w_n) C$
+
+If the matrix of $T$ with respect to $\{v_1, \dots v_n\}$ is $A$, $\{w_1, \dots w_n\}$ is $B$, then $A = C B C^{-1}$.
+
+> [!Note] Proof
+> We know that $(v_1 \dots v_n) = (w_1, \dots w_n) C$, then
+> $$
+> \begin{align*}
+> (T(v_1), \dots T(v_n)) = (T(w_1), \dots T(w_n)) C \\
+> (v_1, \dots v_n) A = (w_1, \dots w_n) CA 
+> \end{align*}
+> $$
+> 
+> So, $A = C^{-1} B C$.

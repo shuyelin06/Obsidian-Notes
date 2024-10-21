@@ -1220,11 +1220,70 @@ This is a bijection!
 
 Suppose there are $n$ cars driving on a 1 way street. Each car has a favorite parking spot (n total spots). Some cars may share the same favorite parking spot.
 
-Each car first drives to its favorite spot. It parks in the spot if possible. If not, it drives to the next open spot.
-
-For the $n$ parking preferences, how many preferences are good: every car can park?
-
+Each car first drives to its favorite spot. It parks in the spot if possible. If not, it drives to the next open spot. For the $n$ parking preferences, how many preferences are good: every car can park?
 > As an example, consider 3 cars. If they all prefer 2, then this is not good, since no car will park in spot 1.
+
+Note that we have $n^n$ total cases.
+
+We interpret each $n$-tuple as a function $f : \text{Car} \to \text{Spot Preference}$. A function that parks all of the cars is a **parking function**.
+
+Consider a circular parking lot with $n + 1$ spots (and still $n$ cars). The cars park in the same manner, but now each continues looking for a spot even if they do not find one after spot $n$. Now, among the $n + 1$ preferences for each car, we have a parking function from the original problem exactly when spot $n + 1$ is empty!
+
+Consider an n-tuple $(a_1, \dots a_n)$ which has spot $i$ open. 
+$$
+(a_1 + 1, a_2 + 1, \dots a_n + 1)
+$$
+Will leave spot $i + 1$ open! So, every spot has an equal chance of being empty! So the total parking functions (successful parking jobs) is
+$$
+\frac{1}{n+1} (n + 1)^n = (n+1)^{n-1}
+$$
+> Interestingly, this is the number of rooted forests on $n$ vertices!
+
+> [!Abstract] Theorem: 
+> The total parking functions with $n$ cars and $n$ spots is $(n+1)^{n-1}$ which equals the total rooted forests on $n$ vertices.
+> 
+> > [!Info] Brief Intuition
+> > 
+> > How are these related?
+> > 
+> > Well, the total parking functions with $n+1$ cars, $n+1$ spots
+> > $$
+> > P(n + 1) = \sum_{i=0}^n \binom{n}{i} (i+1) P(i) P(n-i)
+> > $$
+> > Which is the number of rooted forests on $[n+1]$.
+> > 
+> > Now, consider partitions forests into the component that vertex $n+1$ lies in. Pick with "i" indices will be in the component, in $\binom{n}{i}$ ways. Then, construct all of the forests with the $i$ vertices we've chosen. Connect the roots of these forests to $n+1$, and pick a vertex in $i+1$ ways to be the root. Then, create all possible forests of the remaining $n-i$ elements.
+
+## 3.6: Matchings
+A **matching** is a set of edges such that there are no shared points (vertices).
+
+The vertices incident to edges of a matching $M$ are said to be **saturated**. Otherwise, they are **unsaturated**. If every vertex is saturated, we have a **perfect matching**.
+
+The **size** of matching $M$, $|M|$ is equal to the number of edges. A matching is **maximal** if no more edges can be added to $M$. It is **maximum** if it is the largest cardinality among all matchings in the graph. 
+
+> [!Example] Example: Maximal and Maximum Sets
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4;
+> ```
+> 
+> The matching $\{2 \sim 3\}$ is maximal, but not maximum.
+> 
+> The matching $\{1 \sim 2, 3 \sim 4\}$ is maximal and maximum!
+
+Let $G$ be bipartite, with partite sets $A$ and $B$. For non-empty set $S \subseteq A$, the **neighborhood** of $S$, denoted $N(S)$, is the union of all neighborhoods of the vertices in $S$.
+> Neighborhoods in non-bipartite sets exist too, but they may include the original set.
+
+> [!Abstract] Hall's Marriage Theorem
+> Suppose there are "r" women, "s" men, $1 \le r \le s$. There are "r" man-woman marriages if and only if for $k$, $1 \le k \le r$, any subset of $k$ women are compatible with at least $k$ men.
+>
+> Alternatively, let $A,B$ be partite sets, $|A| = r, |B| = s, 1 \le r \le s$. Then, $G$ has a matching that saturates $A$ if and only if $|N(s)| \ge |S|$ for all $S \subseteq A$.
+
+
+
+---
+
+
 
 
 

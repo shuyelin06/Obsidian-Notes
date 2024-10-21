@@ -435,3 +435,40 @@ We assume the following about the random websurfer (RW):
 2. If there are outbound links, there is an 85% chance that RW chooses one of the links, considered equally likely. There is a 15% chance that RW chooses to visit a page at random from all possible pages (not following a link).
 3. If the page has no outbound links, there is a 100% chance RW visits a random page, chosen from all possible pages.
 4. RW continues this forever.
+
+> [!Example]+ Example: Google Pagerank
+> Suppose there are 4 webpages, linked as follows:
+> ```mermaid
+> graph LR
+> 3 --> 1;
+> 2 --> 3;
+> 1 --> 2 & 3;
+> 4 --> 2 & 3;
+> ```
+> 
+> This gives us transition matrix
+> $$
+> \begin{align*}
+> T 
+> &= 0.85 (\text{Click a Link}) + 0.15 (\text{Go Somewhere Random}) \\
+> &= 
+> 0.85 
+> \begin{bmatrix}
+> 0 & 0 & 1 & 0 \\
+> 1/2 & 0 & 0 & 1/2 \\
+> 1/2 & 1 & 0 & 1/2 \\
+> 0 & 0 & 0 & 0
+> \end{bmatrix}
+> +
+> 0.15
+> \begin{bmatrix}
+> 1/4 & 1/4 & 1/4 & 1/4 \\
+> 1/4 & 1/4 & 1/4 & 1/4 \\
+> 1/4 & 1/4 & 1/4 & 1/4 \\
+> 1/4 & 1/4 & 1/4 & 1/4 
+> \end{bmatrix}
+> \end{align*}
+> $$
+> > Note that if there no outbound links, then the page would have a 100% chance to go somewhere random. We list this by just filling both columns in the 0.85 and 0.15 matrix with an equal chance of going to any website.
+> 
+> We can then use this matrix and create a steady state vector!

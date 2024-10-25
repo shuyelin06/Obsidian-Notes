@@ -472,3 +472,140 @@ We assume the following about the random websurfer (RW):
 > > Note that if there no outbound links, then the page would have a 100% chance to go somewhere random. We list this by just filling both columns in the 0.85 and 0.15 matrix with an equal chance of going to any website.
 > 
 > We can then use this matrix and create a steady state vector!
+
+
+# Absorbing Markov Chains
+Here we consider a different type of Markov chain, where the underlying system has distinct ending points. In these systems, we ask about the ending state of the system, not its (as we're used to) the equilibrium point as time goes to infinity.
+
+In tennis, you have to win by at least 2 scores. If both players score 3, the game enters "deuce".
+
+During a deuce, the game flow is
+```mermaid
+graph LR
+1[Deuce] -. Player A Scores .-> 2[Advantage A];
+1 -. Player B Scores .-> 3[Advantage B];
+2 -. Player B Scores .-> 1;
+3 -. Player A Scores .-> 1;
+
+2 -. Player A Scores .-> 4[A Wins];
+3 -. Player B Scores .-> 5[B Wins];
+```
+
+Suppose at any given moment, Player A scores with probability $p$, so Player B cores with probability $1-p$. We'll assume $p = 0.6$.
+
+What is the probability that player $A$ wins?
+
+We can model this as a Markov Chain
+```mermaid
+graph LR
+1[1] -. "0.6" .-> 2[2];
+1 -. "0.4".-> 3[3];
+2 -. "0.4" .-> 1;
+3 -. "0.6" .-> 1;
+
+2 -. "0.6" .-> 4[4];
+3 -. "0.4" .-> 5[5];
+4 -. "1" .-> 4;
+5 -. "1" .-> 5;
+```
+> Note the transitions at the end points back to themselves. These are called **absorbing states**, and we define them so that we have a valid Markov Chain.
+
+This gives us transition matrix
+$$
+T =
+\begin{bmatrix}
+0 & 0.4 & 0.6 & 0 & 0 \\
+0.6 & 0 & 0 & 0 & 0 \\
+0.4 & 0 & 0 & 0 & 0 \\
+0 & 0.6 & 0 & 1 & 0 \\
+0 & 0 & 0.4 & 0 & 1
+\end{bmatrix}
+$$
+States 4,5 are called **absorbing states**, as they are states you can't leave. States 1,2,3 are called **transient states**. This is an **absorbing Markov Chain**.
+
+Note that $T$ is not regular, and we are not interested in simply finding the steady state vectors of the system. 
+
+If the game starts in deuce, then our starting point is $x = (1,0,0,0,0)$, and 
+$$
+\vec{x}_k = T^k \vec{x}_0 
+$$
+Gives probabilities for being in each of the states after $k$ scores. If we did some of the computations,
+$$
+\begin{align*}
+&\vec{x}_1 = (0, 0.6, 0.4, 0, 0) \\
+&\vec{x}_2 = (0.48, 0, 0, 0.36, 0.16) \\
+&\vec{x}_3 = (0, 0.288, 0.192, 0.36, 0.16) \\
+&\vec{x}_4 = (0.2304, 0, 0, 0.5328, 0.2368) \\
+&\vdots \\
+&\vec{x}_8 = (0.0531, 0, 0, 0.6923, 0.3077) \\
+&\vdots \\
+&\vec{x}_{30} = (0.0000, 0, 0, 0.6923, 0.3077)
+\end{align*}
+$$
+After $k$ scores, we start to see our final probabilities for the game's outcome, and we can say that $A$ has a 69.23% chance to win, and $B$ has a 30.77% chance to win!
+
+In general, we find that our answers came from
+$$
+\lim_{k\to\infty} \vec{x}_k = \lim_{k\to\infty} T^k \vec{x}_0
+$$
+So, we want a better understanding of $T^k$. Given our $T^k$, let's first separte our transient states from our absorbing states, both in columns and rows. This gives us a grid of blocks,
+$$
+T = 
+\begin{bmatrix}
+Q & 0 \\
+R & I
+\end{bmatrix}
+$$
+$$
+Q = 
+\begin{bmatrix}
+0 & 0.4 & 0.6 \\
+0.6 & 0 & 0 \\
+0.4 & 0 & 0
+\end{bmatrix} 
+\quad
+R = 
+\begin{bmatrix}
+0 & 0.7 & 0 \\
+0 & 0 & 0.4
+\end{bmatrix} 
+$$
+
+Consider powers $T^k$.
+$$
+T^2 = T T = 
+\begin{bmatrix}
+Q & 0 \\
+R & I
+\end{bmatrix}
+\begin{bmatrix}
+Q & 0 \\
+R & I
+\end{bmatrix} = 
+\begin{bmatrix}
+Q Q + 0 R & Q0 + OI \\
+RQ + IR & R0 + II
+\end{bmatrix} =
+\begin{bmatrix}
+Q^2 & 0  \\
+RQ + R & I
+\end{bmatrix}
+$$
+Continuing this for any $k$, we find the general form
+$$
+T^k = 
+\begin{bmatrix}
+Q^k & 0  \\
+R(Q^{k-1} + Q^{k-2} + \dots + Q + I) & I
+\end{bmatrix}
+$$
+So,
+$$
+\lim_{k\to\infty} T^k = 
+\begin{bmatrix}
+\lim_{k\to\infty} Q^k & 0  \\
+R \sum_{i=0}^\infty Q^i & I
+\end{bmatrix}
+$$
+All of our interesting probabilities can be found in the sum below! Interestingly, this can be found as the matrix $R(I - Q)^{-1}$!
+

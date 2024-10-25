@@ -2855,3 +2855,124 @@ If the matrix of $T$ with respect to $\{v_1, \dots v_n\}$ is $A$, $\{w_1, \dots 
 > $$
 > 
 > So, $A = C^{-1} B C$.
+
+-- 15.1
+
+Let $F: \mathbb{R}^n \to \mathbb{R}^m$. Assume all partials exist. Now, define
+$$
+DF(x) = 
+\begin{bmatrix}
+\frac{\partial F_1}{\partial x_1} (x) & \dots & \frac{\partial F_1}{\partial x_n} \\
+&\vdots & &\vdots \\
+\frac{\partial F_m}{\partial x_1} (x) & \dots & \frac{\partial F_m}{\partial x_n} 
+\end{bmatrix} =
+\begin{bmatrix}
+\nabla F_1(x) \\
+\vdots \\
+\nabla F_m (x)
+\end{bmatrix}
+$$
+> We define the gradient of a function as a row vector.
+
+> [!Abstract] Theorem: Mean Value Theorem
+> Let $F : \mathbb{R}^m \to \mathbb{R}^n, C^1$. Fix $x, h \in \mathbb{R}^n$. Then,
+> $$
+> F(x + h) - F(x) = 
+> \begin{bmatrix}
+> \nabla F_1(x + \theta_1 h) \\
+> \vdots \\
+> \nabla F_m (x + \theta_m h)
+> \end{bmatrix} h
+> $$
+> For some $0 < \theta_1 < 1, \dots, 0 < \theta_m < 1$.
+> 
+> > [!Note] Proof
+> > 
+> > Apply the MVT for each $F_i : \mathbb{R}^n \to \mathbb{R}, C^1$.
+
+> [!Abstract] Theorem
+> Let $F : \mathbb{R}^n \to \mathbb{R}^m, C^1$. Then,
+> $$
+> \lim_{h \to 0} \frac{F(x+h) - F(x) - DF(x) h}{||h||} = 0
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > The $i^{th}$ component of the above quantity, from the previous chapter, is
+> > $$
+> > \frac{F_i (x+h) - F_i (x) - \langle \nabla F_i (x), h \rangle}{||h||} \to 0
+> > $$
+ 
+> [!Abstract] Theorem
+> Let $F : \mathbb{R}^n \to \mathbb{R}^m$. Fix $x$, assume $\exists A$ $m \times n$ matrix such that 
+> $$
+> \lim_{h \to 0} \frac{F(x+h) - F(x) - Ah}{||h||} = 0
+> $$
+> 
+> Then, all partials $\frac{\partial F_i}{\partial x_j} (x)$ exist, and $A = DF(x)$.
+> 
+> > [!Note] Proof
+> >
+> > Look at the $i^{th}$ component.
+> > $$
+> > \begin{align*}
+> > \lim_{h \to 0} \frac{F_i (x+h) - F_i (x) - \langle \nabla F_i (x), h \rangle}{||h||} \to 0 \\ 
+> > \lim_{h \to 0} \frac{F_i (x+h) - F_i (x) - \langle (a_{i1}, \dots a_{in}), (h_1, \dots h_n) \rangle}{||h||} \to 0
+> > \end{align*}
+> > $$
+> > 
+> > In particular, for $h = t e_j$, $t \to 0$, we get
+> > $$
+> > \begin{align*}
+> > \lim_{t \to 0} \frac{F_i (x + te_j) - F_i (x) - t a_{ij}}{|t|} = 0 \\
+> > \lim_{t \to 0} \frac{F_i (x + te_j) - F_i (x) - t a_{ij}}{t} = 0 \\
+> > \lim_{t \to 0} \frac{F_i (x + te_j) - F_i (x)}{t} = a_{ij} \\
+> > \frac{\partial F_i}{\partial x_j} (x) = a_{ij}
+> > \end{align*}
+> > $$
+
+$F : \mathbb{R}^n \to \mathbb{R}^m$  is **differentiable** at $x$ if there exists an $A$, $m \times m$ matrix such that
+$$
+\lim_{h \to 0} \frac{F_i (x + h) - F_i (x) - Ah}{||h||} = 0
+$$
+So, $F \in C^1 (\mathbb{R}^n)$ $\to$ F is differentiable $\forall x \in \mathbb{R}^n$ $\to$ $DF(x)$ exists $\forall x \in \mathbb{R}^n$. These are strict implications!
+
+> [!Example] Example: Counterexamples
+> Example of $f : \mathbb{R}^2 \to \mathbb{R}$ for which $Df(x)$ exists $\forall x \in \mathbb{R}^2$, but there does not exist an $A$ such that
+> $$
+> \frac{f(x+h) - f(x) - [a_1 h_1 + a_2 h_2]}{||h||} = 0
+> $$
+>
+> Is
+> $$
+> f(x_1, x_2) = \begin{cases}
+> \frac{x_1 x_2}{x_1^2 + x_2^2} & (x_1, x_2) \ne (0,0) \\
+> 0 & (x_1, x_2) = (0,0)
+> \end{cases}
+> $$
+
+> [!Example] Example
+> Let $F : \mathbb{R}^n \to \mathbb{R}^m, C^1$. Assume $F(0) = 0, DF(0)$ satisfies $|| DF (0) h || \ge ||h||, \forall h \in \mathbb{R}^n$.
+>
+> Prove that $\exists \delta > 0$ such that $|| F(h) || \ge \frac{1}{2} ||h||, \forall ||h|| < \delta$.
+>
+> We know that
+$$
+\lim_{h \to 0} \frac{F(x+h) - F(0) - DF(0) h}{||h||} = 0
+$$
+
+$$
+\begin{align*}
+|| F(h) || = || F(h) - DF(0) h + DF(0) h || \ge || DF(h) || - || F(h) - DF(0) h || \\
+\frac{|| F(h) ||}{|| h ||} = \frac{|| F(h) - DF(0) h + DF(0) h ||}{|| h ||} \ge \frac{|| DF(h) ||}{|| h ||} - \frac{|| F(h) - DF(0) h ||}{|| h ||} \ge 1/2 \\
+\end{align*}
+$$
+
+Since
+$$
+\lim_{h \to 0} \frac{F(x+h) - F(0) - DF(0) h}{||h||} = 0
+$$
+We know that $\exists \delta > 0$ such that 
+$$
+\frac{|| F(h) - DF(0) h ||}{|| h ||} \le \frac{1}{2}
+$$

@@ -1277,8 +1277,76 @@ Let $G$ be bipartite, with partite sets $A$ and $B$. For non-empty set $S \subse
 > [!Abstract] Hall's Marriage Theorem
 > Suppose there are "r" women, "s" men, $1 \le r \le s$. There are "r" man-woman marriages if and only if for $k$, $1 \le k \le r$, any subset of $k$ women are compatible with at least $k$ men.
 >
-> Alternatively, let $A,B$ be partite sets, $|A| = r, |B| = s, 1 \le r \le s$. Then, $G$ has a matching that saturates $A$ if and only if $|N(s)| \ge |S|$ for all $S \subseteq A$.
+> Alternatively, let $A,B$ be partite sets, $|A| = r, |B| = s, 1 \le r \le s$. Then, $G$ has a matching that saturates $A$ if and only if $|N(S)| \ge |S|$ for all $S \subseteq A$.
+>
+> > [!Note]- Proof 
+> > 
+> > #### Proof ($\rightarrow$)
+> > Given a matching saturates $A$. 
+> > 
+> > For any subset $S \subseteq A$, each vertex mataches to a distinct vertex in $B$, so $|N(S)| \ge |S|$.
+> > 
+> > #### Proof ($\leftarrow$)
+> > Given $|N(S)| \ge |S|$, then $G$ has a matching saturating $A$.
+> > 
+> > Assume no matching saturates $A$.Let $u \in A$ be a vertex that is NOT saturated, and let $M$ be a maximum matching.
+> > 
+> > Let $A$ be the subset of vertices of $G$ such that there is a path to $u$ with edges alternating in $M$ and NOT in $M$ ($M$ alternating path).
+> > 
+> > We claim every vertex in $Z / \{u\}$ must be incident to an edge in $M$. From above, if a vertex was NOT incident to a vertex in $M$, we can toggle the edges and create a larger matching, but $M$ was maximum! 
+> > 
+> > Let $A' \subseteq A$ be the vertices in $Z$, and $B' \subseteq B$ also in $Z$. So, it follows that the cardinality of $A'$ is one larger than $B'$ because of $u$ not saturated!
+> > $$
+> > |A'| = |B'| + 1
+> > $$
+> > 
+> > Let $b \in B'$. Since there is an alternating path from $u \to b$, there exists some $a \in A$ with $a \sim b$. Thus, $B'$ is in the neighborhood of $A'$. $B' \subseteq N(A')$
+> > 
+> > Now let $c \in N(A')$. Then, there exists a $a \in A'$ with $a \sim c$, and furthermore, there exists an alternating path from $u \to a$. We either add in $a \sim c$ to the path to create a path $u \to c$, or delete $a \sim c$ to create a $u \to c$. So, there is a $u \to c$ alternating path, so $c \in B'$. $N(A') \subseteq B'$.
+> > 
+> > So, we have $N(A') = B'$, so $|N(A')| = |B'| = |A'| - 1 < |A'|$.
+> > 
+> > There exists $A' \subseteq A$ such that $|N(A')| < |A|$.
 
+
+> [!Example]+ Example
+> ```mermaid
+> graph LR
+> 
+> subgraph A 
+> 1;2;3;
+> end
+> 
+> subgraph B;
+> 4;5;6;
+> end
+> 
+> 1 & 2 & 3 o--o 4;
+> 3 o--o 5 & 6;
+> ```
+> 
+> Note that $N(\{1,2,3\}) = \{4,5,6\}$, so $|N(S)| \ge |S|$. But $N(\{1,2\}) = \{4\}$, so $1 = |N(S)| < |S|$. So, no matching can saturate $A$.
+> 
+> Thus, it is easier to use the theorem to **disprove** that a matching exists, by finding a $S \subseteq A$ where $N(S) < |S|$.
+
+> [!Example] Example 
+> Let $G$ be a $k$-regular bipartite graph. 
+> 
+> If $A,B$ are the partite sets, then the total edges is $K|A| = K|B|$, so the cardinality of the partite sets must be the same.
+>
+> Let $S \subseteq A$. Clearly, the total edges from $S$ to $N(S)$ is $m = K|S|$.
+> 
+> Then, the total edges from $N(S)$ to $S$ is at most $K |N(S)|$.
+> 
+> So, $K|S| = m \le K|N(S)|$ so, $|S| \le |N(S)|$ satisfies Hall's condition! So, any $k$-regular bipartite graph as a matching saturating $A$, and furthermore, as $|A| = |B|$, this matching is perfect. 
+
+Let $A_1, A_2, \dots A_n$ be (not necessarily distinct) sets.
+
+The collection of sets has a **system of distinct representatives (SDR)** if there are "n" **distinct** elements $a_1, \dots a_n$ such that
+$$
+a_i \in A \qquad \forall 1 \le i \le n
+$$
+> We create a bipartite set from this, and try to find a matching!
 
 
 ---

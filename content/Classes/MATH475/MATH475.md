@@ -1338,7 +1338,12 @@ Let $G$ be bipartite, with partite sets $A$ and $B$. For non-empty set $S \subse
 > 
 > Then, the total edges from $N(S)$ to $S$ is at most $K |N(S)|$.
 > 
-> So, $K|S| = m \le K|N(S)|$ so, $|S| \le |N(S)|$ satisfies Hall's condition! So, any $k$-regular bipartite graph as a matching saturating $A$, and furthermore, as $|A| = |B|$, this matching is perfect. 
+> So, $K|S| = m \le K|N(S)|$ so, $|S| \le |N(S)|$ satisfies Hall's condition! **So, any $k$-regular bipartite graph as a matching saturating $A$, and furthermore, as $|A| = |B|$, this matching is perfect**. 
+
+> [!Abstract] Theorem
+> Any $k$-regular bipartite graph has a perfect matching.
+
+We discuss ways we can apply Hall's Theorem. In general, we try to form partite sets with edges, and apply Hall's Theorem.
 
 Let $A_1, A_2, \dots A_n$ be (not necessarily distinct) sets.
 
@@ -1347,6 +1352,87 @@ $$
 a_i \in A \qquad \forall 1 \le i \le n
 $$
 > We create a bipartite set from this, and try to find a matching!
+
+> [!Example]+ Example: SDRs
+> $$
+> A_1 = \{1,2,3\} \quad A_2 = \{1,2,3\} \quad A_3 = \{1,4\} \quad A_4 = \{1,5\}
+> $$
+> We can choose the following SDR: $1,2,4,5$.
+> $$
+> A_1 = \{\underline{1},2,3\} \quad A_2 = \{1,\underline{2},3\} \quad A_3 = \{1,\underline{4}\} \quad A_4 = \{1,\underline{5}\}
+> $$
+
+Recall that by Hall's Theorem, the matching saturates $A$ if for all $S \subseteq A$, $|N(S)| \ge |S|$. We can represent SDRs in terms of Hall's Theorem to obtain some important conclusions!
+
+We naturally define a bipartite graph with 1 partite set with nodes representing $A_1, \dots A_n$, and the other set with nodes representing $a_1, a_2, \dots a_n$. We create an edge $A_i \sim A_j$ if and only if $a_j \in A_i$. 
+
+Then by Hall's theorem, we have an SDR if and only if for any **union** of $k$ sets $A_1 \cup A_2 \dots A_k$, the cardinality is at least $k$.
+> So to disprove an SDR, we can show the existence of $k$ sets such that the cardinality of their union is $< k$.
+
+> [!Example] Example: Latin Squares
+> A **Latin square** is an $n \times n$ array containing $n$ different symbols, each occurring exactly once in each row and column.
+> 
+> $$
+> \begin{bmatrix}
+> 1 & 2 & 3 \\
+> 2 & 3 & 1 \\
+> 3 & 1 & 2
+> \end{bmatrix}
+> $$
+> 
+> Say we are given an $m \times n$ Latin rectangle. We ask, when can this rectangle be "completed" to an $(m + 1) \times n$ Latin rectangle? ($m < n$)
+> 
+> Consider the partite sets 
+> $$
+> S_1 = \{ \text{n Distinct Symbols} \} \qquad 
+> S_2 = \{ \text{Cell Values in Row m + 1} \}
+> $$
+> We $i \in S_1$ adjacent to $j \in S_2$ if and only if "i" can be placed in cell $j$. 
+> - As there are m rows before row $m + 1$, we know that $m$ distinct symbols must have already been placed, so for any $j$ in $S_2$, it has $n - m$ edges to $S_1$. 
+> - Furthermore, with 1 distinct symbol in $m$ rows, this leaves $n - m$ columns (cells) remaining to fill with that distinct symbol. So, for any $i \in S_1$, it has $n - m$ edges to $S_2$.
+> 
+> So in our partite sets, each element in either partite set has $n - m$ edges to the other set. Thus, our graph must be $n - m$ regular, and by an earlier example, every regular bipartite graph has a perfect matching. Thus, each cell in row $m + 1$ can be uniquely matched with a symbol.
+> 
+> Thus, its always possible to extend the rectangle down further and add an extra row!
+
+> In a lot of these problems, we're trying to smartly construct a graph to get a $k$-regular bipartite graph! Then, we can apply Hall's Theorem.
+
+# Section 4: Graph Traversability
+There are two notions of traversability-- traversing through all the vertices, or all the edges.
+
+## 4.1: Eulerian Graphs
+We ask: Can we begin at a vertex in a graph, and traverse all edges exactly once?
+> It's okay to repeat vertices!
+
+If the start and end vertex are different, it is a **Eulerian Trail**. Otherwise, if they are the same, it is a **Eulerian Circuit**, and we say $G$ is **Eulerian**.
+
+> [!Example] Example: Eulerian Trails
+> ```mermaid
+> graph LR
+> 1 o--o 2 & 3;
+> 2 o--o 4 & 5;
+> 3 o--o 4 & 5;
+> 4 o--o 5;
+> 2 o--o 3;
+> ```
+> 
+> An eulerian trail exists, but NOT an eulerian circuit. One possible trail is given as follows:
+> $$
+> 5 \to 3 \to 1 \to 2 \to 3 \to 4 \to 5 \to 2 \to 4
+> $$
+
+> [!Example] Example: Lack of Eulerian Trail
+> ```mermaid
+> graph LR
+> 1 o--o 2 & 2 & 3;
+> 2 o--o 3 & 4 & 4;
+> 3 o--o 4;
+> ```
+> This is a graphical representation of the "Seven Bridges of Konigsberg".
+> 
+> There does not exist any possible eulerian or trail circuit for the graph. 
+
+Having even degree is necessary for a circuit! ... WIP 
 
 
 ---

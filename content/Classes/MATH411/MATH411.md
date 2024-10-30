@@ -2976,3 +2976,121 @@ We know that $\exists \delta > 0$ such that
 $$
 \frac{|| F(h) - DF(0) h ||}{|| h ||} \le \frac{1}{2}
 $$
+
+...
+
+---
+
+15.3 - 5
+
+We have two functions $(u,v) : \mathbb{R}^2 \to \mathbb{R}^2, C^2$. Furthermore, we have a function $w : \mathbb{R}^2 \to \,mathbb{R}$.
+
+By slight abuse of notation, call $w$ a function of $u,v$, and $u,v$ a function of $x,y$.
+
+By assumption, $w$ is harmonic, so
+$$
+\frac{\partial^2 w}{\partial u^2} (u,v) + \frac{\partial^2 w}{\partial v^2} (u,v) = 0
+$$
+And we have the Cauchy-Remainder EQuations
+$$
+\begin{align*}
+\frac{\partial u}{\partial x} (x,y) = \frac{\partial v}{\partial y} (x,y) \\
+\frac{\partial v}{\partial x} (x,y) = - \frac{\partial u}{\partial y} (x,y)
+\end{align*}
+$$
+
+We wish to show that
+$$
+\left( \frac{d^2}{dx^2} + \frac{d^2}{dy^2} \right) (w(u,v)) (x,y) = 0
+$$
+
+$$
+\begin{align*}
+\frac{\partial}{\partial x} w(u(x,y), v(x,y)) 
+&= \frac{\partial w}{\partial u} (u,v) \frac{\partial u}{\partial x} + \frac{\partial w}{\partial v} (u,v) \frac{\partial v}{\partial x} \\
+\frac{\partial^2}{\partial x^2} w(u(x,y), v(x,y)) 
+&= \left[ \frac{\partial^2 w}{\partial u^2} (u,v) \frac{\partial u}{\partial x} + \frac{\partial^2 w}{\partial u \partial v} (u,v) \frac{\partial v}{\partial x} \right] \frac{\partial u}{\partial x} \\
+&\quad + \frac{\partial w}{\partial u} (u,v) \frac{\partial^2 u}{\partial x^2} + \left[ \frac{\partial^2}{\partial u \partial v} (u,v) \frac{\partial u}{\partial x} + \frac{\partial^2 w}{\partial v^2} (u,v) \frac{\partial v}{\partial x} \right] \frac{\partial v}{\partial x} \\
+&\quad + \frac{\partial w}{\partial v} (u,v) \frac{\partial^2 u}{\partial x^2}
+\end{align*}
+$$
+> The $y$ case is the same, just replace the $x$'s with $y$'s.
+
+We claim that the sum of these terms is 0, and with our assumptions we can show that this is true. 
+> There is a theorem, if $u$ and $v$ satisfy the Cauchy Riemann equations, then they too are Harmonic individually. We can find this by differentiating the Cauchy Riemann equations
+
+Just show 3 cancellations and we're done T-T
+
+
+---
+
+Inverse Function Theorem / Implicit Function Theorem
+> Functions on R^n to R^n.
+
+# 16.1
+> [!Abstract] Theorem: Inverse Function Theorem (One Dimension)
+> Let $f : \mathbb{R} \to \mathbb{R}, C^1$, let $x_0 \in \mathbb{R}$ such that $f'(x) \ne 0$.
+>
+> Then, there exists a **neighborhood** $U$ around $x_0$ (open set containing $x_0$) and a **neighborhood** $V$ around $f(x_0)$ such that
+> $$
+> f : U \to V
+> $$
+> Is 1-1, onto, $f^{-1} : V \to U$ is $C^1$ and $f^{-1} (y)' = \frac{1}{f'(f^{-1}(y))}$ for all $y \in V$.
+>
+> > [!Note] Proof
+> > 
+If we know that $f^{-1} : V \to C$ is $C^1$, then the formula is immediate.
+
+Note that proving the formula is just a chain rule.
+
+WLOG, $f'(x_0) > 0$. Let $U = (x_0 - R, x_0 + R)$ be such that 
+$$
+f'(t) > 0 \qquad t \in [x_0 - R, x_0 + R]
+$$
+In other words, take the open set such that $f$ is strictly increasing on it.
+
+Then $f : [x_0 - R, x_0 + R] \to [ f(x_0 - R), f(x_0 + R) ]$ is 1-1, onto because of the IVT, and
+$$
+f : (x_0 - R, x_0 + R) \to ( f(x_0 - R), f(x_0 + R) )
+$$
+Is also 1-1 and onto. Furthermore, $f^{-1}$ is $C^1$ as the function is strictly increasing and continuous over the entire interval.
+
+> [!Abstract] Theorem: Inverse Function Theorem (Two Dimensions)
+> Let $F : \mathbb{R}^2 \to \mathbb{R}^2$, $C^1$. Assume we have a point $(x_0, y_0)$ such that the derivative matrix $DF$ of $f$ at this point is invertible (the derivative is 0).
+>
+> Then, there exists a neighborhood $U$ of $(x_0, y_0)$, $V$ of $F(x_0, y_0)$ such that
+$$
+F : U \to V
+$$
+Is 1-1, onto, $F^{-1} : V \to U$ is $C^1$, and 
+$$
+D(F^{-1}) (y) = \left( DF ( F^{-1}(y)) \right)^{-1}
+$$
+
+> If we know that $F^{-1}$ is $C^1$, then the formula follows from the chain rule.
+
+> [!Example] Example
+$$
+F(x,y) = (x^2 - y^2, 2xy)
+$$
+We can also represent this function with complex numbers like as
+$$
+F(x + iy) = (x + iy)^2 = x^2 - y^2 + 2ixy
+$$
+
+Now, 
+$$
+\det DF(x,y) = \det
+\begin{bmatrix}
+2x & -2y \\ 2y & 2x
+\end{bmatrix} = 4 (x^2 +  y^2) \ne 0 \qquad \forall (x,y) \ne (0,0)
+$$
+Thus, if $(x_0, y_0) \ne (0,0)$, there exists a neighborhood $U$ of $(x_0, y_0)$, $V$ of $(x_0^2 - y_0^2, 2 x_0 y_0)$ such that
+$$
+F : U \to V
+$$
+Is 1-1, onto.
+
+What about $(0,0)$? Does there exist a neighborhood $U$ of $(0,0$ such that $F$ is 1-1 on $U$? 
+
+No. $F(x,y) = F(-x,-y)$, so we cannot find any such neighborhood. 

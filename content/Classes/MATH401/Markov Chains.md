@@ -580,6 +580,11 @@ $$
 R \sum_{i=0}^\infty Q^i & I
 \end{bmatrix}
 $$
-All of our interesting probabilities can be found in the sum below! 
-- We can find the probability we end in a certain state as $R(I - Q)^{-1}$!
-- Furthermore, we can find the expected number of visits in a state we have as $(I - Q)^{-1}$. If you take each column sum, we get the expected number of visits (given a starting point) until we reach an absorbing state!
+
+Interestingly, the sum is equivalent to $(I - Q)^{-1}$! This is where we'll find all of our interesting probabilities.
+
+> [!Abstract] Theorem: Absorbing Markov Chains
+> For an absorbing Markov Chain,
+> 1. The $(i,j)$ entry of $R(I - Q)^{-1}$ contains the probability of ending in state $i$ given that we start in state $j$.
+> 2. The $(i,j)$ entry of $(I - Q)^{-1}$ contains the expected number of visits to state $i$ given we start in state $j$.
+> 3. The $j^{th}$ column sum is the expected number of time steps we have until stopping.

@@ -1401,7 +1401,7 @@ Then by Hall's theorem, we have an SDR if and only if for any **union** of $k$ s
 There are two notions of traversability-- traversing through all the vertices, or all the edges.
 
 ## 4.1: Eulerian Graphs
-We ask: Can we begin at a vertex in a graph, and traverse all edges exactly once?
+We ask: Can we begin at a vertex in a graph, and traverse all **edges** exactly once?
 > It's okay to repeat vertices!
 
 If the start and end vertex are different, it is a **Eulerian Trail**. Otherwise, if they are the same, it is a **Eulerian Circuit**, and we say $G$ is **Eulerian**.
@@ -1432,7 +1432,83 @@ If the start and end vertex are different, it is a **Eulerian Trail**. Otherwise
 > 
 > There does not exist any possible eulerian or trail circuit for the graph. 
 
-Having even degree is necessary for a circuit! ... WIP 
+> [!Abstract] Theorem
+> Let $G$ be a connected (multi) graph. Then, $G$ is Eulerian if and only if every vertex has an even degree.
+> 
+> > [!Note]- Proof
+> > 
+> > #### Proof $\rightarrow$
+> > Given a Eulerian circuit, take an intermediate vertex in the circuit. Our first encounter with the vertex is "in", and we must go "out" since this is NOT the start / end vertex. 
+> > 
+> > We find that the total in's must equal the total out's, so there must be an even number of edges incident to the vertex.
+> > 
+> > For the starting vertex, our first encounter is "out", and we must go "in". Along the same logic, this vertex must have an even number of edges.
+> > 
+> > #### Proof $\leftarrow$
+> > Consider a $uv$-trail of maximum length. We show that it must be closed, i.e. $u = v$, so it is a circuit.
+> > 
+> > Observe if $u \ne v$, ending at $v$, the first encounter is "in". We end at $v$, so there will be 1 more "in" than "out", meaning $v$ cannot have an even degree. Because $v$ does have an even degree, however, there must be one more "out" we can take, some $v \sim w$ NOT in the trail! This contradicts our claim that the $uv$ trail is of maximum length, so $u = v$, giving us a circuit.
+> > 
+> > Now, $C$ be a circuit of max length, and assume $x \sim y$ is NOT in the circuit, with $x$ in $C$. Now consider $H = G / E(C)$, the graph without edges in $C$. Let $H_1$ be the component containing $x \sim y$. 
+> > 
+> > Create a trail in $H_1$ of max length, and repeat the above argument to show that we must have a circuit. Now, append this circuit onto our original circuit $C$ to get a new (and longer) circuit. This contradicts that $C$ is the longest length circuit, so there cannot possibly be any $x \sim y$ not accounted for in the circuit!
+>
+> > **Corollary**: Graph $G$ has an Eulerian trail if and only if exactly 2 vertices have odd degree.
+
+## 4.2: Hamiltonian Graphs
+We ask: Can we begin at a vertex in a graph, and traverse all **vertices** exactly once? 
+> We cannot repeat any vertices or edges! We don't have to use all the edges, however.
+
+A **cycle** (no vertex repeated except the start and end) in graph $G$ that contains every vertex is known as a **Hamiltonian cycle** of $G$, and if such a cycle exists we say $G$ is **Hamiltonian**.
+
+A **Hamiltonian path** is a path containing all vertices.
+
+Let $c (G / S)$ be the total components of graph $G$ after deleting vertex set $S$ and all edges incident to these vertices.
+
+A graph $G$ is **$t$-tough** if 
+$$
+t \le \frac{|S|}{c(G / S)}
+$$
+For every $S \subseteq V(G)$ that disconnects $G$. The **toughness** of $G$ is the smallest $t$ for which $G$ is $t$-tough,
+$$
+t(G) = \min_{S \subseteq V(G)} \frac{|S|}{c (G/S)}
+$$
+Intuitively, the toughness value $t(G)$ of a graph is small if we can delete only a few vertices, and separate the graph into many disconnected components. 
+> Deleting a few vertices breaks the graph up into many subcomponents!
+
+> [!Example] Example: Toughness in the Petersen Graph
+> ```mermaid
+> graph LR
+> 1 o--o 6;
+> 2 o--o 7;
+> 3 o--o 8;
+> 4 o--o 9; 
+> 5 o--o 10;
+> 1 o--o 2 o--o 3 o--o 4 o--o 5 o--o 1;
+> 6 o--o 7 o--o 8 o--o 9 o--o 10 o--o 6;
+> ```
+> 
+> If we delete 7 vertices: 1, 3, 6 to 10, we get 2 components. Then, the toughness we calculate from this is $\frac{7}{2}$, which is an **upper bound** of the graph's actual toughness (maybe we can find a value smaller!)
+>
+> Similarly, we could delete 4 vertices to get 3 components, giving us toughness $\frac{4}{3}$! It can actually be proven that this is the minimum.
+> > This graph is a very common "counterexample" for many claims in graph theory!
+
+> [!Abstract] Theorem: 
+> The toughness of the Petersen Graph is $\frac{4}{3}$, which means it is 1-tough, 1/2-tough, etc.
+
+We define toughness, as we may be curious in finding if a Hamiltonian cycle can be found given some toughness of the graph!
+
+> [!Abstract] Theorem: Necessity Condition for Hamiltonian Graphs 
+> If $G$ is Hamiltonian, then $t(G) \ge 1$. In other words, for all disconnecting subsets $S$, we have $|S| \ge c(G / S)$. 
+>
+> > [!Note] Proof
+> > 
+> > Let $c(G / S) = k$, $G_1, G_2, \dots G_k$ are the components. 
+> > 
+> > If a cycle exists, start in $G_1$. Every time we want to move into another component, we need to traverse one vertex in $S$ (as $S$ connects all the components). Hence for each component traversed we must visit a different vertex (by assumption of Hamiltonian cycle) in $S$, so the size of $S$ must equal or be greater than the number of components.
+> > $$
+> > |S| \ge c(G / S) \to t(G) \ge 1
+> > $$
 
 
 ---

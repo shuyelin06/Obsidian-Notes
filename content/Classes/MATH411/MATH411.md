@@ -1146,3 +1146,151 @@ Is 1-1, onto.
 What about $(0,0)$? Does there exist a neighborhood $U$ of $(0,0$ such that $F$ is 1-1 on $U$? 
 
 No. $F(x,y) = F(-x,-y)$, so we cannot find any such neighborhood. 
+
+---
+
+Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$. Assume $(x_0, y_0)$ is such that $DF(x_0, y_0)$ is invertible. Then there exists a neighborhood $U$ of $(x_0, y_0)$ and neighborhood $V$ of $F(x_0,y_0)$ such that
+- $F : U \to V$ is 1-1 and onto
+- $F^{-1} : V \to U$ is $C^1$
+
+> [!Example] 
+$$
+F(x,y) = (x^2 - y^2, 2xy)
+$$
+
+Our hypotheses hold at any $(x_0, y_0) \not> (0,0)$, but fails at $(0,0)$.
+
+Previously, we showed that there does not exist a $U$ neighborhood of $(0,0)$ such that $F$ is 1-1 on $U$, as $F(x,y) = F(-x,-y)$. 
+
+However, $F(B_1 (0)) = B_1 (0)$, so 2 holds!
+
+> [!Note] Proof
+> 
+> Let $x = r \cos \theta, y = r \sin \theta$. 
+> $$
+> F(x,y) = (r^2 (\cos^2 \theta - \sin^2 \theta), 2 r \sin\theta \cos\theta) = (r^2 \cos(2\theta), r^2 \sin(2\theta))
+> $$
+> 
+> So we always remain within our ball!
+
+---
+
+> [!Example] Example: 
+$$
+F(x,y) = (e^x \cos y, e^x \sin y)
+$$
+
+We have
+$$
+DF (x,y) =
+\begin{bmatrix}
+e^x \cos y & -e^x \sin y \\
+e^x \sin y & e^x \cos y
+\end{bmatrix}
+$$
+Where $\det (DF) = e^{2x} \ne 0$. So, our hypothesis holds everywhere! However, note that our theorem does not hold globally, just locally!
+- $F$ is not 1-1 globally as we can find $F(x,y) = F(x, y + 2k\pi)$. 
+- $F$ is not onto globally, as there does not exist any $(x,y)$ such that $F(x,y) = (0,0)$.
+
+> [!Example] Example
+Let $\phi : \mathbb{R}^2 \to \mathbb{R}, C^1$, and
+$$
+F(x,y) = (\phi(x,y), \phi^2 (x,y))
+$$
+
+We find derivative matrix
+$$
+F(x,y) = 
+\begin{bmatrix} 
+\frac{\partial \phi}{\partial x} & \frac{\partial \phi}{\partial y} \\
+2 \phi \frac{\partial \phi}{\partial x} & 2 \phi \frac{\partial \phi}{\partial y}
+\end{bmatrix} 
+$$
+As the determinant of this matrix is always 0, we find that $F$ is not invertible anywhere.
+
+> [!Example] Example
+We want a $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$ such that
+$$
+\det (DF(x_0, y_0)) = 0
+$$
+Yet $F$ is 1-1 and onto.
+
+Let $F(x,y) = (x^3, y^3)$. Then, even though the determinant of the derivative matrix is $x = 0$ or $y = 0$, $F$ is 1-1 and onto.
+
+Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$ and assume that $DF(0,0)$ is not invertible, ad $F$ is 1-1, $F$ is onto. Is it possible for $F^{-1}$ to be $C^1$, so all 3 conclusions of our theorem hold while the hypothesis does not?
+
+No! By way of contradiction, as
+$$
+F \circ F^{-1} (x,y) = (x,y)
+$$
+Then $(DF) F^{-1} (x,y) \circ (DF^{-1}) (x,y) = I$, but $DF$ is not invertible at some point, which is not possible, as its inverse exists!
+
+---
+
+16.2
+
+
+> [!Note] Proof
+Recall that the following are equivalent. For an $n \times n$ matrix $A$, 
+- $A$ is invertible
+- $\exists c > 0$ such that $|| A h || \ge c ||h||$, $\forall h \in \mathbb{R}^n$.
+
+We say that $F : O \to \mathbb{R}^n$ is **stable** if $\exists c > 0$ such that
+$$
+|| F(x) - F(y) || \ge c || x - y || \qquad \forall (x,y) \in O
+$$
+> [!Info] Remark
+> $F$ stable implies that $F$ is 1-1.
+> 
+> As a brief proof, if $F(x) = F(y)$, then $|| F(x) - F(y) || \ge || x - y || \to x = y$.
+> > Note that $F$ is stable if and only if $F^{-1}$ is Lipschitz (as the inequalities are flipped!)
+
+> [!Abstract] Proposition:
+> Let $A$ be an $n \times n$ matrix, and assume that $\exists c > 0$ such that
+> $$
+> || A h || \ge c || h || \qquad h \in \mathbb{R}^n
+> $$
+> Let $B$ be an $n \times n$ matrix such that $|| A - B || \le \frac{c}{2}$. Then, $|| Bh || \ge \frac{c}{2} || h ||$. In other words, if a matrix is 1-1, then all other matrices sufficiently close to it are also 1-1.
+>
+> > [!Note] Proof
+> > 
+> > $$
+> > || Bh || = || Ah + (B - A) h || \ge || Ah || - || (B - A) h || \ge c ||h|| - \frac{c}{2} ||h|| \ge \frac{c}{2} ||h||
+> > $$
+
+We now prove the 1-1 part of the inverse function theorem.
+
+> [!Abstract] Theorem
+Let $F : O \to \mathbb{R}^n, C^1$, $O$ open. Assume that we have a point $x^*$ such that the derivative matrix at $x^*$, $DF(x^*)$, is invertible. Then there exists a neighborhood of $x^*$ such that
+- The derivative matrix of $F$ is invertible. $\forall x \in U$.
+- $F$ is stable on $V$, implying $F$ is 1-1 on $U$.
+
+For point 1, look at $\det DF(x^*) \ne 0$. Thus, $\exists U$ neighborhood of $x^*$ such that $\det DF(x) \ne 0$ on $U$.
+
+For point 2, look at $F : B_r (x^*) \to \mathbb{R}^n$. If $x,y$ belong to the ball $B_r (x^*)$, we have
+$$
+F(x) - F(y) = 
+\begin{bmatrix}
+\nabla F_1 (p_1) \\
+\vdots \\
+\nabla F_n (p_n) 
+\end{bmatrix} (x - y)
+$$
+For some $p_1, \dots p_n$ on the line from $x$ to $y$.
+
+As we know that $DF(x^*)$ is invertible, then $\exists c > 0$ such that
+$$
+|| DF(x^*) h || \ge c || h || \qquad \forall h
+$$
+If $r$ is so small that 
+$$
+|| DF(x^*) - \begin{bmatrix}
+\nabla F_1 (p_1) \\
+\vdots \\
+\nabla F_n (p_n) 
+\end{bmatrix} || < \frac{c}{2}
+$$
+For all $p_1, \dots p_n \in B_r (x^*)$. Then,
+$$
+|| B (x - y) || \ge \frac{c}{2} || x - y ||
+$$

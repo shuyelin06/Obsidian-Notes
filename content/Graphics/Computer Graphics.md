@@ -7,11 +7,17 @@ tags:
 
 Welcome to Computer Graphics!
 
-In this article, I attempt to describe what graphics means on a broader level. Many of these topics will later be elaborated on (in articles shortlinked here), but are described here as a general overview. 
+# Introduction
+## Defining Computer Graphics
+When we think about computer graphics, we will often think of some animated film like the one below. 
 
-# An Introduction to Graphics
-## What is Graphics?
-**Computer graphics** is a field describing how we can communicate visually using a display, often to a human user. It is a cross-disciplinary field combining a wide variety of topics, such as:
+> [!Example]-
+> ![[ToyStory.jpeg]]
+
+Computer graphics is indeed prominent here, but it is also much more pervasive in computer science than this! More generally, **computer graphics** refers to the use of computers to synthesize visual information for a human to consume! With nearly 30% of the human brain dedicated to visual processing, the eyes are one of the most prominent ways to relay information to people!
+> In more modern times, graphics has evolved to include not just visuals, but also any **sensory stimuli**.
+
+To just "create visual information" sounds deceptively simple. To make images, we not only need to use information from many other fields, but we also need to figure out how to convey all of the information visually to a human! In fact, computer graphics is a very deep and cross-disciplinary field that combines a wide variety of topics, including: 
 - **Physics**: Models physical natures such as light, and enables simulations for animation.
 - **Mathematics**: Lays the underlying basis for shapes
 - **Human Perception**: Determines how we should allocate resources to communicate with our user in the best (and most efficient) way.
@@ -20,10 +26,140 @@ In this article, I attempt to describe what graphics means on a broader level. M
 
 > User interfaces are often a very understated part of graphics, so much so that UI research is its own field!
 
-> [!Warning] Misconceptions About Graphics
-> Some people may say that computer graphics is smply the practice of taking a scene and creating an image of this scene.
+## Overview 
+All of the applications of computer graphics require very sophisticated theories and systems. 
+
+In terms of theory, we have (broadly):
+- **Basic Representations**: How do you digitally encode shape and motion?
+- **Sampling & Aliasing**: How do you acquire and reproduce a signal?
+- **Numerical Methods**: How do you manipulate signals numerically?
+- **Radiometry & Light Transport**: How does light behave?
+- **Perception**: How does this all relate to humans?
+- ...
+
+In terms of systems, we have (broadly):
+- **Parallel, Heterogeneous Processing**
+- **Graphics-Specific Programming Languages**
+- ...
+
+# The Rasterization Pipeline
+## Overview
+One of the major techniques for rendering objects onto our screen is **rasterization**:
+
+For every primitive (e.g. triangle), what pixels light up?
+> This can be extremely fast, but this comes at the cost of quality. It can, in some cases, be difficult to achieve photorealism with rasterization. 
+
+To generate 3D images with rasterization, it helps to think about the generation in terms of a "pipeline". Each stage of the pipeline will have a simple input and output, each of which can be combined to generate the final image. 
+> Each of these stages, if treated independent of one another, can be ran on the GPU! This is why rasterization can be so fast.
+
+- **Input**: A collection of 3D primitives (triangles), with possibly additional attributes, like color.
+- **Output**: A bitcamp image, possibly with additional information like depth and alpha. 
+
+> [!Info] Why Triangles?
+> In the graphics pipeline, we draw **all primitives as triangles**, even points and lines! But why? Some reasons include:
+> - Triangles can approximate nearly any shape.
+> - Triangles are always planar with a well-defined normal.
+> - It's easy to interpolate data at the corners of the triangle.
 >
-> While this is true, **this grossly underestimates what graphics is really about**! Graphics is far richer than this - and to make such images, we need to make many assumptions and decisions that are influenced by the aforementioned fields, which can become quite complex.
+> Most importantly, once we reduce everything down to triangles as a "base unit", we can focus on making a well-optimized pipeline for just drawing triangles!
+
+A rough sketch of the rasterization pipeline is as follows:
+
+```mermaid
+graph LR
+Input -.-> Transformation -.-> Projection -.-> Sampling -.-> Interpolation -.-> Shading -.-> 1[Final Image]
+```
+
+1. **Transformation**: We transform / position objects in the world
+2. **Projection**: We project the 3D objects onto the 2D screen
+3. **Sampling**: For each triangle, we sample the triangle coverage for pixels on the screen.
+4. **Interpolation**: For the covered samples, we interpolate the triangle attributes
+5. **Shading**: We add textures and evaluate shaders to modify the attributes we have
+6. **Final Image**: We combine every samples into a final image.
+
+
+## ...
+
+## Stage 3: Sampling
+Say we have some triangles on the screen. Then, we have two questions to answer:
+- **Coverage**: What pixels does each triangle overlap?
+- **Occlusion**: What triangle is closest to the camera in each pixel?
+
+> This is also known as the **visibility problem**. 
+
+### Coverage
+Consider a triangle with projected position of vertices $P_0, P_1, P_2$. Given our pixel grid, we want a set of pixels that are "covered" by the triangle.
+
+But what does it mean for a pixel to be covered by a triangle? What triangles in the below image cover our pixel? 
+
+> [!Example]- Example: Coverage 
+> ![[CoverageP1.png]]
+>
+> Some of the triangles (3,4) seem obvious, while others (2,1) are less obvious. How can we address this?
+
+The most intuitive idea one may think of is to simply color the pixel according to the fraction of pixel area covered by the triangle, not just a flat "0" or "1" indicating if the pixel is covered or not. 
+
+But real scenes are complicated! If we had multiple triangles in the same pixel (potentially overlapping), it would be very impractical to compute the exact percentage of the pixel covered by each triangle. 
+
+Instead, we will view coverage as a **sampling problem**. For any given pixel, we will take many samples, and use them to approximate the coverage of our pixel! If we smartly choose our points, and choose enough points, we'll get a very close approximation of the actual coverage!
+
+> [!Info] Sampling Basics
+> Suppose we have some sort of curve representing our actual data $f(x)$, and we sample multiple points along this curve $x_1, x_2, \dots$. 
+>
+> With these samples, there are many ways we can try to reconstruct our actual data, such as: 
+> - Piecewise Constant (Nearest Neighbor): For any $x$, we choose the value of the sample closest to $x$. 
+> - Piecewise Linear: For any $x$, we take the value along the line connecting the two samples $x$ is adjacent to. 
+> - ...
+>
+> By the spacing of our samples, however, we risk losing information about our original data! And in fact, there are cases where poor sampling lead to reconstructions that misrepresent our original data!
+> 
+> > [!Example]- Example
+> > 
+> > As a simple example, suppose our function is $sin(x)$. If we sample at every $x = k * \pi$, then our samples always yield 0, making our reconstruction seem like a 0 function! This will completely misrepresent our original data.
+
+In our coverage case, we're trying to sample the coverage function
+$$
+\text{Coverage(x,y)} = 
+\begin{cases}
+1 & \text{Triangle Contains } (x,y) \\
+0 & \text{Otherwise}
+\end{cases}
+$$
+
+So for each sample, we evaluate the coverage function at that sample! 
+
+Note that this does still can leave some ambiguities.
+- What if each sample 
+
+https://www.youtube.com/watch?v=B0hsT2npIc0&list=PL9_jI1bdZmz2emSh0UQ5iOdT2xRHFHL7E&index=5&ab_channel=KeenanCrane
+
+30:03 Breaking Ties
+
+
+
+
+## ...
+
+# Ray Tracing
+...
+
+
+# Resources
+Some helpful resources can be found below:
+- [CMU 15-462](https://www.youtube.com/watch?v=PhxV_JrXeVk&list=PL9_jI1bdZmz2emSh0UQ5iOdT2xRHFHL7E&index=2&ab_channel=KeenanCrane)
+- [MIT 6.837 - Introduction to Computer Graphics](https://www.youtube.com/watch?v=-LqUu61oRdk&list=PLQ3UicqQtfNuBjzJ-KEWmG1yjiRMXYKhh&ab_channel=JustinSolomon)
+- [University of Utah CS 4600 - Introduction to Computer Graphics](https://graphics.cs.utah.edu/courses/cs4600/fall2021/)
+
+https://www-graphics.stanford.edu/courses/cs248-96-winter/Lectures/
+
+https://gfxcourses.stanford.edu/cs248/winter22
+
+https://www.youtube.com/watch?v=-LqUu61oRdk&t=15s&ab_channel=JustinSolomon
+
+
+---
+
+...
 
 Graphics is a rapidly developing field, and technology as well as public expectaations are changing by the day.
 > On the academic side of graphics is an association known as SIGGRAPH! 

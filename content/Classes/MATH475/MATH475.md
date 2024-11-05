@@ -1493,21 +1493,140 @@ Intuitively, the toughness value $t(G)$ of a graph is small if we can delete onl
 > Similarly, we could delete 4 vertices to get 3 components, giving us toughness $\frac{4}{3}$! It can actually be proven that this is the minimum.
 > > This graph is a very common "counterexample" for many claims in graph theory!
 
-> [!Abstract] Theorem: 
-> The toughness of the Petersen Graph is $\frac{4}{3}$, which means it is 1-tough, 1/2-tough, etc.
+> [!Abstract] Theorem
+> The toughness of the Petersen Graph is $\frac{4}{3}$.
+>
+> This means that the Petersen Graph is 1-tough, 1/2-tough, etc.
 
 We define toughness, as we may be curious in finding if a Hamiltonian cycle can be found given some toughness of the graph!
 
 > [!Abstract] Theorem: Necessity Condition for Hamiltonian Graphs 
 > If $G$ is Hamiltonian, then $t(G) \ge 1$. In other words, for all disconnecting subsets $S$, we have $|S| \ge c(G / S)$. 
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > Let $c(G / S) = k$, $G_1, G_2, \dots G_k$ are the components. 
 > > 
 > > If a cycle exists, start in $G_1$. Every time we want to move into another component, we need to traverse one vertex in $S$ (as $S$ connects all the components). Hence for each component traversed we must visit a different vertex (by assumption of Hamiltonian cycle) in $S$, so the size of $S$ must equal or be greater than the number of components.
 > > $$
 > > |S| \ge c(G / S) \to t(G) \ge 1
+> > $$
+
+> The contrapositive of the theorem is quite useful to disprove Hamiltonicity! We find the existence of a set such that $\frac{|S|}{c(G/S)} < 1$.
+
+Note that the converse of the theorem is not true. If $t(G) \ge 1$, that does not necessarily mean that the graph is Hamiltonian. As a counterexample, consider the Petersen Graph, with $t(G) = 4/3 > 1$, but shown to not be Hamiltonian.
+
+Then, what toughness value is enough?
+
+> [!Tip] Conjecture: $t(G) \ge 2$
+> It used to be conjectured that $t(G) \ge 2$ worked for Hamiltonian graphs, which was disproved in 2000. This is an open problem:
+> 
+> Is there a $t_0$ threshold such that every $t_0$-tough graph is Hamiltonian?
+>
+> It is known that $t_0 > \frac{9}{4}$, but no exact number is yet known.
+
+Then, do we know any sufficiencies for Hamiltonian Graphs (given a condition, we know the graph is Hamiltonian)? Well, intuitively we should think of graphs wiht high degrees / lots of edges, as this gives us more connections to move around on.
+
+> [!Abstract] Theorem (Ore's): Sufficiency for Hamiltonian Graphs
+> Let $G$ have order $n \ge 3$. 
+> 
+> If $\deg(u) + \deg(v) \ge n$ for all 2 **non-adjacent** vertices $u,v$, then $G$ is Hamiltonian.
+> > This is quite useful for $k$-regular graphs! Say we have a 6-regular graph on 10 vertices. Then, the graph must be Hamiltonian, as $6 + 6 \ge 10$ for any two vertices!
+>
+> > [!Note]- Proof
+> > 
+> > Suppose $G$ is NOT hamiltonian. 
+> > 
+> > We will add edges to $G$ so that any additional edge makes $G$ Hamiltonian. Let $H$ be the new graph. It's clear that the graph is not complete, as if it were we would have a Hamiltonian graph trivially. 
+> > 
+> > Let $x, y$ be non-adjacent vertices. If adding 1 more edge between them, then there must exist at least a Hamiltonian path! Consider this path,
+> > $$
+> > x = x_1 \to x_2 \to \dots x_n =  y
+> > $$
+> > 
+> > Suppose $x$ has an adjacency to some random $x_i$ along this path. Then, $y$ cannot be adjacent to any $x_{i-1}, x_{i-2}, \dots$ as if it were, we could form a Hamiltonian cycle as
+> > $$
+> > x \to x_i \to x_{i+1} \to \dots y \to x_{i-j} \to x_{i-j-1} \to \dots x
+> > $$
+> > Thus, the degree of $y$ must be less than $n - 1 - \deg{x}$.
+> > $$
+> > \deg(x) + \deg{y} \le n - 1 \Longrightarrow \deg{x} + \deg{y} < n
+> > $$
+
+Note that the converse of the theorem does not hold. Consider the following counterexample.
+
+> [!Example]+ Example: Failure of Ore's Converse
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4 o--o 5 o--o 1;
+> ```
+> 
+> Then, for any two non-adjacent vertices, say $1,3$,
+> $$
+> \deg{1} + \deg{3} = 4 < 5 
+> $$
+> 
+> But $G$ is Hamiltonian!
+
+> [!Example]- Example
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4 o--o 1;
+> 2 o--o 4; 1 o--o 3;
+> 
+> 5 o--o 6 o--o 7 o--o 8;
+> 5 o--o 7; 6 o--o 8;
+> 
+> 9 o--o 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8;
+> ```
+> 
+> If we delete $9$, we get $t(G) \le \frac{1}{2}$, so $G$ is NOT Hamiltonian. Furthermore, for any two non-adjacent vertices,
+> $$
+> \deg{u} + \deg{v} = 8 < 9
+> $$
+> > Ore's theorem is "best possible"! For a graph to be Hamiltonian given $n$, we have a requirement on the degrees that must be true!
+
+## 4.3: Planar Graphs
+A graph $G$ is **planar** if it ca be drawn in the plane so that no edges cross each other.
+
+> [!Example]+ Example: Planar Graph
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4;
+> 1 o--o 3; 2 o--o 4;
+> ```
+> 
+> This is a planar graph, even though what we currently see has edges crossing! We can have $2 \to 4$ go above 3 so that the edges don't cross.
+
+Every planar graph can divide the plane into **regions (faces)**. Note that we include the space outside the edges graph as its own separate region.
+
+If $G$ is on at least 3 vertices that is NOT a tree, every region / face is surrounded by at least 3 edges, known as its **boundary**.
+
+> [!Abstract] Theorem: Euler's Identity
+> If $G$ is a connected, planar (potentially multi) graph with "n" vertices, "m" edges, and "f" faces, then
+> $$
+> n - m + f = 2
+> $$
+>
+> > [!Note]- Proof
+> > 
+> > By induction on $m$, if $m = 0$, then $n = 1$, so we have 1 region. 
+> > $$
+> > 1 - 0 + 1 = 2
+> > $$
+> > 
+> > Assume the statement holds for all graphs up to $m$ edges. Let $G$ be on $m + 1$ edges. 
+> > 
+> > If $G$ is a tree, then $n = m + 2$, $m + 1$ edges, $f = 1$. which satisies the equation. 
+> > 
+> > If $G$ is NOT a tree, then it has a cycle $C$. Delete an edge in the cycle, and let $H$ be the resultant graph. Deleting one edge also deletes one face (it merges two faces together). If has $m$ edges after deletion, so by the inductive hypothesis,
+> > $$
+> > \begin{align*}
+> > 2 
+> > &= | V(H) | - m + | f(H) | \\
+> > &= |V(G)| - m + |f(G)| - 1 \\
+> > &= |V(G)| - (m + 1) + |f(G)|
+> > \end{align*}
 > > $$
 
 

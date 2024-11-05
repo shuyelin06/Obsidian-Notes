@@ -1294,3 +1294,92 @@ For all $p_1, \dots p_n \in B_r (x^*)$. Then,
 $$
 || B (x - y) || \ge \frac{c}{2} || x - y ||
 $$
+
+---
+
+16.3
+
+> [!Info] Lemma
+> Let $U$ open in $\mathbb{R}^n$, $F : U \to \mathbb{R}^n$ of $C^1$. Assume that the derivative matrix of $F$ is invertible $\forall x \in U$.
+>
+> Let $E(x) = || F(x) - y ||^2$, the distance between $F(x)$ and $y$. If $E$ has an (interior) minimizer at $x \in U$, then $F(x) = y$.
+>
+> > [!Note]- Proof
+> > 
+> > Suppose we have:
+> > - A function $G$ that transforms $x$ to $F(x) - y$.
+> > - A function $\phi$ that takes the squared norm of its input, $\phi(z) = \langle z, z \rangle$
+> > 
+> > Then, $E(x) = (\phi \circ G) (x) = \phi(G(x))$. Assume $x$ is a minimizer of $E$. Then, $\nabla E(x) = 0$
+> > $$
+> > \nabla E(x) = (\nabla \phi) (G(x)) * DG(x) = (\nabla \phi) (G(x)) * DF(x) = 0
+> > $$
+> > Because $DF(x)$ is invertible, then
+> > $$
+> > (\nabla \phi) (G(x)) = 0
+> > $$
+> > 
+> > Note that because $\phi(z) = \langle z, z \rangle$, $\nabla \phi(z) = 2z$. So,
+> > $$
+> > (\nabla \phi) (G(x)) = 2 G(x) = 0 \Longrightarrow G(x) = 0
+> > $$
+> > And as $G(x) = F(x) - y = 0, F(x) = y$.
+
+Recall that we have a $F : O \to \mathbb{R}^n, C^1$, $O$ open, and $x^* \in O$ where $DF(x^*)$ is invertible. We know (from the previous section) that there exists a neighborhood $U$ of $x^*$ such that $DF(x)$ is invertible for $x \in U$ and $\exists $c > 0$ such that
+$$
+|| F(x) - F(y) || \ge c || x || \qquad \forall x,y \in U
+$$
+
+> [!Abstract] Theorem
+> Assume the above. Then, $F(U)$ is open. 
+>
+> > [!Note] Proof
+> > 
+> > Let $y_0 \in F(U)$. By assumption, we know that $\exists x_0 \in U$ such that $F(x_0) = y_0$.
+> > 
+> > Let $S = \{ x \in U : ||x - x_0|| = R\}$, the sphere of radius $R$ centered around $x_0$. We know that all points along this sphere are greater than $||F(x) - F(x_0)|| \ge c || x - x_0 || = cR$.
+> > 
+> > We will show that if $|| y - y_0 || < \frac{cR}{2}$, then there exists an $x \in B_R (x_0)$ such that $F(x) = y$.
+> > 
+> > Look at $\min_{x \in \bar{B}_R (x_0)} || F(x) - y ||$, where $\bar{B}_R (x_0)$ is the closed ball of radius $R$ around $x_0$ (includes the border). A minimizer exists, because we have a continuous function on a compact set. We furthermore rule out a boundary minimizer.
+> > 
+> > Let $x \in S$ (so, $||x - x_0|| = R$). We know that $||F(x) - y_0|| = ||F(x) - F(x_0)|| \ge cR$. So,
+> > $$
+> > || F(x) - y || \ge || F(x) - F(x_0) || - || F(x_0) - y || > \frac{cR}{2}
+> > $$
+> > 
+> > But $|| F(x_0) - y || < \frac{cR}{2}$, $x_0 \in B_R (x_0)$, so no point on $S$ can be the minimizer. So, the minimizer must be in the interior, so by the previous lemma, the minimizer must be such that $F(x) = y$.
+
+Thus, there exists a neighborhood $U$ of $x^*$ such that $DF(x)$ is invertible for all $x \in U$, $\exists c$ such that
+$$
+|| F(x) - F(y) || \ge c || x - y || \qquad \forall x,y \in U
+$$
+And $F(U) = V$. By general proprties of functions, $F^{-1} : V \to U$ is well defined. To show that it is $C^1$, we will prove that
+$$
+(DF^{-1} (y)) = ( DF(x) )^{-1}
+$$
+
+To prove this, it suffices to show that 
+$$
+\lim_{k \to 0} \frac{|| F^{-1}(y + k) - F^{-1}(y) - [ DF(x) ]^{-1} (k) ||}{||k||} = 0
+$$
+We use the notation $F(x) = y, F(x + h) = y + k$. On the LHS, we have 
+$$
+\begin{align*}
+&\lim_{k \to 0} \frac{|| (x + h) - x - [DF(x)]^{-1} [F(x+h) - F(x)] ||}{||k||} \\
+&\qquad = \lim_{k \to 0} \frac{|| [DF(x)]^{-1} [ DF(x) [h] - [F(x+h) - F(x)]] ||}{||k||} \\
+&\qquad \le \lim_{k \to 0} \frac{|| [DF(x)]^{-1} [F(x+h) - F(x) - DF(x) h] ||}{||k||} \\
+\end{align*}
+$$
+
+We want to show that $||k|| \ge C ||h||$.
+$$
+|| F(x+h) - F(x) || \ge C ||h|| \Longrightarrow ||k|| \ge C ||h||
+$$
+
+So, we have
+$$
+\le \lim_{k \to 0} \frac{ [DF(x)]^{-1}}{c} \frac{|| [F(x+h) - F(x) - DF(x) h] ||}{||h||} \to 0
+$$
+This is a first order approximation! So, this goes to 0 as $k \to \infty$, as then $h \to 0$.
+

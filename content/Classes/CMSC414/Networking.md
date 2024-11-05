@@ -151,10 +151,29 @@ Some ways we could protect ethernet include:
 > Note that these are not comprehensive and each could be defeated in their own way. However, combining them together provides defense in depth!
 
 ## WiFi
-WiFi has **access points (APs)**, which provide connectivity to other subnets. 
+WiFi has **access points (APs)**, which provide connectivity between devices and other subnets. Each access point has a **service set identifier (SSID)** uniquely identifying it.
 
-... 
-"WiFi and Simple Defenses" TODO
+Access points will broadcast **beacon frames** to announce their availability. End hosts, after finding the access point, will request access and negotiate with the access point to establish a connection. 
+> Generally, end hosts will connect to the internet through access points!
+
+There are various ways access control can be implemented for access points, to provide simple defenses against attackers:
+- **MAC Address Filtering**: Configuring the access points with allow/deny lists of MAC addresses. However, this can be prone to spoofing of MAC addresses.
+- **Captive Portals**: End users need to sign-in on a server to get connection, where they generally need to agree to a terms of services or buy access. This legally binds them.
+- **Per-Network Passwords**: Requiring a password before connecting to the network. There are many options, including WEP, WPA, WPA2, and EAP. Ideally though, WEP and WPA should not be used, as they both use RC4 encryption, known to be insecure and easily crackable.
+
+    WPA2 on the other hand, uses AES! It authenticates using a 4-way handshake, where the client generates a **pairwise transient key (PTK)** from the access point's MAC address and a nonce, as well as the client's MAc address and a nonce. This however can be attacked, using a recent technique known as **KRACK**. 
+    
+    > EAP is technically just a mode for WPA2, supporting per-user authentication, hardware authentication tokens, and **mutual authentication**, where users can authenticate each other.
+- **User Authentication**
+
+### Attack: Wardriving
+Access points could be configured to have weak access control, or none at all! Attackers can exploit this and try to connect to the networks to get a free connection, in an attack known as **wardriving**. 
+
+> [!Info] Hidden SSIDs
+> This issue led to manufacturers to offer options for **Hidden SSIDs**, where the access point has an SSID, but it no longer sends beacon frames. To join a network, you need to know it exists! 
+>
+> This seems like it works, but due to the broadcast nature of WiFi, it's not very effective. A passive listener could just listen in for **association request** frames being sent between a connecting end user (which contain the SSID)! Many OSes in fact, look for these automatically.
+
 
 # Layer 3: The (Inter) Network Layer
 ## Overview

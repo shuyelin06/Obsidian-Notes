@@ -1608,6 +1608,8 @@ If $G$ is on at least 3 vertices that is NOT a tree, every region / face is surr
 > n - m + f = 2
 > $$
 >
+> > Intuitively, this is telling us that if we have too many edges, then we cannot have a planar graph!
+>
 > > [!Note]- Proof
 > > 
 > > By induction on $m$, if $m = 0$, then $n = 1$, so we have 1 region. 
@@ -1629,12 +1631,124 @@ If $G$ is on at least 3 vertices that is NOT a tree, every region / face is surr
 > > \end{align*}
 > > $$
 
+> [!Abstract] Theorem
+> Let $G$ be a connected, planar graph of order $n \ge 3$, size $m$. Then, 
+> $$
+> m \le 3n - 6
+> $$
+>
+> > The contrapositive is very importnat! If $m > 3n - 6$, then we cannot have a planar graph!
+>
+> > [!Note]- Proof (Know This Proof!!)
+> > 
+> > If $n = 3$ and it is a tree, then the result holds.
+> > 
+> > Assume $m \ge 3$. Let $R_1, R_2, \dots R_f$ be the faces / regions. Let $m_i$ be the number of edges on the boundary of $R_i$. Since there's at least 3 edges for each boundary,
+> > $$
+> > \sum_{i=1}^f m_i \ge 3f
+> > $$
+> > Now look at every edge. Each edge could lie on the boundary of at most 2 faces (it could be a bridge, in which case it would only border 1 region). So, in the sum, each edge will only be counted at most 2 times!
+> > $$
+> > \sum_{i=1}^f m_i \le 2m
+> > $$
+> > Combining these, we get
+> > $$
+> > 3f \le \sum_{i=1}^f m_i \le 2m \Longrightarrow 3f \le 2m
+> > $$
+> > 
+> > We now apply Euler's identity, $f = 2 - n + m$, to get
+> > $$
+> > \begin{align*}
+> > 3(2 - n + m) \le 2m \\
+> > 6 - 3n + 3m \le 2m \\
+> > m \le 3n - 6
+> > \end{align*}
+> > $$
+>
+> > [!Info]
+> > 
+> > Corollary: If $G$ is planar, there is a vertex of degree 5 or less. If all vertices have degree 6 or more, then $m \ge (6n) / 2 = 3n$, yielding a contradiction.
+
+> [!Example]+ Example
+> $K_5$ has $\binom{5}{2} = 10$ edges. To be planar, $m \le 3n - 6$. Because
+> $$
+> 10 \not< 3(5) - 6
+> $$
+> $K_5$ cannot possibly be planar.
+
+> [!Example]- Example: House and Utilities Problem
+> Three houses need to connect gas, water, and electricity lines to their houses. Can can they all be connected without crossing lines?
+> 
+> Consider 3 nodes, one for gas, water, and electricity. Now consider 3 other nodes, 1 for each house. This yields a $K_{3,3}$ graph, and we're essentially asking if it is planar. 
+> > Unfortunately, we cannot use the theorem, as we get 
+> > $$
+> > 9 \le 3(6) - 6
+> > $$
+> > Yielding an inconclusive result.
+> 
+> Assume that the graph is planar. If it is, then we can apply Euler's identity
+> $$
+> n - m + f = 2 \Longrightarrow 6 - 9 + f = 2 \Longrightarrow f = 5
+> $$
+> Thus, if the graph is planar, it must have 5 faces. Since $K_{3,3}$ is bipartite, there are no odd cycles, so the boundary of each face has at least 4 edges. This gives us an upper bound, if we sum the number of edges at each face
+> $$
+> \sum m_i \ge 4(5) = 20
+> $$
+> Now, each edge can only border at most 2 regions, and in fact, with no bridges in $K_{3,3}$, every edge must be counted twice in the sum.
+> $$
+> \sum m_i = 2m = 2(9) = 18
+> $$
+> This tells us
+> $$
+> 20 \le \sum m_i = 18 \Longrightarrow 20 \le 18
+> $$
+> Which is a contradiction!
+>
+> So, $K_{3,3}$ is not planar.
 
 ---
 
+A **subdivision** of edge $u \sim v$ is the operation of replacing $u \sim v$ with the path $u, w, v$. A **subdivision** of graph $H$ is the graph obtained from $H$ by successive edge subdivisions. 
 
+> [!Example] Example: Subdivided Graph
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4 o--o 1 o--o 5;
+> 6[1] o--o 7[ ] o--o 8[2] o--o 9[ ] o--o 10[3] o--o 11[ ] o--o 12[4] o--o 13[ ] o--o 6 o--o 14[ ] o--o 15[5];
+> ```
 
+Clearly, if $G$ is planar, then any subdivision of $G$ is also planar! Similarly, the converse holds. If a subdivision is planar, then $G$ must also be planar!
+> Subdividing an edge doesn't change how we can draw the graph!
 
+This is important, as we can check for non-planar subgraphs to see if our graph is planar! For example we've shown that $K_5$ and $K_{3,3}$ are not planar. Hence, if $G$ has a subgraph that is $K_5$, $K_{3,3}$ or a subdivision, it cannot be planar.
 
-Spanning Trees of a Graph G?
-... Kirchoff's Matrix Tree Argument
+Amazingly, the converse of this statement holds!
+
+> [!Abstract] Theorem: Kuratowski
+> A graph $G$ is planar if and only if $G$ does NOT contain $K_5$ or $K_{3,3}$, or any subdivision of $K_5$ or $K_{3,3}$.
+
+> [!Example]+ Example: Petersen Graph
+> ```mermaid
+> graph LR
+> 1 o--o 6; 2 o--o 8; 3 o--o 10; 4 o--o 7; 5 o--o 9;
+> 1 o--o 2 o--o 3 o--o 4 o--o 5 o--o 1;
+> 6 o--o 7 o--o 8 o--o 9 o--o 10 o--o 6;
+> ```
+>
+> Let $A = \{1,7,10\}$, $B = \{2,5,6\}$. We can form $K_{3,3}$ graph
+> ```mermaid
+> graph TD
+> 1 o--o 2 & 5 & 6;
+> 
+> 7 o--o 8 o--o 21[2];
+> 7 o--o 4 o--o 51[5];
+> 7 o--o 61[6];
+> 
+> 10 o--o 3 o--o 22[2];
+> 10 o--o 9 o--o 52[5];
+> 10 o--o 62[6];
+> ```
+> > Note that during subdivisions, you can't use the same vertices multiple times!
+>
+> Thus, the Petersen Graph is not planar.
+

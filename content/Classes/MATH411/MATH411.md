@@ -42,6 +42,47 @@ $$
 > | g(x_k, y_k) | \le |x_k| \frac{ |x_k y_k| }{x_k^2 + y_k^2} \le |x_k| \frac{1}{2} \to 0
 > $$
 
+> [!Abstract] Theorem: Compositions of Limits
+> Let $A \subseteq \mathbb{R}^n$, $x^* \in A$ be a limit point. Let $f : A \to \mathbb{R}$, $g : A \to \mathbb{R}$ be functions, $l_1, l_2 \in \mathbb{R}$ such that
+> $$
+> \lim_{x \to x^*} f(x) = l_1 \qquad 
+> \lim_{x \to x^*} g(x) = l_2
+> $$
+> 
+> Then:
+> 1. $$
+>    \lim_{x \to x^*} f(x) + g(x) = l_1 + l_2
+>    $$
+> 2. $$
+>    \lim_{x \to x^*} f(x) g(x) = l_1 l_2
+>    $$
+> 3. If $g(x) \ne 0$ for all $x \in A$, and $l_2 \ne 0$,
+>    $$
+>    \lim_{x \to x^*} \frac{f(x)}{g(x)} = \frac{l_1}{l_2}
+>    $$
+
+The quotient rule for limits is the most interesting of the 3, and there is a broad study of limits of quotients
+$$
+\lim_{x \to x^*} \frac{f(x)}{g(x)}
+$$
+Where $\lim_{x \to x^*} f(x) = \lim_{x \to x^*} g(x) = 0$.
+
+These limits can occur frequently, and we commonly ask if such limits exist (think of derivatives!).
+
+> [!Example]+ Example: Limit Example
+> $$
+> \lim_{(x,y) \to (0,0)} \frac{x^3}{x^2 + y^2}
+> $$
+> 
+> We ask if this limit exists. To determine this, we will establish a bound on the function.
+> $$
+> \left| \frac{x^3}{x^2 + y^2} \right| \le \left| \frac{x^3}{x^2} \right| = |x| 
+> $$
+> 
+> For any $(x,y)$ where $x$ and $y$ are both not equal 0, our function is bounded by $|x|$! Thus, as $(x,y) \to (0,0)$, $|x| \to 0$, so by the Comparison Lemma, $| \frac{x^3}{x^2 + y^2} | \to 0$.
+> 
+> Thus, the limit exists and is equal to 0! 
+
 > [!Abstract] Theorem: Limit Equivalences
 > Let $A \subseteq \mathbb{R}^n$ and let $x^*$ be a limit point of $A$. For a function $f : A \to \mathbb{R}$, and $l \in \mathbb{R}$, the following assertions are equivalent:
 > 1. $$
@@ -55,6 +96,8 @@ $$
 >    $$
 >    d(x, x^*) < \delta \to | f(x) - l | < \epsilon \qquad x \in A / \{x^*\}
 >    $$
+
+We can also use the following property to show that such limits exist.
 
 A function $f : \mathbb{R}^n / \{0\} \to \mathbb{R}$ is **homogeneous of degree $k$** if
 $$
@@ -134,7 +177,7 @@ We define the **partial derivative of $f$ with respect to $x_i$ as**
 $$
 \frac{\partial f}{\partial x_i} (x) = \lim_{t \to 0} \frac{f(x + t e_i) - f(x)}{t}
 $$
-Where $e_i$ is the $i^{th}$ basis vector, if the latter limit exists.
+if the latter limit exists. Note that $e_i$ is the $i^{th}$ basis vector, 
 > Keep all variables constant except $x_i$, and take $\frac{d}{dx_i}$!
 
 > [!Example]+ Example: Partial Derivatives and Continuity
@@ -172,12 +215,12 @@ $$
 Where we apply the partial derivative of $x_i$ first, then $x_j$ after.
 > Order matters! There are some functions where swapping the order of derivatives changes the result.
 
-We say $f$ has **second-order partial derivatives** of it has first-order partials, such that for $1 \le i \le n$, each $\frac{\partial f}{\partial x_i}$ also has first-order partial derivatives.
+- We say $f$ has **second-order partial derivatives** of it has first-order partials, such that for $1 \le i \le n$, each $\frac{\partial f}{\partial x_i}$ also has first-order partial derivatives (of every variable).
+- We say $f$ has **continuous second-order partial derivatives** if it has second-order partial derivatives, and each $\frac{\partial^2 f}{\partial x_i \partial x_j}$ are continuous.
 
-Furthermore, we say $f$ has **continuous second-order partial derivatives** if it has second-order partial derivatives, and each $\frac{\partial^2 f}{\partial x_i \partial x_j}$ are continuous.
-
-> [!Abstract] Theorem: Order of Partial Derivatives
-> If $\frac{d}{d x_i} \left( \frac{\partial f}{\partial x_j} \right)$ and $\frac{d}{d x_j} \left( \frac{\partial f}{\partial x_i} \right)$ exist and are continuous in $O$, then
+> [!Abstract] Theorem: Partial Derivative Order
+> Let $O \subseteq \mathbb{R}^n$ open, and let $f : O \to \mathbb{R}$ have continuous second-order partial derivatives. Then, for any two $1 \le i,j \le n$, and any $x \in O$,
+> 
 > $$
 > \frac{d}{d x_i} \left( \frac{\partial f}{\partial x_j} \right) = \frac{d}{d x_j} \left( \frac{\partial f}{\partial x_i} \right)
 > $$
@@ -205,7 +248,7 @@ From prior courses, we learned to define the **directional derivative** of a fun
 $$
 \frac{d}{dt} \bigg|_{t = 0} [ f(x + th) ] = \langle \nabla f(x), h \rangle
 $$
-For $x \in \mathbb{R}^n, h \in \mathbb{R}^n$. Where the **gradient** of the function**, $\nabla f$, is given as
+For $x \in \mathbb{R}^n, h \in \mathbb{R}^n$. Where the **gradient** of the function, $\nabla f$, is given as the row vector
 $$
 \nabla f(x) = \left( \frac{\partial f}{\partial x_1}, \dots, \frac{\partial f}{\partial x_n} \right)
 $$
@@ -1382,4 +1425,91 @@ $$
 \le \lim_{k \to 0} \frac{ [DF(x)]^{-1}}{c} \frac{|| [F(x+h) - F(x) - DF(x) h] ||}{||h||} \to 0
 $$
 This is a first order approximation! So, this goes to 0 as $k \to \infty$, as then $h \to 0$.
+
+---
+
+We give a second proof of the inverse function theorem based on the contraction mapping principle.
+
+Let $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$. Let $x^* \in \mathbb{R}^n$ where $DF(x^*)$ is invertible. We will show that $\exists \delta_0 > 0$ such that if $|| f(x^*) - y || < \frac{\delta_0}{2 || DF(x^*)^{-1} ||}$, then $\exists !x \in \bar{B}_{\delta_0} (x^*)$ such that $F(x) = y$.
+> In other words, $F$ is locally one-to-one and onto in a local neighborhood of $x^*$!
+
+We want to solve $F(x) = y$ if and only if $x = x - (DF(x^*))^{-1} (F(x) - y) = T(x)$. We will use the contraction mapping principle to show that there exists a fixed point of $T(x)$. 
+
+Create a sequence 
+$$
+x_{k+1} = T(x_k) = x_k - (DF(x^*))^{-1} (F(x_k) - y)
+$$
+
+> [!Info] Remark
+> Notice the similarity to Newton's method, which had root-finding formula (for $f : \mathbb{R} \to \mathbb{R}$)
+> $$
+> x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+> $$
+
+The main step is as follows: $\exists \delta_0 > 0$ such that
+$$
+|| x - z - DF(x^*)^{-1} (F(x) - F(z)) || < \frac{1}{2} || x - z || \qquad \forall x,z \in \bar{B}_{\delta_0} (x^*)
+$$
+The left hand side equals
+$$
+\begin{align*}
+&|| (DF(x^*))^{-1} ( F(x) - F(z) - DF(x^*) (x - z) ) || \\
+&\qquad \le || DF(x^*)^{-1} || ||
+\left( \begin{bmatrix}
+\nabla F_1 (P_1) \\ \vdots \\ \nabla F_n (P_n)
+\end{bmatrix}
+- DF(x^*) \right) (x - z) ||
+\end{align*}
+$$
+Choose $\delta_0 > 0$ such that
+$$
+|| DF(x^*)^{-1} || ||
+\left( \begin{bmatrix}
+\nabla F_1 (P_1) \\ \vdots \\ \nabla F_n (P_n)
+\end{bmatrix}
+- DF(x^*) \right) < \frac{1}{2} \qquad \forall P_1, \dots P_n \in B_{\delta_0}(x^*)
+$$
+So, we found a $\delta_0$ such tha
+$$
+|| T(x) - T(z) || \le \frac{1}{2} || x - z ||
+$$
+
+Next, we will show that $T$ maps its domain onto itself.
+$$
+T : \bar{B}_{\delta_0} (x^*) \to \bar{B}_{\delta_0} (x^*)
+$$
+Let $|| x - x^* || \le \delta_0$. Look at $T(x) - x^*$. This is equal to
+$$
+\begin{align*}
+&|| x - x^* - (DF)(x^*)^{-1} [ F(x) - F(x^*) + F(x^*) - y] || \\
+&\qquad \le || x - x^* - DF(x^*)^{-1} [F(x) - F(x^*)] || + || DF(x^*)^{-1} [F(x^*) - y] || \\
+&\qquad \le \frac{1}{2} || x - x^* || + \frac{1}{2} || x - x^* || \le \delta_0
+\end{align*}
+$$
+
+So, $T$ is a contraction, and has a fixed point.
+
+
+---
+
+16.3 #11
+
+Let $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$, $\exists C$ such that
+$$
+|| F(x) - F(y) || \ge C || x - y ||
+$$
+1. Show that $DF(x)$ is invertible in $R^n$. We use the first order approximation theorem.
+2. Show that $F(\mathbb{R}^n)$ is open. We use the inverse function theorem to show that $F$ is onto some neighborhood of the point.
+3. Show that $F(R^n)$ is closed. 
+
+To show this, let $y_k$ be a sequence of points in $F(R^n)$, and assume $y_k \to y$. Show $y \in F(R^n)$. We know $\exists x_k$, $F(x_k) = y_k$.
+
+If $x_k \to x$, then $F(x_k) \to F(x)$ by continuity. So, By the uniqueness of limits, $y_k = F(x)$. We show $x_k \to x$ by using the assumption and applying the Comparison Lemma on Cauchy sequences, to show that $x_k$ is Cauchy.
+
+
+4. Show that $F(R^n) = R^n$. Because both open and closed, and its not the empty set, must be $R^n$.
+
+
+--- Next: Implicit Function Theorem..
+
 

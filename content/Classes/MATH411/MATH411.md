@@ -1512,4 +1512,113 @@ If $x_k \to x$, then $F(x_k) \to F(x)$ by continuity. So, By the uniqueness of l
 
 --- Next: Implicit Function Theorem..
 
+Let us have function $f : \mathbb{R}^2 \to \mathbb{R}, C^1$. We ask, when is the set
+$$
+\{ (x,y) : f(x,y) = 0 \} 
+$$
+A $C^1$ curve?
 
+> [!Example]+ Counterexamples
+> $$
+> f(x,y) = x^2 + y^2 + 1 = 0
+> $$
+> This will yield an empty set, so we don't have a $C^1$ curve.
+> 
+> $$
+> f(x,y) = x^2 + y^2 = 0
+> $$
+> This will yield 1 point, so we don't have a $C^1$ curve.
+
+We say $C \subseteq \mathbb{R}^2$ is a $C^1$ curve if  $\forall (x_0, y_0) \in C$, there exists a $U$ neighborhood of $(x_0, y_0)$, and function $g : \mathbb{R} \to \mathbb{R}, C^1$ such that
+$$
+C \cap U = \{ \text{Graph y = g(x) or x = g(y)} \} \cap U
+$$
+
+We can find that $\forall C \in \mathbb{R}^2$, closed, there exists a function $f \in C^1 (\mathbb{R}^2)$ such that
+$$
+C = \{ (x,y) : f(x,y) = 0 \}
+$$
+
+And furthermore, if $f : \mathbb{R}^2 \to \mathbb{R}$ is $C^1$, and $nabla f(x,y) \ne 0$ $\forall (x,y)$ such that $f(x,y) = 0$,then $C = \{ (x,y) : f(x,y) = 0\}$.
+
+> [!Abstract] Theorem: Dini's Theorem
+> Let $O$ open in $\mathbb{R}^2$, $f : O \to \mathbb{R}, C^1$. Let $(x_0, y_0)$ be a point in $O$, and assume $f(x_0, y_0) = 0, \frac{\partial f}{\partial y} (x_0, y_0) \ne 0$.
+>
+> Then, $\exists r, R > 0$, and a function $g : (x_0 - r, x_0 + r) \to (y_0 - R, y_0 + R), C^1$ such that $f(x,g(x)) = 0, \forall | x - x_0 | < r$, and if 
+> $$
+> (x,y) \in (x_0 - r, x_0 + r) \times (y_0 - R, y_0 + R)
+> $$
+> 
+> And $f(x,y) = 0$, then $y = g(x)$.
+> > We're basically saying, in this box, the 0-set of $f$ takes on a $C^1$ function $g(x)$.
+>
+> > [!Note] Proof
+> > 
+> > We know
+> > $$
+> > f(x_0, y_0) = 0, \frac{\partial f}{\partial y} (x_0, y_0) \ne 0
+> > $$
+> > Without loss of generality, suppose $\frac{\partial f}{\partial y} (x_0, y_0) > 0$. Then, $\exists R > 0,c > 0$ such that
+> > $$
+> > \frac{\partial f}{\partial y} \ge c > 0
+> > $$
+> > in the box $[x_0 - R, x_0 + R] \times [y_0 - R, y_0 + R]$. So, because $f(x_0, y_0) = 0$, we know that along the vertical line $(x_0, y \pm k)$, $f$ is strictly increasing, so 
+> > $$
+> > f(x_0, y - R) < 0 \qquad f(x_0, y + R) > 0
+> > $$
+> > 
+> > We can find an interval around this vertical line where it is always negative around $f(x, y - R)$ and positive around $f(x, y + R)$. In other words, $\exists r > 0$ such that $f(x, y_0 - R) < 0$ if $|x - x_0| < r$, and $f(x, y_0 + r) > 0$ if $|x - x_0| < r$.
+> > 
+> > By IVT, for we can find a $y$ such that for all fixed $x$ in our interval $|x - x_0| < r$, we find a $y$ in the vertical line such that $f(x,y) = 0$. Define $g(x) = y$, the unique $y$ such that $f(x,y) = 0$, $y - y_0 < R$.
+> > > Basically, we find a 0 by IVT for every vertical line in this interval!
+> > 
+> > We have constructed a $g : (x_0 - r, x_0 + r) \to (y_0 - r, y_0 + r)$ such that
+> > $$
+> > f(x, g(x)) = 0 \qquad \forall x
+> > $$
+> > And if $f(x,y) = 0$ in our box, then $y = g(x)$.
+> > 
+> > We have our function $g$. We must now show that $g$ is $C^1$, a we cannot guarantee our $y$'s on every sliver on the interval will form a continuous function or not. 
+> > 
+> > To do this, we first show that $g$ is continuous. Let $x, x+h \in (x_0 - r, x_0 + r)$. We look at $f(x + h, g(x + h)) - f(x, g(x))$ as the difference between two points $f(B) - f(A)$, and apply MVT. So, $\exists P$ on the line from $A$ to $B$ such that
+> > $$
+> > \begin{align*}
+> > 0 = f(x + h, g(x + h)) - f(x, g(x)) 
+> > &= \langle \nabla f(P), (h, g(x+h) - g(x)) \rangle \\
+> > &= \frac{\partial f}{\partial x} (P) \cdot h + \frac{\partial f}{\partial y} (P) (g(x+h) - g(x))
+> > \end{align*}
+> > $$
+> > 
+> > So, we get
+> > $$
+> > g(x+h) - g(x) = - \frac{\frac{\partial f}{\partial x}(P)}{\frac{\partial f}{\partial y} (P)} h
+> > $$
+> > We can find an upper bound for the numerator as we have a continuous function on a compact set! As we assumed that the numerator is positive, we can find a bound for the fraction, so $\exists M$ such that
+> > $$
+> > | g(x + h) - g(x) | \le \frac{|\frac{\partial f}{\partial x}(P)|}{|\frac{\partial f}{\partial y} (P)|} |h| \le M |h|
+> > $$
+> > Thus, $g$ is continuous, as $h \to 0$, $P \to (x, g(x))$ and thus
+> > $$
+> > \lim_{h \to 0} \frac{g(x + h) - g(x)}{h} =  - \frac{\frac{\partial f}{\partial x}(x,g(x))}{\frac{\partial f}{\partial y} (x,g(x))}
+> > $$
+> > > This also gives us a formula for $g$!
+
+If we know $g$ is $C^1$, differentiate 
+$$
+\frac{d}{dx} [f(x,g(x))] = 0
+$$
+To get
+$$
+\frac{\partial f}{\partial x} (x, g(x)) + \frac{\partial f}{\partial y} (x, g(x)) \cdot g'(x) = 0
+$$
+And we can solve for $g'(x)$ with this!
+
+> [!Info] Remark
+> We can generalize this!
+> 
+> Let $f : \mathbb{R}^{n+1} \to \mathbb{R}, C^1$, 
+> $$
+> f(x_0, y_0) = 0 \qquad x_0 \in \mathbb{R}^n, y_0 \in \mathbb{R}
+> $$
+> 
+> And assume the gradient at this point is not 0. Then, by the same proof, we can find $R, r > 0$ such that $g: B_r (x_0) \to (y_0 - R, y_0 + R), C^1$ such that $f(x, g(x)) = 0$!

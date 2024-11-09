@@ -1752,3 +1752,101 @@ Amazingly, the converse of this statement holds!
 >
 > Thus, the Petersen Graph is not planar.
 
+> [!Example]+ Example: Petersen Graph (2)
+> Show the Petersen graph is NOT planar by using the fact that it has girth 5. 
+> 
+> We know $n = 10, m = 15$. If it is planar, then
+> $$
+> 2 = n - m + f \Longrightarrow f = 7
+> $$
+> So, we must have 7 faces! Let $m_i$ denote the total edges on the boundary of face $f_i$. With girth 5, 
+> $$
+> \sum_{i=1}^7 m_i \ge 5f
+> $$
+> > Every face is a cycle!
+> Every edge is counted at most twice in the sum, so
+> $$
+> \sum_{i=1}^7 m_i \le 2m = 30 
+> $$
+> So, $5f \le 30$, meaning $f \le 6$! This gives us a contradiction!
+
+Many graphs aren't planar. But "how close to planar" are they? Could we define a measure for this?
+
+The minimum number of edge crossings of a graph drawn on the plane is the **crossing number** of $G$, denoted $\text{cr}(G)$.
+> This is a very difficult question to find exactly! Bounds are known for $K_$ and $K_{a,b}$, but its unknown what the exact formulas are.
+
+This is a very topological question, and note that the number of edge crossings depends on the "surface" the graph is on! For example, $K_5$ can be drawn to be planar on a Torus!
+> The edge crossing on $K_5$ can be drawn to loop through the center of the Torus, avoiding an edge crossing!
+
+If a graph is planar, then we can also draw it on a sphere without crossing! Now, if we attach "handles" onto the sphere to draw without crossings, then our question is the minimum number of "handles" we need to make the graph planar! In other words, for a planar graph, we can imagine a "bridge" that edges (possibly multiple) can take to avoid crossing others.
+
+The **genus** of grpah $G$ is the fewest handles needed on the sphere to avoid any edge crossings.
+> Note that the Petersen graph has crossing number 2, but genus 1.
+
+## 4.4: Graph Colorings
+A **proper coloring** of a graph $G$ is labeling the vertices of $G$ so that each vertex is asigned 1 color, such that adjacencies have different colors. We say graph $G$ is **$k$-colorable** if there is a proper coloring with $k$ colors.
+
+The **chromatic number** of $G$, denoted $\chi (G)$, is the fewest number of colors $k$ such that $G$ is $k$-colorable.
+
+> [!Example] Example
+> Let's color a map! Vertices are countries / states, with an adjacency if two regions share a border. 
+
+> [!Abstract] Theorem: 4 Color Theorem (Appel, Haken, 1976)
+> Any map (planar graph) can be colored with 4 colors. 
+
+Note that an explicit coloring of a graph yields an **upper bound** on the chromatic number!
+
+> [!Abstract] Theorem
+> $G$ is bipartite with at least 1 edge if and only if $\chi(G) = 2$.
+
+A subset $S$ of vertices is an **independent set** if no two vertices are adjacent in $S$. It is **maximal** if no more vertices can be added to $S$. It is **maximum** if it has the largest cardinality of all independent sets for a graph. The value of the maximum, the **independence number**, is denoted $\alpha(G)$.
+
+> [!Example] Example: Maximum Independent Set
+> ```mermaid
+> graph LR
+> 1 o--o 2 & 3;
+> 2 o--o 6 & 3;
+> 6 o--o 5;
+> 3 o--o 4 & 5;
+> 4 o--o 5;
+> ```
+> 
+> A possible independent set is $\{1,4,6\}$. This is maximum!
+>
+> Another possible independent set is $\{1,5\}$. This is maximal, but not maximum!
+
+Given a proper coloring of $G$, each "color class" (group of vertices with the same color) is an independent set!
+
+A **clique** is a complete subgraph $K_t$ of $G$. The **clique number** of $G$, denoted $\omega(G)$, is the order of the largest clique in the graph!
+
+In the above example, $\omega(G) = 3$, so clearly, at least 3 colors are needed. Observe, we have the following: 
+
+> [!Abstract] Theorem
+> For any graph $G$, 
+> $$
+> \omega(G) = k \iff \alpha(\bar{G}) = k
+> $$
+> In other words, the clique number of the graph is the same as the independence number of $G$'s complement.
+
+> [!Abstract] Theorem
+> If $G$ has order $n$, then 
+> 1. $\chi (G) \ge \omega (G)$: The chromatic number is bounded below by the clique number.
+> 2. $\chi (G) \ge \frac{n}{\alpha(G)}$: The chromatic number is bounded by the average 
+> 
+> > [!Note]- Proof
+> > 
+> > Clearly, every vertex in a clique is a different color.
+> > 
+> > Let $\chi(G) = k$, Let $V_1, V_2, \dots V_k$ be the color classes (ex. $V_1$ is the vertices colored color 1). Then,
+> > $$
+> > n = \sum_{i=1}^K |V_i|
+> > $$
+> > But each vertex color class is the same as an independent set, and we can bound this by the independence number! 
+> > $$
+> > n = \sum_{i=1}^K |V_i| \le \alpha(G) + \alpha(G) + \dots + \alpha(G) = k \cdot \alpha(G)
+> > $$
+> > So,
+> > $$
+> > k \ge \frac{n}{\alpha(G)}
+> > $$
+

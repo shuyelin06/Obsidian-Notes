@@ -1492,7 +1492,7 @@ So, $T$ is a contraction, and has a fixed point.
 
 ---
 
-16.3 #11
+16.3, 11
 
 Let $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$, $\exists C$ such that
 $$
@@ -1622,3 +1622,102 @@ And we can solve for $g'(x)$ with this!
 > $$
 > 
 > And assume the gradient at this point is not 0. Then, by the same proof, we can find $R, r > 0$ such that $g: B_r (x_0) \to (y_0 - R, y_0 + R), C^1$ such that $f(x, g(x)) = 0$!
+
+> [!Abstract] Theorem: The Implicit Function Theorem
+> We look at points $(x,y) \in \mathbb{R}^{n+k}$, where $x \in \mathbb{R}^n$, $y \in \mathbb{R}^k$. Let $O$ be open in $\mathbb{R}^{n+k}$, $F : O \to \mathbb{R}^k, C^1$. 
+>
+> Let $(x_0, y_0) \in O$ such that $F(x_0, y_0) = 0$, $D_y F (x_0, y_0)$ invertible. Then, $\exists R, r > 0$, and a function
+> $$
+> G : B_r (x_0) \to B_R (x_0), C^1
+> $$
+> Such that
+> $$
+> F(x, G(x)) = 0 \qquad \forall x \in B_r (x_0)
+> $$
+> And if $x \in B_r (x_0), y \in B_R (y_0)$, and $F(x,y) = 0$, then $y = G(x)$. Also, $DG(x)$ can be computed by the chain rule.
+>
+> > [!Note] Proof
+> > 
+> > Let $H : O \to \mathbb{R}^{n+k}$,
+> > $$
+> > H(x,y) = (x, F(x,y))
+> > $$
+> > 
+> > Clearly, $H(x_0, y_0) = (x_0, 0)$, and 
+> > $$
+> > DH(x_0, y_0) = 
+> > \begin{bmatrix}
+> > I_n & 0 \\
+> > D_x (x_0, y_0) & D_y (x_0, y_0)
+> > \end{bmatrix}
+> > $$
+> > Because $D_y F(x_0, y_0)$ is invertible, this matrix has a non-zero determinant, so the inverse function theorem applies!
+> > 
+> > So, $\exists R > 0$ and a neighborhood $V$ of $(x_0, 0)$ such that $H : \mathbb{R}(x_0) \times B_R (y_0) \to V$ is is 1-1, onto with a $C^1$ inverse $H^{-1} = V \to \mathbb{R}^{n+k}$. We define this inverse as
+> > $$
+> > H^{-1} (x,y) = (M(x,y), N(x,y))
+> > $$
+> > We the fact that $H(M(x,y), N(x,y)) = (x,y)$. By plugging $M,N$ into $H$, we get
+> > $$
+> > (M(x,y), F(M(x,y), N(x,y))) = (x,y)
+> > $$
+> > So, $M(x,y) = x$
+> > $$
+> > (x, F(x,N(x,y))) = (x,y)
+> > $$
+> > Define $G(x) = N(x,0)$. Pick $0 < r < R$ such that $B_r (x_0) \times \{0,\} \subseteq V$. Because $G(x) = N(x,0)$ which is $C^1$, $G(x)$ is too $C^1$. Subbing this in, we get
+> > $$
+> > F(x, N(x,0)) = 0
+> > $$
+> > Now, if $x \in B_r (x_0), y \in B_R (y_0)$, and $F(x,y) = 0$, we write that $H^{-1} ( H(x,y) ) = 0$
+> > $$
+> > \Longrightarrow ( M(x, F(x,y)), N(x, F(x,y)) ) = (x,y)
+> > $$
+> > If $F(x,y) = 0$, then $y = N(x, 0) = G(x)$.
+
+Finally, we will show a formula for $DG(x)$, $x \in B_r (x_0)$. We use the property that $F(x, G(x)) = 0$. We know that starting with $x$, we map
+$$
+x \to (x, G(x)) \to F(x, G(x)) = 0
+$$
+So, by chain rule,
+$$
+\begin{align*}
+D_{x,y} F (x, G(x)) \cdot D (x, G(x)) = 0 \\
+( D_x F (x, G(x)) \quad D_y (x, G(x)) ) 
+\begin{bmatrix}
+I & DG(x)
+\end{bmatrix} = 0 \\
+(D_x F) (x, G(x)) + D_y (x, G(x)) DG(x) = 0
+\end{align*}
+$$
+We can use this to solve for $DG(x)$!
+$$
+DG(x) = -\left[ D_y (x, G(x)) \right]^{-1} D_x F (x, G(x))
+$$
+
+> [!Example] Example
+> Describe solutions to
+> $$
+> \begin{align*}
+> (x^2 + y^2 + z^2)^3 - x + z = 0 \\
+> \cos(x^2 + y^2) + e^z - 2 = 0
+> \end{align*}
+> $$
+> 
+> On the LHS, we have $F(x,y,z), F : \mathbb{R}^{1 + 2} \to \mathbb{R}^2, F(0,0) = 0$.
+> 
+> We expect this to be a curve through $(0,0,0)$. We will try to describe this curve locally. We find
+> $$
+> DF(0) = 
+> \begin{bmatrix}
+> \partial F_1 / \partial x & \partial F_1 / \partial y & \partial F_1 / \partial z \\
+> \partial F_2 / \partial x & \partial F_2 / \partial y & \partial F_2 / \partial z \\
+> \end{bmatrix} = 
+> \begin{bmatrix}
+> -1 & 0 & 1 \\
+> 0 & 0 & 1
+> \end{bmatrix}
+> $$
+> Define $F(X,Y), X \in \mathbb{R}, Y \in \mathbb{R}^2$. We need $D_y F (0)$ invertible, so we choose $X = (y), Y = (x,z)$ (as column $x$ and $z$ in $DF(0)$ will give us an invertible matrix).
+> 
+> We get $F(X, G(X)) = 0$, or in other words, $F(y, G(y)) = 0, G(y) \in \mathbb{R}^2$, so our solutions look like $(g_1 (y), y, g_2 (y))$.

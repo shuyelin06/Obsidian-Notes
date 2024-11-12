@@ -848,7 +848,7 @@ A graph $G$ is **d-regular** if every vertex has degree $d = \delta(G) = \Delta 
 
 > [!Abstract] Theorem:
 > For any graph $G$, there exists a $d$-regular graph $H$, such that $G$ is an **induced subgraph** of $H$.
-> > An induced subgraph is one where the exact same structure of the vertices exists in $H$!
+> > An **induced subgraph** is a graph $H$ such that you can create $G$ using distinct copies of $H$. In other words, we can copy $H$, and form edges between vertices in different copies of $H$ to create $G$!
 
 Given a graph on $v$ vertices, its **degree sequence** is a non-increasing sequence of length $n$ whose $i^{th}$ term is the degree of vertex $i$.
 
@@ -1799,6 +1799,7 @@ Note that an explicit coloring of a graph yields an **upper bound** on the chrom
 > [!Abstract] Theorem
 > $G$ is bipartite with at least 1 edge if and only if $\chi(G) = 2$.
 
+### Lower Bounds on $\chi(G)$
 A subset $S$ of vertices is an **independent set** if no two vertices are adjacent in $S$. It is **maximal** if no more vertices can be added to $S$. It is **maximum** if it has the largest cardinality of all independent sets for a graph. The value of the maximum, the **independence number**, is denoted $\alpha(G)$.
 
 > [!Example] Example: Maximum Independent Set
@@ -1819,7 +1820,7 @@ Given a proper coloring of $G$, each "color class" (group of vertices with the s
 
 A **clique** is a complete subgraph $K_t$ of $G$. The **clique number** of $G$, denoted $\omega(G)$, is the order of the largest clique in the graph!
 
-In the above example, $\omega(G) = 3$, so clearly, at least 3 colors are needed. Observe, we have the following: 
+In the above example, $\omega(G) = 3$ (consider $1,2,3$), so clearly, at least 3 colors are needed. Observe, we have the following: 
 
 > [!Abstract] Theorem
 > For any graph $G$, 
@@ -1831,11 +1832,11 @@ In the above example, $\omega(G) = 3$, so clearly, at least 3 colors are needed.
 > [!Abstract] Theorem
 > If $G$ has order $n$, then 
 > 1. $\chi (G) \ge \omega (G)$: The chromatic number is bounded below by the clique number.
-> 2. $\chi (G) \ge \frac{n}{\alpha(G)}$: The chromatic number is bounded by the average 
+> 2. $\chi (G) \ge \frac{n}{\alpha(G)}$: The chromatic number is bounded by number of vertices divided by the independence number. 
 > 
 > > [!Note]- Proof
 > > 
-> > Clearly, every vertex in a clique is a different color.
+> > Clearly, every vertex in a clique is a different color as they are all adjacent to each other.
 > > 
 > > Let $\chi(G) = k$, Let $V_1, V_2, \dots V_k$ be the color classes (ex. $V_1$ is the vertices colored color 1). Then,
 > > $$
@@ -1850,3 +1851,107 @@ In the above example, $\omega(G) = 3$, so clearly, at least 3 colors are needed.
 > > k \ge \frac{n}{\alpha(G)}
 > > $$
 
+> [!Example] Example
+> Consider a $C_3$ and $C_5$ graph, where each node in the cycle is connected to all nodes in the other cycle.
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 1;
+> 4 o--o 5 o--o 6 o--o 7 o--o 8 o--o 4;
+> ```
+> 
+> Here, the clique number is $\omega(G) = 5$, as we take 2 nodes from $C_5$ and 3 nodes from $C_3$ to form a $K_5$ graph.
+>
+> Clearly, $\chi (C_3) = 3$ and $\chi (C_5) = 3$. Furthermore, since everything in the $C_3$ joins to $C_5$, they must use different colors. Thus, $\chi (G) = 6$, even though $\omega (G) = 5$.
+
+Intuitively, we may think that as the smallest cycle in a graph increases in size, it may serve as a bound for the chromatic number! However, this intuition unfortunately doesn't work. See the below theorem.
+
+> [!Abstract] Theorem: 
+> For any positive integers $k$ and $l$, there exists a graph $G$ with girth (smallest cycle) greater than $l$, and $\chi (G) > k$.
+
+### Upper Bounds on $\chi(G)$
+Explicit colorings provide an upper bound on the chromatic number. Consider coloring the graph in a greedy manner:
+- Let $v_1 \dots v_n$ be the vertices. 
+- Color $v_1$ color 1. 
+- Go to $v_2$. If $v_2 \sim v_1$, color $v_2$ color 2. Otherwise, color $v_2$ color 1.
+- Repeat for all $v_i$'s, coloring $v_i$ with the lowest index color NOT used by the neighbors of $v_i$.
+
+A consequence of this algorithm, is that at vertex $v_i$, we use at most $\deg(v_i) + 1$ colors. As we do this for every vertex, we can bound the maximum colors needed above with the maximum degree!
+> The +1 is in case we need to use a new color!
+
+> [!Abstract] Theorem
+> We have $\chi(G) \le \Delta(G) + 1$, where $\Delta (G)$ is the maximum degree in $G$.
+
+This was further refined as follows:
+
+> [!Abstract] Theorem (Brooks)
+> We have $\chi (G) \le \Delta (G)$ (remove the +1) provided $G$ is NOT $K_n$ or an odd cycle (must be exactly equal to).
+
+> [!Example] Example: Petersen Graph
+> ```mermaid
+> graph LR
+> 1 o--o 6; 2 o--o 8; 3 o--o 10; 4 o--o 7; 5 o--o 9;
+> 1 o--o 2 o--o 3 o--o 4 o--o 5 o--o 1;
+> 6 o--o 7 o--o 8 o--o 9 o--o 10 o--o 6;
+> ```
+>
+> We know that the Petersen Graph contains a $C_5$, so it is NOT bipartite, meaning $\chi(G) > 2$.
+> 
+> We furthermore know that it is not $K_n$ or $C_{2k+1}$, so by Brook's theorem, $\chi(G) \le \Delta(G) = 3$. So, $\chi(G) = 3$.
+
+### Critical Graphs
+Graph $G$ is **$k$-critical** if $\chi(G) = k$ and for every **proper** subgraph $H$, $\chi(H) < k$.
+> Basically, the graph $G$ is reduced so that any further deletion will change the chromatic number!
+
+> [!Example] Example: 
+> Consider a graph on Odd Cycles.
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4 o--o 5 o--o 6 o--o 7 o--o 1;
+> ```
+> 
+> Here, $\chi(C_{2k+1}) = 3$, but the deletion of any vertex or edge turns the graph into a forest, making the graph Bipartite, so $\chi(H) = 2$! Thus, any graph on odd cycles is 3-critical.
+
+> [!Abstract] Lemma
+> If $G$ is $k$-critical, then $\delta(G) \ge k - 1$, where $\delta(G)$ is the minimum degree.
+>
+> > [!Note]- Proof
+> >
+> > By way of contradiction, let $x$ be a vertex of $G$, and assume $\deg(x) < k - 1$. Consider the graph without $x$. Because $G$ is $k$-critical, if we remove $x$ then $G / x$ must have $\chi(G) < k$, so $G$ is $k - 1$ colorable.
+> > 
+> > If $G$ is $k - 1$ colorable, and $x$ is adjacent to only $k - 2$ vertices, then our $k - 2$ vertices must be colored with at most $k - 2$ colors, with 1 remaining! So, we color $x$ with this remaining color, meaning $G$ is $k - 1$ colorable, contradicting the fact that $\chi(G) = k$.
+
+> [!Abstract] Theorem
+> We have
+> $$
+> \chi(G) \le 1 + \max_{H \subseteq G} \delta(H)
+> $$
+> 
+> In other words, we can find an upper bound for our chromatic number if we go through all possible subgraphs of $G$. 
+> > $G$ does not have to be $k$-critical!
+>
+> > [!Note]- Proof
+> > 
+> > Suppose $\chi(G) = k$, and let $H'$ be a $k$-critical subgraph of $G$. Then, $\chi(G) - 1 = \chi(H') - 1 \le \delta(H') \le \max_{H \subseteq G} \delta(H)$, by the Lemma.
+
+> [!Example] Example
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4 o--o 1;
+> 1 o--o 3; 2 o--o 4;
+> 1 o--o 5 & 6;
+> 2 o--o 7 & 8;
+> 3 o--o 9 & 10;
+> 4 o--o 11 & 12;
+> ```
+> 
+> Here, our minimum degree is 1. But if we removed all vertices 5 to 12, then our min degree would be 3! Because this is the "best" we can get, our chromatic number can be at most $1 + 3 = 4$.
+> 
+> This is a better bound than Brooks!
+
+### Edge Colorings
+An **edge coloring** of $G$ is an assignment of colors to edges such that edges incident to the same vertex are different colors.
+
+The minimum colors needed is the **chromatic index**, $\chi_1 (G)$.
+
+> [!Abstract] Theorem (Vizing)
+> For any graph $G$, $\chi_q (G) = \Delta (G)$, or $\chi_1 (G) = \Delta(G) + 1$. In other words, the chromatic index can only take on 2 possible values.

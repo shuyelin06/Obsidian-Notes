@@ -1721,3 +1721,131 @@ $$
 > Define $F(X,Y), X \in \mathbb{R}, Y \in \mathbb{R}^2$. We need $D_y F (0)$ invertible, so we choose $X = (y), Y = (x,z)$ (as column $x$ and $z$ in $DF(0)$ will give us an invertible matrix).
 > 
 > We get $F(X, G(X)) = 0$, or in other words, $F(y, G(y)) = 0, G(y) \in \mathbb{R}^2$, so our solutions look like $(g_1 (y), y, g_2 (y))$.
+
+--- 17.3
+
+Let $f : \mathbb{R}^3 \to \mathbb{R}, C^1$. Look at the level set of this function, the set of points where the function is 0.
+$$
+S = \{ (x,y,z) : f(x,y,z) = 0 \}
+$$
+
+Assume $\nabla f(x,y,z) \ne 0$ for all $x,y,z \in S$. Then $S$ is a $C^1$ surface
+> Recall, that for $S \subseteq \mathbb{R}^3$ to be a $C^1$ surface, $\forall x \in S$, there exists a $W$ neighborhood of $x$ such that $S \cap W$ is a $C^1$ function.
+
+> [!Note] Proof
+> Let $(x_0, y_0, z_0) \in S$. Without loss of generality, assume that $\frac{\partial f}{\partial z} (x_0, y_0, z_0) \ne 0$.
+> 
+> By the implicit function theorem, there exists a $r, R > 0$ and a function $g : B_r (x_0, y_0) \to B_R (z_0)$ such that
+> $$
+> f(x,y, g(x,y)) = 0 \qquad \forall (x,y) \in B_r (x_0, y_0)
+> $$
+> And furthermore, these are the only solutions to $f(x,y,z) = 0$ in $B_r (x_0, y_0) \times (z_0 - R, z_0 + R)$. 
+> 
+> So we have a transformation $(x,y) \to (x,y, g(x,y))$ paramterizing $S$ near $(x_0, y_0, z_0)$. To figure out the tangent vectors at $(x_0, y_0, z_0)$, look at the change in one variable along a particular direction.
+> 1. Fixing $y$, we differentiate in the $x$ direction to get tangent
+>    $$
+>    T_1 : (1, 0, \frac{\partial g}{\partial x} (x_0, y_0))
+>    $$
+> 2. Fixing $x$, we differentiate in the $y$ direction to get tangent
+>    $$
+>    T_2 : (0, 1, \frac{\partial g}{\partial y} (x_0, y_0))
+>    $$
+> 
+> We claim that $\nabla f(x_0, y_0, z_0) \perp T_1, T_2$. Look at $f(x, y, g(x,y)) = 0$ for all $(x,y)$. By the chain rule,
+> $$
+> \begin{align*}
+> 0 
+> &= \frac{\partial}{\partial x} \bigg\vert_{x = x_0} f(x,y_0, g(x, y_0)) \\
+> &= \frac{\partial f}{\partial x} (x_0, y_0, z_0) + \frac{\partial f}{\partial z} (x_0, y_0, z_0) \cdot \frac{\partial g}{\partial x} (x_0, y_0) = 0 \\
+> &= \langle \nabla f(x_0, y_0, z_0), (1, 0, \frac{\partial g}{\partial x} (x_0, y_0) \rangle
+> \end{align*}
+> $$
+> 
+> So, $\nabla f(x_0, y_0, z_0) \perp T_1$. By a similar argument, it is also orthogonal to $T_2$. 
+> 
+> We can find another vector orthogonal to $T_1, T_2$ by taking the cross product! Take $T_1 \times T_2 \ne 0$. Then, $\exists \lambda \ne0$ such that
+> $$
+> \nabla f(x_0, y_0, z_0) = \lambda (T_1 \times T_2)
+> $$
+
+## Curves in $\mathbb{R}^3$ defined by the intersection of two surfaces
+Let $g,h : \mathbb{R}^3 \to \mathbb{R}, C^1$. Define the intersection of the two function's level sets, 
+$$
+C = \{ (x,y,z) : g(x,y,z) = h(x,y,z) = 0 \}
+$$
+> Intuitively, we're intersecting 2 2-dimensional surfaces. So we should expect a 1-dimensional curve!
+
+A sufficient condition for $C$ to be a 1-dimensional curve in $\mathbb{R}^3$ is 
+$$
+\nabla g (x_0, y_0, z_0) \times \nabla h (x_0, y_0, z_0) \ne 0
+$$
+Equivalently, let $G : \mathbb{R}^3 \to \mathbb{R}^2, G(x,y,z) = ( g(x,y,z), h(x,y,z) )$. The, we require 
+$$
+DG(x_0, y_0, z_0) = 
+\begin{bmatrix}
+\dots & \nabla g & \dots \\
+\dots & \nabla h & \dots
+\end{bmatrix}
+$$
+Has rank 2 for all $(x_0, y_0, z_0) \in C$.
+
+If so, without loss of generality, the derivative matrix with repect to $y,z$, $D_{y,z} G (x_0, y_0, z_0)$ is invertible. By the implicit function theorem, $\exists r, R$, and 
+$$
+\gamma : (x_0 - r, x_0 + r) \to B_R (y_0, z_0)
+$$
+Such that $G(x, \gamma(x)) = 0$ for all $|x - x_0| < R$, and these are the only solutions in $B_r(x_0) \times B_R (y_0, z_0)$.
+
+Thus, $C$ agrees with the graph $\{ (x, \gamma(x)) : |x - x_0| < r \}$ in $(x_0 - r, x_0 + r) \times B_R (x_0, y_0)$, and we can parameterize it as 
+$$
+x \to (x, \gamma(x))
+$$
+With tangent vector at $(x_0, y_0, z_0)$ given as $T = (1, \gamma' (x_0))$, and 
+$$
+\nabla g (x_0, y_0, z_0) \perp T \qquad \nabla h (x_0, y_0, z_0) \perp T
+$$
+> These are two normals to our curve!
+
+So, $\nabla g (x_0, y_0, z_0) \times \nabla h (x_0, y_0, z_0)$ is a non-zero tangent vector to the curve, so $\exists \lambda \ne 0$ such that
+$$
+\nabla g \times \nabla h = \lambda T
+$$
+
+---
+
+We generalize.
+
+An $n$-dimentional manifold embedded in $\mathbb{R}^N$, $N = n + k$. Let $F : \mathbb{R}^{n+k} \to \mathbb{R}^k, C^1$, and assume that $k \times (n + k)$ matrix $DF(x_0)$ has maximimal rank $k$ if $F(x_0) = 0$. 
+
+If so, we will represent the level set 
+$$
+M = \{ X : F(X) = 0 \}
+$$
+Locally, as a graph.
+
+Let $X_0 = (x_0, y_0) \in M$, $x_0 \in \mathbb{R}^n, y_0 \in \mathbb{R}^k$. Without loss of generality, $D_y F (x_0, y_0)$ (the rightmost $k \times k$ entries) is invertible. Thus, $\exists r, R > 0$ and $G : B_r (x_0) \to B_R (y_0)$ such that
+$$
+F(x, G(x)) = 0
+$$
+And these are the only solutions if $x \in B_r (x_0), y \in B_R (y_0)$. Thus, $M \cap B_r (x_0) \times B_R (y_0)$ agrees with the graph $(x, G(x)) : x \in B_r (x_0)$.
+> This is an $n$-dimentional manifold!
+
+We need $n$ linearly independent tangent vectors at $(x_0, y_0)$. The process of doing this is the same-- fix $n - 1$ variable, and differentiate with respect to our last variable. These are our tangent vectors!
+$$
+\begin{align*}
+(1, 0, \dots, \frac{\partial G}{\partial x_1} (x_0) \\
+(0, 1, \dots, \frac{\partial G}{\partial x_2} (x_0) \\
+\vdots \\
+&(0, \dots, 1, \frac{\partial G}{\partial x_n} (x_0)
+\end{align*}
+$$
+The range of $DF(x, G(x))$ at $x_0$ is the tangent space above, as
+$$
+\begin{align*}
+D_x (F(x, G(x)) = 0 \\
+(DF) (x_0, y_0) \cdot 
+\begin{bmatrix}
+I \\ DG(x_0) 
+\end{bmatrix} = 0
+\end{align*}
+$$
+So, the tangent space to $M$ at $(x_0, y_0)$ is the null space of $DF(x_0)$.

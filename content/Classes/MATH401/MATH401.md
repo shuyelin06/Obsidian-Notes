@@ -115,7 +115,7 @@ We first continue our discussion of matrix exponentials.
 
 ---
 
-Analogous to $e^0 = 1$, for the $0$ matix, 
+Analogous to $e^0 = 1$, for the $0$ matrix, 
 $$
 e^{0_{n \times n}} = I_n
 $$
@@ -157,3 +157,150 @@ However, if we have matrices $A$, $B$ whose product are commutative, then this p
 > $$
 > 
 > > This happens because the transpose operation is linear and continuous, so we can transpose the series term-by-term!
+
+> [!Abstract] Theorem
+> Let $A$ be an $n \times n$ matrix.
+> 1. If $\lambda$ is an eigenvalue for $A$, then $e^\lambda$ is an eigenvalue for $e^A$.
+> 2. More precisely, if $\vec{v}$ is an eigenvector for $A$ with eigenvalue $\lambda$, then $\vec{v}$ is an eigenvector for $e^A$ with eigenvalue $e^\lambda$.
+
+The **trace** of an $n \times n$ matrix is the sum of the diagonal entries of $A$ denoted $\text{tr} A$.
+$$
+\text{tr} A = \sum_{i=1}^n a_{ii}
+$$
+
+> [!Abstract] Theorem
+> For an $n \times n$ matrix $A$, 
+> 1. $\text{tr} A$ equals the sum of the eigenvalues of $A$.
+> 2. $\det{A}$ equals the product of the eigenvalues of $A$.
+
+Using these facts, we can explain the following.
+
+> [!Abstract] Theorem
+> $$
+> \det (e^A) = e^{\text{tr} A}
+> $$
+> In particular, if $A$ has real entries, then the determinant of $e^A$ will always strictly be positive.
+> > We can also use this to know if a matrix isn't an exponential of any matrix!
+> 
+> > [!Note]- Proof 
+> > 
+> > If the eigenvalues of $A$ are $\lambda_1, \dots \lambda_n$, then the eigenvalues of $e^A$ are $e^{\lambda_1}, \dots e^{\lambda_n}$, and as the determinant is the product of eigenvalues,
+> > $$
+> > \det{e^A} = e^{\lambda_1} \dots e^{\lambda_n} = e^{\lambda_1 + \dots + \lambda_n} = e^{\text{tr} A}
+> > $$
+
+## Rotations
+So, for what $A$ is $e^A$ a rotation? To answer this question, we must first define what exactly a "rotation" matrix is.
+
+An $n \times n$ matrix $Q$ is **orthogonal** if $Q$ satisfies
+$$
+Q^T Q = I_n
+$$
+
+> [!Abstract] Theorem
+> Let $Q$ be $n \times n$. The following are equivalent:
+> 1. $Q$ is an orthogonal matrix.
+> 2. $Q^{-1} = Q^T$
+> 3. The columns of $Q$ form an **orthonormal basis** for $\mathbb{R}^n$, meaning they are orthogonal to each other and are unit vectors.
+> 4. $||Q \vec{v}|| = || \vec{v} ||$ for all $\vec{v} \in \mathbb{R}^n$. In other words, $Q$ preserves the length of vectors.
+
+Rotations and reflections are orthogonal matrices by condition (4) of the theorem! How do we know what an orthogonal matrix is classified as?
+
+Note that every orthogonal $Q$ satisfies
+$$
+\det{Q} = \pm 1
+$$
+
+> [!Note]- Proof
+> $$
+> \begin{align*}
+> Q^T Q = I_n \\
+> \det{Q^T Q} = \det{I_n} = 1 \\
+> \det{Q^T} \det{Q} = 1 \\
+> \det{Q}^2 = 1 \\
+> \det{Q} = \pm 1
+> \end{align*}
+> $$
+
+It turns out, rotations have determinant 1, and reflections have determinant -1.
+
+So, we can define a **rotation matrix** as an orthogonal matrix with determinant 1. So, for $A$ such that $e^A$ is a rotation, we need $e^A$ to be orthogonal with $\det{e^A} = 1$. 
+
+We know that $\det{e^A} > 0$ for any $A$. Furthermore, for $e^A$ to be orthogonal, we need that
+$$
+(e^A)^T = (e^A)^{-1} \iff e^{A^T} = e^{-A}
+$$
+So, this relation holds whenever $A^T = -A$. $A$ is called **skew-symmetric** if $A^T = -A$.
+
+> [!Abstract] Theorem
+> If $A$ is skew-symmetric, then $e^{tA}$ will be a rotation matrix for any real $t$!
+
+> [!Example]+ Example: 2-Dimensional Rotations
+> $$
+> A = \begin{bmatrix} 0 & -1 \\ 1 0 \end{bmatrix}
+> $$
+> Observe that this is a skew-symmetric matrix, and we saw that
+> $$
+> e^{tA} =
+> \begin{bmatrix} 
+> \cos t & - \sin t \\
+> \sin t & \cos t
+> \end{bmatrix}
+> $$
+
+We ask, are there any other $2 \times 2$ skew-symmetric matrices? For $A$ to be skew-symmetric,
+$$
+\begin{bmatrix} a & c \\ b & d \end{bmatrix} = 
+\begin{bmatrix} -a & -b \\ -c & -d \end{bmatrix}
+$$
+So, we need $a = -a$, $c = -b$, $b = -c$, and $d = -d$. Thus forces $a = d = 0$, and $b,c$ must be opposites of each other. So, we have general form
+$$
+A = \begin{bmatrix} 0 & -c \\ c & 0 \end{bmatrix} = 
+c \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}
+$$
+So, there are no other skew-symmetric matrices!
+
+---
+
+Similarly, for the 3-dimensional case, we can find general form
+$$
+A = 
+\begin{bmatrix}
+0 & -d & -g \\ 
+d & 0 & -h \\
+g & h & 0
+\end{bmatrix}
+$$
+
+So, $e^{tA}$ will give us a family of rotations! But what rotation does it actually represent? In other words, what is the rotations' axis and angle?
+> Note that the axis must always go through the origin, as the transformation is linear.
+
+Consider a skew-symmetric matrix $A$ of the form
+$$
+A = 
+\begin{bmatrix}
+0 & -z & y \\ 
+z & 0 & -x \\
+-y & x & 0
+\end{bmatrix}
+$$
+Observe that we can make a vector $\vec{v} = (x,y,z)$, which is an eigenvector for matrix $A$ with eigenvalue 0! This implies that $\vec{v}$ is also an eigenvector for $e^{A}$ (similarly, $e^{tA}$), with eigenvalue $e^0 = 1$.
+
+This means that the transformation $e^{tA}$ does nothing to the vector $\vec{v}$! Meaning, if $e^{tA}$ is a rotation matrix, then $\vec{v}$ must be the axis of rotation!
+
+So, the family of rotations given by $e^{tA}$ has the axis of rotation given as the line through the origin given by vector $\vec{v} = (x,y,z)$. Furthermore, as $t$ changes, so does the angle of rotation.
+> $t$ may not be exactly the angle of rotation though, since $A$ may stretch the vectors!
+
+> [!Abstract] Theorem
+> Let $\vec{u} = (x,y,z)$ be a unit vector, and let
+> 
+> $$
+> A = 
+> \begin{bmatrix}
+> 0 & -z & y \\
+> z & 0 & -x \\
+> -y & x & 0 
+> \end{bmatrix}
+> $$
+> 
+> Then, the rotation about the line through the origin in the direction of $\vec{u}$ by $\theta$ radians is given by $e^{\theta A}$!

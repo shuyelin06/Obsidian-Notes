@@ -1955,3 +1955,92 @@ The minimum colors needed is the **chromatic index**, $\chi_1 (G)$.
 
 > [!Abstract] Theorem (Vizing)
 > For any graph $G$, $\chi_q (G) = \Delta (G)$, or $\chi_1 (G) = \Delta(G) + 1$. In other words, the chromatic index can only take on 2 possible values.
+
+## 4.5: Mycielski's Construction
+We know that the chromatic number is bounded below by the clique number.
+$$
+\chi(G) \ge \omega(G)
+$$
+
+We let $G$ be a triangle-free graph (no $K_3$'s) and construct a new graph with higher chromatic number, but same clique, but remains triangle free. Thus, $G$ **and** the new graph have clique number 2.
+> This section teaches us how to construct graphs super large, while keeping the clique number small! This shows that the "intuition" that smaller clique numbers are better doesn't work the best.
+
+Let $G$ have vertex set $\{v_1, v_2, \dots v_n\}$. We construct the graph as follows.
+1. Add $n + 1$ vertices, denoted $w, u_1, \dots u_n$.
+2. Join $w$ to all of the $u_i$'s.
+3. Join $u_i$ to the $v_j$'s such that $v_j \sim v_i$.
+
+> [!Example]+ Example
+> Suppose we have initial graph
+> ```mermaid
+> graph LR
+> v1 o--o v2 o--o v3;
+> ```
+> Now, we add $3 + 1 = 4$ vertices, and join $w$ to all of the $u_i$'s.
+> ```mermaid
+> graph LR
+> v1 o--o v2 o--o v3;
+> w o--o u1 & u2 & u3;
+> ```
+> For step 3,
+> - For $u_1$, join it to all neighbors of $v_1$: $v_2$.
+> - For $u_2$, join it to all neighbors of $v_2$: $v_1, v_3$.
+> - For $u_3$, join it to all neighbors of $v_3$: $v_2$.
+> ```mermaid
+> graph LR
+> v1 o--o v2 o--o v3;
+> w o--o u1 & u2 & u3;
+> u1 o--o v2;
+> u2 o--o v1 & v3;
+> u3 o--o v2;
+> ```
+
+We prove below that under this algorithm, the new graph remains triangle free. In other words, the clique number remains 2.
+
+> [!Note]- Proof: Triangle-Free
+> We prove that the new graph is triangle free.
+> 
+> Clearly, there you cannot form a triangle with any $u_i, u_j, v_k$ as there are no edges among $u$'s. So, if a triangle occurs, it must occur between $u_i v_j v_k$. 
+> 
+> So, if there is a triangle between $u_i v_j v_k$, then by step 3, $v_i \sim v_j$, and $v_i \sim v_k$. We use the edge in the triangle $v_j \sim v_k$ to form a triangle
+> $$
+> v_i v_j v_k
+> $$
+> This means that the original graph had a 3-cycle, which is a violation of our assumptions!
+
+We now show that the **chromatic number increases by 1** for every additional construction we do.
+
+> [!Note]- Proof: Chromatic Number 
+> We now show that the chromatic number increases.
+> 
+> Let $G_m$ denote the $m^{th}$ level of the construction, with $\chi(G_m) = k$, and $G_m$ is on $n$ vertices.
+> 
+> We show $\chi(G_{m+1}) \le k + 1$ first, by showing a coloring. For each $u_i$, we know by step (3) that is is joined with the neighbor(s) of $v_i$, so, we can color $u_i$ the color of $v_i$ without any violations:
+> - $u_i$ cannot have an edge to $v_i$, so the same color won't be adjacent
+> - $u_i$ is only adjacent to neighbors of $v_i$, which will have different colors than $v_i$ by definition of a coloring
+> 
+> So, $u_i$ is never adjacent to a vertex of $v_i$'s color.
+> 
+> Coloring each $u_i$, we may use all $k$ colors as $\chi(G_m) = k$. Then, with $w$, let's just color it an extra $k + 1$ color as we may have used each of the $k$ colors in our $u$'s! This gives us a $k + 1$ coloring, so $\chi(G_{m+1}) \le k + 1$.
+> 
+> ---
+> 
+> Now assume to the contrary that $\chi(G_{m+1}) = k$ (it is not possible for it to be less than $k$, as $G_m$ is a subgraph). We show that it is not possible. 
+> 
+> Without loss of generality, let vertex $w$ be color $k$. Then, as $w$ is adjacent to all $u_i$'s by step (2), the $u_i$'s can only use at most $k - 1$ colors. However, as $\chi(G_m) = k$, we must use $k$ colors in $G_m$, so there must exist a vertex $v_i$ with color $k$.
+> 
+> Because $u_i$ is adjacent to all neighbors of $v_i$ by step (2), we can guarantee that $v_i$'s neighbors are not colored the same as $u_i$, because $u_i$ is adjacent to all of them! Furthermore, as $u_i$ is either color 1 to $k - 1$, $v_i$ can be recolored as $u_i$! Doing this for all $v_i$'s of color $k$, we can find a $k - 1$ coloring for the graph. But this is a contradiction, as $\chi(G_m) = k$, so no smaller coloring exists!
+
+We have proven the following: 
+
+> [!Abstract] Theorem: Mycielski
+> There exists graphs $G$ with $\omega(G) = 2$, but $\chi(G)$ is arbitrarily large.
+
+The proofs also give us a way to color a graph constructed using Mycielski's Construction! Color the base graph, and then follow the $k + 1$ coloring scheme that was given above.
+
+--- End of Exam 3
+
+# Section 5: Graph Theory Research
+## 5.1: Ramsey Theory
+We now color the **edges** of a complete graph $K_n$ by red or blue. We are interested in finding the minimum $n$ so that ANY coloring of the graph creates subgraph with all blue edges or all red edges.
+> What is the smallest possible complete graph I can choose for which this will occur?

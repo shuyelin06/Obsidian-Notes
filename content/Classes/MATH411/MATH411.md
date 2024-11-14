@@ -173,7 +173,7 @@ This does not necessarily mean that homogeneous functions of degree $k = 0$ don'
 ## Partial Derivatives
 Let $f : O \to \mathbb{R}$, $x = (x_1, \dots x_n) \in O$. 
 
-We define the **partial derivative of $f$ with respect to $x_i$ as**
+For $1 \le i \le n$, we define the **partial derivative of $f$ with respect to $x_i$ at $x$ as**
 $$
 \frac{\partial f}{\partial x_i} (x) = \lim_{t \to 0} \frac{f(x + t e_i) - f(x)}{t}
 $$
@@ -204,7 +204,35 @@ if the latter limit exists. Note that $e_i$ is the $i^{th}$ basis vector,
 
 Let $O \subseteq \mathbb{R}^n$ open, $f : O \mathbb{R}$. Then, we say $f$ has **first-order partial derivatives** if for all $1 \le i \le n$, the function has a partial derivative with respect to its $i^{th}$ component, at every point in its domain.
 
-Furthermore, we say that $f$ is **continuously differentiable** if it has first-order partial derivatives such that each partial derivative $\frac{\partial f}{\partial x_i}$ is continuous for $1 \le i \le n$.
+> [!Warning] Differentiability Need Not Imply Continuity
+> In the single-variable case, a function with a derivative was continuous. However, this is no longer true in multiple variables! 
+>
+> A function with first-order derivatives need not be continuous. Consider the following example.
+
+> [!Example]+ Example: Differentiability Need Not Imply Continuity
+> Define
+> $$
+> f(x,y) = 
+> \begin{cases}
+> \frac{xy}{x^2 + y^2} & (x,y) \ne (0,0) \\
+> 0 & (x,y) = (0,0)
+> \end{cases}
+> $$
+> 
+> We show that the partial derivatives of the function exist at $(0,0)$. For all $t$,
+> $$
+> f(0 + te_i) = f(t,0) = 0
+> $$
+> So,
+> $$
+> \frac{\partial f}{\partial x_i} (0,0) = \lim_{t \to 0} \frac{f(0 + t e_i) - f(0)}{t} = \lim_{t \to 0} \frac{f(t,0) - f(0,0)}{t} = 0
+> $$
+> 
+> However, this function is not continuous! For sequence $\{(\frac{1}{k}, \frac{1}{k})\} \to 0$, $f(\frac{1}{k},\frac{1}{k}) = \frac{1}{2}$ for all $k$, but $f(0) = 0$!
+
+It is only if all partials are continuous, that our theorems from the single-variable case hold.
+
+We say that $f$ is **continuously differentiable, $C^1$** if it has first-order partial derivatives such that each partial derivative $\frac{\partial f}{\partial x_i}$ is continuous for $1 \le i \le n$.
 
 ---
 
@@ -225,7 +253,7 @@ Where we apply the partial derivative of $x_i$ first, then $x_j$ after.
 > \frac{d}{d x_i} \left( \frac{\partial f}{\partial x_j} \right) = \frac{d}{d x_j} \left( \frac{\partial f}{\partial x_i} \right)
 > $$
 >
-> > [!Note]- Proof 
+> > [!Note]- Proof (TODO)
 > > 
 > > Let $x = x_i, y = x_j$. Then,
 > > $$
@@ -244,31 +272,50 @@ Where we apply the partial derivative of $x_i$ first, then $x_j$ after.
 > > > We create two equivalent functions that converge to the two partial derivatives, respectively, forcing equality.
 
 ## Directional Derivatives and MVT
-From prior courses, we learned to define the **directional derivative** of a function $f$ as
-$$
-\frac{d}{dt} \bigg|_{t = 0} [ f(x + th) ] = \langle \nabla f(x), h \rangle
-$$
-For $x \in \mathbb{R}^n, h \in \mathbb{R}^n$. Where the **gradient** of the function, $\nabla f$, is given as the row vector
-$$
-\nabla f(x) = \left( \frac{\partial f}{\partial x_1}, \dots, \frac{\partial f}{\partial x_n} \right)
-$$
+Recall that in the single variable case, we had the Mean Value Theorem.
 
-But this may not actually hold for all functions! Consider
-$$
-f(x,y) =
-\begin{cases}
-\frac{xy}{x^2 + y^2} & (x, y) \ne 0 \\
-0 & (x,y) = 0
-\end{cases}
-$$
-Then, for $x = (0,0)$, $h = (1,1)$, the directional derivative does not exist, even though $\langle \nabla f(x), h \rangle = 0$!
+> [!Abstract] Theorem: Mean Value Theorem 
+> Let $f:[a,b] \to \mathbb{R}$ be continuous, and differentiable on $(a,b)$. Then, $\exists c \in (a,b)$ such that 
+> $$
+> f(b) - f(a) = f'(c) (b - a)
+> $$
 
-We prove the above definition, and show the conditions in which it holds.
+This is a really useful theorem! In this section, we generalize it to multiple variables.
 
-> [!Abstract] Proposition
-> Let $f : \mathbb{R}^n \to \mathbb{R}$, and assume all $\frac{\partial f}{\partial x_i}$ exist $\forall x \in \mathbb{R}^n$, $\forall i \in \{1, \dots n\}$.
+This generalization requires we use the single-variable MVT! 
+
+> [!Abstract] Lemma: Mean Value Lemma
+> Let $O \subseteq \mathbb{R}^n$ open, and let $1 \le i \le n$. Let $f : O \to \mathbb{R}$ have a partial derivative with respect to $x_i$ for all $x \in O$.
+>
+> Let $x \in O$, and $a$ be a real number such that the segment between $x$ and $x + ae_i$ lies in $O$. Then, $\exists \theta, 0 < \theta < 1$ such that
+> $$
+> f(x + ae_i) - f(x) = \frac{\partial f}{\partial x_i} (x + \theta a e_i) a
+> $$
+> > Intuition: If we view our function along an axis, we get a function on one-variable. On this, we can apply single-variable MVT!
+>
+> > [!Note]- Proof
+> > 
+> > Let $I$ be the open interval of real numbers containing 0 and $a$. Note that by assumption, $\forall t \in I$, $x + te_i$ is in our open set $O$.
+> > 
+> > Now, define $\phi(t) = f(x + te_i)$. Then, as $f$ has a partial derivative with respect to $x_i$, we find that $\phi(t)$ is differentiable, whose derivative is given as
+> > $$
+> > \phi'(t) = \frac{\partial f}{\partial x_i} (x + te_i)
+> > $$
+> > 
+> > Thus, we can apply the single-variable MVT to find a $0 < \theta < 1$ such that
+> > $$
+> > \begin{align*}
+> > \phi(a) - \phi(0) = \phi'(\theta a) (a - 0) \\
+> > f(x + ae_i) - f(x) = \frac{\partial f}{\partial x_i} (x + \theta a e_i) a
+> > \end{align*}
+> > $$
+
+We use this Lemma to prove the following.
+
+> [!Abstract] Proposition: Mean Value Proposition
+> Let $f : \mathbb{R}^n \to \mathbb{R}$ be a function. Assume all partials $\frac{\partial f}{\partial x_i}$ exist $\forall x \in \mathbb{R}^n$, $\forall i \in \{1, \dots n\}$.
 > 
-> Fix $x, h \ne 0$ ($h \in \mathbb{R}^n$). Then, there exists a $z_1, \dots z_n \in B_{||h||} (x)$ such that
+> Choose an $x \in \mathbb{R}^n$, and an offset $h \ne 0, h \in \mathbb{R}^n$. Then, there exists a $z_1, \dots z_n$ in the ball around $x$ of radius $||h||$ ($B_{||h||} (x)$) such that
 > $$
 > f(x + h) - f(x) = \frac{\partial f}{\partial x_1} (z_1) h_1 + \dots + \frac{\partial f}{\partial x_n} (z_n) h_n
 > $$
@@ -277,18 +324,21 @@ We prove the above definition, and show the conditions in which it holds.
 > > 
 > > We prove this for $n = 2$, though the proof can very easily be extended to more dimensions.
 > > 
-> > Consider the points $(x_1, x_2)$, $(x_1 + h, x_2 + h)$, and look at
+> > Let $x = (x_1, x_2)$, $x + h = (x_1 + h, x_2 + h)$. Look at the difference. Our goal is to expand this difference into a sum of differences along one variable (only one variable changes), so that we can apply the Mean Value Lemma on each term!
 > > $$
-> > f(x_1 + h, x_2 + h) - f(x_1, x_2) = f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) + f(x_1, x_2 + h_2) - f(x_1, x_2)
+> > \begin{align*}
+> > f(x_1 + h, x_2 + h) - f(x_1, x_2) 
+> > &= f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) \\
+> > &\qquad + f(x_1, x_2 + h_2) - f(x_1, x_2)
+> > \end{align*}
 > > $$
 > > 
-> > By doing this, we convert our problem into 1 dimensions, where we can solve for the differences
+> > This gives us two differences, where only one variable is changing in each. In other words, we have two differences in one-dimension!
 > > $$
 > > f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) \qquad f(x_1, x_2 + h_2) - f(x_1, x_2)
 > > $$
-> > separately.
 > > 
-> > By the Mean Value Theorem, 
+> > Thus, by the Mean Value Lemma, 
 > > $$
 > > \begin{align*}
 > > f(x_1 + h, x_2 + h) - f(x_1, x_2 + h_2) = \frac{\partial f}{\partial x_1} (x_1 + \theta h_1, x_2 + h_2) h_1 \\
@@ -297,23 +347,41 @@ We prove the above definition, and show the conditions in which it holds.
 > > \end{align*}
 > > $$
 > > 
-> > Let $z_1 = (x_1 + \theta_1 h_1, x_2 + h_2)$, and $z_2 = (x_1, x_2 + \theta_2 h_2)$. We are done.
+> > Let $z_1 = (x_1 + \theta_1 h_1, x_2 + h_2)$, and $z_2 = (x_1, x_2 + \theta_2 h_2)$. Note that each $z_i$ is within the ball of $B_{||h||} (x)$. We are done!
 
-If $f : O \to \mathbb{R}^n$, $O$ open, and all $\frac{\partial f}{\partial x_i} (x)$ exist $\forall x \in O$, and are continuous, $f$ is called **continuously differentiable**, called $C^1 (O)$.
+Recall that in our definitions of partial derivatives, we differentiate a function with respect to one of the axes
+$$
+\lim_{t \to 0} \frac{f(x + te_i) - f(x)}{t}
+$$
+But what if we wanted to differentiate in a direction that isn't aligned with the axes? This is where directional derivatives come in!
 
-> [!Abstract] Theorem: Formula for The Directional Derivative
-> If $f : \mathbb{R}^n \to \mathbb{R}$ is $C^1$, then $\forall x \in \mathbb{R}^n$, $\forall h \ne 0$, the limit
+---
+
+Let $O \subseteq \mathbb{R}^n$ open, and consider the function $f : O \to \mathbb{R}^n$. For a point $x \in O$, and direction $h$, we define the **directional derivative** as
+$$
+\frac{\partial f}{\partial h} (x) = \lim_{t \to 0} \frac{f(x + tp) - f(x)}{t}
+$$
+
+If the limit exists.
+
+Now let's define the **gradient** of the function, $\nabla f$, as the row vector
+$$
+\nabla f(x) = \left( \frac{\partial f}{\partial x_1}, \dots, \frac{\partial f}{\partial x_n} \right)
+$$
+In some cases, we can calculate the directional derivative using the gradient, which can be a lot easier than taking a limit!
+
+> [!Abstract] Theorem: Directional Derivative Theorem
+> Let $O \subseteq \mathbb{R}^n$ open, and let $f : \mathbb{R}^n \to \mathbb{R}$ be $C^1$.
+> 
+> Then, $\forall x \in O$, and all directions $\forall h \ne 0$, the function has a directional derivative at $x$ in the direction $h$, which can be calculated as
 > $$
-> \frac{d}{dt} \bigg|_{t=0} f(x + th) = \lim_{t \to 0} \frac{f(x + th) - f(x)}{t}
+> \frac{\partial f}{\partial h} = \lim_{t \to 0} \frac{f(x + th) - f(x)}{t} = \langle \nabla f(x), h \rangle = \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x) h_i
 > $$
-> Exists and equals $\langle \nabla f(x), h \rangle$.
-> $$
-> \langle \nabla f(x), h \rangle = \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x) h_i
-> $$
+> In other words, the inner product of $h$ with the gradient of the function!
 >
 > > [!Note]- Proof
 > > 
-> > By our previous proposition, 
+> > By the Mean Value Proposition, 
 > > $$
 > > \begin{align*}
 > > \frac{f(x + th) - f(x)}{t} 
@@ -321,93 +389,101 @@ If $f : O \to \mathbb{R}^n$, $O$ open, and all $\frac{\partial f}{\partial x_i} 
 > > &= \frac{\partial f}{\partial x_1} (z_1) h_1 + \dots + \frac{\partial f}{\partial x_n} (z_n) h_n
 > > \end{align*}
 > > $$
-> > For $z_1, \dots z_n \in B_{||th||} (x)$. Let $t \to 0$. Then, the ball of $B_{||th||} (x)$ will shrink towards $x$, forcing all $z_i$'s to converge to $x$! Thus, as $t \to 0,$ we have
+> > For $z_1, \dots z_n \in B_{||th||} (x)$. Then, as $t \to 0$, the ball of $B_{||th||} (x)$ will shrink towards $x$, forcing all $z_i$'s to converge to $x$! Thus, as $t \to 0,$ we have
 > > $$
-> > \frac{\partial f}{\partial x_1} (x) h_1 + \dots + \frac{\partial f}{\partial x_n} (x) h_n
+> > \frac{\partial f}{\partial h} = \lim_{t to 0} \frac{f(x + th) - f(x)}{t} = \frac{\partial f}{\partial x_1} (x) h_1 + \dots + \frac{\partial f}{\partial x_n} (x) h_n
 > > $$
 
-Let $P \ne 0$, $P \in \mathbb{R}^n$, $f : \mathbb{R}^n \to \mathbb{R}$. Then, **the partial derivative in direction $P$** of $f$ is given as
-$$
-\frac{\partial f}{\partial P} (x) = \frac{d}{dt} \bigg|_{t=0} f(x + tP)
-$$
-If it exists. By the previous theorem, the partial derivative of $f$ in the direction $P$ exists and equals $\langle \nabla f, P \rangle \rangle$ if $f \in C^1$.
+> Note that sometimes the directional derivative may be denoted as
+> $$
+> \frac{\partial f}{\partial h} = \frac{d}{dt} \bigg|_{t=0} f(x + th)
+> $$
 
-> [!Abstract] Proposition
-> Let $f : \mathbb{R}^n \to \mathbb{R}, C^1$, $x \in \mathbb{R}^n$, $h \in \mathbb{R}^n$ where $h \ne 0$. 
+> [!Abstract] Theorem: The Mean Value Theorem (Multi-Variable)
+> Let $f : \mathbb{R}^n \to \mathbb{R}$ be continuously differentiable. Also let $x \in \mathbb{R}^n$, $h \in \mathbb{R}^n$ where $h \ne 0$.
 > 
-> Then, there exists $0 < \theta < 1$ such that
+> Then, if the segment joining $x, x+h$ lies in $O$, then there exists $0 < \theta < 1$ such that
 > $$
 > f(x + h) - f(x) = \langle \nabla f(x + \theta h), h \rangle
 > $$
 >
-> > This is similar to the first proposition we have, except all $z_1, \dots z_n$ are assumed to be at the point.
+> > This is the Mean Value Proposition, with the additional assertion that $z_1, \dots z_n$ are assumed to be at the same point.
 >
 > > [!Note]- Proof
 > > 
-> > Let $\phi : \mathbb{R} \to \mathbb{R}$, $\phi(t) = f(x + th)$ so that 
+> > Let $\phi : \mathbb{R} \to \mathbb{R}$, $\phi(t) = f(x + th)$. We know that for $t = 1, 0$, we have
 > > $$
 > > \phi(1) = f(x + h) \qquad \phi(0) = f(x)
 > > $$
 > > 
-> > Then, $f(x + h) - f(x) = \phi(1) - \phi(0) = \phi'(\theta) (1 - 0)$ by the mean value theorem (for $0 < \theta < 1$) and furthermore, as the derivative of $\phi(t)$ is the directional derivative,
+> > Then, $f(x + h) - f(x) = \phi(1) - \phi(0) = \phi'(\theta) (1 - 0)$, $0 < \theta < 1$, by the single-variable MVT, and furthermore, as the derivative of $\phi(t)$ is the directional derivative,
 > > $$
 > > f(x + h) - f(x) = \phi'(\theta) = \langle \nabla f(x + \theta h), h \rangle
 > > $$
 
+We can also use directional derivatives to make a few extra inferences.
+
+Note that if $p$ is a vector of norm 1, we can interpret the directional derivative as the rate of change in a particular direction! 
+
+> [!Abstract] Theorem: Fastest Rate of Change
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^1$. Fix $x$, and assume $\nabla f(x) \ne 0$. Then, the maximum of the directional derivative at $x$ is given as
+> $$
+> \max_{||P|| = 1} \frac{\partial f}{\partial P} (x)
+> $$
+> Is attained for
+> $$
+> P = \frac{\nabla f(x)}{|| \nabla f (x) ||}
+> $$
+> In other words, the direction of the gradient.
+> 
+> > [!Note]- Proof
+> > 
+> > If $||P|| = 1$, we have
+> > $$
+> > \frac{\partial f}{\partial P} (x) = \langle \nabla f(x), P \rangle
+> > $$
+> > By Cauchy-Schwarz, this is
+> > $$
+> > \le || \nabla f(x) || \cdot || P || = || \nabla f(x) ||
+> > $$
+> > We have an upper bound on our directional derivative! We can attain our upper bound if $P = \frac{\nabla f(x)}{|| \nabla f(x) ||}$.
+> > $$
+> > \begin{align*}
+> > \langle \nabla f(x), P \rangle 
+> > &= \langle \nabla f(x), \frac{\nabla f(x)}{|| \nabla f(x) ||} \rangle \\ 
+> > &= \frac{1}{|| \nabla f(x) ||} \langle \nabla f(x), \nabla f(x) \rangle \\
+> > &= || \nabla f(x) ||
+> > \end{align*}
+> > $$
+> > We've found a maximizer.
+
+Furthermore, we can use directional dervatives to prove a notion of continuity on multiple variables.
+
 > [!Abstract] Theorem: Partial Derivatives and Continuity
-> Let $f : \mathbb{R}^n \to \mathbb{R}$, and assume all $\frac{\partial f}{\partial x_i} (x)$ exist and are continuous. 
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, and assume $f$ is continuously differentiable. Then, $f$ is continuous.
+> > Recall that if $f$ is $C^1$, then all partials exist and are continuous.
 >
-> Then, $f$ is continuous.
->
-> > [!Note] Proof (? Missing something) 
+> > [!Note]- Proof
 > > 
-> > Look at $f(x + h) - f(x)$. We would like to claim that as $h \to 0$, $f(x + h) \to f(x)$.
+> > We look at $f(x + h) - f(x)$, and claim that as $h \to 0$, $f(x + h) \to f(x)$.
 > > 
-> > By the previous proposition, for some $0 < \theta < 1$
+> > By MVT, for some $0 < \theta < 1$,
 > > $$
-> > | f(x + h) - f(x) | = | \langle \nabla f(x + \theta h, h) \rangle |
+> > | f(x + h) - f(x) | = | \langle \nabla f(x + \theta h), h \rangle |
 > > $$
-> > By Cauchy Schwarz, this is less than or equal to
+> > By Cauchy Schwarz, we can bound this by
 > > $$
 > > \le || \nabla f(x + \theta h) || \cdot || h ||
 > > $$
-> > But as c, we can bound the first term! 
+> > But as $h$ is convergent, and the functions are continuous, we can find a bound for the first term!
 > > $$
 > > || \nabla f(x + \theta h) || \le \max || \nabla f(y) || \cdot || x - y || \le C
 > > $$
 > > So, this drops to 0.
 > 
-> > By this proof, in fact, if all the partials exist $\forall x \in O$ and are bounded, then $f$ is still continuous!
+> By this proof, in fact, if all the partials exist $\forall x \in O$ and are bounded, then $f$ is still continuous!
 
-Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^1$. Fix $x$, and assume $\nabla f \ne 0$. Then, the maximum of the directional derivative at $x$ is given as
-$$
-\max_{||P|| = 1} \frac{\partial f}{\partial P} (x)
-$$
-Is attained for
-$$
-P = \frac{\nabla f(x)}{|| \nabla f (x) ||}
-$$
-In other words, the direction of the gradient.
-
-> [!Note] Proof
-> If $||P|| = 1$, we have
-> $$
-> \frac{\partial f}{\partial P} (x) = \langle \nabla f(x), P \rangle
-> $$
-> By Cauchy-Schwarz, this is
-> $$
-> \le || \nabla f(x) || \cdot || P || = || \nabla f(x) ||
-> $$
-> We have an upper bound on our directional derivative! We can attain our upper bound if $P = \frac{\nabla f(x)}{|| \nabla f(x) ||}$.
-> $$
-> \begin{align*}
-> \langle \nabla f(x), P \rangle 
-> &= \langle \nabla f(x), \frac{\nabla f(x)}{|| \nabla f(x) ||} \rangle \\ 
-> &= \frac{1}{|| \nabla f(x) ||} \langle \nabla f(x), \nabla f(x) \rangle \\
-> &= || \nabla f(x) ||
-> \end{align*}
-> $$
-> We've found a maximizer.
+---
 
 We end with a small remark that will segway into the next section. Let $f : \mathbb{R}^n \to \mathbb{R}, C^1$. Then,
 $$
@@ -415,93 +491,152 @@ $$
 $$
 >  This can be proven by using Cauchy-Schwarz.
 
-We use this to define differentiable functions!
-
-$f : \mathbb{R}^n \to \mathbb{R}$ is **differentiable** at $x$ if $\exists Q \in \mathbb{R}^n$ such that
+We use this to define differentiable functions! $f : \mathbb{R}^n \to \mathbb{R}$ is **differentiable** at $x$ if $\exists Q \in \mathbb{R}^n$ such that
 $$
-\frac{f(x + h) - f(x) - \langle Q, h \rangle}{||h||} \to 0
+\left\{ \frac{f(x + h) - f(x) - \langle Q, h \rangle}{||h||} \right\} \to 0
 $$
 as $h \to 0$.
 
-This is a stronger notion than partial diffentiation! So, $f \in C^1$ implies that $f$ is differentiable, which implies that all partials of $f$ exist. But, the converses are not true!
+This is a stronger notion than partial diffentiation! So,
+- $f \in C^1$ implies that $f$ is differentiable
+- $f$ differentiable implies that all parties of $f$ exist
 
---- Chapter 14 ---
+But, the converses are not true!
+
+
 
 # Local Approximation of Real-Valued Functions
-## First Order Approximation
-Recall previously that if $f \in C^1 (\mathbb{R}^n)$, then
+## First Order Approximations
+> [!Tip] Motivation
+> Say we have some function, and we want to analyze the behavior of it in an area around the point $x$. One way to do this is to choose another function $g$ that approximates $f$, yet is simpler! We can then work with $g$ to see what properties it has (and inherits from $f$). 
+ 
+Let $O \subseteq \mathbb{R}^n$, and $x \in O$. For a positive integer $k$, we say that functions $f,g : O \to \mathbb{R}$ are **$k^{th}$ order approximations** of one another at $x$ if
 $$
-f(x + h) - f(x) = \langle \nabla f(x + \theta h), h \rangle
+\lim_{h \to 0} \frac{f(x+h) - g(x+h)}{||h||^k} = 0
 $$
-For some $0 < \theta < 1$.
 
-A consequence of this is that
-$$
-\lim_{h\to 0} \frac{f(x+h) - f(x) - \langle \nabla f(x), h \rangle}{h} = 0
-$$
-Known as the **first order approximation formula**. In other words,
-$$
-f(x + h) = f(x) + \langle \nabla f(x), h \rangle + E(x,h) \qquad \lim_{h\to 0} \frac{E(x,h)}{||h||} = 0
-$$
-As the error drops to 0 when dividing by $||h||$, we can also say that the error is of **first order**, $O(||h||)$.
+We ask, can we find a first-order approximation for a given function $f$?
 
-Letting $y = x+h$, $x$ fixed, this can alternatively be written as
-$$
-f(y) = f(x) + \langle \nabla f(x), (y - x) \rangle + O( ||x - y|| )
-$$
-So if $x$ is fixed, and $y$ is cloed to $x$, then we have a close approximation!
+> [!Abstract] Theorem: First Order Approximation Theorem
+> Let $O \subseteq \mathbb{R}^n$ open, $f : O \to \mathbb{R}$ be $C^1$. Then, for $x \in O$, we have first order approximation of $f$
+> $$
+> \lim_{h \to 0} \frac{f(x+h) - [f(x) + \langle \nabla f(x), h \rangle]}{||h||} = 0
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > Recall previously that by MVT, we find $0 < \theta < 1$ such that
+> > $$
+> > f(x + h) - f(x) = \langle \nabla f(x + \theta h), h \rangle
+> > $$
+> > 
+> > We can subtract both sides by $\langle \nabla f(x), h \rangle$ and apply Cauchy Schwarz to obtain 
+> > $$
+> > \begin{align*}
+> > f(x + h) - f(x) - \langle \nabla f(x), h \rangle 
+> > &= \langle \nabla f(x + \theta h), h \rangle - \langle \nabla f(x), h \rangle \\
+> > f(x + h) - f(x) - \langle \nabla f(x), h \rangle 
+> > &= \langle \nabla f(x + \theta h) - \nabla f(x), h \rangle \\
+> > | f(x + h) - f(x) - \langle \nabla f(x), h \rangle | &\le || \nabla f(x + \theta h) - \nabla f(x) || \cdot || h || \\
+> > \frac{| f(x + h) - f(x) - \langle \nabla f(x), h \rangle |}{||h||} 
+> > &\le || \nabla f(x + \theta h) - \nabla f(x) ||
+> > \end{align*}
+> > $$
+> > 
+> > Because $f$ is continuously differentiable, we know that 
+> > $$
+> > \lim_{h \to 0} || \nabla f(x + \theta h) - \nabla f(x) || = 0
+> > $$
+> > 
+> > So by the Comparison Lemma, we can force our original limit to be 0. 
 
-How does this relate to the tangent plane of $g$?
+We can alternatively write this in a few ways.
+- Let $E(x,h)$ denote some error depending on $x$ and $h$. Then, our approximation can be given as
+  $$
+  f(x + h) = f(x) + \langle \nabla f(x), h \rangle + E(x,h) \qquad \lim_{h\to 0} \frac{E(x,h)}{||h||} = 0
+  $$
+  As the error drops to 0 when dividing by $||h||$, we can also say that the error is of **first order**, $O(||h||)$. 
+- Letting $y = x+h$, $x$ fixed, we can also write our error as 
+  $$
+  f(y) = f(x) + \langle \nabla f(x), (y - x) \rangle + O( ||x - y|| )
+  $$
+  So if $x$ is fixed, and $y$ is sufficiently close to $x$, then we have a close approximation!
 
-Define $G = \{ (y_1, y_2, f(y_1, y_2)) \}$. Define the tangent directions at $(x_1, x_2)$, as
-$$
-\begin{align*}
-&\gamma_1 (t) = (x_1 + t, x_2, f(x_1 + t, x_2)) &\gamma_1'(0) = (1, 0, \frac{\partial f}{\partial x_1} (x_1, x_2)) \\
-&\gamma_2 (t) = (x_1, x_2 + t, f(x_1, x_2 + t)) &\gamma_1'(0) = (0, 1, \frac{\partial f}{\partial x_2} (x_1, x_2)) \\
-\end{align*}
-$$
-We can find a vector orthogonal to both of these, giving us a vector that is normal to our function.
-$$
-N = \left( -\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, 1 \right)
-$$
-We use this to define the tangent plane at $(x_1, x_2, f(x_1, x_2)$ as
-$$
-\begin{align*}
-&(y_1 - x_1, y_2 - x_2, y_3 - f(x_1,x_2)) \cdot \left( -\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, 1 \right) = 0 \\
-&y_3 - f(x_1, x_2) - \frac{\partial f}{d x_1} (x_1, x_2) (y_1 - x_1) - \frac{\partial f}{\partial x_2} (x_1, x_2) (y_2 - x_2) = 0 \\
-&= y_3 = f(x_1, x_2) + \frac{\partial f}{d x_1} (x_1, x_2) (y_1 - x_1) + \frac{\partial f}{\partial x_2} (x_1, x_2) (y_2 - x_2)
-\end{align*}
-$$
-Thus, we find that $f(y)$ defined before is actually a tangent plane approximation of our function!
+We can also interpret this formula geometrically. In fact, interestingly enough, our first order approximation is equivalent to a tangent plane approximation of our function!
 
-## Second Order Approximation
-Let $A$ be an $n \times n$ symmetric matrix (so, $a_{ij} = a_{ji}$ for all $i,j$). Define the function 
+> [!Note]- Proof
+> Define $G$ to be the function $G = \{ (x_1, x_2, f(x_1, x_2)) \}$. This defines a surface in 3-dimensions. We will define the tangent plane at $(a,b)$.
+> 
+> At $(a, b)$, we find tangent directions by differentiating with respect to variables $x_1$ and $x_2$.
+> $$
+> T_1 = \left( 1, 0, \frac{\partial f}{\partial x_1} (a, b) \right) \qquad
+> T_2 = \left( 0, 1, \frac{\partial f}{\partial x_2} (a, b) \right)
+> $$
+> 
+> We take the cross product, to find a vector orthogonal to both. This will give us a vector that is a normal to our surface. 
+> $$
+> N = \left( -\frac{\partial f}{\partial x_1} (a, b), \frac{\partial f}{\partial x_2} (a, b), 1 \right)
+> $$
+> 
+> We can use this to define the tangent plane at $(a, b, f(a, b))$ as
+> $$
+> \begin{align*}
+> &(x_1 - a, x_2 - b, f(x_1, x_2) - f(a,b)) \cdot \left( -\frac{\partial f}{\partial x_1} (a, b), \frac{\partial f}{\partial x_2} (a, b), 1 \right) = 0 \\
+> &f(x_1, x_2) - f(a, b) - \frac{\partial f}{d x_1} (a, b) (x_1 - a) - \frac{\partial f}{\partial x_2} (a, b) (x_2 - b) = 0 \\
+> &f(x_1, x_2) - \left[ f(a, b) + \frac{\partial f}{d x_1} (a, b) (x_1 - a) + \frac{\partial f}{\partial x_2} (a, b) (x_2 - b) \right] = 0
+> \end{align*}
+> $$
+> 
+> Thus is the same as our first-order approximation formula! Simply redefine $(x_1, x_2)$ to be offsets $(a,b)$, $(x_1, x_2) + h$.
+
+## Second Order Approximations and Second Derivatives
+> [!Tip] Motivation
+> In the single-variable case, we had the second-derivative test for determining minimums and maximums. Here, we develop the corresponding test for multiple variables.
+
+### Definitions and Context
+Let $A$ be an $n \times n$ matrix. Note that for any vector $\vec{x}$, the matrix-vector product
 $$
-Q(h) = \langle Ah, h \rangle = \sum_{i,j=1}^n a_{ij} h_i h_j
+Ax = y
 $$
-This is the quadratic form for $A$. The main application of this, is when we for when we have the Hessian Matrix of a function (assuming $f \in C^2$)
+Is equivalent to the values inner products of the $i^{th}$ row of $A$ and $x$! If $A_i$ denotes the $i^{th}$ row of $A$, then
 $$
-A = \nabla^2 f(x) = 
+Ax = ( \langle A_1, x \rangle, \dots, \langle A_i, x \rangle, \dots, \langle A_n, x \rangle )
+$$
+This fact will be useful later!
+
+---
+
+Let $A$ be an $n \times n$ matrix. Then, the function $Q : \mathbb{R}^n \to \mathbb{R}$ given by 
+$$
+Q(h) = \langle Ah, h \rangle
+$$
+Is known as the **quadratic function** associated with the matrix $A$.
+> This function gives us a clean notation for generalizing directional derivatives into higher orders! 
+
+Let $f$ be $C^2$. We define the **Hessian Matrix** of $f$, denoted $\nabla^2 f$, as the $n \times n$ matrix where for each pair of indices $i,j$,
+$$
+(\nabla^2 f(x))_{ij} = \frac{\partial f}{\partial x_j \partial x_i} (x)
+$$
+In other words,
+$$
+\nabla^2 f(x) = 
 \begin{bmatrix}
 \frac{\partial^2 f}{\partial x_1^2} & \dots & \frac{\partial^2 f}{\partial x_1 \partial x_n} \\
-\vdots & & \vdots \\
-\frac{\partial^2 f}{\partial x_n \partial x_i} & \dots & \frac{\partial^2 f}{\partial x_n^2}
+\vdots & \ddots & \vdots \\
+\frac{\partial^2 f}{\partial x_n \partial x_1} & \dots & \frac{\partial^2 f}{\partial x_n^2}
 \end{bmatrix}
 $$
+> Note that if $f$ has continuous second-order partials, then the Hessian Matrix is symmetric because the $ij$ entry would equal the $ji$ entry!
 
-If $f \in C^2 (\mathbb{R})$, $x,h$ fixed, then
+We use the quadratic function notation to define higher order directional derivatives. If $f \in C^2 (\mathbb{R})$, $x,h$ fixed, then
 1. $$
    \frac{d}{dt} f(x + th) = \langle \nabla f(x + th), h \rangle = \sum_{i=1}^n \frac{\partial f}{\partial x_i} (x + th) h_i
    $$
 2. $$
    \frac{d^2}{dt^2} f(x + th) = \langle \nabla^2 f(x + th, h) \rangle = \sum_{i,j=1}^n \frac{\partial^2 f}{\partial x_i \partial x_j} (x + th) h_i h_j
    $$
-   
-> [!Info] Remark
-> If $f \in C^3$, then
-> $$
-> \frac{d^3}{dt^3} f(x + th) = \sum_{i,j,k=1}^n \frac{\partial^3 f}{\partial x_i \partial x_j \partial x_k} (x + th) h_i h_j h_k
-> $$
+
+Notice the pattern!
 
 > [!Note]- Proof 
 > For (1), this is a chain rule.
@@ -515,13 +650,26 @@ If $f \in C^2 (\mathbb{R})$, $x,h$ fixed, then
 > \end{align*}
 > $$
 
-Let $A$ be an $n \times n$ matrix, $A = (a_{ij})$. Define the **Hilbert-Schmidt norm** of $A$ to be
-$$
-||A|| = \left( \sum_{i,j=1}^n a_{ij}^2 \right)^{1/2}
-$$
-In other words, we think of the matrix as a long vector, and take the vector norm.
+> [!Info] Remark
+> If $f \in C^3$, then
+> $$
+> \frac{d^3}{dt^3} f(x + th) = \sum_{i,j,k=1}^n \frac{\partial^3 f}{\partial x_i \partial x_j \partial x_k} (x + th) h_i h_j h_k
+> $$
 
-> [!Abstract] Generalized Cauchy Schwarz Inequality
+In the above formulas, (2) will be quite useful in establishing a second-derivative criterion for the multi-variable case. However, we will also need some way to estimate the sizes of the values that quadratic functions can take on! These tools are given as follows.
+
+---
+
+Let $A$ be an $n \times n$ matrix, $A = (a_{ij})$. The **Hilbert-Schmidt norm** of $A$ is given as
+$$
+||A||_\text{HS} = \left( \sum_{i,j=1}^n a_{ij}^2 \right)^{1/2}
+$$
+> We think of the matrix as a long vector, and take the vector norm.
+
+With this norm for a matrix, we can generalize the Cauchy-Schwarz Inequality!
+
+> [!Abstract] Theorem: Generalized Cauchy Schwarz Inequality
+> Let $A$ be $n \times n$, and $h \in \mathbb{R}^n$. Then,
 > $$
 > || Ah || \le ||A|| \cdot ||h||
 > $$
@@ -546,28 +694,30 @@ In other words, we think of the matrix as a long vector, and take the vector nor
 > > \end{align*}
 > > $$
 
-Let $A : \mathbb{R}^n \to \mathbb{R}^m$. We define the **operator norm** of $A$ as
+We can also define the **operator norm** of $A$ as
 $$
 ||A||_\text{op} = \max_{||h|| = 1} || Ah || 
 $$
-Based on this, we can find that for $||h|| = 1$,
+Based on this, and the Generalized Cauchy-Schwarz Inequality, we can find that for $||h|| = 1$,
 $$
 ||Ah|| \le ||A||_{HS} \qquad ||A||_{op} \le ||A||_{HS}
 $$
 
-Let $A$ be an $n \times m$, symmetric matrix. $A$ is **positive definite** if 
+---
+
+Let $A$ be a $n \times n$ matrix. $A$ is **positive definite** if 
 $$
-\langle Au, u \rangle > 0
+\langle Au, u \rangle > 0 \qquad u \ne 0
 $$
-For all $u \ne 0$. Similarly, $A$ is negative definite if $\forall u \ne 0$,
+Similarly, $A$ is **negative definite** if
 $$
-\langle Au, u \rangle < 0
+\langle Au, u \rangle < 0 \qquad u \ne 0
 $$
 
-> [!Abstract] Lemma
-> Let $A$ be symmetric positive definite matrix. Then, there exists a $c > 0$ such that
+> [!Abstract] Proposition: Properties of Positive Definite Matrices
+> Let $A$ be a positive definite matrix. Then, there exists a $c > 0$ such that
 > $$
-> \langle Au , u \rangle \ge c ||u||^2
+> Q(u) = \langle Au , u \rangle \ge c ||u||^2
 > $$
 > For all $u \in \mathbb{R}^n$.
 >
@@ -586,21 +736,43 @@ $$
 > > This creates a continuous function along a $S^{n-1}$ hypersphere in $\mathbb{R}^n$, which is sequentially compact. Thus, it must have a minimum and maximum. Choose the minimum to find our $c$.
 > > > In fact, we can find $c$ by taking the minimum of the eigenvalues.
 
-Recall if we have $f : \mathbb{R} \to \mathbb{R}$, $f''(x)$ exists for every $x$, then $\forall x,h \in \mathbb{R}$, we have
+### Second Order Approximation and Second Derivative Test
+Let $A \subseteq \mathbb{R}^n$, $f : A \to \mathbb{R}$. Also, let $x \in A$. Then, we have the following definitions:
+- $x$ is a **local minimizer** if there exists a $\delta > 0$ such that
+  $$
+  f(x) \le f(x + h) \qquad (x + h) \in A, \forall 0 < ||h|| < \delta
+  $$
+- $x$ is a **local maximizer** if there exists a $\delta > 0$ such that
+  $$
+  f(x) \ge f(x + h) \qquad \forall 0 < ||h|| < \delta
+  $$
+- $x$ is a **local extreme point** if it is either a local minimizer or a local maximizer for $f$.
+
+> Note that $x$ is a strict minimizer / maximizer if the inequality is strictly less than or greater than.
+
+In the single-variable case, we found that for a local extremum to occur, the derivative must be 0. We define the analogous case for multiple variables.
+
+> [!Abstract] Theorem: Necessity for Local Extremum
+> Let $O \subseteq \mathbb{R}^n$ open, and let $f : O \to \mathbb{R}$ have first-order partial derivatives. If $x \in O$ is a local extreme point for $f$, then
+> $$
+> \nabla f(x) = 0
+> $$
+
+But unlike the single variable case, finding the $x$'s such that this holds is very difficult, as we get a system of equations! To help us with this, we need a more formal way to define the behaviors of functions! We define a test analogous to the single-variable Second-Derivative Test to help us with this.
+
+By the Lagrange Remainder Theorem, recall that if $f : \mathbb{R} \to \mathbb{R}$, $f''(x)$ exists for every $x$, then for all $x,h \in \mathbb{R}$, there exists a $0 < \theta < 1$ such that
 $$
 f(x + h) = f(x) + f'(x) h + \frac{1}{2} f''(x + \theta h) h^2 
 $$
-For some $0 < \theta < 1$.
+We can generalize this to the multi-variable case!
 
-> [!Abstract] Theorem:
-> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$, and $x,h \in \mathbb{R}^n$. Then, 
+> [!Abstract] Theorem: Multi-Variable Remainder Theorem
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$. Then, for $x,h \in \mathbb{R}^n$, there exists $0 < \theta < 1$ such that 
 > $$
 > f(x + h) = f(x) + \langle \nabla f(x), h \rangle + \frac{1}{2} \langle \nabla^2 f(x + \theta h) h, h \rangle
 > $$
-> 
-> For some $0 < \theta < 1$.
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > Let $\phi(t) = f(x + th)$. Then,
 > > $$
@@ -608,7 +780,7 @@ For some $0 < \theta < 1$.
 > > $$
 > > For some $0 < \theta < 1$.
 > > 
-> > Notice that this holds only because we assumed the second order derivatives are continuous.
+> > Notice that this holds only because we assumed the second order derivatives are continuous. We find each term to be
 > > $$
 > > \begin{align*}
 > > \phi'(0) = \frac{d}{dt}_{t=0} f(x + th) = \langle \nabla f(x), h \rangle \\
@@ -616,37 +788,35 @@ For some $0 < \theta < 1$.
 > > \end{align*}
 > > $$
 
-> [!Abstract] Theorem
+This is in fact a second order approximation of $f$! 
+
+> [!Abstract] Theorem: Second Order Approximation Theorem
 > Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$. Then,
 > $$
-> \lim_{h \to 0} \frac{f(x + h) - [f(x) + \langle \nabla f(x), h \rangle] + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle}{||h||^2} = 0
+> \lim_{h \to 0} \frac{f(x + h) - [f(x) + \langle \nabla f(x), h \rangle + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle ]}{||h||^2} = 0
 > $$
 > 
-> > [!Note] Proof
+> > [!Note]- Proof
 > >
 > > $$
 > > \begin{align*}
-> > &\frac{f(x + h) - [f(x) + \langle \nabla f(x), h \rangle] + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle}{||h||^2} \\
+> > &\frac{f(x + h) - [f(x) + \langle \nabla f(x), h \rangle + \frac{1}{2} \langle \nabla^2 f(x) h, h \rangle ]}{||h||^2} \\
 > > &= \frac{| \frac{1}{2} \langle (\nabla^2 f(x + \theta h) - \nabla^2 f(x)) h, h \rangle | }{||h||^2} \\
 > > &\le \frac{\frac{1}{2}|| (\nabla^2 f(x + \theta h) - \nabla^2 f(x)) h || ||h||}{||h||^2} \\
 > > &\le \frac{1}{2} || \nabla^2 f(x + \theta h) - \theta^2 f(x) || \to 0 
 > > \end{align*}
 > > $$
 
-Let $f : O \to \mathbb{R}$, $O$ open in $\mathbb{R}^n$. Then, $x$ is a strict local minmizer if there exists a $\delta > 0$ such that
-$$
-f(x) < f(x + h) \qquad \forall 0 < ||h|| < \delta
-$$
-Similarly, $x$ is a strict local maximizer if $\exists \delta > 0$ such that
-$$
-f(x) > f(x + h) \qquad \forall 0 < ||h|| < \delta
-$$
+With the Second-Order Approximation Theorem, we can define a multi-variable analogy to the Second-Derivative test.
 
-> [!Abstract] Theorem: Strict Local Minimizers
-> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$. If $x$ is such that $\nabla f(x) = 0$ and the Hassian Matrix $\nabla^2 f(x)$ is positive definite, then $x$ is a strict local minimizer.
-> > If $\nabla  f(x) = 0, \nabla^2 f(x)$ negative definite, then $x$ is a strict local maximizer.
+> [!Abstract] Theorem: Second Derivative Test
+> Let $f : \mathbb{R}^n \to \mathbb{R}$, $C^2$. 
+> 
+> Let $x$ be a point such that $\nabla f(x) = 0$.
+> - If the Hessian Matrix $\nabla^2 f(x)$ is positive definite, then $x$ is a **strict** local minimizer.
+> - If the Hessian Matrix $\nabla^2 f(x)$ negative definite, then $x$ is a **strict** local maximizer.
 >
-> > [!Note]- Proof
+> > [!Note]- Proof (TODO)
 > > 
 > > We know 
 > > $$
@@ -672,14 +842,19 @@ $$
 > > $$
 > > By definition, $x$ is a strict local minimizer. 
 
-Is the converse of this theorem also true?
+Is the converse of this theorem also true? In other words, let $f : \mathbb{R}^n \to \mathbb{R}, C^2$. Assume $x$ is a local minimizer. Then $\nabla f(x) = 0$. But what about $\nabla^2 f(x)$? Does it have to be positive definite? 
 
-Let $f : \mathbb{R}^n \to \mathbb{R}, C^2$. Assume $x$ is a local minimizer. Then $\nabla f(x) = 0$. But what about $\nabla^2 f(x)$? Does it have to be positive definite? No. As a counterexample, let $f(x,y) = x^4 + y^4$. Then, we have a strict local minimizer at $0$, but the $\nabla^2 f(x)$ is not positive definite.
+No! As a counterexample, let $f(x,y) = x^4 + y^4$. Then, we have a strict local minimizer at $0$, but the $\nabla^2 f(x)$ is not positive definite.
 
-Let $A$ be a symmetric $n \times n$ matrix. $A$ is **positive semi-definite** if $\langle Ah, h \rangle \ge 0$ for all $h \in \mathbb{R}^n$. Similarly, $A$ is negative semi-definite if $\langle Ah, h \rangle \ge 0$ for all $h \in \mathbb{R}^n$.
-> Note that the inner product can now be 0, compared to the positive definite definition!
+But then, what's a necessary condition for a minimizer? We discuss this below.
 
-> [!Abstract] Theorem
+Let $A$ be a symmetric $n \times n$ matrix. 
+- $A$ is **positive semi-definite** if $\langle Ah, h \rangle \ge 0$ for all $h \in \mathbb{R}^n$. 
+- $A$ is **negative semi-definite** if $\langle Ah, h \rangle \ge 0$ for all $h \in \mathbb{R}^n$.
+
+> Note that the inner product can now be 0, where it couldn't be before!
+
+> [!Abstract] Theorem: Necessity Condition for Extremum
 > If $f : \mathbb{R} \to \mathbb{R}, C^2$ has a minimizer at $x$, then $f'(x) = 0$, $f''(x) \ge 0$ (can be 0). In other words, $\nabla^2 f(x)$ has to be positive semi-definite.
 > 
 > > [!Note]- Proof
@@ -695,7 +870,7 @@ $$
 \frac{\partial^2}{\partial x_i^2} f(x) \le 0
 $$
 
-> [!Abstract] Proposition: (IMPORTANT FOR EXAM)
+> [!Abstract] Proposition (IMPORTANT FOR EXAM)
 > Let $U$ be open in $\mathbb{R}^n$, $f : U \to \mathbb{R}, C^2$. Assume the **Laplacian** of $f$ at $x$ is positive for all $x \in U$.
 > $$
 > \Delta f(x) = \frac{\partial^2 f}{\partial x_1^2} (x) + \dots + \frac{\partial^2 f}{\partial x_n^2} (x) > 0 \qquad \forall x \in U
@@ -745,12 +920,11 @@ $$
 > > 
 > > We showed the inequalities in both directions, so we have equality. We are done.
 
----
-
 ## Higher Order Approximations
-Let $x \in \mathbb{R}^n$, and let there be a multi-index $\alpha = (\alpha_1, \dots, \alpha_n)$ where $\alpha_i \in \{0,1\}$.
+Let $x \in \mathbb{R}^n$, and let there be a multi-index $\alpha = (\alpha_1, \dots, \alpha_n)$ where $\alpha_i \in \{0,1\}$ (a vector of 1's and 0's).
+> The multi-index will be used to "select" things we want later on!
 
-Define
+With the multi-index, we define operations
 $$
 \begin{align*}
 |\alpha| = \alpha_1 + \dots + \alpha_n \\ \alpha ! = \alpha_1 ! \dots \alpha_n ! \\
@@ -846,17 +1020,18 @@ We have proven the following.
 > > $$
 > > For $0 < \theta < 1$, which is the 1-dimensional approximation formula!
 
---- 15
+# Linear Map Approximations of Non-Linear Mappings
+> [!Tip] Motivation
+> Before, we studied linear mappings, or in other words, functions that can be expressed as linear transformations. Now, we turn to examine mappings that may not necessarily be linear!
 
-# Linear Algebra Review
-Function $T : \mathbb{R}^n \to \mathbb{R}^n$ is linear if
+## Linear Mappings
+We say a function $T : \mathbb{R}^n \to \mathbb{R}^m$ is **linear** if for all $\alpha, \beta \in \mathbb{R}$, $u,v \in \mathbb{R}^n$
 $$
 T(\alpha u + \beta v) = \alpha T(u) + \beta T(v) 
 $$
-For all $\alpha, \beta \in \mathbb{R}$, $u,v \in \mathbb{R}^n$.
 
-> [!Abstract] Theorem
-> If $T : \mathbb{R}^n \to \mathbb{R}^n$ is linear, then there exists a unique $m \times n$ matrix $A$ such that
+> [!Abstract] Theorem: Linear Mappings as Matrices
+> If $T : \mathbb{R}^n \to \mathbb{R}^m$ is linear, then there exists a unique $m \times n$ matrix $A$ such that
 > $$
 > T(u) = Au
 > $$
@@ -890,29 +1065,32 @@ For all $\alpha, \beta \in \mathbb{R}$, $u,v \in \mathbb{R}^n$.
 > > \end{align*}
 > > $$
 
-Let us have linear transformations $T : \mathbb{R}^n \to \mathbb{R}^m$, $S: \mathbb{R}^m \to \mathbb{R}^k$. Let $A,B$ be matrices such that
+As given above, linear transformations can be given as their matrices, and in fact, many of their properties can be expressed in terms of matrices as well!
+
+First, we consider compositions of transformations. Let us have linear transformations $T : \mathbb{R}^n \to \mathbb{R}^m$, $S: \mathbb{R}^m \to \mathbb{R}^k$. Let $A,B$ be matrices such that
 $$
 T(u) = Au \qquad S(u) = Bu
 $$
-
 Then, the matrix of the composition of these transformations is
 $$
 T(S(u)) = A(Bu) = (AB) u \qquad S(T(u)) = B(Au) = (BA) u
 $$
 Which is the product of the matrices!
 
+Let's now consider inverses of transformations.
+
 > [!Abstract] Theorem: Invertible Transformations
-> $T: \mathbb{R}^n \to \mathbb{R}^n$, linear, is invertible (as a function) if and only if the corresponding matrix $A$ is invertible as a matrix if and only if $\det(A) \ne 0$.
+> $T: \mathbb{R}^n \to \mathbb{R}^n$ linear, is invertible (as a function) if and only if the corresponding matrix $A$ is invertible as a matrix if and only if $\det(A) \ne 0$.
 > > We commonly determine that transformations are invertible by checking the matrices!
 
-> [!Abstract] Theorem
-> Let $A$ be an $n \times n$ matrix. Then, $A$ is invertible if if and only if $\exists c > 0$ such that 
+> [!Abstract] Theorem: Properties of Invertible Matrices
+> Let $A$ be an $n \times n$ matrix. Then, $A$ is invertible if and only if $\exists c > 0$ such that 
 > $$
 > || Au || \ge c ||u|| \qquad u \in \mathbb{R}^n
 > $$
 > > By definition, $A$ is invertible if there exists a matrix $A^{-1}$ such $A A^{-1} = I$.
 >
-> > [!Note] Proof 
+> > [!Note]- Proof 
 > > 
 > > #### Proof ($\leftarrow$)
 > > If $||Au|| \ge c||u||$ for all $u \in \mathbb{R}^n$, then the null space of $A$ is $\{0\}$, as if $Au = 0$, then $||Au|| \ge c||u||$ forces $u = 0$.
@@ -940,7 +1118,7 @@ Is $V$ is a vector space with bases $v_1, \dots v_n$, and also $w_1, \dots w_n$,
 
 If the matrix of $T$ with respect to $\{v_1, \dots v_n\}$ is $A$, $\{w_1, \dots w_n\}$ is $B$, then $A = C B C^{-1}$.
 
-> [!Note] Proof
+> [!Note]- Proof
 > We know that $(v_1 \dots v_n) = (w_1, \dots w_n) C$, then
 > $$
 > \begin{align*}
@@ -951,10 +1129,27 @@ If the matrix of $T$ with respect to $\{v_1, \dots v_n\}$ is $A$, $\{w_1, \dots 
 > 
 > So, $A = C^{-1} B C$.
 
--- 15.1
+## The Derivative Matrix and Differential
+We consider the following classes of mappings. These are mappings that may be non-linear, and are approximatable by linear mappings.
 
-Let $F: \mathbb{R}^n \to \mathbb{R}^m$. Assume all partials exist. Now, define
+Let $O \subseteq \mathbb{R}^n$, and consider mapping $F : O \to \mathbb{R}^m$ represented as component functions
 $$
+F = (F_1, \dots, F_m)
+$$
+We have the following definitions for $F$
+1. $F$ is said to have **first-order partial derivatives at $x \in O$**, provided that for all $1 \le i \le m$, $F_i$ has first-order partial derivatives at $x$.
+2. $F$ is said to have **first-order partial derivatives**, if it has first-order partial derivatives for all $x \in O$.
+3. $F$ is said to be **continuously differentiable** provided that all of the $F_i$'s are continuously differentiable.
+
+> [!Abstract] Theorem: Continuity on Mappings
+> Let $O \subseteq \mathbb{R}^n$, and $F : O \to \mathbb{R}^m$. 
+>
+> Let $F$ be continuously differentiable. Then, $F$ is continuous.
+
+Now, define $F: O \to \mathbb{R}^m$ with first-order partials at $x \in O$. We define the **derivative matrix** of $F$ at $x$, denoted $DF(x)$, as the matrix whose $ij$th entry is given by
+$$
+\begin{align*}
+DF(x)_{ij} = \frac{\partial F_i}{\partial x_j} (x)
 DF(x) = 
 \begin{bmatrix}
 \frac{\partial F_1}{\partial x_1} (x) & \dots & \frac{\partial F_1}{\partial x_n} \\
@@ -966,11 +1161,14 @@ DF(x) =
 \vdots \\
 \nabla F_m (x)
 \end{bmatrix}
+\end{align*}
 $$
 > We define the gradient of a function as a row vector.
 
-> [!Abstract] Theorem: Mean Value Theorem
-> Let $F : \mathbb{R}^m \to \mathbb{R}^n, C^1$. Fix $x, h \in \mathbb{R}^n$. Then,
+We use this derivative matrix to generalize our findings in earlier sections.
+
+> [!Abstract] Theorem: Mean Value Theorem for Mappings
+> Let $F : \mathbb{R}^m \to \mathbb{R}^n, C^1$. Then, for $x, h \in \mathbb{R}^n$, we find $0 < \theta_1 < 1, \dots, 0 < \theta_m < 1$ such that
 > $$
 > F(x + h) - F(x) = 
 > \begin{bmatrix}
@@ -979,16 +1177,23 @@ $$
 > \nabla F_m (x + \theta_m h)
 > \end{bmatrix} h
 > $$
-> For some $0 < \theta_1 < 1, \dots, 0 < \theta_m < 1$.
+> > This is the multi-variable MVT applied to each component!
 > 
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > Apply the MVT for each $F_i : \mathbb{R}^n \to \mathbb{R}, C^1$.
 
-> [!Abstract] Theorem
+> [!Warning] Mean Value Theorem Misconception
+> Note that above, if we chose all $\theta_i$'s to be equal, then we would have
+> $$
+> F(x+h) - F(x) = DF(x + \theta h) h
+> $$
+> Which seems like a very clean generalization of the MVT! However, it is not guaranteed that we can find a single $\theta$ that works for each $\theta_i$. 
+
+> [!Abstract] Theorem: First-Order Approximation Theorem for Mappings
 > Let $F : \mathbb{R}^n \to \mathbb{R}^m, C^1$. Then,
 > $$
-> \lim_{h \to 0} \frac{F(x+h) - F(x) - DF(x) h}{||h||} = 0
+> \lim_{h \to 0} \frac{|| F(x+h) - [F(x) + DF(x) h] ||}{||h||} = 0
 > $$
 > 
 > > [!Note]- Proof
@@ -998,15 +1203,17 @@ $$
 > > \frac{F_i (x+h) - F_i (x) - \langle \nabla F_i (x), h \rangle}{||h||} \to 0
 > > $$
  
+It can be shown that at $x$, $DF(x)$ is the only matrix in which this limit holds.
+
 > [!Abstract] Theorem
-> Let $F : \mathbb{R}^n \to \mathbb{R}^m$. Fix $x$, assume $\exists A$ $m \times n$ matrix such that 
+> Let $F : \mathbb{R}^n \to \mathbb{R}^m$. Fix $x$, and suppose there exists an $m \times n$ matrix $A$ such that
 > $$
-> \lim_{h \to 0} \frac{F(x+h) - F(x) - Ah}{||h||} = 0
+> \lim_{h \to 0} \frac{|| F(x+h) - [F(x) + Ah] ||}{||h||} = 0
 > $$
 > 
-> Then, all partials $\frac{\partial F_i}{\partial x_j} (x)$ exist, and $A = DF(x)$.
+> Then, the mapping $F$ has first-order partial derivatives at $x$, and $A = DF(x)$.
 > 
-> > [!Note] Proof
+> > [!Note]- Proof
 > >
 > > Look at the $i^{th}$ component.
 > > $$
@@ -1026,98 +1233,84 @@ $$
 > > \end{align*}
 > > $$
 
-$F : \mathbb{R}^n \to \mathbb{R}^m$  is **differentiable** at $x$ if there exists an $A$, $m \times m$ matrix such that
+We also say $F : \mathbb{R}^n \to \mathbb{R}^m$  is **differentiable** at $x$ if there exists an $A$, $m \times n$ matrix such that
 $$
-\lim_{h \to 0} \frac{F_i (x + h) - F_i (x) - Ah}{||h||} = 0
+\lim_{h \to 0} \frac{|| F_i (x + h) - [F_i (x) + Ah]||}{||h||} = 0
 $$
-So, $F \in C^1 (\mathbb{R}^n)$ $\to$ F is differentiable $\forall x \in \mathbb{R}^n$ $\to$ $DF(x)$ exists $\forall x \in \mathbb{R}^n$. These are strict implications!
+So, $F \in C^1 (\mathbb{R}^n)$ implies that F is differentiable $\forall x \in \mathbb{R}^n$, which implies that $DF(x)$ exists $\forall x \in \mathbb{R}^n$. 
+> These are strict implications! See the examples below.
 
 > [!Example] Example: Counterexamples
-> Example of $f : \mathbb{R}^2 \to \mathbb{R}$ for which $Df(x)$ exists $\forall x \in \mathbb{R}^2$, but there does not exist an $A$ such that
+> The below function is an example of $f : \mathbb{R}^2 \to \mathbb{R}$ for which $Df(x)$ exists $\forall x \in \mathbb{R}^2$, but there does not exist an $A$ such that
 > $$
-> \frac{f(x+h) - f(x) - [a_1 h_1 + a_2 h_2]}{||h||} = 0
-> $$
->
-> Is
-> $$
+> \begin{align*}
+> \frac{f(x+h) - f(x) - [a_1 h_1 + a_2 h_2]}{||h||} = 0 \\
 > f(x_1, x_2) = \begin{cases}
 > \frac{x_1 x_2}{x_1^2 + x_2^2} & (x_1, x_2) \ne (0,0) \\
 > 0 & (x_1, x_2) = (0,0)
 > \end{cases}
+> \end{align*}
 > $$
 
-> [!Example] Example
+> [!Example]- Example
 > Let $F : \mathbb{R}^n \to \mathbb{R}^m, C^1$. Assume $F(0) = 0, DF(0)$ satisfies $|| DF (0) h || \ge ||h||, \forall h \in \mathbb{R}^n$.
 >
 > Prove that $\exists \delta > 0$ such that $|| F(h) || \ge \frac{1}{2} ||h||, \forall ||h|| < \delta$.
 >
 > We know that
+> $$
+> \lim_{h \to 0} \frac{F(x+h) - F(0) - DF(0) h}{||h||} = 0
+> $$
+> 
+> $$
+> \begin{align*}
+> || F(h) || = || F(h) - DF(0) h + DF(0) h || \ge || DF(h) || - || F(h) - DF(0) h || \\
+> \frac{|| F(h) ||}{|| h ||} = \frac{|| F(h) - DF(0) h + DF(0) h ||}{|| h ||} \ge \frac{|| DF(h) ||}{|| h ||} - \frac{|| F(h) - DF(0) h ||}{|| h ||} \ge 1/2 \\
+> \end{align*}
+> $$
+> 
+> Since
+> $$
+> \lim_{h \to 0} \frac{F(x+h) - F(0) - DF(0) h}{||h||} = 0
+> $$
+> We know that $\exists \delta > 0$ such that 
+> $$
+> \frac{|| F(h) - DF(0) h ||}{|| h ||} \le \frac{1}{2}
+> $$
+
+## The Chain Rule
+From the single-variable case, recall that for $g, f$, we can find the derivative of $(g \circ f)' (x)$ as
 $$
-\lim_{h \to 0} \frac{F(x+h) - F(0) - DF(0) h}{||h||} = 0
+(g \circ f)' (x) = \frac{d}{dx} g(f(x)) = g'(f(x)) f'(x)
 $$
 
-$$
-\begin{align*}
-|| F(h) || = || F(h) - DF(0) h + DF(0) h || \ge || DF(h) || - || F(h) - DF(0) h || \\
-\frac{|| F(h) ||}{|| h ||} = \frac{|| F(h) - DF(0) h + DF(0) h ||}{|| h ||} \ge \frac{|| DF(h) ||}{|| h ||} - \frac{|| F(h) - DF(0) h ||}{|| h ||} \ge 1/2 \\
-\end{align*}
-$$
+We can generalize this rule to higher dimensions!
 
-Since
-$$
-\lim_{h \to 0} \frac{F(x+h) - F(0) - DF(0) h}{||h||} = 0
-$$
-We know that $\exists \delta > 0$ such that 
-$$
-\frac{|| F(h) - DF(0) h ||}{|| h ||} \le \frac{1}{2}
-$$
+> [!Abstract] Theorem: The Chain Rule
+> Let $O \subseteq \mathbb{R}^n$, and let $F : O \to \mathbb{R}^m$ be continuously differentiable. Also let $U \subseteq \mathbb{R}^m$ to define $g : U \to \mathbb{R}$ continuously differentiable. 
+> 
+> Suppose that $F(O) \subseteq U$. Then, the composition $g \circ F$ is also continuously differentiable, and for $1 \le i \le n$, we can find its partial derivative as
+> $$
+> \frac{\partial}{\partial x_i} (g \circ F) (x) 
+> = \nabla (g \circ F) (x) = \nabla g(F(x)) DF(x)
+> $$
 
-...
+> [!Abstract] Theorem: The Chain Rule for General Mappings
+> Let $O \subseteq \mathbb{R}^n$ open. Let $F : O \to \mathbb{R}^m$, and let $U \subseteq \mathbb{R}^m$ open to define $G : U \to \mathbb{R}^k$. Let $F,G$ be continuously differentiable.
+> 
+> Suppose that $F(O) \subseteq U$. Then, their composition $G \circ F$ is also continuously differentiable, and for each $x$, we can find
+> $$
+> D(G \circ F) (x) = DG (F(x)) \cdot DF(x)
+> $$
 
+
+
+
+
+TODO
 ---
 
-15.3 - 5
-
-We have two functions $(u,v) : \mathbb{R}^2 \to \mathbb{R}^2, C^2$. Furthermore, we have a function $w : \mathbb{R}^2 \to \,mathbb{R}$.
-
-By slight abuse of notation, call $w$ a function of $u,v$, and $u,v$ a function of $x,y$.
-
-By assumption, $w$ is harmonic, so
-$$
-\frac{\partial^2 w}{\partial u^2} (u,v) + \frac{\partial^2 w}{\partial v^2} (u,v) = 0
-$$
-And we have the Cauchy-Remainder EQuations
-$$
-\begin{align*}
-\frac{\partial u}{\partial x} (x,y) = \frac{\partial v}{\partial y} (x,y) \\
-\frac{\partial v}{\partial x} (x,y) = - \frac{\partial u}{\partial y} (x,y)
-\end{align*}
-$$
-
-We wish to show that
-$$
-\left( \frac{d^2}{dx^2} + \frac{d^2}{dy^2} \right) (w(u,v)) (x,y) = 0
-$$
-
-$$
-\begin{align*}
-\frac{\partial}{\partial x} w(u(x,y), v(x,y)) 
-&= \frac{\partial w}{\partial u} (u,v) \frac{\partial u}{\partial x} + \frac{\partial w}{\partial v} (u,v) \frac{\partial v}{\partial x} \\
-\frac{\partial^2}{\partial x^2} w(u(x,y), v(x,y)) 
-&= \left[ \frac{\partial^2 w}{\partial u^2} (u,v) \frac{\partial u}{\partial x} + \frac{\partial^2 w}{\partial u \partial v} (u,v) \frac{\partial v}{\partial x} \right] \frac{\partial u}{\partial x} \\
-&\quad + \frac{\partial w}{\partial u} (u,v) \frac{\partial^2 u}{\partial x^2} + \left[ \frac{\partial^2}{\partial u \partial v} (u,v) \frac{\partial u}{\partial x} + \frac{\partial^2 w}{\partial v^2} (u,v) \frac{\partial v}{\partial x} \right] \frac{\partial v}{\partial x} \\
-&\quad + \frac{\partial w}{\partial v} (u,v) \frac{\partial^2 u}{\partial x^2}
-\end{align*}
-$$
-> The $y$ case is the same, just replace the $x$'s with $y$'s.
-
-We claim that the sum of these terms is 0, and with our assumptions we can show that this is true. 
-> There is a theorem, if $u$ and $v$ satisfy the Cauchy Riemann equations, then they too are Harmonic individually. We can find this by differentiating the Cauchy Riemann equations
-
-Just show 3 cancellations and we're done T-T
-
-
----
+# The Inverse Function Theorem
 
 Inverse Function Theorem / Implicit Function Theorem
 > Functions on R^n to R^n.

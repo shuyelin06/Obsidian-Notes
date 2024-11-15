@@ -2042,5 +2042,103 @@ The proofs also give us a way to color a graph constructed using Mycielski's Con
 
 # Section 5: Graph Theory Research
 ## 5.1: Ramsey Theory
-We now color the **edges** of a complete graph $K_n$ by red or blue. We are interested in finding the minimum $n$ so that ANY coloring of the graph creates subgraph with all blue edges or all red edges.
+We now color the **edges** of a complete graph $K_n$ by red or blue. How small can $n$ be so that ANY coloring of the graph creates all red or all blue subgraph that we desire? 
 > What is the smallest possible complete graph I can choose for which this will occur?
+
+The **Ramsey number** $R(s,t)$ is the **smallest** $N$ such that for any red-blue coloring of $K_N$, there exists an all-red $K_s$ or an all-blue $K_t$.
+
+If $R(s,t) = N$, we must show
+1. $K_{N-1}$ has the existence of a coloring with no red $K_r$ and no blue $K_t$. In other words, if we can show a coloring of $K_m$ with NO red $K_s$, blue $K_t$, then we find a lower bound $R(s,t) > m$.
+2. For ANY edge coloring, there is a red $K_s$ or blue $K_t$. In other words, if you show that all colorings of $K_m$ has one of the structures, $R(s,t) \le m$.
+
+> [!Example] 
+> For $R(3,3)$,
+> 
+> ```mermaid
+> graph LR
+> 1 o--o 2 o--o 3 o--o 4 o--o 5 o--o 1;
+> 1 o--o 4 o--o 2 o--o 5 o--o 3 o--o 1;
+> ```
+> 
+> We find edge coloring
+> - Blue: 1 to 2 to 3 to 4 to 5 to 1 
+> - Red: 1 to 4 to 2 to 5 to 3 to 1
+> 
+> ```mermaid
+> graph LR
+> 1 o-. B .-o 2 o-. B .-o 3 o-. B .-o 4 o-. B .-o 5 o-. B .-o 1;
+> 1 o-. R .-o 4 o-. R .-o 2 o-. R .-o 5 o-. R .-o 3 o-. R .-o 1;
+> ``` 
+> 
+> Where there is no $K_3$ of red or blue! So, we know that $R(3,3) > 5$.
+> 
+> But if we added a vertex to make a $K_6$, we see that by the pidgeonhole principle, at least 3 of the 5 new edges are the same color, say red! 
+> 
+> ```mermaid
+> graph LR
+> 1 o-.-o 2 o-.-o 3 o-.-o 1;
+> 6 o-. R .-o 1 & 2 & 3;
+> 6 o--o 4 & 5;
+> ``` 
+> 
+> So, to "avoid" making the edges between these destinations a red $K_3$, we have to make all of them blue, but that makes a blue $K_3$! So, $R(3,3) \le 6$. 
+> 
+> Given our lower and upper bound, we find $R(3,3) = 6$.
+
+Some other values of the Ramsey Number are as given:
+- $R(3,4) = 9$
+- $R(4,4) = 18$
+- $R(4,5) = 25$
+- $R(5,5)$
+  - $43 \le R(5,5) \le 49$ (1997)
+  - $43 \le R(5,5) \le 48$ (2017)
+  - $43 \le R(5,5) \le 46$ (2024)
+
+> [!Abstract] Lemma
+> 1. For events $A,B$,
+>    $$
+>    P(A \cup B) = P(A) + P(B) - P(A \cap B) \le P(A) + P(B)
+>    $$
+> 2. For $n \ge k$, $\binom{n}{k} \le \frac{n^k}{k!}$
+
+> [!Abstract] Theorem
+> For $a \ge 3$, 
+> $$
+> R(a,a) > 2^{\frac{a}{2}}
+> $$
+>
+> In other words, it can be proven that we can always find a coloring in $K_{2^{a/2}}$ with no blue / red $K_a$.
+>
+> > [!Note]- Proof
+> > 
+> > We color a $K_N$ "randomly". For each edge, it has a 1/2 chance to be blue, 1/2 chance to be red.
+> > 
+> > For a subset of $a$ vertices, we have
+> > $$
+> > P (\text{All Red } K_a) = \frac{1}{2^\binom{a}{2}}
+> > $$
+> > > This is 1/2 raised to the power of $\binom{a}{2}$, the number of edges in $K_a$!
+> > And furthermore,
+> > $$
+> > P (\text{All Red or all blue } K_a) = \frac{2}{2^\binom{a}{2}} = 2^{1 - \binom{a}{2}}
+> > $$
+> > > We simply add the probabilities together as they are disjoint.
+> > 
+> > Let $A_s$ be the event that a subset $S$ of vertices $|S| = a$, has its edges (of the induced clique $K_a$) colored all red or all blue. There are $\binom{N}{a}$ possible ways we can do this.
+> > $$
+> > \begin{align*}
+> > P(\text{Red or Blue } K_a \text{ in a } K_N) 
+> > &= P(\bigcup_{S \subseteq V(G), |S| = a} A_s) \\
+> > &\le P(A_{S_1}) + P(A_{S_2}) + \dots + P(A_{S_{\binom{N}{a}}}) \\
+> > &\le \binom{N}{a} P(A_S) = \binom{N}{a} 2^{1 - \binom{a}{2}} \le \frac{N^a}{a!} 2^{1 - \binom{a}{2}} \\
+> > &\le \frac{2^{a^2 / 2}}{a!} 2^{1 - \binom{a}{2}} = \frac{2^{a^2 / 2}}{a!} 2^{1 - \frac{a(a-1)}{2}} \\
+> > &\le \frac{1}{a!} 2^{1 + \frac{a}{2}} < 1
+> > \end{align*}
+> > $$
+> > This ratio is always strictly less than 1! So, the probability that we get a red or blue $K_a$ in a $K_N$ will never be 100% guaranteed, meaning we can always find a coloring that does not have a red and blue $K_a$.
+
+> [!Info] Remark
+> In 2023, it was shown that
+> $$
+> R(a,a) \le (4 - \epsilon)^a
+> $$

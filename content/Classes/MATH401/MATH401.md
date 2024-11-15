@@ -291,7 +291,7 @@ This means that the transformation $e^{tA}$ does nothing to the vector $\vec{v}$
 So, the family of rotations given by $e^{tA}$ has the axis of rotation given as the line through the origin given by vector $\vec{v} = (x,y,z)$. Furthermore, as $t$ changes, so does the angle of rotation.
 > $t$ may not be exactly the angle of rotation though, since $A$ may stretch the vectors!
 
-> [!Abstract] Theorem
+> [!Abstract] Theorem: 3D Rotation Matrices
 > Let $\vec{u} = (x,y,z)$ be a unit vector, and let
 > 
 > $$
@@ -304,3 +304,79 @@ So, the family of rotations given by $e^{tA}$ has the axis of rotation given as 
 > $$
 > 
 > Then, the rotation about the line through the origin in the direction of $\vec{u}$ by $\theta$ radians is given by $e^{\theta A}$!
+> > This theorem is 3D specific! Don't try to generalize it to higher dimensions.
+
+> [!Example]+ Example: Rotation Matrices
+> Use the above theorem to find $RZ(\theta)$.
+> 
+> Here, we want to rotate about unit vector $\vec{u} = (0,0,1)^T$. We can find our rotation by taking
+> $$
+> A = 
+> \begin{bmatrix}
+> 0 & -1 & 0 \\
+> 1 & 0 & 0 \\
+> 0 & 0 & 0
+> \end{bmatrix}
+> $$
+> 
+> And taking the exponential
+> $$
+> e^{\theta A} = 
+> \begin{bmatrix} 
+> \cos \theta & -\sin \theta & 0 \\
+> \sin \theta & \cos \theta & 0 \\
+> 0 & 0 & 1
+> \end{bmatrix}
+> $$
+
+> [!Example]- Example: Rotation Matrices (2)
+> Find the matrix for rotation by 27 degrees around axis through origin in the direction of $\vec{v} = (3,2,-6)^T$
+> 
+> First, we take a unit vector in the same direction
+> $$
+> \vec{u} = \frac{\vec{v}}{||\vec{v}||} = (3/7, 2/7, -6/7)^T
+> $$
+> Furthermore, we have angle $\frac{27 \pi}{180} = \frac{3\pi}{20}$
+> 
+> We can use this to find
+> $$
+> A = 
+> \begin{bmatrix}
+> 0 & 6/7 & 2/7 \\ 
+> -6/7 & 0 & -3/7 \\
+> -2/7 & 3/7 & 0
+> \end{bmatrix}
+> $$
+> 
+> And find our rotation matrix as
+> $$
+> e^{\frac{3\pi}{20} A}
+> $$
+
+> [!Example]+ Example: Rotation Matrices (3)
+> $$
+> A =
+> \begin{bmatrix}
+> 0 & 1 & 2 \\
+> -1 & 0 & 3 \\
+> -2 & -3 & 0
+> \end{bmatrix}
+> $$
+> 
+> We know $e^A$ is some 3D rotation. What is it's axis / angle?
+> 
+> We can use the theorem to find this. First, we need to recognize $A$ as the matrix built from a unit vector, by finding scalar multiple
+> $$
+> A = 
+> \sqrt{14} \begin{bmatrix}
+> 0 & 1/\sqrt{14} & 2/\sqrt{14} \\
+> -1/\sqrt{14} & 0 & 3/\sqrt{14} \\
+> -2/\sqrt{14} & -3/\sqrt{14} & 0
+> \end{bmatrix} 
+> $$
+> 
+> So, we find that we have a rotation about
+> $$
+> \vec{u} = (-3/\sqrt{14}, 2/\sqrt{14}, -1/\sqrt{14})
+> $$
+> With rotation $\sqrt{14}$ radians.

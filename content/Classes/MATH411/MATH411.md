@@ -2042,3 +2042,98 @@ I \\ DG(x_0)
 \end{align*}
 $$
 So, the tangent space to $M$ at $(x_0, y_0)$ is the null space of $DF(x_0)$.
+
+---
+
+We have $f : \mathbb{R}^n \to \mathbb{R}^3, C^1$, and an open set $O \subseteq \mathbb{R}^2$. We want to know if $F(O)$ looks like a smooth surface.
+
+Recall that we say that if
+$$
+\frac{\partial F}{\partial x} (x,y) \times \frac{\partial F}{\partial y} (x,y) \ne 0
+$$
+Then $F(O)$ is a smooth surface at $F(x,y)$.
+> This is equivalent to saying the derivative matrix of $F$ has rank 2, as the first and second row are linearly independent!
+
+> [!Abstract] Theorem
+> In the general case, let $O \subseteq \mathbb{R}^k$,
+> $$
+> F : O \to \mathbb{R}^N, C^1
+> $$
+> Assume that $DF(x_0)$ has rank $k$ $(N \ge k)$. Denote $F = (F_1, F_2), F_1 \in \mathbb{R}^k, F_2 \in \mathbb{R}^N$. Without loss of generality, assume $DF_1 (x_0)$ is invertible.
+> 
+> Then, $\exists U$ neighborhood of $x_0$ and $\exists V$ neighborhood of $F_1(x_0)$ such that
+> $$
+> F(U) = \{ (y, G(y)) : y \in V \}
+> $$
+> For some $G : V \to \mathbb{R}^{N - k}, C^1$.
+>
+> > [!Note] Proof
+> > 
+> > We know that $DF_1 (x_0)$ is invertible. By the inverse function theorem, $\exists U$ neighborhood of $x_0$ and $V$ neighborhood of $F_1 (x_0)$ such that $F_1 : U \to V$ is one-to-one, onto, and has a $C^1$ inverse $F^{-1} : V \to U$.
+> > 
+> > We compose
+> > $$
+> > F(x) = (F_1 (x), F_2 (x)) = (F_1 (F_1^{-1} (y)), F_2 (F_1^{-1} (y))) = (y, G(y)), y \in V
+> > $$
+
+---
+
+Problem 28
+
+> [!Example] Example: Implicit Function Theorem
+> Let $F : \mathbb{R}^3 \to \mathbb{R}^2, C^1$. Assume $F(0,0) = (0,0)$ and 
+> $$
+> DF(0,0) = 
+> \begin{bmatrix}
+> 0 & 0 & 1 \\
+> 1 & 0 & 0
+> \end{bmatrix}
+> $$
+> Which of the following is true? $\exists g,h \in C^1, g,h : (-r, r) \to \mathbb{R}$, $g(0) = h(0) = 0$, such that
+> 1. $F(x,g(x),h(x)) = (0,0), \forall |x| < r$
+> 2. $F(g(y),y,h(y)) = (0,0), \forall |y| < r$
+> 3. $F(g(z), h(z), z) = (0,0), \forall |z| < r$
+> 
+> The second one! In the implicit function theorem, we need a $Y$ such that $D_Y (F)$ is invertible. So, choose them to be $x,z$, with free variable $X = y$. Then, we can apply our implicit function theorem to get result (2).
+> 
+> We ask, is it possible for $F(x,g(x),h(x)) = (0,0), \forall |x| < r$? No. If the above holds, then by the chain rule, we find
+> $$
+> \begin{align*}
+> \frac{d}{dx} F(x,g(x),h(x))
+> &= DF(x,g(x),h(x)) 
+> \begin{bmatrix}
+> 1 \\ g'(x) \\ h'(x)
+> \end{bmatrix} = 0
+> \end{align*} 
+> $$
+> And at $(0,0,0)$,
+> $$
+> DF(0,g(0),h(0)) 
+> \begin{bmatrix}
+> 1 \\ g'(0) \\ h'(0)
+> \end{bmatrix} = 0
+> $$
+> But this gives us $1 = 0$, which is impossible!
+
+> [!Example] Example
+> Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$. Assume that $DF(x)$ is positive definite for every $x \in \mathbb{R}^2$.
+> 
+> Prove $F$ is 1-1.
+> 
+> Assume that $F(x) = F(x + h)$. We wish to show that if $h \ne 0$, then we obtain a contradiction. 
+> 
+> Let $\theta(t) = \langle F(x + th), h \rangle$. By the one-dimensional MVT, we find
+> $$
+> \theta(1) - \theta(0) = \theta' (\theta) = \langle DF(x + th) h, h \rangle > 0
+> $$
+> So, $\theta(1) - \theta(0) > 0$, which is a contradiction!
+> $$
+> \theta(1) - \theta(0) > 0 \Longrightarrow 0 > 0
+> $$
+
+> [!Example] 
+Does there exist an $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$ with $DF(x)$ invertible for all $x \in \mathbb{R}^n$, and $F(\mathbb{R}^n)$ compact?
+
+No. $F(\mathbb{R}^n)$ is open, so it cannot be compact.
+
+--- Lagrange Multipliers

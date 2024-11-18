@@ -380,3 +380,133 @@ So, the family of rotations given by $e^{tA}$ has the axis of rotation given as 
 > \vec{u} = (-3/\sqrt{14}, 2/\sqrt{14}, -1/\sqrt{14})
 > $$
 > With rotation $\sqrt{14}$ radians.
+
+# Singular Value Decomposition
+## Review: Symmetric Matrices and the Spectral Theorem
+An $n \times n$ matrix $A$ is **symmetric** if
+$$
+A^T = A
+$$
+
+> [!Abstract] Theorem: Spectral Theorem for Real Symmetric Matrices
+> Let $A$ be an $n \times n$ symmetric matrix with real entries. Then,
+> 1. It has all real eigenvalues
+> 2. Any pair of eigenvectors for $A$ with different eigenvalues are going to be orthogonal
+> 3. $A$ is diagonalizable
+> 4. There is an orthonormal basis for $\mathbb{R}^n$ that consists of eigenvectors for this matrix.
+> 5. $A$ can be **orthogonally diagonalized**, in other words, for orthogonal matrix $P$,
+>    $$
+>    A = P D P^T
+>    $$
+>    > Recall that $P^T = P^{-1}$ is equivalent to having orthonormal columns.
+
+> [!Example]+ Example: Orthogonally Diagonalizing a Symmetric Matrix 
+> $$
+> A = 
+> \begin{bmatrix}
+> 13 & -6 \\ -6 & -3
+> \end{bmatrix}
+> $$
+> 
+> Notice how $A$ is a symmetric matrix, so its orthogonally diagonalizable. Let's orthogonally diagonalize it.
+> - We find eigenvalues $\lambda_1 = -5, \lambda_2 = 15$.
+> - We find eigenvectors $\vec{v}_1 = (1,3)^T, \vec{v}_2 = (-3, 1)^T$.
+> 
+> Our eigenvectors are orthogonal, but not orthonormal! Thus, we need to rescale them to get unit eigenvectors.
+> $$
+> \vec{v}_1 = \left(\frac{1}{\sqrt{10}}, \frac{3}{\sqrt{10}}\right)^T \qquad
+> \vec{v}_2 = \left(\frac{-3}{\sqrt{10}}, \frac{1}{\sqrt{10}}\right)^T
+> $$
+> 
+> So, we orthogonally diagonalize $A$ as
+> $$
+> A = P D P^T = 
+> \begin{bmatrix}
+> \frac{1}{\sqrt{10}} & \frac{-3}{\sqrt{10}} \\
+> \frac{3}{\sqrt{10}} & \frac{1}{\sqrt{10}}
+> \end{bmatrix}
+> \begin{bmatrix}
+> -5 & 0 \\
+> 0 & 15
+> \end{bmatrix}
+> \begin{bmatrix}
+> \frac{1}{\sqrt{10}} & \frac{3}{\sqrt{10}} \\
+> \frac{-3}{\sqrt{10}} & \frac{1}{\sqrt{10}}
+> \end{bmatrix}
+> $$
+
+Let $A$ be an $m \times n$ matrix with real entries. A **singular value decomposition (SVD)** for $A$ is a factorization of the form 
+$$
+A = U \Sigma V^T
+$$
+Where
+- $U$ is an $m \times m$ orthogonal matrix
+- $\Sigma$ is $m \times n$ diagonal matrix, with non-negative (real) diagonal entries
+  $$
+  \Sigma = 
+  \begin{bmatrix}
+  \sigma_1 & 0 & 0 & \dots & 0 \\
+  0 & \sigma_2 & 0 & \dots & 0 \\
+  0 & 0 & \sigma_2 & \dots & 0 \\
+  \vdots & \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & 0 & \dots & \sigma_n \\
+  0 & 0 & 0 & \dots & 0 \\
+  \vdots & \vdots & \vdots & & \vdots \\
+  0 & 0 & 0 & \dots & 0 
+  \end{bmatrix} \qquad \sigma_i \ge 0
+  $$
+  known as the **singular values** of $A$.
+- $V^T$ is an $n \times n$ orthogonal matrix, where the columns $\vec{v}_1, \dots \vec{v}_n$ are known as the **right singular vectors** of $A$.
+
+Singular value decompositions are very general!
+> Note that if $A$ is symmetric, then its singular value decomposition is its orthogonal diagonalization.
+
+> [!Example] Example
+> $$
+> A = 
+> \begin{bmatrix}
+> 1 & 1 \\ 0 & 1 \\ 1 & 0
+> \end{bmatrix}
+> = 
+> \begin{bmatrix}
+> 2/\sqrt{6} & 0 & -1/\sqrt{3} \\
+> 1/\sqrt{6} & 1/\sqrt{2} & 1/\sqrt{3} \\
+> 1/\sqrt{6} & -1/\sqrt{2} & 1/\sqrt{3}
+> \end{bmatrix}
+> \begin{bmatrix}
+> \sqrt{3} & 0 \\0 & 1 \\ 0 & 0
+> \end{bmatrix}
+> \begin{bmatrix}
+> 1/\sqrt{2} & -1/\sqrt{2} \\
+> 1/\sqrt{2} & 1/\sqrt{2}
+> \end{bmatrix}^T
+> $$
+
+How to we find singular value decompositions? First, note that for any $m \times n$ matrix $A$,
+- $A^T A$ and $A A^T$ are symmetric matrices of size $n \times n$ and $m \times m$, respectively. Hence, by the spectral theorem, they are orthogonally diagonalizable.
+- The eigenvalues of $A^T A$ and $A A^T$ are non-negative real numbers.
+- $A^T A$ and $A A^T$ have the same eigenvalues (with the same multiplicities), except for $\lambda = 0$.
+
+Now suppose that $A$ has a singular value decomposition. 
+$$
+A = U \Sigma V^T
+$$
+Then,
+$$
+\begin{align*}
+A^T A 
+&= (U \Sigma V^T)^T (U \Sigma V^T) \\
+&= V \Sigma^T U^T U \Sigma V^T \\
+&= V (\Sigma^T \Sigma) V^T
+\end{align*}
+$$
+This is an orthogonal diagonalization of our matrix! Similarly, we can find
+$$
+A A^T = U (\Sigma \Sigma^T) U^T
+$$
+So, we can find
+- $V$ as an orthonormal basis of eigenvectors for $A^T A$ ($P$ in the orthogonal diagonalization)
+- $\Sigma$ as the (positive) square roots of $A^T A$'s eigenvalues
+- $U$ as the orthonormal basis of eigenvectors for $A A^T$ ($P$ in the orthogonal diagonalization)
+
+

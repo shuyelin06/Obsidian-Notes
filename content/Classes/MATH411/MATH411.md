@@ -2137,3 +2137,134 @@ Does there exist an $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$ with $DF(x)$ invert
 No. $F(\mathbb{R}^n)$ is open, so it cannot be compact.
 
 --- Lagrange Multipliers
+
+# Lagrange Multipliers
+## Case 1: Surfaces in $\mathbb{R}^3$
+Let $X = (x,y,z) \in \mathbb{R}^3$, and let $g : \mathbb{R}^3 \to \mathbb{R}, C^1$. Furthermore, define surface
+$$
+S = \{ x \in \mathbb{R}^3 : g(X) = 0 \}
+$$
+Where $\nabla g(X) \ne 0$ if $g(X) = 0$ ($X \in S$).
+
+Let $f : \mathbb{R}^3 \to \mathbb{R}, C^1$, and let $X_0$ be such that $f(X_0) \le f(X)$ (or $f(X_0) \ge f(X)$), $\forall X \in S$. Then, $\exists \lambda \in \mathbb{R}$ such that
+$$
+\nabla f(x_0) = \lambda \nabla g(x_0)
+$$
+
+> [!Note]- Proof
+> Without loss of generality, we have that
+> $$
+> \frac{\partial g}{\partial z} (x_0, y_0, z_0) \ne 0
+> $$
+> 
+> By the implicit function theorem, there exists a function $h : B_r (x_0, y_0) \to \mathbb{R}$ such that
+> $$
+> \{ x,y,h(x,y) \}
+> $$
+> Is equal to $S$ in the neighborhood of $X_0$. Then, look at the composition $\phi : B_r (x_0, y_0) \to \mathbb{R}$, $\phi (x,y) = f(x, y, h(x,y))$, which has an unconstrained (interior) minimum (or maximum) at $(x_0, y_0)$. Thus, $\nabla \phi(x_0, y_0) = 0$.
+> 
+> Let $H(x,y) = (x,y,H(x,y))$. By the Chain Rule, 
+> $$
+> \begin{align*}
+> \nabla \phi (x_0, y_0)
+> &= \nabla f (x_0, y_0, z_0) \cdot DH(x_0, y_0) \\
+> &= \nabla f (x_0, y_0, z_0)
+> \begin{bmatrix}
+> 1 & 0 \\
+> 0 & 1 \\
+> \frac{\partial h}{\partial x} (x_0, y_0) & \frac{\partial h}{\partial y} (x_0, y_0)
+> \end{bmatrix}
+> \end{align*}
+> $$
+> Each column of the derivative matrix is a tangent vector! So, $\nabla f(x_0)$ is orthogonal to both columns.
+> 
+> We know that $\nabla g(x_0)$ is also normal to our surface at $X_0$. So,
+> $$
+> \nabla g(X_0) \in (\text{span} \{T_1, T_2\})^\perp
+> $$
+> But the orthogonal set to the span of the tangent vectors is 1-dimensional! So, $\nabla g(X_0)$ is a basis for $(\text{span} \{T_1, T_2\})^\perp$. As a basis, if $\nabla f(X_0)$ is in this space, then we can form $\nabla f(X_0)$ as a linear combination of $\nabla g(X_0)$.
+> $$
+> \nabla f(X_0) = \lambda \nabla g(X_0)
+> $$
+
+Note that this same argument works for the case of $g : \mathbb{R}^n \to \mathbb{R}, C^1$,
+$$
+M = \{ x : g(x) = 0 \}
+$$
+Assuming $\nabla g(x) \ne 0$ if $g(x) = 0$ (then $M$ is an $n - 1$ dimensional manifold in $\mathbb{R}^n$).
+
+If $f : \mathbb{R}^n \to \mathbb{R}, C^1$ and $X_0$ is such that $f(x_0) \ge f(x)$ (or $f(x_0) \le f(x)$), then $\exists \lambda \in \mathbb{R}$ such that
+$$
+\nabla f(x_0) = \lambda \nabla g(x_0)
+$$
+
+## Case 2: Curves in $\mathbb{R}^3$
+Let $g,h : \mathbb{R}^3 \to \mathbb{R}, C^1$. Define curve
+$$
+C = \{ X \in \mathbb{R}^3 : g(X) = h(X) = 0 \}
+$$
+
+And assume
+$$
+\text{Rank} 
+\begin{bmatrix} \nabla g(X) \\ \nabla h(X) \end{bmatrix} = 2
+$$
+If $X \in C$ (then $C$ is a $C^1$ curve in $\mathbb{R}^3$).
+
+Let $f : \mathbb{R}^3 \to \mathbb{R}, C^1$. Let $X_0 \in C$ such that $f(X_0) \le f(X)$ (or $f(X_0) \ge f(X)$) for all $x \in C$. Then there exists $\lambda_1, \lambda_2 \in \mathbb{R}$ such that
+$$
+\nabla f(X_0) = \lambda_1 \nabla g(X_0) + \lambda_2 \nabla h(X_0)
+$$
+
+> [!Note] Proof 
+> Without loss of generality, say $D_{y,z} (g,h) (x_0, y_0,z_0)$ is invertible. By the implicit function theorem, $\exists \gamma : (x_0 - r, x_0 + r) \to \mathbb{R}^2, C^1$ such that $(x, \gamma(x))$ is equal to $C$ in a neighborhood $X_0$.
+> 
+> Let $\phi(x) = f(x, \gamma(x))$, $\gamma : (x_0 - r, x_0 + r) \to \mathbb{R}$, $\gamma$ has an unconstrainer min (or max) at $x_0$, $\gamma' (x_0) = 0$. 
+> 
+> By the Chain Rule,
+> $$
+> \nabla f(x_0, \gamma (x_0)) 
+> \begin{bmatrix}
+> 1 \\ \gamma' (x_0)
+> \end{bmatrix} = 
+> \nabla f(x_0, \gamma (x_0)) \cdot T = 0
+> $$
+> Is a basis for the tangent space to $C$ at $x_0$. 
+> 
+> Recall $\nabla g(x_0), \nabla h(x_0)$ are linearly independent vectors orthogonal to $T$. So, 
+> $$
+> \text{Span} (\nabla g(x_0), \nabla h(x_0)) = ( \text{Span} T )^\perp
+> $$
+> We also know $\nabla f(x_0)$ is in this space. Thus, there exists a linear combination of $\nabla g(x_0), \nabla h(x_0)$ that form $\nabla f(x_0)$.
+
+---
+
+Let $A$ be an $n \times n$ symmetric real matrix. Let 
+$$
+\lambda = \min_{||x|| = 1} \langle Ax, x \rangle
+$$
+> We look at the minimum of the quadratic function in the compact set given by the unit sphere.
+
+Let $x_0$ be a minimizer ($||x_0|| = 1$). Then, $A x_0 = \lambda x_0$
+
+> [!Note]- Proof
+> $g(x) = ||x||^2$. We try to minimize the function $f(x) = \langle Ax, x \rangle$. By the above theorem, at a minimizer, $\exists \lambda$ such that $\nabla f(x_0) = \lambda \nabla g(x_0) = \lambda 2x$.
+> 
+> We show that $\nabla f(x_0) = 2 A x_0$. This completes our proof.
+> 
+> > [!Info]- Lemma
+> > 
+> > If $f(x) = \langle Ax, x \rangle$, then $\nabla f(x) = 2Ax$.
+> > 
+> > We find
+> > $$
+> > \begin{align*}
+> > \lim_{t \to 0} \frac{f(x + te_i) - f(x)}{t} 
+> > &= \lim_{t \to 0} \frac{\langle A (x + te_i), x + te_i \rangle - \langle Ax, x \rangle}{t} \\
+> > &= \lim_{t \to 0} \frac{\langle Ax, x \rangle + t \langle A x, e_i \rangle + t \langle A e_i, x \rangle + t^2 \langle A e_i, e_i \rangle - \langle Ax, x \rangle}{t} \\
+> > &= \langle A x, e_i \rangle + \langle A e_i, x \rangle \\
+> > &= 2 \langle Ax, e_i \rangle
+> > \end{align*}
+> > $$
+> > This is the ith component of $2Ax$!
+> > > The last equality is because $\langle A e_i, x \rangle = \langle e_i, A x \rangle$!

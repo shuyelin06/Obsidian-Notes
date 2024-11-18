@@ -848,7 +848,7 @@ A graph $G$ is **d-regular** if every vertex has degree $d = \delta(G) = \Delta 
 
 > [!Abstract] Theorem:
 > For any graph $G$, there exists a $d$-regular graph $H$, such that $G$ is an **induced subgraph** of $H$.
-> > An **induced subgraph** is a graph $H$ such that you can create $G$ using distinct copies of $H$. In other words, we can copy $H$, and form edges between vertices in different copies of $H$ to create $G$!
+> > An **induced subgraph** is a graph $H$ such that you can remove vertices (and all their edges) from $G$ and get the subgraph $H$! In other words, for any two vertices in $H$, if they have an edge, then that edge must also be present in $G$. 
 
 Given a graph on $v$ vertices, its **degree sequence** is a non-increasing sequence of length $n$ whose $i^{th}$ term is the degree of vertex $i$.
 
@@ -2142,3 +2142,108 @@ Some other values of the Ramsey Number are as given:
 > $$
 > R(a,a) \le (4 - \epsilon)^a
 > $$
+
+## 5.2: Turan's Theorem
+What are the maximum edges that can be placed in a graph on $n$ vertices such that it contains no triangles ($K_3$)?
+
+> [!Abstract] Theorem (Mantel)
+> If $G$ contains no $K_3$, then $g$ can have at most 
+> $$
+> \lfloor \frac{n^2}{4} \rfloor
+> $$
+>
+> With equality when $G$ is the complete bipartite graph on $\lfloor n/2 \rfloor, \lceil n/2 \rceil$
+
+What about avoiding a $K_4$? $K_5$? $K_n$?
+
+An **$r$-partite** grah is a graph whose vertices are partitioned into $r$ independent sets. The complete **$r$-partite graph** $K_{t, t_2, \dots t_r}$ is an $r$-partite graph such that any 2 vertices in different sets have an edge.
+
+```mermaid
+graph TD
+subgraph A
+1;
+end
+
+subgraph B
+2;3;
+end
+
+subgraph C
+4;5;
+end
+
+1 o--o 2 & 3 & 4 & 5;
+2 o--o 4 & 5;
+3 o--o 4 & 5;
+```
+> An example of a complete $r$-partite graph.`
+
+Since edges join among "$r$" parts, we cannot havae a $K_{r+1}$ subgraph.
+
+Now consider $K_{t_1, t_2, \dots t_r}$ when the partitions are nearly the same size ($\lfloor n / r \rfloor, \lceil n / r \rceil$). This is the **Turan Graph T_{n,r}$**.
+> Basically, the complete bipartite graph where the sets are all as close in size as possible!
+
+In a Turan graph, we can easily find the number of edges between the sets by multiplying their sizes. And intuitively, we can see that if our sets are almost equal in size, we're maximizing the number of edges we can have! This is the idea behind Turan's Theorem.
+
+> [!Example] Example: Turan Graphs
+> $K_{1,3,3}$ is NOT a Turan's graph, but $K_{2,2,3} \equiv T_{7,3}$
+
+> [!Abstract] Theorem: Turan's Theorem
+> Let $2 \le r \le n - 1$, $G$ be on $n \ge 3$ vertices.
+> 
+> The Turan graph $T_{n,r}$ does NOT contain a $K_{r+1}$ as a subgraph, and among all graphs, $T_{n,r}$ has the maximum edges, and it is the **unique** graph holding the property.
+> 
+> The graph has at most
+> $$
+> \frac{r - 1}{2r} n^2
+> $$
+> edges.
+> > There are some cases where the exact value can vary a bit, because of how the number parts get divided by $r$! However, this is approximately the number of edges (with maybe a $\pm 1$ error).
+>
+> It's better to combinatorically compute the answer if asked for it. 
+>
+> > [!Note]- Proof
+> > 
+> > "Proofs From the Book" has 5 proofs for this result.
+> >
+> > By induction on $n$. For $n = 3$, it is easy to check.
+> > 
+> > Let $G$ be on $n + 1$ vertices, and assume the statement holds for all graphs on $n$ or fewer vertices. Clearly, $G$ has a $K_r$ subgraph, as otherwise we could've added more edges.
+> > 
+> > Let $A$ be the set of vertices inducing the $K_r$, and $B = V(G) / A$. So,
+> > $$
+> > |A| = r \qquad |B| = n + 1 - r
+> > $$
+> > 
+> > We count edges in 3 cases: edges within $A$, edges within $B$, and edges between $A$ and $B$. 
+> > - Clearly, the edges within $A$ is equal to $\binom{r}{2}$, being a $K_r$.
+> >   $$
+> >   e(A,A) = \binom{r}{2}
+> >   $$
+> > - Apply our inductive hypothesis on the graph induced by $B$ to obtain 
+> >   $$
+> >   e(B,B) \le \frac{r - 1}{2r} (n + 1 - r)^2
+> >   $$
+> > - For edges between, note that each vertex in $B$ can join to at MOST $r - 1$ vertices in $A$, as otherwise, we would form a $K_{r+1}$ violating our constraints.
+> >   $$
+> >   e(A,B) \le (r - 1) (n + 1 - r)
+> >   $$
+> > 
+> > Adding these together, we find exactly our bound 
+> > $$
+> > e(A,A) + e(B,B) + e(A,B) \le \frac{r-1}{r^2} (n + 1)^2
+> > $$
+> > Edges.
+> > 
+> > > What we form is $A$, a $K_r$, and $B$, which is (at best) the Turan graph $T_{n+1-r, r}$. For each of the $r$ vertices in $A$, we turn $B$ into the Turan graph on $n + 1$ vertices by placing one of the vertices in each set, such that they connect to all other blobs.
+> > > 
+> > > This keeps all the blobs approximately balanced, keeping our number of edges optimal! Thus, we have a $T_{n+1, r}$, and a bound on the edges.
+
+> [!Example]+ Example 
+> What is the max number of edges in a graph on 9 vertices avoiding a $K_5$?
+>
+> We want to avoid a $K_5$, so $r + 1 = 5 \to r = 4$. The best way we can partition 9 into 4 sets is $2,2,2,3$, so we have total edges
+> $$
+> \binom{3}{2} (2^2) + 3 (6)
+> $$
+> > The first term is us choosing any 2 of the 3 2-size partite sets, who have 4 edges between each. The second term is us choosing any 1 of the 2-size partite sets, and finding 6 edges between the 3-set and the 2-set.

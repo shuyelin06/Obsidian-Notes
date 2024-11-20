@@ -2268,3 +2268,101 @@ Let $x_0$ be a minimizer ($||x_0|| = 1$). Then, $A x_0 = \lambda x_0$
 > > $$
 > > This is the ith component of $2Ax$!
 > > > The last equality is because $\langle A e_i, x \rangle = \langle e_i, A x \rangle$!
+
+END OF CONTENT! :D 
+
+---
+
+Let $p > 1, q > 1$. Prove that
+$$
+\frac{x^p}{p} + \frac{y^q}{q} \ge \frac{1}{p} + \frac{1}{q}
+$$
+If $g(x,y) = xy = 1, x > 0, y > 0$.
+
+At $Q$ minimizer, we have that
+$$
+\nabla f = \lambda \nabla g, xy = 1
+$$
+
+We find the minimizer at $(1,1)$ proving this inequality.
+
+Prove 
+$$
+ab \le \frac{a^p}{p} + \frac{b^q}{q}
+$$ 
+If $a,b > 0$, $p,q > 1$, and $\frac{1}{p} + \frac{1}{q} = 1$.
+
+With the earlier part, if $ab = 1$ Then we are done.
+
+In general, 
+$$
+1 = \frac{ab}{a^{1/p + 1/q} b^{1/p + 1/q}} = \frac{a}{(ab)^{1/p}} \frac{b}{(ab)^{1/q}}
+$$
+Using part a again,
+$$
+\frac{(a / (ab)^{1/p})^p}{p} + \frac{(b / (ab)^{1/q})^q}{q} \ge \frac{1}{p} + \frac{1}{q} = 1
+$$
+
+---
+
+A better proof for this is as follows. If $f : I \to \mathbb{R}$ is convex if
+$$
+f( (1 - \theta) x + \theta y) \le (1 - \theta) f(x) + \theta f(y)
+$$
+For all $0 < \theta < 1$, $x,y \in \mathbb{R}$.
+> This is what we know as concave up!
+
+> [!Abstract]
+> If $f : I \to \mathbb{R}$ is differentiable, and $f'(x)$ is increasing on $I$, then $f$ is convex.
+
+With this theorem, we can prove the above problem as follows. Let $a = e^A, b = e^B$. Use $f(x) = e^x$, convex. Then,
+$$
+ab = e^{A + B} = e^{pA / p + qB / q} \le \frac{1}{p} e^{pA} + \frac{1}{q} e^{qB} = \frac{1}{p} a^p + \frac{1}{q} b^q
+$$
+
+> [!Info] Motivation
+Recall if $x_i, y_i > 0$,
+$$
+\sum_{i=1}^n x_i y_i \le (\sum x_i^2)^{1/2} (\sum y_i^2)^{1/2}
+$$
+
+> [!Abstract] Holder's Inequality
+Let $p,q > 1$, $\frac{1}{p} + \frac{1}{q} = 1$. Then, the sum
+$$
+\sum_{i=1}^n x_i y_i \le (\sum_{i=1}^n x_i^p)^{1/p} (\sum_{i=1}^n y_i^q)^{1/q}
+$$
+
+> [!Note] Proof
+> 
+If $(x_1, \dots x_n)$ or $(y_1, \dots y_n)$ are the zero vector, we are done.
+
+Assume that both vectors are non-zero. So,
+$$
+(\sum_{i=1}^n (x_i^p))^{1/p} > 0 \qquad (\sum_{i=1}^n (y_i^q))^{1/q} > 0
+$$
+Both the LHS and RHS are homogeneous of degree 1 in $x$ and $y$. 
+
+> [!Abstract] Theorem
+> Let $f,g : [a,b] \to \mathbb{R}$ continuous. Then,
+> $$
+> \int_a^b |fg| \le \left( \int_a^b |f|^p \right)^{1/p} \left( \int_a^b |g|^q \right)^{1/q}
+> $$
+> 
+> > [!Note] Proof
+> > 
+> > If this is true for some $f$, then it is true for $tf$ (for $t > 0$). Without loss of generality, say
+> > $$
+> > (\int_a^b |f|^p)^{1/p} = 1, (\int_a^b |g|^q)^{1/q} = 1
+> > $$
+> > For each fixed $x$, we find
+> > $$
+> > \begin{align*}
+> > \int_a^b |fg| 
+> > &\le \int_a^b (\frac{1}{p} |f|^p + \frac{1}{q} |g|^q) dx \\
+> > &\le \frac{1}{p} \int_a^b |f|^p + \frac{1}{q} \int_a^b |g|^q \\
+> > &\le \frac{1}{p} + \frac{1}{q} = 1 = \left( \int_a^b |f|^p \right)^{1/p} \left( \int_a^b |g|^q \right)^{1/q}
+> > \end{align*}
+> > $$
+
+Back to our original proof. It suffices to show that for $x_1 < x < x_2$, then $f(x) \le l(x)$, $l$ being our line.
+> We show that our function's slope is less than the lines slope!

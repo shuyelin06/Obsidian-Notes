@@ -435,6 +435,7 @@ $$
 > \end{bmatrix}
 > $$
 
+## Singular Value Decompositions (SVDs)
 Let $A$ be an $m \times n$ matrix with real entries. A **singular value decomposition (SVD)** for $A$ is a factorization of the form 
 $$
 A = U \Sigma V^T
@@ -459,7 +460,7 @@ Where
 - $V^T$ is an $n \times n$ orthogonal matrix, where the columns $\vec{v}_1, \dots \vec{v}_n$ are known as the **right singular vectors** of $A$.
 
 Singular value decompositions are very general!
-> Note that if $A$ is symmetric, then its singular value decomposition is its orthogonal diagonalization.
+> Note that even for a square diagonalizable $A$, its diagonalization need not be its singular value decomposition!
 
 > [!Example] Example
 > $$
@@ -509,4 +510,187 @@ So, we can find
 - $\Sigma$ as the (positive) square roots of $A^T A$'s eigenvalues
 - $U$ as the orthonormal basis of eigenvectors for $A A^T$ ($P$ in the orthogonal diagonalization)
 
+Note that this equation is equivalent to
+$$
+\begin{align*}
+A V &= U \Sigma \\
+\begin{bmatrix}
+A\vec{v}_1 & \dots & A\vec{v}_n
+\end{bmatrix}
+&= 
+\begin{bmatrix}
+\sigma_1 \vec{u}_1 & \dots & \sigma_n \vec{u}_n
+\end{bmatrix}
+\end{align*}
+$$
+So, an additional requirement for these systems is that for any $i$, $A \vec{v}_i = \sigma_i \vec{u}_i$, and furthermore, if $\sigma_i \ne 0$, then this implies
+$$
+\vec{u}_i = \frac{1}{\sigma_i} A \vec{v}_i
+$$
 
+> [!Abstract] Theorem: Singular Value Decompositions
+> Every $m \times n$ matrix $A$ has a singular value decomposition
+> $$
+> A = U \Sigma V^T
+> $$
+> Where
+> - The diagonal entries of $\Sigma$ are the square roots of the eigenvalues for $A^T A$
+> - The columns of $V$ are an orthonormal basis of eigenvectors for $A^T A$
+> - The columns of $U$ are an orthonormal basis of eigenvectors for $A A^T$
+> 
+> Chosen such that
+> $$
+> A \vec{v}_i = \sigma_i \vec{u}_i
+> $$
+> For each $i$.
+
+So, one strategy to find an SVD for $A$ is as follows:
+1. Find the eigenvectors and eigenvalues of $A^T A$ to get the $\vec{v}_i$'s and $\sigma_i$'s.
+2. Use the fact that $\vec{u}_i = \frac{1}{\sigma_i} A \vec{v}_i$ to get the $\vec{u}_i$'s for when $\sigma_i$ is non-zero.
+3. If necessary, get the rest of the $\vec{u}_i$'s (for $\sigma_i = 0$) by finding $\lambda = 0$ eigenvectors for $A A^T$.
+
+By convention, we order the singular values in decreasing order. 
+$$
+\sigma_1 \ge \sigma_2 \ge \sigma_3 \ge \dots
+$$
+> This can become very unreasonable to do by hand for many matrices! We can use MATLAB to do a SVD for us, using command `[U, S, V] = svd(A)`.
+
+> [!Example]- Example: Singular Value Decompositions
+> Find the SVD of
+> $$
+> A = 
+> \begin{bmatrix}
+> 1 & 0 \\ 0 & 1 \\ 4 & 4
+> \end{bmatrix}
+> $$
+> 
+> We start by finding
+> $$
+> A^T A = 
+> \begin{bmatrix}
+> 17 & 16 \\ 16 & 17
+> \end{bmatrix}
+> $$
+> To find eigenvalues $\lambda_1 = 33, \lambda_2 = 1$, and eigenvectors 
+> $$
+> \vec{v}_1 = (1/\sqrt{2}, 1/\sqrt{2})^T \qquad 
+> \vec{v}_2 = (1/\sqrt{2}, -1/\sqrt{2})^T
+> $$
+> These are our right singular vectors, with singular values $\sigma_1 = \sqrt{33}, \sigma_2 = \sqrt{1} = 1$!
+> 
+> We now find our $\vec{u}_i$'s.
+> $$
+> \begin{align*}
+> \vec{u}_1 = \frac{1}{\sqrt{33}} A \vec{1} = \left( \frac{1}{\sqrt{66}}, \frac{1}{\sqrt{66}}, \frac{8}{\sqrt{66}} \right)^T \\
+> \vec{u}_2 = A \vec{v}_2 = \left( \frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}}, 0 \right)^T
+> \end{align*}
+> $$
+> Finally, we need a $\vec{u}_3$, a unit eigenvector for $A A^T$ with eigenvalue $\lambda = 0$. So, we solve $A A^T \vec{x} = 0$.
+> $$
+> \vec{u}_3 = \left( \frac{4}{\sqrt{33}}, \frac{4}{\sqrt{33}}, -\frac{1}{\sqrt{33}} \right)
+> $$
+> 
+> This gives us final result
+> $$
+> A = 
+> U \Sigma V^T =
+> \begin{bmatrix} 
+> \frac{1}{\sqrt{66}} & \frac{1}{\sqrt{2}} & \frac{4}{\sqrt{33}} \\
+> \frac{1}{\sqrt{66}} & -\frac{1}{\sqrt{2}} & \frac{4}{\sqrt{33}} \\
+> \frac{8}{\sqrt{66}} & 0 & -\frac{1}{\sqrt{33}}
+> \end{bmatrix}
+> \begin{bmatrix} 
+> \sqrt{33} & 0 \\ 0 & 1 \\ 0 & 0
+> \end{bmatrix}
+> \begin{bmatrix}
+> \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\
+> \frac{1/}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+> \end{bmatrix}^T
+> $$
+
+## Inverses and Pseudoinverses
+> [!Tip] Motivation
+> Using SVDs, we can define the concept of a "pseudoinverse" for non-invertible matrices!
+
+Suppose $A$ is $n \times n$ and invertible with SVD 
+$$
+A = U \Sigma V^T =
+U 
+\begin{bmatrix}
+\sigma_1 & & & \\
+ & \sigma_2 & & \\
+ & & \ddots & \\
+ & & & \sigma_n
+\end{bmatrix}
+V^T
+$$
+Where all $\sigma_i \ne 0$ (otherwise, $A$ would be non-invertible). Then,
+$$
+A^{-1} = (U \Sigma V^T)^{-1} = V \Sigma^{-1} U^T =
+V 
+\begin{bmatrix}
+1/\sigma_1 & & & \\
+ & 1/\sigma_2 & & \\
+ & & \ddots & \\
+ & & & 1/\sigma_n
+\end{bmatrix}
+U^T
+$$
+This is the SVD of $A$'s inverse matrix!
+> Note how $U,V$ got swapped, and all $\sigma_i$'s get inverted!
+
+This gives us a notion to find inverse matrices, even for matrices that don't have a inverse! This defines a "pseudoinverse".
+
+Now, consider a general $m \times n$ matrix $A$ with SVD 
+$$
+A = U \Sigma V^T 
+$$
+We can define the **Moore-Penrose Pseudoinverse** of $A$ to be
+$$
+A^+ = V \Sigma^+ U^T
+$$
+Where $\Sigma^+$ is the transpose of the matrix $\Sigma$, where all non-negative singular values are inverted ($1/\sigma_i, \sigma_i \ne 0$).
+
+> [!Example]- Example: Pseudo-Inverses
+> $$
+> A = 
+> \begin{bmatrix}
+> 1 & 0 \\ 0 & 1 \\ 4 & 4
+> \end{bmatrix}
+> $$
+> 
+> A has SVD
+> $$
+> A = 
+> U \Sigma V^T =
+> \begin{bmatrix} 
+> \frac{1}{\sqrt{66}} & \frac{1}{\sqrt{2}} & \frac{4}{\sqrt{33}} \\
+> \frac{1}{\sqrt{66}} & -\frac{1}{\sqrt{2}} & \frac{4}{\sqrt{33}} \\
+> \frac{8}{\sqrt{66}} & 0 & -\frac{1}{\sqrt{33}}
+> \end{bmatrix}
+> \begin{bmatrix} 
+> \sqrt{33} & 0 \\ 0 & 1 \\ 0 & 0
+> \end{bmatrix}
+> \begin{bmatrix}
+> \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\
+> \frac{1/}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+> \end{bmatrix}
+> $$
+>
+> So, we can find its pseudo-inverse as
+> $$
+> A^+ = 
+> V \Sigma U^T =
+> \begin{bmatrix}
+> \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\
+> \frac{1/}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+> \end{bmatrix}
+> \begin{bmatrix} 
+> \frac{1}{\sqrt{33}} & 0 & 0 \\ 0 & 1 & 0
+> \end{bmatrix}
+> \begin{bmatrix} 
+> \frac{1}{\sqrt{66}} & \frac{1}{\sqrt{2}} & \frac{4}{\sqrt{33}} \\
+> \frac{1}{\sqrt{66}} & -\frac{1}{\sqrt{2}} & \frac{4}{\sqrt{33}} \\
+> \frac{8}{\sqrt{66}} & 0 & -\frac{1}{\sqrt{33}}
+> \end{bmatrix}^T
+> $$

@@ -69,4 +69,10 @@ Within a system, we have the following definitions:
 - **Group**: A set of principals. Principles are added to groups, which remain fairly static.
 - **Role**: A set of functions or permissions. Can be assigned dynamically to principles for more fluid configurations.
 
+# Notes 
+Notes for each unit are given below.
 
+- [[Programming Errors]]
+- [[Cryptography]]
+- [[Networking]]
+- [[Economics and Human Behavior]]

@@ -1406,7 +1406,7 @@ We ask: Can we begin at a vertex in a graph, and traverse all **edges** exactly 
 
 If the start and end vertex are different, it is a **Eulerian Trail**. Otherwise, if they are the same, it is a **Eulerian Circuit**, and we say $G$ is **Eulerian**.
 
-> [!Example] Example: Eulerian Trails
+> [!Example]+ Example: Eulerian Trails
 > ```mermaid
 > graph LR
 > 1 o--o 2 & 3;
@@ -1421,7 +1421,7 @@ If the start and end vertex are different, it is a **Eulerian Trail**. Otherwise
 > 5 \to 3 \to 1 \to 2 \to 3 \to 4 \to 5 \to 2 \to 4
 > $$
 
-> [!Example] Example: Lack of Eulerian Trail
+> [!Example]+ Example: Lack of Eulerian Trail
 > ```mermaid
 > graph LR
 > 1 o--o 2 & 2 & 3;
@@ -1454,6 +1454,15 @@ If the start and end vertex are different, it is a **Eulerian Trail**. Otherwise
 > > Create a trail in $H_1$ of max length, and repeat the above argument to show that we must have a circuit. Now, append this circuit onto our original circuit $C$ to get a new (and longer) circuit. This contradicts that $C$ is the longest length circuit, so there cannot possibly be any $x \sim y$ not accounted for in the circuit!
 >
 > > **Corollary**: Graph $G$ has an Eulerian trail if and only if exactly 2 vertices have odd degree.
+
+> [!Example]- Example: Eulerian Proof
+> Let $G$ be a connected $r$-regular graph that is not Eulerian. Suppose $\bar{G}$ is also connected. Prove that either $G$ or $\bar{G}$ must be Eulerian.
+>
+> Suppose $G$ is Eulerian. We are done.
+>
+> Suppose $G$ is not Eulerian. Then, $\exists v \in V(G)$ such that $\deg{v} = r$ odd. So, $G$ is an odd-regular graph. 
+>
+> If $G$ is an $r$-regular graph, then $\bar{G}$ is a $n - 1 - r$ regular graph, meaning $n - 1 - r$ is even. So, all vertices in $\bar{G}$ have an even degree, meaning $\bar{G}$ is Eulerian. 
 
 ## 4.2: Hamiltonian Graphs
 We ask: Can we begin at a vertex in a graph, and traverse all **vertices** exactly once? 

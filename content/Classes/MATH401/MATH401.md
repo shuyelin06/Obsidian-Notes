@@ -651,6 +651,10 @@ A^+ = V \Sigma^+ U^T
 $$
 Where $\Sigma^+$ is the transpose of the matrix $\Sigma$, where all non-negative singular values are inverted ($1/\sigma_i, \sigma_i \ne 0$).
 
+Some properties of the pseudo-inverse are as follows:
+- If $A$ is $n \times n$ and invertible, then $A^+ = A^{-1}$.
+- If $A$ is $m \times n$ with linearly independent columns, then $A^+ = (A^T A)^{-1} A^T$.
+
 > [!Example]- Example: Pseudo-Inverses
 > $$
 > A = 
@@ -694,3 +698,19 @@ Where $\Sigma^+$ is the transpose of the matrix $\Sigma$, where all non-negative
 > \frac{8}{\sqrt{66}} & 0 & -\frac{1}{\sqrt{33}}
 > \end{bmatrix}^T
 > $$
+
+Now consider a linear system $A \vec{x} = \vec{b}$. 
+- If $A$ is $n \times n$ and invertible, then
+  $$
+  \vec{x} = A^+ \vec{b} A^{-1} \vec{b} 
+  $$
+- If $A$ is $n \times m$ with linearly independent columns, then
+  $$
+  \vec{x} = A^+ \vec{b} = (A^T A)^{-1} A^T \vec{b}
+  $$
+  The unique least-squares solution to the system!
+
+What if $A \vec{x} = \vec{b}$ has infinitely many solutions? Or what if $A \vec{x} = \vec{b}$ is inconsistent but has infinitely many least-squares solutions? What does $\vec{x} = A^+ \vec{b}$ mean in these cases?
+
+> [!Abstract] Theorem
+> The vector $\vec{x} = A^+ \vec{b}$ is the least-squares solution of the system $A \vec{x} = \vec{b}$, with the smallest possible norm $|| \vec{x} ||$. 

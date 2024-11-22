@@ -2366,3 +2366,29 @@ Both the LHS and RHS are homogeneous of degree 1 in $x$ and $y$.
 
 Back to our original proof. It suffices to show that for $x_1 < x < x_2$, then $f(x) \le l(x)$, $l$ being our line.
 > We show that our function's slope is less than the lines slope!
+
+
+
+# CMSC132
+1. Heaps
+   - Can you perform the heap operations?
+     - Adding to a heap, popping from a heap (getSmallest())
+   - Can you do these operations on an array and on a tree? 
+   - What is the time complexity of these operations?
+2. Hashing
+   - Can you do the hash table operations?
+     - Adding to a hash table, deleting from a hash table, resizing
+   - Pros and cons of hash table collision resolutions
+     - Bucket hashing, linear probing, double hashing
+   - What are the Java Hash classes? How do they compare to each other?
+3. Graphs 
+   - Pros and cons of different representations. 
+     - Adjacency list, adjacency set, adjacency matrix
+     - Why would we choose one over the other?
+     - Time complexities of graph operations when we do different representations
+   - Breadth First Traversal, Recursive Depth First Traversal, Iterative Depth First Traversal
+     - Can you do each of them quickly? Can you visualize what they're doing?
+4. Djikstra's
+   - Can you trace through Djikstra's algorithm?
+
+> Threading will NOT be on exam 3.

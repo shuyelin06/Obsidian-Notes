@@ -2189,7 +2189,7 @@ end
 
 Since edges join among "$r$" parts, we cannot havae a $K_{r+1}$ subgraph.
 
-Now consider $K_{t_1, t_2, \dots t_r}$ when the partitions are nearly the same size ($\lfloor n / r \rfloor, \lceil n / r \rceil$). This is the **Turan Graph T_{n,r}$**.
+Now consider $K_{t_1, t_2, \dots t_r}$ when the partitions are nearly the same size ($\lfloor n / r \rfloor, \lceil n / r \rceil$). This is the **Turan Graph $T_{n,r}$**.
 > Basically, the complete bipartite graph where the sets are all as close in size as possible!
 
 In a Turan graph, we can easily find the number of edges between the sets by multiplying their sizes. And intuitively, we can see that if our sets are almost equal in size, we're maximizing the number of edges we can have! This is the idea behind Turan's Theorem.
@@ -2256,3 +2256,86 @@ In a Turan graph, we can easily find the number of edges between the sets by mul
 > \binom{3}{2} (2^2) + 3 (6)
 > $$
 > > The first term is us choosing any 2 of the 3 2-size partite sets, who have 4 edges between each. The second term is us choosing any 1 of the 2-size partite sets, and finding 6 edges between the 3-set and the 2-set.
+
+> [!Example] Example
+> A circular town of radius 4 miles has 18 public phones. However, 2 can only communicate if they are less than 6 miles apart. Show that no matter where they are placed, at least 2 phones can each transmit to 5 other phones (which may NOT be the same).
+>
+> Define $G$ on 18 vertices, with edge $v_i \sim v_j$ if they are within 6 miles of each other. We claim that for any 4 phones, at least 2 can communicate with each other.
+> > We can argue this geometrically. Any configuration of these phones, such that each is at least 6 miles from each other, cannot fit in the circle of radius 4!
+>
+> If this claim holds, then for any 4 vertices in $G$, there must exist an edge. So, $\bar{G}$ ($G$'s complement) cannot contain a $K_4$! So, by Turan's theorem on $\bar{G}$, we can have at most $\binom{3}{2} 36$ edges. This means that $G$ has at least 
+> $$
+> \binom{18}{2} - \binom{3}{2} 36 = 45
+> $$
+> edges, or in other words, $\sum \deg v_i \ge 90$.
+>
+> Now assume to the contrary that $G$ does NOT have at least 2 vertices of degree at least 5. Then, only one vertex has degree at least 5, all others at most 4, so $\sum \deg v_i \le 17 + 4(17) = 85$, which is a contradiction!
+> > The one vertex with degree at least 5 can connect to all other vertices, and the rest can connect to at most 4.
+
+What about the maximum edges avoiding a cycle, like $C_3$ or $C_4$? 
+> Turan's theorem helps us answer the maximum number of edges avoiding a $K_3$, which is the same as a $C_3$.
+
+> [!Abstract] Theorem: Cauchy-Schwarz
+> Let $\vec{u},\vec{v} \in \mathbb{R}^n$, with $\vec{u}, \vec{v} \ne 0$. Then,
+> $$
+> \begin{align*}
+> (\vec{u} \cdot \vec{v})^2 \le || \vec{u} ||^2 || \vec{v} ||^2 \\
+> \left( \sum_{i=1}^n u_i v_i \right)^2 \le \sum_{i=1}^n u_i^2 \sum_{i=1}^n v_i^2
+> \end{align*}
+> $$
+>
+> With equality when $\vec{u}$ is a multiple of $\vec{v}$.
+
+> [!Abstract] Theorem
+> If $G$ has order $n \ge 3$ and size $m$, with no $C_3$ or $C_4$ subgraph, then 
+> $$
+> m \le \frac{n \sqrt{n-1}}{2}
+> $$
+> 
+> > [!Note]- Proof
+> > 
+> > We find that in our graph, we cannot have any two vertices that is of distance 4 or more, as otherwise, we can always add an extra edge to get a $C_3$ or $C_4$.
+> > 
+> > Partition the $\binom{n}{2}$ pairs of vertices:
+> > $$
+> > \begin{align*}
+> > C_1 = \{ \{x,y\} : \text{Distance 1} \} \\
+> > C_2 = \{ \{x,y\} : \text{Distance 2} \} \\
+> > C_3 = \{ \{x,y\} : \text{Distance 3} \} \\
+> > \end{align*}
+> > $$
+> > It's hard to find $C_3$, so we will drop it for a "worse" bound. We now will count all pairs of vertices in $C_1, C_2$.
+> > 
+> > $$
+> > \begin{align*}
+> > |C_1| + |C_2| \le \binom{n}{2} \\
+> > m + \sum_{i=1}^n \binom{d_i}{2} \le \binom{n}{2} \\
+> > m + \sum_{i=1}{n} \frac{d_i (d_i - 1)}{2} \le \frac{n(n-1)}{2} \\
+> > \sum_{i=1}^n d_i^2 \le n(n-1) + \sum_{i=1}^n d_i - 2m \\
+> > \sum_{i=1}^n d_i^2 \le n(n-1)
+> > \end{align*}
+> > $$
+> > > For $C_2$, we are choosing the "intermediate" vertex in every path, and choosing two edges that are incident to it! It's not possible to double count, as otherwise we'd get a $C_4$.
+> > 
+> > Now by Cauchy-Schwarz, with $u_i = d_i, v_i = 1$, we have
+> > $$
+> > \begin{align*}
+> > (\sum u_i v_i)^2 \le \sum u_i^2 \sum v_i^2 \\
+> > (\sum_{i=1}^n d_i)^2 \le (\sum_{i=1}^n d_i^2) * n \le n^2 (n-1) \\
+> > (2m)^2 \le n^2 (n-1) \\
+> > 2m \le n \sqrt{n-1} \\
+> > m \le \frac{n \sqrt{n-1}}{2}
+> > \end{align*}
+> > $$
+
+Some notes:
+- Necessarily, $G$ must contain a $C_5$. 
+- We had $|C_3| = 0$, meaning we assumed there were no vertices of distance 3. So, the diameter of the graph must be 2.
+- $u_i = d_i, v_i = 1$, so equality in Cauchy-Schwarz implies that $G$ must be regular.
+
+> [!Abstract] Theorem: Hoffman-Singleton
+> If $G$ is $d$-regular, diameter 2, girth 5, with $\frac{n\sqrt{n-1}}{2}$ edges, then 
+> $$
+> d = 2, 3, 7, \text{(maybe)} \; 57
+> $$
+> > $d = 2$ is the $C_5$ graph, $d = 3$ is the Petersen graph, $d = 7$ is the Hoffman-Singleton graph, and $d = 57$ is yet to be solved.

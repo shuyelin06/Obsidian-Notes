@@ -1304,189 +1304,146 @@ We can generalize this rule to higher dimensions!
 > $$
 
 
-
-
-
-TODO
----
-
 # The Inverse Function Theorem
+> [!Tip] Motivation
+> The Inverse Function Theorem provides a sufficiency condition for when a function is one-to-one and invertible, and when we can compute the inverse. We generalize this to higher dimensions here!
 
-Inverse Function Theorem / Implicit Function Theorem
-> Functions on R^n to R^n.
+## Inverse Function Theorem: 1D, 2D
+Recall the single-variable Inverse Function Theorem.
 
-# 16.1
 > [!Abstract] Theorem: Inverse Function Theorem (One Dimension)
-> Let $f : \mathbb{R} \to \mathbb{R}, C^1$, let $x_0 \in \mathbb{R}$ such that $f'(x) \ne 0$.
+> Let $f : \mathbb{R} \to \mathbb{R}$ continuously differentiable, and let $x_0 \in \mathbb{R}$ such that $f'(x) \ne 0$.
 >
-> Then, there exists a **neighborhood** $U$ around $x_0$ (open set containing $x_0$) and a **neighborhood** $V$ around $f(x_0)$ such that
+> Then, there is an open interval $I$ around $x_0$, and an open interval containing $f(x_0)$ such that the function
 > $$
-> f : U \to V
+> f : I \to J
 > $$
-> Is 1-1, onto, $f^{-1} : V \to U$ is $C^1$ and $f^{-1} (y)' = \frac{1}{f'(f^{-1}(y))}$ for all $y \in V$.
->
-> > [!Note] Proof
-> > 
-If we know that $f^{-1} : V \to C$ is $C^1$, then the formula is immediate.
+> Is 1-1 and onto. Furthermore, in these intervals, we can define the function inverse $f^{-1} : J \to I$ continuously differentiable as 
+> $$
+> f^{-1} (y)' = \frac{1}{f'(f^{-1}(y))}
+> $$ 
+> for all $y \in V$.
 
-Note that proving the formula is just a chain rule.
+This theorem is pretty important, as it tells us when we can find a function's inverse! More importantly, it asserts that even if an entire function is not invertible, it may have smaller intervals where it is invertible.
 
-WLOG, $f'(x_0) > 0$. Let $U = (x_0 - R, x_0 + R)$ be such that 
-$$
-f'(t) > 0 \qquad t \in [x_0 - R, x_0 + R]
-$$
-In other words, take the open set such that $f$ is strictly increasing on it.
+We now generalize this theorem to higher dimensions!
 
-Then $f : [x_0 - R, x_0 + R] \to [ f(x_0 - R), f(x_0 + R) ]$ is 1-1, onto because of the IVT, and
-$$
-f : (x_0 - R, x_0 + R) \to ( f(x_0 - R), f(x_0 + R) )
-$$
-Is also 1-1 and onto. Furthermore, $f^{-1}$ is $C^1$ as the function is strictly increasing and continuous over the entire interval.
+We say that an open subset of $\mathbb{R}^n$ containing $x$ is a **neighborhood** of the point $x$. Using this definition, we will now generalize the Inverse Function Theorem to 2 dimensions.
 
 > [!Abstract] Theorem: Inverse Function Theorem (Two Dimensions)
-> Let $F : \mathbb{R}^2 \to \mathbb{R}^2$, $C^1$. Assume we have a point $(x_0, y_0)$ such that the derivative matrix $DF$ of $f$ at this point is invertible (the derivative is 0).
+> Let $F : \mathbb{R}^2 \to \mathbb{R}^2$, $C^1$. Suppose at $(x_0, y_0)$, $DF(x_0, y_0)$ is invertible. 
 >
-> Then, there exists a neighborhood $U$ of $(x_0, y_0)$, $V$ of $F(x_0, y_0)$ such that
-$$
-F : U \to V
-$$
-Is 1-1, onto, $F^{-1} : V \to U$ is $C^1$, and 
-$$
-D(F^{-1}) (y) = \left( DF ( F^{-1}(y)) \right)^{-1}
-$$
-
-> If we know that $F^{-1}$ is $C^1$, then the formula follows from the chain rule.
-
-> [!Example] Example
-$$
-F(x,y) = (x^2 - y^2, 2xy)
-$$
-We can also represent this function with complex numbers like as
-$$
-F(x + iy) = (x + iy)^2 = x^2 - y^2 + 2ixy
-$$
-
-Now, 
-$$
-\det DF(x,y) = \det
-\begin{bmatrix}
-2x & -2y \\ 2y & 2x
-\end{bmatrix} = 4 (x^2 +  y^2) \ne 0 \qquad \forall (x,y) \ne (0,0)
-$$
-Thus, if $(x_0, y_0) \ne (0,0)$, there exists a neighborhood $U$ of $(x_0, y_0)$, $V$ of $(x_0^2 - y_0^2, 2 x_0 y_0)$ such that
-$$
-F : U \to V
-$$
-Is 1-1, onto.
-
-What about $(0,0)$? Does there exist a neighborhood $U$ of $(0,0$ such that $F$ is 1-1 on $U$? 
-
-No. $F(x,y) = F(-x,-y)$, so we cannot find any such neighborhood. 
-
----
-
-Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$. Assume $(x_0, y_0)$ is such that $DF(x_0, y_0)$ is invertible. Then there exists a neighborhood $U$ of $(x_0, y_0)$ and neighborhood $V$ of $F(x_0,y_0)$ such that
-- $F : U \to V$ is 1-1 and onto
-- $F^{-1} : V \to U$ is $C^1$
-
-> [!Example] 
-$$
-F(x,y) = (x^2 - y^2, 2xy)
-$$
-
-Our hypotheses hold at any $(x_0, y_0) \not> (0,0)$, but fails at $(0,0)$.
-
-Previously, we showed that there does not exist a $U$ neighborhood of $(0,0)$ such that $F$ is 1-1 on $U$, as $F(x,y) = F(-x,-y)$. 
-
-However, $F(B_1 (0)) = B_1 (0)$, so 2 holds!
-
-> [!Note] Proof
-> 
-> Let $x = r \cos \theta, y = r \sin \theta$. 
+> Then, there exists a neighborhood $U$ around $(x_0, y_0)$, and a neighborhood $V$ around $F(x_0, y_0)$ such that
 > $$
-> F(x,y) = (r^2 (\cos^2 \theta - \sin^2 \theta), 2 r \sin\theta \cos\theta) = (r^2 \cos(2\theta), r^2 \sin(2\theta))
+> F : U \to V
+> $$
+> Is 1-1 and onto. Furthermore, $F^{-1} : V \to U$ is $C^1$, and for a point $F(x,y) = (u,v)$ where $(x,y) \in U, (u,v) \in V$, we can find the derivative matrix of the inverse as
+> $$
+> DF^{-1} (u,v) = [DF(x,y)]^{-1}
+> $$
+> > The inverse of the derivative matrix at $(x,y)$!
+
+> [!Example]+ Example: Inverse Function Theorem (2D)
+> $$
+> F(x,y) = (x^2 - y^2, 2xy)
 > $$
 > 
-> So we always remain within our ball!
+> We find that
+> $$
+> \det DF(x,y) = \det
+> \begin{bmatrix}
+> 2x & -2y \\ 2y & 2x
+> \end{bmatrix} = 4 (x^2 +  y^2)
+> $$
+> So for all $(x,y) \ne (0,0)$, our derivative matrix is non-zero! So, by the 2D Inverse Function Theorem, for any $(x_0, y_0) \ne (0,0)$, there exists a neighborhood $U$ of $(x_0, y_0)$, $V$ of $F(x_0, y_0) = (x_0^2 - y_0^2, 2 x_0 y_0)$ such that
+> $$
+> F : U \to V
+> $$
+> Is 1-1 and onto.
+> 
+> We ask, what happens at $(0,0)$? Does there exist a neighborhood $U$ of $(0,0)$ such that $F$ is 1-1 on $U$? 
+> 
+> In fact, the answer is that this is impossible, because $F(x,y) = F(-x,-y)$. So, for any neighborhood around $(0,0)$, $F$ is not one-to-one. 
 
----
+> [!Example]- Example: Inverse Function Theorem (2D, 2)
+> Let $\phi : \mathbb{R}^2 \to \mathbb{R}, C^1$, and
+> $$
+> F(x,y) = (\phi(x,y), \phi^2 (x,y))
+> $$
+> 
+> We find derivative matrix
+> $$
+> F(x,y) = 
+> \begin{bmatrix} 
+> \frac{\partial \phi}{\partial x} & \frac{\partial \phi}{\partial y} \\
+> 2 \phi \frac{\partial \phi}{\partial x} & 2 \phi \frac{\partial \phi}{\partial y}
+> \end{bmatrix} 
+> $$
+> As the determinant of this matrix is always 0, we find that $F$ is not invertible anywhere.
 
-> [!Example] Example: 
-$$
-F(x,y) = (e^x \cos y, e^x \sin y)
-$$
+> [!Example]- Example: Inverse Function Theorem (2D, 3)
+> Note that the Inverse Function Theorem provides a sufficiency condition, and is not a necessity. 
+> 
+> To show this, we find a $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$ such that
+> $$
+> \det (DF(x_0, y_0)) = 0
+> $$
+> Yet $F$ is 1-1 and onto. Let $F(x,y) = (x^3, y^3)$. Then, even though the determinant of the derivative matrix $0$ at $x = 0$ or $y = 0$, $F$ is 1-1 and onto.
+> 
+> However, we can prove that for all 3 conclusions of our theorem are to hold, then our our assumptions must hold. Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$ and assume that $DF(0,0)$ is not invertible, ad $F$ is 1-1, $F$ is onto. 
+> 
+> By way of contradiction, as
+> $$
+> F \circ F^{-1} (x,y) = (x,y)
+> $$
+> Then $(DF) F^{-1} (x,y) \circ (DF^{-1}) (x,y) = I$, but $DF$ is not invertible at some point, which is not possible, as its inverse exists!
 
-We have
-$$
-DF (x,y) =
-\begin{bmatrix}
-e^x \cos y & -e^x \sin y \\
-e^x \sin y & e^x \cos y
-\end{bmatrix}
-$$
-Where $\det (DF) = e^{2x} \ne 0$. So, our hypothesis holds everywhere! However, note that our theorem does not hold globally, just locally!
-- $F$ is not 1-1 globally as we can find $F(x,y) = F(x, y + 2k\pi)$. 
-- $F$ is not onto globally, as there does not exist any $(x,y)$ such that $F(x,y) = (0,0)$.
+> [!Example]- Example: Locality of Inverse Function Theorem (2D)
+> $$
+> F(x,y) = (e^x \cos y, e^x \sin y)
+> $$
+> 
+> We have
+> $$
+> DF (x,y) =
+> \begin{bmatrix}
+> e^x \cos y & -e^x \sin y \\
+> e^x \sin y & e^x \cos y
+> \end{bmatrix}
+> $$
+> Where $\det (DF) = e^{2x} \ne 0$. So, the 2D Inverse Function Theorem holds for all $(x,y)$! In other words, for all $(x,y)$ we can find a local neighborhood such that $F$ is 1-1 and onto.
+> 
+> However, this note that this theorem does not hold globally, just locally.
+> - $F$ is not 1-1 globally as we can find $F(x,y) = F(x, y + 2k\pi)$. 
+> - $F$ is not onto globally, as there does not exist any $(x,y)$ such that $F(x,y) = (0,0)$.
 
-> [!Example] Example
-Let $\phi : \mathbb{R}^2 \to \mathbb{R}, C^1$, and
-$$
-F(x,y) = (\phi(x,y), \phi^2 (x,y))
-$$
+## Stability of Non-Linear Mappings
+We will now introduce concepts necessary to generalize the inverse function theorem. 
 
-We find derivative matrix
-$$
-F(x,y) = 
-\begin{bmatrix} 
-\frac{\partial \phi}{\partial x} & \frac{\partial \phi}{\partial y} \\
-2 \phi \frac{\partial \phi}{\partial x} & 2 \phi \frac{\partial \phi}{\partial y}
-\end{bmatrix} 
-$$
-As the determinant of this matrix is always 0, we find that $F$ is not invertible anywhere.
+> [!Abstract] Theorem
+> For an $n \times n$ matrix $A$, the following are equivalent:
+> - $A$ is invertible 
+> - $\exists c > 0$ such that $|| A h || \ge c ||h||$, $\forall h \in \mathbb{R}^n$.
 
-> [!Example] Example
-We want a $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$ such that
-$$
-\det (DF(x_0, y_0)) = 0
-$$
-Yet $F$ is 1-1 and onto.
-
-Let $F(x,y) = (x^3, y^3)$. Then, even though the determinant of the derivative matrix is $x = 0$ or $y = 0$, $F$ is 1-1 and onto.
-
-Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$ and assume that $DF(0,0)$ is not invertible, ad $F$ is 1-1, $F$ is onto. Is it possible for $F^{-1}$ to be $C^1$, so all 3 conclusions of our theorem hold while the hypothesis does not?
-
-No! By way of contradiction, as
-$$
-F \circ F^{-1} (x,y) = (x,y)
-$$
-Then $(DF) F^{-1} (x,y) \circ (DF^{-1}) (x,y) = I$, but $DF$ is not invertible at some point, which is not possible, as its inverse exists!
-
----
-
-16.2
-
-
-> [!Note] Proof
-Recall that the following are equivalent. For an $n \times n$ matrix $A$, 
-- $A$ is invertible
-- $\exists c > 0$ such that $|| A h || \ge c ||h||$, $\forall h \in \mathbb{R}^n$.
-
-We say that $F : O \to \mathbb{R}^n$ is **stable** if $\exists c > 0$ such that
+We say that a mapping $F : O \to \mathbb{R}^n$, $O$ open, is **stable** if $\exists c > 0$ such that
 $$
 || F(x) - F(y) || \ge c || x - y || \qquad \forall (x,y) \in O
 $$
+
 > [!Info] Remark
 > $F$ stable implies that $F$ is 1-1.
 > 
 > As a brief proof, if $F(x) = F(y)$, then $|| F(x) - F(y) || \ge || x - y || \to x = y$.
 > > Note that $F$ is stable if and only if $F^{-1}$ is Lipschitz (as the inequalities are flipped!)
 
-> [!Abstract] Proposition:
+Interestingly, we find that matrices that are sufficiently close to an invertible matrix are also invertible. In other words, matrices that are close to 1-1 matrices are also 1-1!
+
+> [!Abstract] Lemma
 > Let $A$ be an $n \times n$ matrix, and assume that $\exists c > 0$ such that
 > $$
 > || A h || \ge c || h || \qquad h \in \mathbb{R}^n
 > $$
-> Let $B$ be an $n \times n$ matrix such that $|| A - B || \le \frac{c}{2}$. Then, $|| Bh || \ge \frac{c}{2} || h ||$. In other words, if a matrix is 1-1, then all other matrices sufficiently close to it are also 1-1.
+> Now let $B$ be an $n \times n$ matrix such that $|| A - B || \le \frac{c}{2}$. Then, $|| Bh || \ge \frac{c}{2} || h ||$. 
 >
 > > [!Note] Proof
 > > 
@@ -1494,49 +1451,58 @@ $$
 > > || Bh || = || Ah + (B - A) h || \ge || Ah || - || (B - A) h || \ge c ||h|| - \frac{c}{2} ||h|| \ge \frac{c}{2} ||h||
 > > $$
 
-We now prove the 1-1 part of the inverse function theorem.
+This lets us prove the 1-1 condition on the General Inverse Function Theorem. 
 
-> [!Abstract] Theorem
-Let $F : O \to \mathbb{R}^n, C^1$, $O$ open. Assume that we have a point $x^*$ such that the derivative matrix at $x^*$, $DF(x^*)$, is invertible. Then there exists a neighborhood of $x^*$ such that
-- The derivative matrix of $F$ is invertible. $\forall x \in U$.
-- $F$ is stable on $V$, implying $F$ is 1-1 on $U$.
+> [!Abstract] Theorem: Nonlinear Stability Theorem
+> Let $F : O \to \mathbb{R}^n, C^1$, $O$ open. Assume that we have a point $x^*$ such that $DF(x^*)$, is invertible. 
+>
+> Then there exists a neighborhood of $x^*$ such that
+> - $F$ is stable on $V$ (implying $F$ is 1-1 on $U$).
+> - The derivative matrix of $F$ is invertible $\forall x \in U$.
+>
+> > [!Note]- Proof
+> > 
+> > For point 2, look at $\det DF(x^*) \ne 0$. Thus, $\exists U$ neighborhood of $x^*$ such that $\det DF(x) \ne 0$ on $U$.
+> > 
+> > For point 1, look at $F : B_r (x^*) \to \mathbb{R}^n$. If $x,y$ belong to the ball $B_r (x^*)$, we have
+> > $$
+> > F(x) - F(y) = 
+> > \begin{bmatrix}
+> > \nabla F_1 (p_1) \\
+> > \vdots \\
+> > \nabla F_n (p_n) 
+> > \end{bmatrix} (x - y)
+> > $$
+> > For some $p_1, \dots p_n$ on the line from $x$ to $y$.
+> > 
+> > As we know that $DF(x^*)$ is invertible, then $\exists c > 0$ such that
+> > $$
+> > || DF(x^*) h || \ge c || h || \qquad \forall h
+> > $$
+> > If $r$ is so small that 
+> > $$
+> > || DF(x^*) - \begin{bmatrix}
+> > \nabla F_1 (p_1) \\
+> > \vdots \\
+> > \nabla F_n (p_n) 
+> > \end{bmatrix} || < \frac{c}{2}
+> > $$
+> > For all $p_1, \dots p_n \in B_r (x^*)$. Then,
+> > $$
+> > || B (x - y) || \ge \frac{c}{2} || x - y ||
+> > $$
 
-For point 1, look at $\det DF(x^*) \ne 0$. Thus, $\exists U$ neighborhood of $x^*$ such that $\det DF(x) \ne 0$ on $U$.
+## Minimization Principle, General Inverse Function Theorem
+To prove the General Inverse Function Theorem, we will introduce an auxiliary function such that its minimizers are solutions of some given equation.
 
-For point 2, look at $F : B_r (x^*) \to \mathbb{R}^n$. If $x,y$ belong to the ball $B_r (x^*)$, we have
+Suppose we have a $F : O \to \mathbb{R}^n, C^1$, $O$ open, and $x^* \in O$ where $DF(x^*)$ is invertible. Then, from the previous section, we can find a neighborhood $U$ of $x^*$ such that $DF(x)$ is invertible for $x \in U$ and $\exists $c > 0$ such that
 $$
-F(x) - F(y) = 
-\begin{bmatrix}
-\nabla F_1 (p_1) \\
-\vdots \\
-\nabla F_n (p_n) 
-\end{bmatrix} (x - y)
+|| F(x) - F(y) || \ge c || x || \qquad \forall x,y \in U
 $$
-For some $p_1, \dots p_n$ on the line from $x$ to $y$.
+Using this, we can show the following.
 
-As we know that $DF(x^*)$ is invertible, then $\exists c > 0$ such that
-$$
-|| DF(x^*) h || \ge c || h || \qquad \forall h
-$$
-If $r$ is so small that 
-$$
-|| DF(x^*) - \begin{bmatrix}
-\nabla F_1 (p_1) \\
-\vdots \\
-\nabla F_n (p_n) 
-\end{bmatrix} || < \frac{c}{2}
-$$
-For all $p_1, \dots p_n \in B_r (x^*)$. Then,
-$$
-|| B (x - y) || \ge \frac{c}{2} || x - y ||
-$$
-
----
-
-16.3
-
-> [!Info] Lemma
-> Let $U$ open in $\mathbb{R}^n$, $F : U \to \mathbb{R}^n$ of $C^1$. Assume that the derivative matrix of $F$ is invertible $\forall x \in U$.
+> [!Info] Proposition: A Minimization Principle
+> Let $U$ open in $\mathbb{R}^n$, $F : U \to \mathbb{R}^n$, $C^1$. Assume that the derivative matrix of $F$ is invertible $\forall x \in U$.
 >
 > Let $E(x) = || F(x) - y ||^2$, the distance between $F(x)$ and $y$. If $E$ has an (interior) minimizer at $x \in U$, then $F(x) = y$.
 >
@@ -1561,15 +1527,10 @@ $$
 > > $$
 > > And as $G(x) = F(x) - y = 0, F(x) = y$.
 
-Recall that we have a $F : O \to \mathbb{R}^n, C^1$, $O$ open, and $x^* \in O$ where $DF(x^*)$ is invertible. We know (from the previous section) that there exists a neighborhood $U$ of $x^*$ such that $DF(x)$ is invertible for $x \in U$ and $\exists $c > 0$ such that
-$$
-|| F(x) - F(y) || \ge c || x || \qquad \forall x,y \in U
-$$
-
-> [!Abstract] Theorem
-> Assume the above. Then, $F(U)$ is open. 
+> [!Abstract] Lemma: The Open-Image Lemma
+> Suppose we have a $F : O \to \mathbb{R}^n, C^1$, $O$ open, and $x^* \in O$ where $DF(x^*)$ is invertible. Then, $F(O)$ is open. 
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > Let $y_0 \in F(U)$. By assumption, we know that $\exists x_0 \in U$ such that $F(x_0) = y_0$.
 > > 
@@ -1586,132 +1547,128 @@ $$
 > > 
 > > But $|| F(x_0) - y || < \frac{cR}{2}$, $x_0 \in B_R (x_0)$, so no point on $S$ can be the minimizer. So, the minimizer must be in the interior, so by the previous lemma, the minimizer must be such that $F(x) = y$.
 
-Thus, there exists a neighborhood $U$ of $x^*$ such that $DF(x)$ is invertible for all $x \in U$, $\exists c$ such that
-$$
-|| F(x) - F(y) || \ge c || x - y || \qquad \forall x,y \in U
-$$
-And $F(U) = V$. By general proprties of functions, $F^{-1} : V \to U$ is well defined. To show that it is $C^1$, we will prove that
+Suppose we have a $F : O \to \mathbb{R}^n, C^1$, $O$ open, and $x^* \in O$ where $DF(x^*)$ is invertible. Using the previous proofs, we have found that exists a neighborhood $U$ of $x^*$, a neighborhood $V$ of F(x^*)$, such that:
+- $DF(x)$ is invertible for all $x \in U$
+- $\exists c$ such that
+  $$
+  || F(x) - F(y) || \ge c || x - y || \qquad \forall x,y \in U
+  $$
+- $F(U) = V$. 
+
+By general proprties of functions, $F^{-1} : V \to U$ is well defined. Finally, to show that the inverse is $C^1$, we will prove that
 $$
 (DF^{-1} (y)) = ( DF(x) )^{-1}
 $$
 
-To prove this, it suffices to show that 
-$$
-\lim_{k \to 0} \frac{|| F^{-1}(y + k) - F^{-1}(y) - [ DF(x) ]^{-1} (k) ||}{||k||} = 0
-$$
-We use the notation $F(x) = y, F(x + h) = y + k$. On the LHS, we have 
-$$
-\begin{align*}
-&\lim_{k \to 0} \frac{|| (x + h) - x - [DF(x)]^{-1} [F(x+h) - F(x)] ||}{||k||} \\
-&\qquad = \lim_{k \to 0} \frac{|| [DF(x)]^{-1} [ DF(x) [h] - [F(x+h) - F(x)]] ||}{||k||} \\
-&\qquad \le \lim_{k \to 0} \frac{|| [DF(x)]^{-1} [F(x+h) - F(x) - DF(x) h] ||}{||k||} \\
-\end{align*}
-$$
-
-We want to show that $||k|| \ge C ||h||$.
-$$
-|| F(x+h) - F(x) || \ge C ||h|| \Longrightarrow ||k|| \ge C ||h||
-$$
-
-So, we have
-$$
-\le \lim_{k \to 0} \frac{ [DF(x)]^{-1}}{c} \frac{|| [F(x+h) - F(x) - DF(x) h] ||}{||h||} \to 0
-$$
-This is a first order approximation! So, this goes to 0 as $k \to \infty$, as then $h \to 0$.
-
----
-
-We give a second proof of the inverse function theorem based on the contraction mapping principle.
-
-Let $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$. Let $x^* \in \mathbb{R}^n$ where $DF(x^*)$ is invertible. We will show that $\exists \delta_0 > 0$ such that if $|| f(x^*) - y || < \frac{\delta_0}{2 || DF(x^*)^{-1} ||}$, then $\exists !x \in \bar{B}_{\delta_0} (x^*)$ such that $F(x) = y$.
-> In other words, $F$ is locally one-to-one and onto in a local neighborhood of $x^*$!
-
-We want to solve $F(x) = y$ if and only if $x = x - (DF(x^*))^{-1} (F(x) - y) = T(x)$. We will use the contraction mapping principle to show that there exists a fixed point of $T(x)$. 
-
-Create a sequence 
-$$
-x_{k+1} = T(x_k) = x_k - (DF(x^*))^{-1} (F(x_k) - y)
-$$
-
-> [!Info] Remark
-> Notice the similarity to Newton's method, which had root-finding formula (for $f : \mathbb{R} \to \mathbb{R}$)
+> [!Note]- Proof
+> To prove this, it suffices to show that 
 > $$
-> x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+> \lim_{k \to 0} \frac{|| F^{-1}(y + k) - F^{-1}(y) - [ DF(x) ]^{-1} (k) ||}{||k||} = 0
+> $$
+> We use the notation $F(x) = y, F(x + h) = y + k$. On the LHS, we have 
+> $$
+> \begin{align*}
+> &\lim_{k \to 0} \frac{|| (x + h) - x - [DF(x)]^{-1} [F(x+h) - F(x)] ||}{||k||} \\
+> &\qquad = \lim_{k \to 0} \frac{|| [DF(x)]^{-1} [ DF(x) [h] - [F(x+h) - F(x)]] ||}{||k||} \\
+> &\qquad \le \lim_{k \to 0} \frac{|| [DF(x)]^{-1} [F(x+h) - F(x) - DF(x) h] ||}{||k||} \\
+> \end{align*}
+> $$
+> 
+> We want to show that $||k|| \ge C ||h||$.
+> $$
+> || F(x+h) - F(x) || \ge C ||h|| \Longrightarrow ||k|| \ge C ||h||
+> $$
+> 
+> So, we have
+> $$
+> \le \lim_{k \to 0} \frac{ [DF(x)]^{-1}}{c} \frac{|| [F(x+h) - F(x) - DF(x) h] ||}{||h||} \to 0
+> $$
+> This is a first order approximation! So, this goes to 0 as $k \to \infty$, as then $h \to 0$.
+
+This gives us the General Inverse Function Theorem.
+
+> [!Abstract] Theorem: General Inverse Function Theorem
+> Let $O \subseteq \mathbb{R}^n$ open, and let $F : O \to \mathbb{R}^n$ be $C^1$. Now, let $DF(x^*)$ be invertible for some $x^* \in O$. 
+> 
+> Then, there is a neighborhood $U$ of $x^*$, a neighborhood $V$ of $F(x^*)$, such that $F : U \to V$ is 1-1 and onto. Furthermore, $F^{-1} : V \to U$ is also $C^1$, and for $y \in V, x \in U$ such that $F(x) = y$,
+> $$
+> DF^{-1} (y) = [DF(x)]^{-1}
 > $$
 
-The main step is as follows: $\exists \delta_0 > 0$ such that
-$$
-|| x - z - DF(x^*)^{-1} (F(x) - F(z)) || < \frac{1}{2} || x - z || \qquad \forall x,z \in \bar{B}_{\delta_0} (x^*)
-$$
-The left hand side equals
-$$
-\begin{align*}
-&|| (DF(x^*))^{-1} ( F(x) - F(z) - DF(x^*) (x - z) ) || \\
-&\qquad \le || DF(x^*)^{-1} || ||
-\left( \begin{bmatrix}
-\nabla F_1 (P_1) \\ \vdots \\ \nabla F_n (P_n)
-\end{bmatrix}
-- DF(x^*) \right) (x - z) ||
-\end{align*}
-$$
-Choose $\delta_0 > 0$ such that
-$$
-|| DF(x^*)^{-1} || ||
-\left( \begin{bmatrix}
-\nabla F_1 (P_1) \\ \vdots \\ \nabla F_n (P_n)
-\end{bmatrix}
-- DF(x^*) \right) < \frac{1}{2} \qquad \forall P_1, \dots P_n \in B_{\delta_0}(x^*)
-$$
-So, we found a $\delta_0$ such tha
-$$
-|| T(x) - T(z) || \le \frac{1}{2} || x - z ||
-$$
+We also give a second proof of the inverse function theorem based on the contraction mapping principle.
 
-Next, we will show that $T$ maps its domain onto itself.
-$$
-T : \bar{B}_{\delta_0} (x^*) \to \bar{B}_{\delta_0} (x^*)
-$$
-Let $|| x - x^* || \le \delta_0$. Look at $T(x) - x^*$. This is equal to
-$$
-\begin{align*}
-&|| x - x^* - (DF)(x^*)^{-1} [ F(x) - F(x^*) + F(x^*) - y] || \\
-&\qquad \le || x - x^* - DF(x^*)^{-1} [F(x) - F(x^*)] || + || DF(x^*)^{-1} [F(x^*) - y] || \\
-&\qquad \le \frac{1}{2} || x - x^* || + \frac{1}{2} || x - x^* || \le \delta_0
-\end{align*}
-$$
+> [!Note]- Proof (Contraction Mapping Principle)
+> Let $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$. Let $x^* \in \mathbb{R}^n$ where $DF(x^*)$ is invertible. We will show that $\exists \delta_0 > 0$ such that if $|| f(x^*) - y || < \frac{\delta_0}{2 || DF(x^*)^{-1} ||}$, then $\exists !x \in \bar{B}_{\delta_0} (x^*)$ such that $F(x) = y$.
+> > In other words, $F$ is locally one-to-one and onto in a local neighborhood of $x^*$!
+> 
+> We want to solve $F(x) = y$ if and only if $x = x - (DF(x^*))^{-1} (F(x) - y) = T(x)$. We will use the contraction mapping principle to show that there exists a fixed point of $T(x)$. 
+> 
+> Create a sequence 
+> $$
+> x_{k+1} = T(x_k) = x_k - (DF(x^*))^{-1} (F(x_k) - y)
+> $$
+> 
+> > [!Info] Remark
+> > Notice the similarity to Newton's method, which had root-finding formula (for $f : \mathbb{R} \to \mathbb{R}$)
+> > $$
+> > x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+> > $$
+> 
+> The main step is as follows: $\exists \delta_0 > 0$ such that
+> $$
+> || x - z - DF(x^*)^{-1} (F(x) - F(z)) || < \frac{1}{2} || x - z || \qquad \forall x,z \in \bar{B}_{\delta_0} (x^*)
+> $$
+> The left hand side equals
+> $$
+> \begin{align*}
+> &|| (DF(x^*))^{-1} ( F(x) - F(z) - DF(x^*) (x - z) ) || \\
+> &\qquad \le || DF(x^*)^{-1} || ||
+> \left( \begin{bmatrix}
+> \nabla F_1 (P_1) \\ \vdots \\ \nabla F_n (P_n)
+> \end{bmatrix}
+> - DF(x^*) \right) (x - z) ||
+> \end{align*}
+> $$
+> Choose $\delta_0 > 0$ such that
+> $$
+> || DF(x^*)^{-1} || ||
+> \left( \begin{bmatrix}
+> \nabla F_1 (P_1) \\ \vdots \\ \nabla F_n (P_n)
+> \end{bmatrix}
+> - DF(x^*) \right) < \frac{1}{2} \qquad \forall P_1, \dots P_n \in B_{\delta_0}(x^*)
+> $$
+> So, we found a $\delta_0$ such tha
+> $$
+> || T(x) - T(z) || \le \frac{1}{2} || x - z ||
+> $$
+> 
+> Next, we will show that $T$ maps its domain onto itself.
+> $$
+> T : \bar{B}_{\delta_0} (x^*) \to \bar{B}_{\delta_0} (x^*)
+> $$
+> Let $|| x - x^* || \le \delta_0$. Look at $T(x) - x^*$. This is equal to
+> $$
+> \begin{align*}
+> &|| x - x^* - (DF)(x^*)^{-1} [ F(x) - F(x^*) + F(x^*) - y] || \\
+> &\qquad \le || x - x^* - DF(x^*)^{-1} [F(x) - F(x^*)] || + || DF(x^*)^{-1} [F(x^*) - y] || \\
+> &\qquad \le \frac{1}{2} || x - x^* || + \frac{1}{2} || x - x^* || \le \delta_0
+> \end{align*}
+> $$
+> 
+> So, $T$ is a contraction, and has a fixed point.
 
-So, $T$ is a contraction, and has a fixed point.
 
+# The Implicit Function Theorem
+We now discuss the Implicit Function Theorem. This lets us create local descriptions of the set of points $u$ where a function is equal to 0, $F(u) = 0$, also known as a level-curve!
 
----
-
-16.3, 11
-
-Let $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$, $\exists C$ such that
-$$
-|| F(x) - F(y) || \ge C || x - y ||
-$$
-1. Show that $DF(x)$ is invertible in $R^n$. We use the first order approximation theorem.
-2. Show that $F(\mathbb{R}^n)$ is open. We use the inverse function theorem to show that $F$ is onto some neighborhood of the point.
-3. Show that $F(R^n)$ is closed. 
-
-To show this, let $y_k$ be a sequence of points in $F(R^n)$, and assume $y_k \to y$. Show $y \in F(R^n)$. We know $\exists x_k$, $F(x_k) = y_k$.
-
-If $x_k \to x$, then $F(x_k) \to F(x)$ by continuity. So, By the uniqueness of limits, $y_k = F(x)$. We show $x_k \to x$ by using the assumption and applying the Comparison Lemma on Cauchy sequences, to show that $x_k$ is Cauchy.
-
-
-4. Show that $F(R^n) = R^n$. Because both open and closed, and its not the empty set, must be $R^n$.
-
-
---- Next: Implicit Function Theorem..
-
+## 2D Case: Dini's Theorem
 Let us have function $f : \mathbb{R}^2 \to \mathbb{R}, C^1$. We ask, when is the set
 $$
 \{ (x,y) : f(x,y) = 0 \} 
 $$
 A $C^1$ curve?
 
-> [!Example]+ Counterexamples
+> [!Example]+ Examples
 > $$
 > f(x,y) = x^2 + y^2 + 1 = 0
 > $$
@@ -1722,17 +1679,13 @@ A $C^1$ curve?
 > $$
 > This will yield 1 point, so we don't have a $C^1$ curve.
 
-We say $C \subseteq \mathbb{R}^2$ is a $C^1$ curve if  $\forall (x_0, y_0) \in C$, there exists a $U$ neighborhood of $(x_0, y_0)$, and function $g : \mathbb{R} \to \mathbb{R}, C^1$ such that
+What does it actually mean for a set to be a $C^1$ curve?
+
+Intuitively, such a set is a $C^1$ curve if we can define a $C^1$ function to represent the points. More formally, we say $C \subseteq \mathbb{R}^2$ is a **$C^1$ curve** if for all points in the set $(x_0, y_0) \in C$, there is a $U$ neighborhood of $(x_0, y_0)$, and function $g : \mathbb{R} \to \mathbb{R}, C^1$ such that
 $$
 C \cap U = \{ \text{Graph y = g(x) or x = g(y)} \} \cap U
 $$
-
-We can find that $\forall C \in \mathbb{R}^2$, closed, there exists a function $f \in C^1 (\mathbb{R}^2)$ such that
-$$
-C = \{ (x,y) : f(x,y) = 0 \}
-$$
-
-And furthermore, if $f : \mathbb{R}^2 \to \mathbb{R}$ is $C^1$, and $nabla f(x,y) \ne 0$ $\forall (x,y)$ such that $f(x,y) = 0$,then $C = \{ (x,y) : f(x,y) = 0\}$.
+In other words, the points in the $U$ neighborhood can be represented by some localized output of a $C^1$ function!
 
 > [!Abstract] Theorem: Dini's Theorem
 > Let $O$ open in $\mathbb{R}^2$, $f : O \to \mathbb{R}, C^1$. Let $(x_0, y_0)$ be a point in $O$, and assume $f(x_0, y_0) = 0, \frac{\partial f}{\partial y} (x_0, y_0) \ne 0$.
@@ -1743,9 +1696,9 @@ And furthermore, if $f : \mathbb{R}^2 \to \mathbb{R}$ is $C^1$, and $nabla f(x,y
 > $$
 > 
 > And $f(x,y) = 0$, then $y = g(x)$.
-> > We're basically saying, in this box, the 0-set of $f$ takes on a $C^1$ function $g(x)$.
+> > In this box, the 0-set of $f$ takes on a $C^1$ function $g(x)$.
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > We know
 > > $$
@@ -1804,7 +1757,10 @@ To get
 $$
 \frac{\partial f}{\partial x} (x, g(x)) + \frac{\partial f}{\partial y} (x, g(x)) \cdot g'(x) = 0
 $$
-And we can solve for $g'(x)$ with this!
+We can solve for $g'(x)$ with this!
+
+## Implicit Function Theorem
+This can be generalized to higher dimensions!
 
 > [!Info] Remark
 > We can generalize this!
@@ -1829,7 +1785,7 @@ And we can solve for $g'(x)$ with this!
 > $$
 > And if $x \in B_r (x_0), y \in B_R (y_0)$, and $F(x,y) = 0$, then $y = G(x)$. Also, $DG(x)$ can be computed by the chain rule.
 >
-> > [!Note] Proof
+> > [!Note]- Proof
 > > 
 > > Let $H : O \to \mathbb{R}^{n+k}$,
 > > $$
@@ -1867,6 +1823,41 @@ And we can solve for $g'(x)$ with this!
 > > \Longrightarrow ( M(x, F(x,y)), N(x, F(x,y)) ) = (x,y)
 > > $$
 > > If $F(x,y) = 0$, then $y = N(x, 0) = G(x)$.
+
+> [!Example] Example: Implicit Function Theorem
+> Let $F : \mathbb{R}^3 \to \mathbb{R}^2, C^1$. Assume $F(0,0) = (0,0)$ and 
+> $$
+> DF(0,0) = 
+> \begin{bmatrix}
+> 0 & 0 & 1 \\
+> 1 & 0 & 0
+> \end{bmatrix}
+> $$
+> Which of the following is true? $\exists g,h \in C^1, g,h : (-r, r) \to \mathbb{R}$, $g(0) = h(0) = 0$, such that
+> 1. $F(x,g(x),h(x)) = (0,0), \forall |x| < r$
+> 2. $F(g(y),y,h(y)) = (0,0), \forall |y| < r$
+> 3. $F(g(z), h(z), z) = (0,0), \forall |z| < r$
+> 
+> The second one! In the implicit function theorem, we need a $Y$ such that $D_Y (F)$ is invertible. So, choose them to be $x,z$, with free variable $X = y$. Then, we can apply our implicit function theorem to get result (2).
+> 
+> We ask, is it possible for $F(x,g(x),h(x)) = (0,0), \forall |x| < r$? No. If the above holds, then by the chain rule, we find
+> $$
+> \begin{align*}
+> \frac{d}{dx} F(x,g(x),h(x))
+> &= DF(x,g(x),h(x)) 
+> \begin{bmatrix}
+> 1 \\ g'(x) \\ h'(x)
+> \end{bmatrix} = 0
+> \end{align*} 
+> $$
+> And at $(0,0,0)$,
+> $$
+> DF(0,g(0),h(0)) 
+> \begin{bmatrix}
+> 1 \\ g'(0) \\ h'(0)
+> \end{bmatrix} = 0
+> $$
+> But this gives us $1 = 0$, which is impossible!
 
 Finally, we will show a formula for $DG(x)$, $x \in B_r (x_0)$. We use the property that $F(x, G(x)) = 0$. We know that starting with $x$, we map
 $$
@@ -1915,8 +1906,7 @@ $$
 > 
 > We get $F(X, G(X)) = 0$, or in other words, $F(y, G(y)) = 0, G(y) \in \mathbb{R}^2$, so our solutions look like $(g_1 (y), y, g_2 (y))$.
 
---- 17.3
-
+## Surfaces and Paths in $\mathbb{R}^3$
 Let $f : \mathbb{R}^3 \to \mathbb{R}, C^1$. Look at the level set of this function, the set of points where the function is 0.
 $$
 S = \{ (x,y,z) : f(x,y,z) = 0 \}
@@ -1925,7 +1915,7 @@ $$
 Assume $\nabla f(x,y,z) \ne 0$ for all $x,y,z \in S$. Then $S$ is a $C^1$ surface
 > Recall, that for $S \subseteq \mathbb{R}^3$ to be a $C^1$ surface, $\forall x \in S$, there exists a $W$ neighborhood of $x$ such that $S \cap W$ is a $C^1$ function.
 
-> [!Note] Proof
+> [!Note]- Proof
 > Let $(x_0, y_0, z_0) \in S$. Without loss of generality, assume that $\frac{\partial f}{\partial z} (x_0, y_0, z_0) \ne 0$.
 > 
 > By the implicit function theorem, there exists a $r, R > 0$ and a function $g : B_r (x_0, y_0) \to B_R (z_0)$ such that
@@ -1961,7 +1951,6 @@ Assume $\nabla f(x,y,z) \ne 0$ for all $x,y,z \in S$. Then $S$ is a $C^1$ surfac
 > \nabla f(x_0, y_0, z_0) = \lambda (T_1 \times T_2)
 > $$
 
-## Curves in $\mathbb{R}^3$ defined by the intersection of two surfaces
 Let $g,h : \mathbb{R}^3 \to \mathbb{R}, C^1$. Define the intersection of the two function's level sets, 
 $$
 C = \{ (x,y,z) : g(x,y,z) = h(x,y,z) = 0 \}
@@ -2025,9 +2014,9 @@ And these are the only solutions if $x \in B_r (x_0), y \in B_R (y_0)$. Thus, $M
 We need $n$ linearly independent tangent vectors at $(x_0, y_0)$. The process of doing this is the same-- fix $n - 1$ variable, and differentiate with respect to our last variable. These are our tangent vectors!
 $$
 \begin{align*}
-(1, 0, \dots, \frac{\partial G}{\partial x_1} (x_0) \\
-(0, 1, \dots, \frac{\partial G}{\partial x_2} (x_0) \\
-\vdots \\
+&(1, 0, \dots, \frac{\partial G}{\partial x_1} (x_0) \\
+&(0, 1, \dots, \frac{\partial G}{\partial x_2} (x_0) \\
+&\vdots \\
 &(0, \dots, 1, \frac{\partial G}{\partial x_n} (x_0)
 \end{align*}
 $$
@@ -2075,68 +2064,6 @@ Then $F(O)$ is a smooth surface at $F(x,y)$.
 > > $$
 > > F(x) = (F_1 (x), F_2 (x)) = (F_1 (F_1^{-1} (y)), F_2 (F_1^{-1} (y))) = (y, G(y)), y \in V
 > > $$
-
----
-
-Problem 28
-
-> [!Example] Example: Implicit Function Theorem
-> Let $F : \mathbb{R}^3 \to \mathbb{R}^2, C^1$. Assume $F(0,0) = (0,0)$ and 
-> $$
-> DF(0,0) = 
-> \begin{bmatrix}
-> 0 & 0 & 1 \\
-> 1 & 0 & 0
-> \end{bmatrix}
-> $$
-> Which of the following is true? $\exists g,h \in C^1, g,h : (-r, r) \to \mathbb{R}$, $g(0) = h(0) = 0$, such that
-> 1. $F(x,g(x),h(x)) = (0,0), \forall |x| < r$
-> 2. $F(g(y),y,h(y)) = (0,0), \forall |y| < r$
-> 3. $F(g(z), h(z), z) = (0,0), \forall |z| < r$
-> 
-> The second one! In the implicit function theorem, we need a $Y$ such that $D_Y (F)$ is invertible. So, choose them to be $x,z$, with free variable $X = y$. Then, we can apply our implicit function theorem to get result (2).
-> 
-> We ask, is it possible for $F(x,g(x),h(x)) = (0,0), \forall |x| < r$? No. If the above holds, then by the chain rule, we find
-> $$
-> \begin{align*}
-> \frac{d}{dx} F(x,g(x),h(x))
-> &= DF(x,g(x),h(x)) 
-> \begin{bmatrix}
-> 1 \\ g'(x) \\ h'(x)
-> \end{bmatrix} = 0
-> \end{align*} 
-> $$
-> And at $(0,0,0)$,
-> $$
-> DF(0,g(0),h(0)) 
-> \begin{bmatrix}
-> 1 \\ g'(0) \\ h'(0)
-> \end{bmatrix} = 0
-> $$
-> But this gives us $1 = 0$, which is impossible!
-
-> [!Example] Example
-> Let $F : \mathbb{R}^2 \to \mathbb{R}^2, C^1$. Assume that $DF(x)$ is positive definite for every $x \in \mathbb{R}^2$.
-> 
-> Prove $F$ is 1-1.
-> 
-> Assume that $F(x) = F(x + h)$. We wish to show that if $h \ne 0$, then we obtain a contradiction. 
-> 
-> Let $\theta(t) = \langle F(x + th), h \rangle$. By the one-dimensional MVT, we find
-> $$
-> \theta(1) - \theta(0) = \theta' (\theta) = \langle DF(x + th) h, h \rangle > 0
-> $$
-> So, $\theta(1) - \theta(0) > 0$, which is a contradiction!
-> $$
-> \theta(1) - \theta(0) > 0 \Longrightarrow 0 > 0
-> $$
-
-> [!Example] 
-Does there exist an $F : \mathbb{R}^n \to \mathbb{R}^n, C^1$ with $DF(x)$ invertible for all $x \in \mathbb{R}^n$, and $F(\mathbb{R}^n)$ compact?
-
-No. $F(\mathbb{R}^n)$ is open, so it cannot be compact.
-
---- Lagrange Multipliers
 
 # Lagrange Multipliers
 ## Case 1: Surfaces in $\mathbb{R}^3$
@@ -2216,7 +2143,7 @@ $$
 \nabla f(X_0) = \lambda_1 \nabla g(X_0) + \lambda_2 \nabla h(X_0)
 $$
 
-> [!Note] Proof 
+> [!Note]- Proof 
 > Without loss of generality, say $D_{y,z} (g,h) (x_0, y_0,z_0)$ is invertible. By the implicit function theorem, $\exists \gamma : (x_0 - r, x_0 + r) \to \mathbb{R}^2, C^1$ such that $(x, \gamma(x))$ is equal to $C$ in a neighborhood $X_0$.
 > 
 > Let $\phi(x) = f(x, \gamma(x))$, $\gamma : (x_0 - r, x_0 + r) \to \mathbb{R}$, $\gamma$ has an unconstrainer min (or max) at $x_0$, $\gamma' (x_0) = 0$. 
@@ -2268,127 +2195,3 @@ Let $x_0$ be a minimizer ($||x_0|| = 1$). Then, $A x_0 = \lambda x_0$
 > > $$
 > > This is the ith component of $2Ax$!
 > > > The last equality is because $\langle A e_i, x \rangle = \langle e_i, A x \rangle$!
-
-END OF CONTENT! :D 
-
----
-
-Let $p > 1, q > 1$. Prove that
-$$
-\frac{x^p}{p} + \frac{y^q}{q} \ge \frac{1}{p} + \frac{1}{q}
-$$
-If $g(x,y) = xy = 1, x > 0, y > 0$.
-
-At $Q$ minimizer, we have that
-$$
-\nabla f = \lambda \nabla g, xy = 1
-$$
-
-We find the minimizer at $(1,1)$ proving this inequality.
-
-Prove 
-$$
-ab \le \frac{a^p}{p} + \frac{b^q}{q}
-$$ 
-If $a,b > 0$, $p,q > 1$, and $\frac{1}{p} + \frac{1}{q} = 1$.
-
-With the earlier part, if $ab = 1$ Then we are done.
-
-In general, 
-$$
-1 = \frac{ab}{a^{1/p + 1/q} b^{1/p + 1/q}} = \frac{a}{(ab)^{1/p}} \frac{b}{(ab)^{1/q}}
-$$
-Using part a again,
-$$
-\frac{(a / (ab)^{1/p})^p}{p} + \frac{(b / (ab)^{1/q})^q}{q} \ge \frac{1}{p} + \frac{1}{q} = 1
-$$
-
----
-
-A better proof for this is as follows. If $f : I \to \mathbb{R}$ is convex if
-$$
-f( (1 - \theta) x + \theta y) \le (1 - \theta) f(x) + \theta f(y)
-$$
-For all $0 < \theta < 1$, $x,y \in \mathbb{R}$.
-> This is what we know as concave up!
-
-> [!Abstract]
-> If $f : I \to \mathbb{R}$ is differentiable, and $f'(x)$ is increasing on $I$, then $f$ is convex.
-
-With this theorem, we can prove the above problem as follows. Let $a = e^A, b = e^B$. Use $f(x) = e^x$, convex. Then,
-$$
-ab = e^{A + B} = e^{pA / p + qB / q} \le \frac{1}{p} e^{pA} + \frac{1}{q} e^{qB} = \frac{1}{p} a^p + \frac{1}{q} b^q
-$$
-
-> [!Info] Motivation
-Recall if $x_i, y_i > 0$,
-$$
-\sum_{i=1}^n x_i y_i \le (\sum x_i^2)^{1/2} (\sum y_i^2)^{1/2}
-$$
-
-> [!Abstract] Holder's Inequality
-Let $p,q > 1$, $\frac{1}{p} + \frac{1}{q} = 1$. Then, the sum
-$$
-\sum_{i=1}^n x_i y_i \le (\sum_{i=1}^n x_i^p)^{1/p} (\sum_{i=1}^n y_i^q)^{1/q}
-$$
-
-> [!Note] Proof
-> 
-If $(x_1, \dots x_n)$ or $(y_1, \dots y_n)$ are the zero vector, we are done.
-
-Assume that both vectors are non-zero. So,
-$$
-(\sum_{i=1}^n (x_i^p))^{1/p} > 0 \qquad (\sum_{i=1}^n (y_i^q))^{1/q} > 0
-$$
-Both the LHS and RHS are homogeneous of degree 1 in $x$ and $y$. 
-
-> [!Abstract] Theorem
-> Let $f,g : [a,b] \to \mathbb{R}$ continuous. Then,
-> $$
-> \int_a^b |fg| \le \left( \int_a^b |f|^p \right)^{1/p} \left( \int_a^b |g|^q \right)^{1/q}
-> $$
-> 
-> > [!Note] Proof
-> > 
-> > If this is true for some $f$, then it is true for $tf$ (for $t > 0$). Without loss of generality, say
-> > $$
-> > (\int_a^b |f|^p)^{1/p} = 1, (\int_a^b |g|^q)^{1/q} = 1
-> > $$
-> > For each fixed $x$, we find
-> > $$
-> > \begin{align*}
-> > \int_a^b |fg| 
-> > &\le \int_a^b (\frac{1}{p} |f|^p + \frac{1}{q} |g|^q) dx \\
-> > &\le \frac{1}{p} \int_a^b |f|^p + \frac{1}{q} \int_a^b |g|^q \\
-> > &\le \frac{1}{p} + \frac{1}{q} = 1 = \left( \int_a^b |f|^p \right)^{1/p} \left( \int_a^b |g|^q \right)^{1/q}
-> > \end{align*}
-> > $$
-
-Back to our original proof. It suffices to show that for $x_1 < x < x_2$, then $f(x) \le l(x)$, $l$ being our line.
-> We show that our function's slope is less than the lines slope!
-
-
-
-# CMSC132
-1. Heaps
-   - Can you perform the heap operations?
-     - Adding to a heap, popping from a heap (getSmallest())
-   - Can you do these operations on an array and on a tree? 
-   - What is the time complexity of these operations?
-2. Hashing
-   - Can you do the hash table operations?
-     - Adding to a hash table, deleting from a hash table, resizing
-   - Pros and cons of hash table collision resolutions
-     - Bucket hashing, linear probing, double hashing
-   - What are the Java Hash classes? How do they compare to each other?
-3. Graphs 
-   - Pros and cons of different representations. 
-     - Adjacency list, adjacency set, adjacency matrix
-     - Why would we choose one over the other?
-     - Time complexities of graph operations when we do different representations
-   - Breadth First Traversal, Recursive Depth First Traversal, Iterative Depth First Traversal
-     - Can you do each of them quickly? Can you visualize what they're doing?
-4. Djikstra's
-   - Can you trace through Djikstra's algorithm?
-
-> Threading will NOT be on exam 3.

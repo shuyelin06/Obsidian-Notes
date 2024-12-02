@@ -714,3 +714,169 @@ What if $A \vec{x} = \vec{b}$ has infinitely many solutions? Or what if $A \vec{
 
 > [!Abstract] Theorem
 > The vector $\vec{x} = A^+ \vec{b}$ is the least-squares solution of the system $A \vec{x} = \vec{b}$, with the smallest possible norm $|| \vec{x} ||$. 
+
+# Image Compression
+## Matrix Approximations
+Consider the matrix $A$, with SVD $A = U \Sigma V^T$. 
+$$
+A = U 
+\begin{bmatrix}
+\sigma_1 & & & \\
+ & \sigma_2 & & \\
+ & & \ddots & \\
+ & & & \sigma_r \\
+ & & & & 0 \\
+ & & & & & 0
+\end{bmatrix}
+V^T
+\qquad
+\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_r > 0
+$$
+We ask, how could we approximate $A$ with a lower rank matrix?
+> $A$ has rank equal to the number of non-zero singular values!
+
+Well, for a rank $1 \le k \le r$, one way we could approximate $A$ is by dropping all singular values between $k + 1$ to $r$!
+$$
+A_k = U 
+\begin{bmatrix}
+\sigma_1 & & & \\
+ & \ddots & \\
+ & & \sigma_k \\
+ & & & 0 \\
+ & & & & 0
+\end{bmatrix}
+V^T
+$$
+We can find that this is actually the best approximation to $A$ possible.
+
+> [!Abstract] Theorem: Eckart-Young Theorem
+> $A_k$ is the best $k$ approximation to $A$, with error given by the magnitude of the singular values we dropped.
+> $$
+> || A - A_k ||_F = \sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}
+> $$
+> > This is known as the Frobenius norm, and we can also find it by taking the sum of the squares of the entries in the matrix (then square rooting).
+
+> [!Example] Example
+> Find the best rank 1 approximation to
+> $$
+> A = 
+> \begin{bmatrix}
+> 1 & 7 \\ 2 & 15
+> \end{bmatrix}
+> $$
+> 
+> We can find SVD
+> $$
+> A =
+> \begin{bmatrix}
+> -0.4233 & -0.9060 \\ -0.9060 & 0.4233
+> \end{bmatrix}
+> \begin{bmatrix}
+> 16.7032 & 0 \\ 0 & 0.0599
+> \end{bmatrix}
+> \begin{bmatrix}
+> -0.1338 & -0.9910 \\ -0.9910 & 0.1338
+> \end{bmatrix}^T
+> $$
+> 
+> With this, we can find rank 1 approximation by dropping the smallest singular value.
+> $$
+> A_1 =
+> \begin{bmatrix}
+> -0.4233 & -0.9060 \\ -0.9060 & 0.4233
+> \end{bmatrix}
+> \begin{bmatrix}
+> 16.7032 & 0 \\ 0 & 0
+> \end{bmatrix}
+> \begin{bmatrix}
+> -0.1338 & -0.9910 \\ -0.9910 & 0.1338
+> \end{bmatrix}^T = 
+> \begin{bmatrix}
+> 0.9462 & 7.0073 \\ 2.0251 & 14.9966
+> \end{bmatrix}
+> $$
+> 
+> And furthermore, according to the theorem above, we can find error
+> $$
+> || A - A_1 ||_F = \sqrt{0.0599^2} = 0.0599
+> $$
+> 
+> Now say we do a rank 1 approximation on 
+> $$
+> B = 
+> \begin{bmatrix}
+> 3 & 4 \\ -5 & 3
+> \end{bmatrix}
+> $$
+> 
+> We find $\sigma_1 \approx 5.9, \sigma_2 \approx 4.9$! Because $\sigma_2$ is much larger than our previous example, we find a higher error, so we should expect our approximation to be a lot worse.
+
+## Image Compression
+But why do we want to be able to approximate matrices like this?
+
+Well, if we write
+$$
+\begin{align*}
+U &= [ \vec{u}_1, \vec{u}_2 \dots \vec{u}_m ]  \\
+V &= [ \vec{v}_1, \vec{v}_2 \dots \vec{v}_n ] \\
+A &= U \Sigma V^T \\ 
+&= [ \vec{u}_1, \vec{u}_2 \dots \vec{u}_m ]
+\begin{bmatrix}
+\sigma_1 & & & \\
+ & \sigma_2 & & \\
+ & & \ddots & \\
+ & & & \sigma_r \\
+ & & & & 0 \\
+ & & & & & 0
+\end{bmatrix}
+\begin{bmatrix}
+\vec{v}_1^T \\ \vec{v}_2^T \\ \vdots \\ \vec{v}_n^T
+\end{bmatrix} \\
+&= 
+\sigma_1 \vec{u}_1 \vec{v}_1^T + 
+\sigma_2 \vec{u}_2 \vec{v}_2^T + \dots + 
+\sigma_r \vec{u}_r \vec{v}_r^T
+\end{align*}
+$$
+> Each of these terms yields a $m \times n$ matrix!
+
+> [!Abstract] Theorem
+> If $A$ has rank $r$, then
+> $$
+> A = \sigma_1 \vec{u}_1 \vec{v}_1^T + 
+> \sigma_2 \vec{u}_2 \vec{v}_2^T + \dots + 
+> \sigma_r \vec{u}_r \vec{v}_r^T
+> $$
+
+Consequently, the lower rank approximations to $A$ are:
+$$
+\begin{align*}
+A_1 &= \sigma_1 \vec{u}_1 \vec{v}_1^T \\
+A_2 &= \sigma_1 \vec{u}_1 \vec{v}_1^T + 
+\sigma_2 \vec{u}_2 \vec{v}_2^T \\
+&\vdots \\
+A_k &= \sigma_1 \vec{u}_1 \vec{v}_1^T + 
+\sigma_2 \vec{u}_2 \vec{v}_2^T 
++ \dots + \sigma_k \vec{u}_k \vec{v}_k^T \\
+\end{align*}
+$$
+> We can find the lower rank approximations by dropping the smallest $\sigma_i$ terms!
+
+This gives us a way to store lower rank approximations! For example, instead of explicitly storing $A_1$, we only need to store $\sigma_1, \vec{u}_1, \vec{v}_1$, and the computer can reconstruct the original matrix for us! 
+
+This is a lot cheaper than storing $A_1$. If $A_1$ is $1000 \times 1000$, for example, then instead of storing the entire matrix (1 million entries), we only need to store $1 + 1000 + 1000 = 2001$ entries! If we store these entries in a file, then the computer can take these entries and regenerate the original image!
+
+Generalizing, we can compute $n \times n$ matrix $A_k$ provided we know and store the collection
+$$
+\begin{cases}
+\sigma_1 \quad \dots \quad \sigma_k \\
+\vec{u}_1 \quad \dots \quad \vec{u}_k \\
+\vec{v}_1 \quad \dots \quad \vec{v}_k
+\end{cases}
+$$
+Which would take $k + kn + kn = (2n + 1) k$ entries, opposed to the original $n^2$ entries of the matrix! In fact we can actually have our approximation take $2nk$ entries, if we multiply the $\sigma_i$'s into one of the vectors!
+
+This will be useful if
+$$
+2kn < n^2 \Longrightarrow k < \frac{n}{2}
+$$

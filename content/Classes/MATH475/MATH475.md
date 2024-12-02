@@ -2339,3 +2339,6 @@ Some notes:
 > d = 2, 3, 7, \text{(maybe)} \; 57
 > $$
 > > $d = 2$ is the $C_5$ graph, $d = 3$ is the Petersen graph, $d = 7$ is the Hoffman-Singleton graph, and $d = 57$ is yet to be solved.
+
+---
+

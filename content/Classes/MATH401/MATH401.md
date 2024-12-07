@@ -880,3 +880,30 @@ This will be useful if
 $$
 2kn < n^2 \Longrightarrow k < \frac{n}{2}
 $$
+
+So suppose we have a (grayscale) picture that is $n \times n$ pixels (could be $m \times n$). THe color of each pixel is a shade of gray, encoded as a number between 0 (black) and 1 (white).
+
+This gives us a marix $A$, which we can compress using rank $k$ approximations!
+$$
+A_k = \sigma_1 \vec{u}_1 \vec{v}_1^T + 
+\sigma_2 \vec{u}_2 \vec{v}_2^T 
++ \dots + \sigma_k \vec{u}_k \vec{v}_k
+$$
+
+Now, is there a quantitative way to gauge the quality of our compressed image?
+1. The **error** in approximation is found as the Frobenius Norm,
+   $$
+   || A - A_k ||_F = \sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}
+   $$
+2. But the above error can be great if you have many pixels! So, normalizing the above error, we can find
+   $$
+   \frac{||A - A_k||_F}{||A||_F} = \frac{\sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}}{\sqrt{\sigma_1^2 + \dots + \sigma_r^2}}
+   $$
+   It is convenient to work with the square of this! This tells us how bad the compression is.
+   $$
+   \frac{\sigma_{k+1}^2 + \dots + \sigma_r^2}{\sigma_1^2 + \dots + \sigma_r^2}
+   $$
+   Now, if we want to know how good it is, we can subtract it from 1! This is known as the **compression rate / image quality**, tracking the percentage of variance preserved from the compression.
+   $$
+   \frac{\sigma_1^2 + \dots + \sigma_k^2}{\sigma_1^2 + \dots + \sigma_r^2} = \frac{||A_k||_F^2}{||A||_F^2}
+   $$

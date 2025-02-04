@@ -74,6 +74,7 @@ Each of the spaces $K,M,C$ can be given as random variables with probability dis
   > Typically, we will assume that $K$ has the uniform probability distribution (each key is of equal probability)
 - $Pr[M = m], m \in M$ denotes the probability that the message is equal to $m$, modeling some prior knowledge the adversary may have about the message.
 - $Pr[C = c], c \in C$ denotes the probability that the ciphertext is $c$, which is fully determined by the distribution on $K$, $M$, and `Enc`.
+  - $C = Enc_K (M)$
 
 We assume that the distributions over $K$ and $M$ are independent.
 
@@ -148,3 +149,128 @@ In other words, the probability that our message is $m$ does not change even if 
 > 
 > This is bad, because we could just choose an encryption scheme with only one key, so it's completely deterministic! For example, we do a shift cipher with only possible key $k = 13$. Then, for any ciphertext, $Pr[K = k | C = c] = 1 = Pr[K = k]$, but we can easily reverse the encryption scheme.
 > > Another solution is, this definition says nothing about the message! So, we could have a scheme that doesn't do anything to the message (leaves it unencrypted), and generates a random key! 
+
+## The One-Time Pad
+The One-Time Pad is a symmetric encryption scheme. It works as so:
+1. Fix integer $\ell > 0$. $M,K,C$ are all equal to $\{0,1\}^\ell$.
+2. `Gen`: Choose a string from $K = \{0,1\}^\ell$ according to the uniform distribution
+3. `Enc`: Given $k \in \{0,1\}^\ell$, $m \in \{0,1\}^\ell$, output $c := k \oplus m$.
+4. `Dec`: Given $k \in \{0,1\}^\ell$, $c \in \{0,1\}^\ell$, output $m := k \oplus c$.
+
+> Note that the notation $\{0,1\}^\ell$ stands for binary numbers (digits 0 or 1) of length $\ell$.
+
+> [!Example]+ Example: One-Time Pad Example
+> Let's see an example of the one-time pad. Let $\ell = 3$, and suppose we have message $m = 011$, key $k = 101$. 
+> 
+> One time pad encrypts the ciphertext by XORing the binary numbers.
+> ```
+> 011 XOR 101 = 110
+> ```
+> $c = 110$! To decrypt, we XOR the ciphertext with our key again.
+> ```
+> 110 XOR 101 = 011
+> ```
+
+> [!Abstract] Theorem: OTP Secrecy
+> The one-time pad encryption scheme is perfectly secret.
+>
+> > [!Note]- Proof
+> > 
+> > Recall that a scheme is perfectly secret if for all distributions on $M$, $\forall c \in C$, $\forall m_0, m_1 \in M$,
+> > $$
+> > Pr[C = c | M = m_0] = Pr[C = c | M = m_1]
+> > $$
+> > 
+> > Fix distribution over $M$, $c \in C$, $m_0, m_1$. 
+> >
+> > For $c, m$,
+> > $$
+> > \begin{align*}
+> > Pr[C = c | M = m] 
+> > &= Pr[M \oplus K = c | M = m] &\text{OTP Scheme} \\
+> > &= \frac{Pr[M \oplus K = c \land M = m]}{Pr[M = m]} &\text{Conditionals} \\
+> > &= \frac{Pr[m \oplus K = c \land M = m]}{Pr[M = m]} \\
+> > &= \frac{Pr[K = c \oplus m \land M = m]}{Pr[M = m]} \\
+> > &= \frac{Pr[K = c \oplus m] Pr[M = m]}{Pr[M = m]} &\text{K, M Independent} \\
+> > &= Pr[K = m \oplus c] = \frac{1}{2^\ell}
+> > \end{align*}
+> > $$
+> > 
+> > Thus,
+> > $$
+> > Pr[C = c | M = m_0] = \frac{1}{2^\ell} = Pr[C = c | M = m_1]
+> > $$
+> > By perfect indistinguishability, OTP is perfectly secret.
+
+The one-time pad is one of the few perfectly secret algorithms, and in fact, many schemes are variants / equivalent to the one-time pad. Thus, for proofs it's often a good idea to start from the OTP and modify the scheme from there.
+
+> [!Example]- Example: Perfectly Secret Example
+> Prove or refute: An encryption scheme with message space $M$ is perfectly secret if and only if for every probability distribution over $M$ and every $c_0, c_1 \in C$ we have $Pr[C = c_0] = Pr[C = c_1]$.
+> 
+> Not true. To show why, we will construct a perfectly secret scheme that violates this. To do this, we will start from the one-time-pad (this is a good technique).
+>
+> For message of length $\ell$, let's take a key of length $\ell + 1$, $k||b$ where $k \in \{0,1\}^\ell$, $b = 0,1$ with varying probabilities. Then, 
+> $$
+> c = (m \oplus k) || b
+> $$
+> > $||$ stands for the concatenating of binary strings together.
+> 
+> Because of the biased bit, our ciphertexts do not have the same probability, but no information is released!
+>
+> Formally, choose any distribution over $M$, $c_0, c_1$, where $c_0 = c || 0, c_1 = c || 1$. Then,
+> $$
+> Pr[C = c || 0] = Pr[C = c] * Pr[B = 0] \ne Pr[C = c] * Pr[B = 1] = Pr[C = c || 1]
+> $$
+
+The one-time pad is a powerful scheme, but it doesn't come without its flaws:
+1. The key length is the same as the message length, so for every bit communicated over a public channel, a bit must be shared privately. 
+   - This is an inherent problem in perfectly secret encryption schemes! We prove this in the following theorem. 
+2. Key can only be used once.
+
+> This makes it very difficult to use the one-time pad in practice.
+
+
+> [!Abstract] Theorem: Limitations of Perfect Secrecy
+> Let us have a perfectly secret encryption scheme over message space $M$, key space $K$. Then, it must be true that $|K| \ge |M|$.
+> > In most cases, this means that the lengths of the keys must be the same or longer than the lengths of our messages!
+>
+> > [!Note] Proof
+> > 
+> > By way of contradiction, assume we have a perfectly secret encryption scheme where $|K| < |M|$.
+> > 
+> > To obtain our contradiction, we must show that there exists a probability distribution $M$, message $m \in M$, and ciphertext $c \in C$ such that
+> > $$
+> > Pr[M = m | C = c] \ne P[M = m]
+> > $$
+> > > Often, when contradicting perfect secrecy, we use the uniform distribution on $M$.
+> > 
+> > Let $M$ have the uniform distribution. By perfect secrecy, for $m \in M$, $c \in C$,
+> > $$
+> > Pr[M = m | C = c] = P[M = m]
+> > $$
+> > Let's do a brute force search over the key-space. Let $\mathbb{M}(c)$ be the set of all messages $Dec_K (c)$. Because the decryption is deterministic, we have that $|\mathbb{M}(c)| \le |K| < |M|$ (it can be smaller if multiple keys decrypt to the same message). 
+> > 
+> > So, there exists some message $m^* \in M$ that is contained in $M$ but not $\mathbb{M}(c)$. Choose this message instead. Then,
+> > $$
+> > Pr[M = m^* | C = c] = 0 \ne P[M = m^*] = \frac{1}{|M|}
+> > $$
+> > This is a contradiction! So, our scheme cannot be perfectly secret.
+
+End of lecture ---
+
+> [!Example] 
+> $M = \{0,1, \dots n-1\}$, $K = \{0,1,\dots n-1\}$. Gen() chooses a key at random from $K$, $Enc_k(m) = m + k$, $Dec_k (c) = c - k$. Is this perfectly secret?
+>
+> No. BWOC, suppose it is. Let $n = 20$, and let $M$ have the uniform distribution, and let $m = 10, c = 5$. Then,
+> $$
+> Pr[M = 10 | C = 5] = 0 \ne Pr[M = 10] = \frac{1}{20}
+> $$
+
+> [!Abstract] Shannon's Theorem
+> Say we have encryption scheme with message space $M$, for which $|M| = |K| = |C|$. The scheme is perfectly secret if and only if: 
+> 1. Every key $k \in K$ is chosen with equal probability $1 / |K|$ by algorithm `Gen`.
+> 2. For every $m \in M$, $c \in C$, there exists a unique key $k \in K$ such that $Enc_k (m) \to c$.
+>
+> > [!Note] Proof
+> > 
+

@@ -129,15 +129,155 @@ $$
 \text{Speedup}_2 = \frac{1}{(1 - 0.9) + \frac{0.9}{1.2}} = 1.176
 $$
 
-Thus, a small speedup on most of the time is a lot better than a significant speedup on only a portion of the time! Some notes:
-- While we still achieve a speed-up in either case, sometimes significant speedups are a lot more expensive than minor speedups across the board.
-- If we keep improving only one part of a program, our overall speedup will increase slower and slower! There are diminishing returns for focusing only on one part of a program.
+> [!Tip] Main Idea
+> **Accelerate the common case**! Small speedups on most of the time is better than a speedup on only a portion of the time! Furthermore,
+> - While we still achieve a speed-up in either case, sometimes significant speedups are a lot more expensive than minor speedups across the board.
+> - If we keep improving only one part of a program, our overall speedup will increase slower and slower! There are diminishing returns for focusing only on one part of a program.
+
+
+# Pipelining
+## Concept
+Pipelining is a powerful concept that is used in every single computer today. We describe what pipelining is and consequences of it here.
+
+When running an instruction, a simple processor generally goes through the following stages:
+- **Instruction Fetch (IF)**: Read an instructinon
+- **Instruction Decode (ID)**: See what the instruction is 
+- **Execute (EX)**: Perform the computation
+- **Memory (MEM)**: Access memory (if needed)
+- **Write-Back (WB)**: Write the results back in registers
+
+![[Pipeline-None.png]]
+
+For the sake of example, say our stages take the following amount of time.
+
+| Stage | Time | 
+| :-: | :-: |
+| IF | 1.0ns |
+| ID | 0.6ns | 
+| EX | 0.9ns |
+| MEM | 1.2ns |
+| WB | 0.4ns |
+
+Without pipelining, our execution would be sequential, one stage after the next. Most instructions can be made to run in 1 clock-cycle, **but a clock-cycle must be long enough to complete even the most time-consuming instruction**! So, in our case, we would take 4.1ns to run our instruction. 
+
+If we wanted to run many instructions, then we would be able to run an instructionn every 4.1ns. 
+> Even if instructions could be faster, our 4.1ns instruction sets a lower bound on the clock speed time. 
+
+---
+
+To make this a bit better, let's break up an instruction among multiple clock cycles. If we place memory between each stage, then they can write their output to memory for the next stage to use! This separates the instruction up into independent stages. For example:
+- Cycle 1, IF runs and writes to ID's input memory
+- Cycle 2, ID runs and writes to EX's input memory
+- Cycle 3, EX runs and writes to MEM's input memory
+- Cycle 4, MEM runs and writes to WB's input memory
+
+![[Pipeline-Memory.png]]
+ 
+Now, our instruction takes 5 cycles! This actually increases the latency, and in our case, as the longest stage is MEM (1.2ns), our instruction would now take 6.0ns. Why would we want to do this?
+
+This is worth it, because **we don't care about latency, we care about throughput!** Now, because each stage no longer needs to wait on the entire instruction to finish before executing the next, it can start on the next instruction immediately!
+- Cycle 1, IF runs (1) and writes to ID's input memory.
+- Cycle 2, ID runs (1) and writes to EX's input memory; IF starts the next instruction (2).
+- Cycle 3, EX runs (1) and writes to MEM; ID runs instruction (2); IF starts the next instruction (3).
+
+```
+I1
+IF -> ID -> EX -> MEM -> WB
+
+I2    I1
+IF -> ID -> EX -> MEM -> WB
+
+I3    I2    I1
+IF -> ID -> EX -> MEM -> WB
+
+...
+```
+
+So, even though our single instruction takes 6.0ns, because our clock-cycle is defined by the longest stage (1.2ns), using pipelining we can now execute instructions every 1.2ns! Compare that with our 4.1ns time before. 
+> Even though latency for a single instruction is higher, because we're "pre-loading" the overall throughput is higher! 
+
+Some consequences of this:
+- Pipelining takes more memory, and makes instructions take multiple clock cycles.
+- Pipelining is bounded by the **longest stage**, as this sets a bound on the processor's clock time.
+  - A consequence of this is the more balanced our stages are in time-execution, the better!
+- We can add more stages, but the more stages we have, the higher the clock frequency needs to be for this to be useful! Whether we are able to do this or not depends on the technology we have. 
+
+## Pipelining Issues
+Pipelining does not automatically ensure we get an instruction per cycle of 1 if our pipeline is balanced. Some factors that get in the way of throughput include...
+
+---
+
+**Data Dependencies** are instructions whose execution depends on the previous one (meaning we cannot rearrange their order). This is a property of the **program alone**. Some examples of this include:
+- **Read-After-Write (RAW)**: A true dependency; instructions that need to read values written by previous instructions
+  ```python
+  # Here, the result of t0 is being used in the next instruction.
+  # There is a dependency here.
+  xor t0, t1, t2
+  add t4, t1, t0
+  ```
+- **Write-After-Read (WAR)**: An anti-dependency; an instruction writes to a register that needs to be read from in a previous instruction. 
+  ```python
+  # Because xor uses t1, there is a dependency as add may change the
+  # contents of t1.
+  xor t0, t1, t2
+  add t1, t2, t3
+  ```
+- **Write-After-Write (WAW)**: An output-dependency; two instructions write to the same register.
+  ```python
+  # Both instructions write to the same register, so order of execution
+  # matters.
+  xor t0, t1, t2
+  add t0, t2, t4
+  ```
+
+Data dependencies can create a hazard if they result in incorrect execution-- this can happen with RAW dependencies and pipelining.
+> There is no hazard with WAR and WAW dependencies, though they are technically dependencies.
+
+> [!Example]+ Example: Hazard of Raw Dependency
+> Consider the following RAW dependency: 
+> ```python
+> xor t0, t1, t2
+> add t4, t0, t3
+> mul t5, t1, t3
+> ```
+> 
+> In our pipeline, we have to execute as follows. Note the `nop` instruction (indicating no instruction). Reading occurs in ID:
+> 
+> | | IF | ID | EX | MEM | WB |
+> | :-: | :-: | :-: | :-: | :-: | :-: |
+> | 1 | xor | 
+> | 2 | add | xor | 
+> | 3 | >mul< | >add< | xor | 
+> | 4 | >mul< | >add< | `nop` | xor | 
+> | 5 | >mul< | >add< | `nop` | `nop` | xor | 
+> | 6 | mul | add | `nop` | `nop` | `nop` | 
+> | 7 | | mul | add | `nop` | `nop` |
+> | 8 | | | mul | add | `nop` |
+> | 9 | | | | mul | add | 
+> | 10 | | | | | mul |
+> 
+> > Each entry tells us what instruction the stage is on. `><` indicates the instruction is stalled (not doing anything).
+> 
+> If `add` were to execute on cycle 4, our program execution would be undefined! This is because $t0$ has not been updated with the results of `xor`, so `add` must wait until `xor ` finishes and writes its output. 
+> > WB (Write-Back) is where `xor` writes its output.
+
+> Note that the order of execution above could be optimized. For example, most register files **write on the rising edge** of a clock cycle, and **read on the falling edge** of a clock cycle. This means that the dependent instruction can read the same cycle the value is written (so, cycle 6 doesn't need to stall).
+
+RAW dependencies aren't a hazard if the instructions are far enough apart, as they won't in the pipeline at the same time. 
+
+From a computer architecture standpoint, how can we handle hazards? 
+- **Data Forwarding**: Because we're stalled until WB, we could add a write connecting the output of EX to the input of the next instruction's EX stage. ...
+
+
+
+
+
+- Memory access
+- Control dependencies (branches)
 
 
 ---
 
-- Introduction to computer architecture
-- Performance metrics
 - Pipelining
 - Branches and branch prediction
 - Instruction-level parallelism (ILP)

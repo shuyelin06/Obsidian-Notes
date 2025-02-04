@@ -111,3 +111,55 @@ So far, we know how to take a parametric curve and generate a polyline approxima
 
 ### Rendering Polylines
 ...
+
+
+---
+
+
+> [!Example] 
+> We have implicit equation
+> $$
+> \left( \frac{x}{a} \right)^2 - \left( \frac{y}{b} \right)^2 = 1
+> $$
+> 
+> And parametric equation
+> $$
+> x(t) = a \sec{t} \qquad y(t) = b \tan{t}
+> $$
+> 
+> Verify that these equations satisfy the implicit equation.
+> 
+> We can do this by plugging in $x,y$ into our implicit equation and seeing if the expression holds!
+> $$
+> \left( \frac{a \sec{t}}{a} \right)^2 - \left( \frac{b \tan{t}}{b} \right)^2 = \sec^2 (t) - \tan^2 (t) = 1
+> $$
+> > Here, we can use trig identities to see if the expression is true!
+
+
+---
+
+# WebGL
+Many of the principles in WebGL can be applied to other Graphics APIs!
+
+## Primitives
+To draw in WebGL, we do not have functions like `drawVertex()` that would draw vertex by vertex-- that would be too inefficient!
+
+Instead, WebGL has **primitive types**, where we can submit batches of vertices together that form primitives. 
+- `gl_POINTS`: A set of points in space
+- `gl_LINES`: A set of lines, where every two vertices form their own line
+- `gl_LINE_STRIP`: A set of lines, where every vertex is connected to the one before and after it.
+- `gl_LINE_LOOP`: A line strip, but with the very first and last vertex also connected.
+- `gl_TRIANGLES`: A set of triangles, where every 3 vertices form a triangle.
+- `gl_TRIANGLE_STRIP`: A set of triangles, where every vertex forms a triangle with the last 2.
+  > Every other triangle, the triangle is read in the opposite winding direction to keep everything consistent. 
+- `gl_TRIANGLE_FAN`: A set of triangles, where every two vertices after the first form a triangle with the first.
+
+For triangles, **the order of the points define a winding direction**. Depending on how you see the triangle in 3D space, it either has a clockwise or counter-clockwise order!
+> By default, OpenGL defines counter-clockwise winding as the front of the triangle.
+
+## (Basic) Drawing Loop
+THe drawing loop in OpenGL is as follows:
+1. Load points into a buffer, which are sent to the GPU
+   - Consists of creating a buffer, loading points into it, and binding it to the rendering pipeline.
+2. Submit a command to the GPU to draw the shape, using what we've bound to the pipeline
+3. 

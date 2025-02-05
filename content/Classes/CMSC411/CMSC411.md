@@ -146,7 +146,7 @@ When running an instruction, a simple processor generally goes through the follo
 - **Memory (MEM)**: Access memory (if needed)
 - **Write-Back (WB)**: Write the results back in registers
 
-![[Pipeline-None.png]]
+![["References/Pipeline-None.png"]]
 
 For the sake of example, say our stages take the following amount of time.
 
@@ -171,7 +171,7 @@ To make this a bit better, let's break up an instruction among multiple clock cy
 - Cycle 3, EX runs and writes to MEM's input memory
 - Cycle 4, MEM runs and writes to WB's input memory
 
-![[Pipeline-Memory.png]]
+![["References/Pipeline-Memory.png"]]
  
 Now, our instruction takes 5 cycles! This actually increases the latency, and in our case, as the longest stage is MEM (1.2ns), our instruction would now take 6.0ns. Why would we want to do this?
 
@@ -247,10 +247,10 @@ Data dependencies can create a hazard if they result in incorrect execution-- th
 > | :-: | :-: | :-: | :-: | :-: | :-: |
 > | 1 | xor | 
 > | 2 | add | xor | 
-> | 3 | >mul< | >add< | xor | 
+> | 3 | mul | add | xor | 
 > | 4 | >mul< | >add< | `nop` | xor | 
 > | 5 | >mul< | >add< | `nop` | `nop` | xor | 
-> | 6 | mul | add | `nop` | `nop` | `nop` | 
+> | 6 | >mul< | >add< | `nop` | `nop` | `nop` | 
 > | 7 | | mul | add | `nop` | `nop` |
 > | 8 | | | mul | add | `nop` |
 > | 9 | | | | mul | add | 
@@ -267,7 +267,6 @@ RAW dependencies aren't a hazard if the instructions are far enough apart, as th
 
 From a computer architecture standpoint, how can we handle hazards? 
 - **Data Forwarding**: Because we're stalled until WB, we could add a write connecting the output of EX to the input of the next instruction's EX stage. ...
-
 
 
 

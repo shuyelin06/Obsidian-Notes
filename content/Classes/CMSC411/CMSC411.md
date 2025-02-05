@@ -136,7 +136,7 @@ $$
 
 
 # Pipelining
-## Concept
+## Pipelining Overview
 Pipelining is a powerful concept that is used in every single computer today. We describe what pipelining is and consequences of it here.
 
 When running an instruction, a simple processor generally goes through the following stages:
@@ -146,7 +146,7 @@ When running an instruction, a simple processor generally goes through the follo
 - **Memory (MEM)**: Access memory (if needed)
 - **Write-Back (WB)**: Write the results back in registers
 
-![["References/Pipeline-None.png"]]
+![[Classes/CMSC411/Resources/Pipeline-None.png]]
 
 For the sake of example, say our stages take the following amount of time.
 
@@ -171,7 +171,7 @@ To make this a bit better, let's break up an instruction among multiple clock cy
 - Cycle 3, EX runs and writes to MEM's input memory
 - Cycle 4, MEM runs and writes to WB's input memory
 
-![["References/Pipeline-Memory.png"]]
+![[Classes/CMSC411/Resources/Pipeline-Memory.png]]
  
 Now, our instruction takes 5 cycles! This actually increases the latency, and in our case, as the longest stage is MEM (1.2ns), our instruction would now take 6.0ns. Why would we want to do this?
 
@@ -202,12 +202,11 @@ Some consequences of this:
   - A consequence of this is the more balanced our stages are in time-execution, the better!
 - We can add more stages, but the more stages we have, the higher the clock frequency needs to be for this to be useful! Whether we are able to do this or not depends on the technology we have. 
 
-## Pipelining Issues
-Pipelining does not automatically ensure we get an instruction per cycle of 1 if our pipeline is balanced. Some factors that get in the way of throughput include...
+## Data Dependency Issues
+Pipelining does not automatically ensure we get an instruction per cycle of 1 if our pipeline is balanced. Introducing pipeline can also introduce issues that can add stalls.
 
----
-
-**Data Dependencies** are instructions whose execution depends on the previous one (meaning we cannot rearrange their order). This is a property of the **program alone**. Some examples of this include:
+One notable issue is **data dependencies**. These are instructions whose execution depends on the previous one (meaning we cannot rearrange their order). This is a property of the **program alone**. 
+Some data dependencies include:
 - **Read-After-Write (RAW)**: A true dependency; instructions that need to read values written by previous instructions
   ```python
   # Here, the result of t0 is being used in the next instruction.
@@ -230,54 +229,163 @@ Pipelining does not automatically ensure we get an instruction per cycle of 1 if
   add t0, t2, t4
   ```
 
-Data dependencies can create a hazard if they result in incorrect execution-- this can happen with RAW dependencies and pipelining.
+Data dependencies are **hazards** if they result in incorrect execution-- this can happen with RAW dependencies if we pipeline.
 > There is no hazard with WAR and WAW dependencies, though they are technically dependencies.
-
-> [!Example]+ Example: Hazard of Raw Dependency
-> Consider the following RAW dependency: 
-> ```python
-> xor t0, t1, t2
-> add t4, t0, t3
-> mul t5, t1, t3
-> ```
-> 
-> In our pipeline, we have to execute as follows. Note the `nop` instruction (indicating no instruction). Reading occurs in ID:
-> 
-> | | IF | ID | EX | MEM | WB |
-> | :-: | :-: | :-: | :-: | :-: | :-: |
-> | 1 | xor | 
-> | 2 | add | xor | 
-> | 3 | mul | add | xor | 
-> | 4 | >mul< | >add< | `nop` | xor | 
-> | 5 | >mul< | >add< | `nop` | `nop` | xor | 
-> | 6 | >mul< | >add< | `nop` | `nop` | `nop` | 
-> | 7 | | mul | add | `nop` | `nop` |
-> | 8 | | | mul | add | `nop` |
-> | 9 | | | | mul | add | 
-> | 10 | | | | | mul |
-> 
-> > Each entry tells us what instruction the stage is on. `><` indicates the instruction is stalled (not doing anything).
-> 
-> If `add` were to execute on cycle 4, our program execution would be undefined! This is because $t0$ has not been updated with the results of `xor`, so `add` must wait until `xor ` finishes and writes its output. 
-> > WB (Write-Back) is where `xor` writes its output.
-
-> Note that the order of execution above could be optimized. For example, most register files **write on the rising edge** of a clock cycle, and **read on the falling edge** of a clock cycle. This means that the dependent instruction can read the same cycle the value is written (so, cycle 6 doesn't need to stall).
-
-RAW dependencies aren't a hazard if the instructions are far enough apart, as they won't in the pipeline at the same time. 
-
-From a computer architecture standpoint, how can we handle hazards? 
-- **Data Forwarding**: Because we're stalled until WB, we could add a write connecting the output of EX to the input of the next instruction's EX stage. ...
-
-
-
-
-- Memory access
-- Control dependencies (branches)
-
 
 ---
 
-- Pipelining
+Consider the following example. Say we have the following RAW dependency: 
+```python
+xor t0, t1, t2
+add t4, t0, t3
+mul t5, t1, t3
+```
+
+In our pipeline, we have to execute as follows. Note the `nop` instruction (indicating no instruction). Reading occurs in ID:
+
+| | IF | ID | EX | MEM | WB |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+| 1 | xor | 
+| 2 | add | xor | 
+| 3 | mul | add | xor | 
+| 4 | >mul< | >add< | `nop` | xor | 
+| 5 | >mul< | >add< | `nop` | `nop` | xor | 
+| 6 | >mul< | >add< | `nop` | `nop` | `nop` | 
+| 7 | | mul | add | `nop` | `nop` |
+| 8 | | | mul | add | `nop` |
+| 9 | | | | mul | add | 
+| 10 | | | | | mul |
+
+> Each entry tells us what instruction the stage is on. `><` indicates the instruction is stalled (not doing anything).
+
+If `add` were to execute on cycle 4, our program execution would be undefined! This is because $t0$ has not been updated with the results of `xor`, so `add` must wait until `xor` finishes and writes its output. 
+> WB (Write-Back) is where `xor` writes its output, and EX (Execute) is where `add` reads in input.
+
+How could we minimize the effects of hazards?
+
+### Minimizing Stalls: Optimizing Execution
+Optimize the order of command execution (if possible). RAW dependencies aren't a hazard if the instructions are far enough apart, as they won't in the pipeline at the same time. 
+
+Optimize how the processor handles the commands. For example, most register files **write on the rising edge** of a clock cycle, and **read on the falling edge** of a clock cycle. This means that the dependent instruction can read the same cycle the value is written (so, cycle 6 doesn't need to stall).
+
+### Minimizing Stalls: Data Forwarding
+Another option is **data forwarding**. Our pipeline is forced to stall because `add` must wait on WB to finish, but the value is ready earlier than WB!
+
+So, instead of waiting on WB, we could add a wire directly connecting the output of EX to its input, so that EX can proceed by reusing its output!
+
+![[Classes/CMSC411/Resources/Pipeline-Forwarding.png]]
+
+> Note that this wire has to be connected in the MEM stage, as if we connect EX's output directly to its input in the EX stage we could have timing issues. **There needs to be some sort of pipeline memory between the source and destination of the forwarding line**.
+
+Note that this simple forwarding doesn't always work.
+- If the dependent instructions are not next to each other, forwarding fails as the output of EX is no longer present.
+- If the first instruction is a load, the data comes directly from memory, and the value will have to go to the WB stage to be used as input (it won't reach the data forwarding path).
+
+It is possible to address the latter issue, by adding more wires! We can wire the output of MEM to our EX input!
+
+However, this doesn't come without cost. Adding more wires not only is more complex, but also means we have to know how to choose between our different wires. This requires extra logic (which can stall things down).
+
+Forwarding does not remove all possible pipeline stalls. Some stalls it cannot remove include:
+- Long memory stalls
+- Long latency instruction stalls
+- Control dependency or branch stalls
+
+
+
+# Branching / Branch Prediction
+**Hazards** are problems that reduce the performance of the pipeline. There are 3 kinds of hazards:
+- **Data Hazards**: Dependencies between instructions preventing their overlapped execution
+- **Structural Hazards**: There are not enough hardware resources for all combinations of instructions
+- **Control Hazards**: A branch instruction may change the program counter (PC).
+
+---
+
+We look at control hazards. The main issue with this is that after a branch, we don't know what command to execute next!
+
+Consider the following example.
+```
+  beq t4, t0, target
+  mul t5, t1, t3
+  sub t6, t0 t1
+
+target:
+  add t1, t0, t2
+```
+Because of our branch instruction, we don't know whether or not `mul` or `add` instruction will execute next! So, we do not know what instruction to fetch into the pipeline.
+
+This is really bad! If our branch decision is finalized in the $N^{th}$ stage of the pipeline, then we won't know what to fetch for $~N$ cycles! This creates a major stall.
+> This is worsened by the fact that branches are approximately 20% of all instructions in a program!
+
+To minimize the effects of this hazard, let's try to **predict branches**, and predict them well! 
+- Given a branch, predict a path it will take.
+- Fetch, decode, ... on the predicted path. Different scenarios determine whether or not we execute or not on the predicted path.
+- If needed, recover from any mispredictions, reestarting the fetch from the correct path.
+
+Branch prediction asks the following question. Given the PC of the current and previous instructions, we want to predict the PC of the next instruction to fetch. It must correctly guess:
+- Is the instruction a branch?
+  - No: No action needed
+  - Yes: Then, is it taken? (WHETHER)
+    - Yes: Then, what is the target PC? (WHERE)
+
+> For unconditional branches, we just need to predict WHERE the target is. For conditional branches, we need to predict WHETHER it's taken and WHERE it goes.
+
+The below table illustrates the "difficulty" of predicting various branch types. 
+
+| Branch Type | Whether | Where |
+| :- | :-: | :-: |
+| Unconditional Branches, Function Calls | Easy (Always) | Easy |
+| Conditional Branches | Difficult | Easy | 
+| Indirect Jumps, Function Returns | Easy (Always) | Not Easy |
+
+> **Direct** means the target address is in the instruction. Otherewise, if it is an **indirect** branch, the target address is either stored in memory, or we need to calculate it.
+
+---
+
+**Static Prediction** means we always predict one outcome. This is easy to implement!
+- **NT**: We always predict the branch is not taken, we have 30-40% accuracy.
+- **T**: We always predict the branch is taken, we have 60-70% accuracy.
+- **Backward T, Forward NT (BTFNT)**: If we're in a loop, depending on the order of iteration we can predict if the branch is taken (since the loop will run more than a few iterations).
+
+Say we have a predictor that always predicts NT. This requires no extra memory, and requires we simply just increment PC (which we already do anyways)! Then,
+- 80% of our instructions are not branches, so we're always accurate on those.
+- 20% of our instructions are branches, if 60% are taken, then we are accurate for an additional 8% of instructions.
+
+> We count all instructions, so we can do speed-up calculations on the CPI.
+
+Better accuracy means we have a better CPI, and these effects are increasingly significant on more advanced processors. A formula to calculate this is:
+$$
+CPI = \text{Ideal CPI} + \frac{1}{n} (\% \text{ Misprediction} * \text{Penalty} + \% \text{ Correct Prediction} * \text{Overhead}) 
+$$
+Where $n$ denotes the number of instructions until we see a branch (the frequency of branches)
+> Penalty depends on the number of cycles we miss on an incorrect branch prediction.
+
+---
+
+What if we use the history of branches? If we know what a branch has done in previous cycles, then we may be able to make a more educated guess!
+
+To do this, given a branch, we:
+- Look-up a predictor table
+- This table returns what we are looking for (for example, the next PC), based on the current PC.
+- Update the branch history
+
+The **Branch Target Buffer (BTB)** is a simple implementation of this.
+1. If address matches a BTB entry, we predict it to be a branch.
+2. After fetching instructions, we use the entry's PC to predict where to fetch the next instruction from.
+3. Once the branch resolves, update the BTB if needed.
+4. In the pipeline, if we find a misprediction, update the BTB entry.
+
+To do this, we can hash our PC! We store a table of $K$ entries, that PC's hash to. We look at the entry of the table to find the next PC to jump to.
+> Hash collisions can cause issues with this.
+
+1. Predict if the branch is happening or not
+2. Use BTB to know where to go to
+
+---
+
+Direction Prediction: Use history to see what direction we predict the branch to go in
+
+---
+
 - Branches and branch prediction
 - Instruction-level parallelism (ILP)
 - Memory hierarchy

@@ -382,7 +382,168 @@ To do this, we can hash our PC! We store a table of $K$ entries, that PC's hash 
 
 ---
 
-Direction Prediction: Use history to see what direction we predict the branch to go in
+BTB stores target addresses; how do we use the BTB only to get the target addresses that we need the BTB for? 
+> This is needed for conditional branches!
+
+But how do we predict the outcome of the branch? This is called **Direction Prediction**.
+- Static Prediction: Use a fixed rule
+- Dynamic Prediction: Use history and keep history updated. This is based off the assumption that the predicted direction is likely to be the same as the last time!
+
+> By convention, we will say not taken is $N$, and taken is $T$.
+
+## 1-Bit Branch Prediction
+**One-Bit Branch Predictor**: Stores 1 bit per branch (hashed) to make predictions about the branch.
+
+For $K$ bits of the branch instruction address, the 1-bit branch predictor stores a **Branch History Table (BHT)** of $2^k$ bits, 1 bit per entry. This bit tells us to predict if the branch was taken (1) or not (0). 
+
+So, given a branch, we can predict if it's taken or not by:
+1. Hashing the PC for the branch (often, by taking the lower $N$ bits of the address)
+2. Access the branch history table. Predict taken if it has 1, predict not taken if it has 0. 
+   - If taken, access the Branch Target Buffer to compute the target address
+3. Update this entry of the branch history table with the result of the branch once resolved. 
+
+> The predictor predicts that the next branch will go the same way as the last branch. 
+
+This predicts well if take or not take a lot of times in sequence! However, any alternating pattern will lead to lots of mispredictions, as the predictor does not store enough information for the predictor to identify these patterns!
+
+The state machine for the 1-bit predictor is as follows. The state the predictor is on tells us what the next prediction will be, and the arrows indicate how the state updates.
+
+```mermaid
+graph LR
+0 -. T .-> 1;
+1 -. NT .-> 0;
+
+0 -. NT .-> 0;
+1 -. T .-> 1;
+```
+
+## 2-Bit Branch Prediction
+Let's try adding more bits to our predictor, so it can predict more patterns correctly.
+
+In a **2-Bit Branch Predictor (2bC)**, 1 bit is used for the prediction, and another bit is used for **conviction**. The conviction bit gives us a measure of how confident we are in our prediction.
+
+| Prediction Bit | Conviction Bit | Description | State |
+| :-: | :-: | :- | - |
+| 0 | 0 | Strong NT | 0 |
+| 0 | 1 | Weak NT | 1 | 
+| 1 | 0 | Weak T | 2 |
+| 1 | 1 | Strong T | 3 |
+
+Like before, we predict what the prediction bit is. However, with a conviction bit, it makes it taken longer for us to change our prediction! The state machine is as follows.
+```mermaid
+graph LR
+0 -. T .-> 1 -. T .-> 2 -. T .-> 3 -. T .-> 3;
+3 -. NT .-> 2 -. NT .-> 1 -. NT .-> 0 -. NT .-> 0;
+```
+In other words:
+- 2bC counts up when the branch is taken, and counts down when the branch is not taken.
+- 2bC predicts N if the counter is 0 or 1, and T if the counter is 2 or 3.
+
+This makes our predictor more robust, giving us an (overall) better accuracy!
+
+> [!Info] Bimodal Predictor
+> So, we saw that increasing our number of bits in the predictor to 2 helped. What if we increased the bits even more? Well, it could help, but the cost of using the predictor would go up!
+> > We will call our table the **Pattern History Table (PHT)**.
+>
+> The **Bimodal Predictor** uses $m$ bits as a counter to predict branches, in the same way as the 2-bit predictor. 
+
+## N-Bit History Predictor
+Regardless of how many bits we add, there are still patterns our predictors fail horribly at! For example, a pattern
+$$
+T \; N \; T \; N \; T \dots 
+$$
+Would not be predicted, no matter how many bits we use.
+
+This pattern should be predictable, but we're having issues because its alternating! So, we need a predictor that can look at patterns.
+> A solution to this is to look at the patterns instead of looking at the majority output! 
+
+The **N-Bit History Predictor** uses some bits to track the history of the last branches, and based on these bits, makes different predictions for different histories!
+
+For example, we can use a 1-bit **history** and a 2-bit **counter**. The history bit tells us the counter to use. So, for one entry in the pattern history table:
+```
+1 Bit: History Bit
+2 Bits: Counter Bit (History = 0)
+2 Bits: Counter Bit (History = 1)
+```
+
+The predictor works as follows:
+1. On a branch, use the history bit to determine what counter to use. 
+2. Based on the value of the counter, predict where the branch will go.
+3. On correct / incorrect, update the counter.
+4. Based on the outcome of the branch, change the history bit.
+
+For example, our state would change as follows for the stream TNTNTNT:
+| State | Prediction | Outcome | Correct? |
+| :-: | :- | :- | :- |
+| (0, SN, SN) | N | T | No |
+| (1, WN, SN) | N | N | Yes | 
+| (0, WN, SN) | N | T | No |
+| (1, WT, SN) | N | N | Yes |
+| (0, WT, SN) | T | T | Yes | 
+| (1, ST, SN) | N | N | Yes | 
+| (0, ST, SN) | T | T | Yes |
+
+> SN and ST stand for strong not taken / taken, respectively.
+
+Now, our predictor is trained on the pattern!
+
+The deeper our history, the more patterns we can cover! For example, a 3-bit history predictor would be as follows:
+```
+3 Bits: History Bits (Last 3 Outcomes)
+2 Bits: Counter Bit (History = 000)
+2 Bits: Counter Bit (History = 001)
+2 Bits: Counter Bit (History = 010)
+2 Bits: Counter Bit (History = 011)
+2 Bits: Counter Bit (History = 100)
+2 Bits: Counter Bit (History = 101)
+2 Bits: Counter Bit (History = 110)
+2 Bits: Counter Bit (History = 111)
+```
+
+In fact, we can look at these states and figure out the pattern that the predictor learned! Consider the following 3-bit history predictor:
+```
+History | Counters
+  001   | 1 3 1 0 3 2 0 2
+```
+
+To figure out the pattern, **look at the strong states in the counters and their histories!**
+- We have a strong state of 3, meaning T, for history 001 = NNT.
+- We have a strong state of 0, meaning N, for history 011 = NTT.
+- We have a strong state of 3, meaning T, for history 100 = TNN.
+- We have a strong state of 0, meaning N, for history 110 = TTN.
+
+Based on the strong states, we predict as follows:
+
+| History | Prediction |
+|:-------:|:-----------|
+| NNT     | T          |
+| NTT     | N          |
+| TTN     | N          |
+| TNN     | T          |
+|         |            |
+
+This gives us pattern NNTTNNTTNNTT... $(0011)^*$.
+
+> [!Info] 
+> An $N$-bit history counter can predict all patterns of length $\le N + 1$!
+
+Notice how while this works well, for patterns like these we're wasting counters! In the example above, we only needed 4 counters, but have 8!
+- If we take $K$ bits of the PC for the history table, we have $2^K$ entries.
+- If we store $N$ bits of history, we have total size of history table $2^K * N$.
+- The .. TODO
+
+
+The next predictor tries to optimize the history predictor and minimize space use.
+
+
+## Two-Level Adaptive Predictor
+
+## P-Share Predictor
+
+## G-Share Predictor 
+
+## Tournament Predictor
+A predictor to predict predictors
 
 ---
 

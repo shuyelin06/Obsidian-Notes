@@ -357,21 +357,72 @@ $$
 $$
 Where the adversary and our challenger play the following game:
 1. The adversary chooses two messages $m_0, m_1$ from the message space.
-2. The challenger will generate a key $Gen(1^n) \to k$, choose $b = 0 \; \text{or} \; 1$, and based on $b$, randomly encrypt one of the messages $Enc_k (m_b) \to c$. 
-3. The adversary receives the ciphertext, and now has to guess $b'$, denoting which message they think was encrypted.
+2. The challenger will generate a key $Gen(1^n) \to k$ and choose $b = 0 \; \text{or} \; 1$ randomly. Based on $b$, the challenger then encrypts one of the messages $Enc_k (m_b) \to c$.
+3. The adversary receives the ciphertext, and now has to guess $b' \in \{0,1\}$, denoting which message they think was encrypted.
 4. We check if the adversary was right, and set the random variable to 1 if the adversary was right ($b' = b$), 0 if wrong ($b' \ne b$).
 
-We say a private-key encryption scheme has **indistinguishable encryptions in the presence of an eavesdropper** if for all probabilistic polynomital-time adversaries $A$, there exists a negligible function $negl$ such that
+We say a private-key encryption scheme has **indistinguishable encryptions in the presence of an eavesdropper** if for all probabilistic polynomial-time adversaries $A$, there exists a negligible function $negl$ such that
 $$
 Pr[PrivK^{eav}_{A, \Pi} (n) = 1] \le \frac{1}{2} + negl(n)
 $$
-In other words, it's about 50/50, with some negligible offset (that drops to 0 quickly as $n \to \infty$).
+In other words, **the adversary has a (about) 50/50 chance of correctly guessing the message** (as there are only 2 messages to choose from), with some negligible offset (that drops to 0 quickly as $n \to \infty$). This tells us that they don't really get any information about the message!
 
 > This is a weak notion of security, but is a notion of security nonetheless.
 
+Similar to the different definitions of perfect secrecy, computational security also has equivalent definitions-- though these other definitions are outside of the scope of this class.
 
+## Pseudorandom Generator (PRG)
+Here, we define a pseudorandom generator. Later, we will use PRGs to construct a scheme that is computationally secure, with $|K| < |M|$ (making the scheme more practical). 
+> Recall that this wouldn't be possible for perfect secrecy!
 
+A **pseudorandom generator (PRG)** is a deterministic algorithm $G$, that takes as input a short random seed $s$, and outputs a long string $G(s)$. It has the property that no polynomial time algorithm can "distinguish" $G(s)$ from a truly random string $r$.
 
-End of lecture ---
+What this generator essentially does is "stretch" a small amount of true randomness ($s$) to a larger amount of pseudorandomness, without compromising on security.
 
+To have a PRG, we also define a game. 
+- **Ideal World**: We sample a truly random bit string $r$ of length $\ell(n)$, $r \in \{0,1\}^\ell$. It must hold that $\ell(n) > n$, where $\ell(n)$ is called the **expansion factor** ($G$'s output must be longer than the input).
+- **Real World**: We sample a truly random bit string $s$ of length $n$, and compute $G(s)$. 
+- We give either the ideal world or real world bit string to $D$, the distinguisher. For a PRG, any efficient distinguisher cannot tell which "world" the string is from (if it got $r$ or $G(s)$).
 
+Formally, the probability that the distinguisher guesses the correct world for the bitstring is about the same in either case.
+$$
+\left| Pr[D(r) = 1] - Pr[D(G(s)) = 1] \right| \le \text{Negligible}
+$$
+> Here, $G$ only gets $n$ bits of true randomness, but need to "stretch" that randomness to $\ell(n)$ bits!
+
+Given a PRG, we can only assume the following: 
+- If our input random string is uniform, the PRG's output will also be uniform.
+
+> [!Example] Example: PRG Proof (1)
+> Let $G$ be a PRG where $|G(s)| = |s| + 1$.
+>
+> Let $G'(s) = G(s||\bar{s})$, where $\bar{s}$ is the negation of $s$. Is $G'$ a PRG?
+>
+> We know that $s || \bar{s}$ is not uniformly random, as $\bar{s}$ depends on $s$. Because the input is not random, we cannot assume $G'$ is a PRG.
+>
+> Let's construct a pathological example. Let's construct $G$ from another PRG, $\tilde{G}$, which is a function from $\{0,1\}^n \to \{0,1\}^{2n+1}$ as so:
+> $$
+> G(s_1 || s_2) := \tilde{G} (s_1) || \tilde{G} (\bar{s}_2)
+> $$
+>
+> We must show that $G$ is a PRG, and $G'$ is not a PRG. Let's start with $G$.
+>
+> 1. $G$ is a PRG, as if $s_1 || s_2$ forms a truly random string, then $s_1, s_2$ are random, and $\bar{s}_2$ is also random. So, $\tilde{G}$, being a PRG on a uniformly random input, outputs a uniformly random output.
+> 2. $G'(s) = G(s || \bar{s}) = \tilde{G} (s) || \tilde{G} (s)$, but by the deterministic nature of PRGs, we have the same string concatenated with itself! So, the output does not have a uniform distribution.
+>
+> Formally, define a distinguisher $D$, which get some input $w$. We choose a polynomial time algorithm for $D$ which lets it distinguish randomness from the PRG with non-negligible probability.
+>
+> One algorithm $D$ could do is split the string in half, return 1 (PRG output) if the halves are the same, 0 otherwise. With this algorithm, we have the following probabilities:
+> - $Pr[D(G'(s)) = 1] = 1$, as we will always be able to tell the PRG as its two halves are always the same (shown above)
+> - $Pr[D(r) = 1] = \frac{1}{2^{2n+1}}$, as for any string in the first half we need to match it in the second half.
+> 
+> So, 
+> $$
+> | Pr[D(G'(s)) = 1] - Pr[D(r) = 1] | = 1 - \frac{1}{2^{2n+1}} \ge \frac{1}{2}
+> $$
+> This is not a negligible function, as when $n$ increases this goes to 1! So, we can define a constant function $1/2$ which this is greater than as $n \to \infty$.
+>
+> So, we have a $D$ that breaks the security of $G'$
+
+> [!Example] Example
+> Let $G'(s) = G(s)_1 || G(G(s)_2, \dots G(s)_{|s|+1})$, where $G(s)_i$ denotes the $i^{th}$ output bit of $G(s)$. We have a random seed $s$ of length $n$, and $G(s)$ a PRG with an output of length $n + 1$. This is also a PRG!

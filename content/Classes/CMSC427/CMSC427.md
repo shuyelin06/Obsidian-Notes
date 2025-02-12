@@ -163,3 +163,8 @@ THe drawing loop in OpenGL is as follows:
    - Consists of creating a buffer, loading points into it, and binding it to the rendering pipeline.
 2. Submit a command to the GPU to draw the shape, using what we've bound to the pipeline
 3. 
+
+---
+
+# Geometry
+A **point** is a position in space, denoted $(x,y)$. A **vector** is a displacement in space, denoted $\langle x,y \rangle$.

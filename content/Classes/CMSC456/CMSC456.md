@@ -361,17 +361,18 @@ Where the adversary and our challenger play the following game:
 3. The adversary receives the ciphertext, and now has to guess $b' \in \{0,1\}$, denoting which message they think was encrypted.
 4. We check if the adversary was right, and set the random variable to 1 if the adversary was right ($b' = b$), 0 if wrong ($b' \ne b$).
 
-We say a private-key encryption scheme has **indistinguishable encryptions in the presence of an eavesdropper** if for all probabilistic polynomial-time adversaries $A$, there exists a negligible function $negl$ such that
+## Security in the Presence of an Eavesropper (EAV)
+We say a private-key encryption scheme has **indistinguishable encryptions in the presence of an eavesdropper (EAV-secure)** if for all probabilistic polynomial-time adversaries $A$, there exists a negligible function $negl$ such that
 $$
 Pr[PrivK^{eav}_{A, \Pi} (n) = 1] \le \frac{1}{2} + negl(n)
 $$
 In other words, **the adversary has a (about) 50/50 chance of correctly guessing the message** (as there are only 2 messages to choose from), with some negligible offset (that drops to 0 quickly as $n \to \infty$). This tells us that they don't really get any information about the message!
 
-> This is a weak notion of security, but is a notion of security nonetheless.
+> This is a weak notion of security and is not very useful in practice!
 
 Similar to the different definitions of perfect secrecy, computational security also has equivalent definitions-- though these other definitions are outside of the scope of this class.
 
-## Pseudorandom Generator (PRG)
+### Pseudorandom Generator (PRG)
 Here, we define a pseudorandom generator. Later, we will use PRGs to construct a scheme that is computationally secure, with $|K| < |M|$ (making the scheme more practical). 
 > Recall that this wouldn't be possible for perfect secrecy!
 
@@ -384,10 +385,12 @@ To have a PRG, we also define a game.
 - **Real World**: We sample a truly random bit string $s$ of length $n$, and compute $G(s)$. 
 - We give either the ideal world or real world bit string to $D$, the distinguisher. For a PRG, any efficient distinguisher cannot tell which "world" the string is from (if it got $r$ or $G(s)$).
 
-Formally, the probability that the distinguisher guesses the correct world for the bitstring is about the same in either case.
+Formally, the probability that the distinguisher guesses the ideal world is about the same in either case.
 $$
 \left| Pr[D(r) = 1] - Pr[D(G(s)) = 1] \right| \le \text{Negligible}
 $$
+> This means that the distinguisher has no way of really knowing which is the ideal world! 
+> 
 > Here, $G$ only gets $n$ bits of true randomness, but need to "stretch" that randomness to $\ell(n)$ bits!
 
 Given a PRG, we can only assume the following: 
@@ -426,3 +429,84 @@ Given a PRG, we can only assume the following:
 
 > [!Example] Example
 > Let $G'(s) = G(s)_1 || G(G(s)_2, \dots G(s)_{|s|+1})$, where $G(s)_i$ denotes the $i^{th}$ output bit of $G(s)$. We have a random seed $s$ of length $n$, and $G(s)$ a PRG with an output of length $n + 1$. This is also a PRG!
+
+### Stream Ciphers
+Using a PRG, we can create a computationally-secure scheme by doing a one-time pad with our message. However, computational security is not very practical:
+- The length of the message is fixed
+- The scheme can only be used once, as if the same key is used twice, the scheme would no longer be secure!
+
+To make something that can be used in practice, recall that for two PRGs, inputting the output of one into another will still yield a pseudo-random string! So, if we chain these PRGs together, we'll get a "stream" of unique keys we can encrypt with. 
+
+This is the idea behind the **stream cipher**. 
+- Let $G$ be a PRG that takes as input $\{0,1\}^n$ and outputs $\{0,1\}^{n+1}$.
+- Let $s_0$ represent some initial state, which is a truly random key.
+
+Both the sender and receiver will store a state, which will let them generate a pseudorandom stream of 0s and 1s to use in a one-time pad. For every application of the PRG, the 1st bit will be used for the one-time pad, and the remaining bits will be used as the next state.
+$$
+\begin{align*} 
+s_0 = k \\
+s_{i+1} = G(s_i)_2, \dots G(s_i)_{n+1} \\
+\text{pad}_{i+1} = G(s_i)_1
+\end{align*}
+$$
+
+Then, for some message, we can generate the ciphertext for the $i+1^{th}$ bit as
+$$
+c_{i+1} = m_{i+1} \oplus \text{pad}_{i+1}
+$$
+> Both the sender and receiver are in sync (so long as they have the same initial key), so the receiver can decrypt the ciphertext with the same pad!
+
+Because the stream cipher does not use the same key, we have a secure scheme that can be used to send multiple variable-length messages! However, this requires that the sender and receiver are in sync-- if any bit is dropped, then they won't be in sync and the decryption will fail.
+
+## Chosen Plain-Text Attack Security (CPA)
+Computational security was a bit of a weak and limited notion. Here, we define a notion that can actually be used in practice.
+> This notion can be used for multiple messages, and is a standard notion of security!
+
+Consider a private-key encryption scheme `Gen, Enc, Dec`, any adversary $A$, and any value $n$ for the security parameter.
+
+We define the following experiment, $PrivK^{cpa}_{A, II} (n)$.
+1. The challenger (sender / receiver) will generate some key $k = Gen(1^n)$.
+2. The adversary gets **oracle access** to the encryption algorithm, $A^{Enc_k (\cdot)}$. This means that $A$ does not know $k$, but gets to use the encryption scheme. They're allowed to choose a plaintext message $m$ and get back a ciphertext $c$, for as many messages as they want (in polynomial time).
+3. When the adversary has sampled enough input-output pairs, it sends two messages $m_0, m_1$ to the challenger.
+4. The challenger picks a bit $b = \{0,1\}$ at random, and based on this chooses one of the messages to encrypt $Enc_k (m_b) = c$.
+5. After receiving the ciphertext, $A$ gets oracle-access to the encrpytion scheme to query again.
+6. When ready the adversary outputs $b'$, guessing what message the challenger chose.
+7. $PrivK^{cpa}_{A, II} (n) = 1$ if $b' = b$, and 0 if $b' \ne b$.
+
+We say our scheme has **indistinguishable encryptions under a chosen-plaintext attack (CPA-secure)** if for all polynomial-time adversaries $A$, there exists a negligible functio such that
+$$
+Pr[PrivK^{cpa}_{A,II} (n) = 1] \le \frac{1}{2} + negl(n)
+$$
+
+> [!Info]
+> If the adversary $A$ is allowed to query the oracle, what is stopping the adversary from just querying $m_0, m_1$? They could just query $m_0, m_1$ and see what the ciphertext is!
+>
+> Because of this, any scheme that satisfies CPA-security **must necessarily be probabilistic**, meaning when we call the oracle, the ciphertext for any given message will be different.
+>
+> This motivates the following theorem.
+
+> [!Abstract] Theorem
+> If $II$ is an encryption scheme where `Enc` is a deterministic function of the key and the message, then $II$ cannot be CPA-secure.
+>
+> > [!Note]- Proof
+> > 
+> > Let $A$ be an adversary.
+> > 1. $A$ chooses two messages $m_0, m_1, m_0 \ne m_1$. 
+> > 2. $A$ query its oracle $m_0$ to get $c_0$.
+> > 3. $A$ sends $m_0, m_1$ to the challenger and gets back $c$.
+> > 4. If $c_0 = c$, $A$ predicts $b' = 0$. Otherwise, $A$ predicts $b' = 1$.
+> > 
+> > Clearly, $A$ is efficient as it only queries the oracle once, which is polynomial.
+> > 
+> > Furthermore, $A$ will always win the game with probability 1, which is greater than $1/2 + negl(n)$.
+
+### Pseudorandom Function
+> We will use pseudorandom functions to create schemes that are CPA-secure!
+
+A **keyed function** $F : \{0,1\}^* \times \{0,1\}^* \to \{0,1\}^*$ ($F_k(x)$) is a two-input function, where
+1. The first input is the **key**, denoted $k$.
+2. The second input is $x$.
+
+> $F(\cdot, \cdot)$ is **public** and polynomial-time efficient.
+
+--- ...

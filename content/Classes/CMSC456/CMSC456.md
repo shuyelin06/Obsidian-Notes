@@ -362,7 +362,7 @@ Where the adversary and our challenger play the following game:
 4. We check if the adversary was right, and set the random variable to 1 if the adversary was right ($b' = b$), 0 if wrong ($b' \ne b$).
 
 ## Security in the Presence of an Eavesropper (EAV)
-We say a private-key encryption scheme has **indistinguishable encryptions in the presence of an eavesdropper (EAV-secure)** if for all probabilistic polynomial-time adversaries $A$, there exists a negligible function $negl$ such that
+We say a private-key encryption scheme has **indistinguishable encryptions in the presence of an eavesdropper (EAV-secure)** if for all probabilistic polynomial-time adversaries (PPT) $A$, there exists a negligible function $negl$ such that
 $$
 Pr[PrivK^{eav}_{A, \Pi} (n) = 1] \le \frac{1}{2} + negl(n)
 $$
@@ -430,11 +430,74 @@ Given a PRG, we can only assume the following:
 > [!Example] Example
 > Let $G'(s) = G(s)_1 || G(G(s)_2, \dots G(s)_{|s|+1})$, where $G(s)_i$ denotes the $i^{th}$ output bit of $G(s)$. We have a random seed $s$ of length $n$, and $G(s)$ a PRG with an output of length $n + 1$. This is also a PRG!
 
-### Stream Ciphers
-Using a PRG, we can create a computationally-secure scheme by doing a one-time pad with our message. However, computational security is not very practical:
+Using PRGs, we can create a secure fixed-length encryption scheme that is secure, and breaks the Shannon bound. Let $G$ be a PRG taking $\{0,1\}^n \to \{0,1\}^{\ell(n)}$, $\ell(n) > n$, and let $K = \{0,1\}^n, M = \{0,1\}^{\ell(n)}$.
+- `Gen` outputs a random key $k \in K$.
+- `Enc` takes the key, runs it through the pseudo-random generator to get a pad $G(k) \to p \in \{0,1\}^\ell$. It then XORs the output with the message to get our ciphertext $c$.
+- `Dec` reverses this by XORing the same pad with the ciphertext. 
+
+This is a computationally-secure scheme, and $|K| < |M|$, breaking the Shannon bound! We can prove this below.
+
+> [!Note] Proof
+We wish to show that given $G$ is a PRG, our scheme is EAV-secure. So, $\forall$ PPT adversaries, $\exists negl$ such that
+$$
+Pr[PrivK^{eav}_{A,II} (n) = 1] \le \frac{1}{2} + negl(n)
+$$
+
+In many cryptographic proofs, we cannot prove the definition directly. So, we prove by contradiction or contrapositive.
+
+So, we will show that if $\exists$ PPT adversaries such that $\forall negl$,
+$$
+Pr[PrivK^{eav}_{A,II} (n) = 1] > \frac{1}{2} + negl(n)
+$$
+Then $G$ cannot be a PRG.
+
+Let $A$ be this adversary. Then, $\exists$ PPT distinguisher such that there exists a non-negligible function $\ell'(n)$, where
+$$
+| Pr[D(r) = 1] - Pr[D(G(s)) = 1] | \ge \ell'(n)
+$$
+Given this distinguisher, we will contruct another distinguisher against the PRG, that uses $A$ as a subroutine.
+> This is based off proof reduction! The idea that if one algorithm solves the boolean satisfiability problem, then it can be used to solve all NP-complete problems in polynomial time!
+
+- $D$ is a distinguisher that needs to take a string $w \in \{0,1\}^{\ell(n)}$, and needs to return 0, 1 guessing what world the string came from. It contains and can use $A$
+- $A$ is an adversary that will first send $m_0, m_1$ to the challenger ($D$). It expects a ciphertext, and guesses if $c$ is an encryption of $m_0$ or $m_1$.
+
+This is almost an algorithm! We just need to fill it in with a few steps.
+1. How does $D$ generate the challenger ciphertext for $A$?
+   - $D$ randomly chooses a $b \in \{0,1\}$, and sends back $w \oplus m_b$.
+2. After getting the response from $A'$, $b'$, what response does $D$ output?
+   - If $b = b'$, then return 1
+   - If $b \ne b'$, then return 0
+
+We now analyze the probabilities to show that our PRG is not actually a PRG.
+1. The probability $Pr[D(G(s)) = 1]$ is the probability $A$ guesses correctly if $w = G(s)$. This is
+   $$
+   Pr[PrivK^{eav}_{A,II} (n) = 1] \ge \frac{1}{2} + negl
+   $$
+2. The probability $Pr[D(r) = 1]$ is the probability that $A$ guesses the one-time pad, which (by perfect secrecy) is
+   $$
+   Pr[D(w) = 1] = \frac{1}{2}
+   $$
+   As no matter what $A$ guesses, it cannot do better or worse by perfect secrecy.
+
+So,
+$$
+| Pr[D(G(s)) = 1] - Pr[D(r) = 1] | \ge \frac{1}{2} + \rho(n) - \frac{1}{2} = \rho(n)
+$$
+As $\rho(n)$ is non-negligible, $D$ breaks the security of the PRG. Because $A$ is a PPT, $D$ is also a PPT as it uses $A$, we are done.
+
+TODO
+
+---
+
+
+
+
+
+However, this compuationally secure scheme is not very practical.
 - The length of the message is fixed
 - The scheme can only be used once, as if the same key is used twice, the scheme would no longer be secure!
 
+### Stream Ciphers
 To make something that can be used in practice, recall that for two PRGs, inputting the output of one into another will still yield a pseudo-random string! So, if we chain these PRGs together, we'll get a "stream" of unique keys we can encrypt with. 
 
 This is the idea behind the **stream cipher**. 
@@ -457,26 +520,34 @@ $$
 > Both the sender and receiver are in sync (so long as they have the same initial key), so the receiver can decrypt the ciphertext with the same pad!
 
 Because the stream cipher does not use the same key, we have a secure scheme that can be used to send multiple variable-length messages! However, this requires that the sender and receiver are in sync-- if any bit is dropped, then they won't be in sync and the decryption will fail.
+> It's possible to use a PRG to create a practical encryption scheme, with the cavaet that the sender and receiver need to share a state!
 
 ## Chosen Plain-Text Attack Security (CPA)
 Computational security was a bit of a weak and limited notion. Here, we define a notion that can actually be used in practice.
-> This notion can be used for multiple messages, and is a standard notion of security!
+> This notion can be used for multiple messages, and is a very standard notion of security!
 
 Consider a private-key encryption scheme `Gen, Enc, Dec`, any adversary $A$, and any value $n$ for the security parameter.
 
 We define the following experiment, $PrivK^{cpa}_{A, II} (n)$.
 1. The challenger (sender / receiver) will generate some key $k = Gen(1^n)$.
-2. The adversary gets **oracle access** to the encryption algorithm, $A^{Enc_k (\cdot)}$. This means that $A$ does not know $k$, but gets to use the encryption scheme. They're allowed to choose a plaintext message $m$ and get back a ciphertext $c$, for as many messages as they want (in polynomial time).
+2. The adversary gets **oracle access** to the encryption algorithm, denoted $A^{Enc_k (\cdot)}$. This means that $A$ does not know $k$, but gets to use the encryption scheme. They're allowed to choose a plaintext message $m$ and get back a ciphertext $c$, for as many messages as they want (in polynomial time).
 3. When the adversary has sampled enough input-output pairs, it sends two messages $m_0, m_1$ to the challenger.
 4. The challenger picks a bit $b = \{0,1\}$ at random, and based on this chooses one of the messages to encrypt $Enc_k (m_b) = c$.
 5. After receiving the ciphertext, $A$ gets oracle-access to the encrpytion scheme to query again.
 6. When ready the adversary outputs $b'$, guessing what message the challenger chose.
 7. $PrivK^{cpa}_{A, II} (n) = 1$ if $b' = b$, and 0 if $b' \ne b$.
 
-We say our scheme has **indistinguishable encryptions under a chosen-plaintext attack (CPA-secure)** if for all polynomial-time adversaries $A$, there exists a negligible functio such that
+We say our scheme has **indistinguishable encryptions under a chosen-plaintext attack (CPA-secure)** if for all PPT adversaries $A$, there exists a negligible function such that
 $$
 Pr[PrivK^{cpa}_{A,II} (n) = 1] \le \frac{1}{2} + negl(n)
 $$
+
+While this is a one-shot game, we can prove that CPA-security gives us security for multiple encryptions!
+
+> [!Abstract] Theorem
+> Any adversary $A$ that has indistinguishable encryptions under a CPA-attack also has indistinguishable **multiple encryptions** under a chosen plain-text attack!
+>
+> This means that we can use CPA-secure schemes with the same key, as many times as we want while maintaining security!
 
 > [!Info]
 > If the adversary $A$ is allowed to query the oracle, what is stopping the adversary from just querying $m_0, m_1$? They could just query $m_0, m_1$ and see what the ciphertext is!
@@ -501,12 +572,27 @@ $$
 > > Furthermore, $A$ will always win the game with probability 1, which is greater than $1/2 + negl(n)$.
 
 ### Pseudorandom Function
-> We will use pseudorandom functions to create schemes that are CPA-secure!
+> We will use pseudorandom functions to create schemes that are CPA-secure! As it does not make sense for a fixed function to be pseudorandom, we will define pseudorandomness on our **selection from a set of fixed functions**.
 
 A **keyed function** $F : \{0,1\}^* \times \{0,1\}^* \to \{0,1\}^*$ ($F_k(x)$) is a two-input function, where
 1. The first input is the **key**, denoted $k$.
 2. The second input is $x$.
 
+We say $F$ is **efficient** if there is a polynomial-time algorithm that can compute $F(k,x)$ given $k$ and $x$. We will only be interested in efficient pseudo-functions.
 > $F(\cdot, \cdot)$ is **public** and polynomial-time efficient.
 
---- ...
+Let $D$ be a PPT distinguisher. We define the following experiment:
+1. $D$ gets access to an oracle $O$ which is either equal to $F_k$ or $f$, a random function from the set of all functions with the same domain and range ($D$ does not know which is the case). 
+2. $D$ may query the oracle for any $x$, at which point the oracle returns $O(x)$.
+   - Because the oracle computes a deterministic function, it returns the same result if queried twice on the same input.
+3. $D$ may interact freely with the oracle, choosing its queries based on the outputs (as long it runs in polynomial time).
+4. $D$ returns 1 if it thinks the oracle is our pseudorandom function $F_k(x)$, 0 otherwise.
+
+Then, a keyed function $F : \{0,1\}^* \times \{0,1\}^* \to \{0,1\}^*$ is **pseudorandom** if for all PPT distinguishers $D$, there exists a negligible function such that
+$$
+| Pr[D^{F_k(\cdot)} (1^n) = 1] - Pr[D^{f(\cdot)} (1^n) = 1] | \le negl(n)
+$$
+In other words, for any polynomial-time distinguisher, the probability that the distinguisher guesses that our function is the pseudorandom function (1) is negligible.
+> $F_k$, for uniform key $k$, is indistinguishable from a function chosen uniformly at random from the set of all functions with the same domain and range ($f(\cdot)$). 
+
+

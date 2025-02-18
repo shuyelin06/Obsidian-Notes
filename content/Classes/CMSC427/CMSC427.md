@@ -168,3 +168,34 @@ THe drawing loop in OpenGL is as follows:
 
 # Geometry
 A **point** is a position in space, denoted $(x,y)$. A **vector** is a displacement in space, denoted $\langle x,y \rangle$.
+
+---
+
+A **convex combination** of a set of points $S$ is a lienar combination such that the coeffcients are non-negative and sum to 1.
+$$
+C = \sum_{p \in S} \alpha_i \qquad \sum \alpha_i = 1 \qquad 0 \le \alpha_i \le 1
+$$
+
+We can define a convex combination of the points on a line as
+$$
+p(t) = t p_1 + (1 - t) p_2
+$$
+
+And similarly for a triangle,
+$$
+p(t) = s p_2 + (t - st) p_1 + (1 - s - t + st) p_0 
+$$
+
+---
+
+# Parametric Meshes
+Here, we define parametric equations, and how to generate meshes from these equations.
+
+## Bilinear Patch
+A **bilinear patch** specifies a blend between two lines. Let us have lines $p_0 \to p_1$, $p_2 \to p_3$. Then, we can blend between them as so:
+$$
+\begin{align*}
+p_{0,1} = t (p_1 - p_0) + p_0 \qquad p_{2,3} = t (p_2 - p_3) + p_3 \\
+p(s,t) = (1 - s) (p_{2,3} - p_{0,1}) + s p_{0,1}
+\end{align*}
+$$

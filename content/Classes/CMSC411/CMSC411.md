@@ -459,18 +459,33 @@ This pattern should be predictable, but we're having issues because its alternat
 
 The **N-Bit History Predictor** uses some bits to track the history of the last branches, and based on these bits, makes different predictions for different histories!
 
-For example, we can use a 1-bit **history** and a 2-bit **counter**. The history bit tells us the counter to use. So, for one entry in the pattern history table:
+For example, we can use a 1-bit **history** and a 2-bit **counter**. The history bit tells us the counter to use. So, for one entry:
 ```
 1 Bit: History Bit
 2 Bits: Counter Bit (History = 0)
 2 Bits: Counter Bit (History = 1)
 ```
+> The history bit is stored in the history table, which has history bits for each hashable PC value! Each history entry indexes one group of counters (Pattern History Table).
 
 The predictor works as follows:
 1. On a branch, use the history bit to determine what counter to use. 
 2. Based on the value of the counter, predict where the branch will go.
 3. On correct / incorrect, update the counter.
 4. Based on the outcome of the branch, change the history bit.
+
+```mermaid
+flowchart LR
+0[Branch PC];
+1[History Table];
+2[PHT 1];
+3[PHT 2];
+4[PHT 3];
+5[PHT 4];
+6[...];
+
+0 -.-> Op1((Hash)) -.-> 1;
+1 -.-> Op2((Index)) -.-> 2 & 3 & 4 & 5 & 6;
+```
 
 For example, our state would change as follows for the stream TNTNTNT:
 | State | Prediction | Outcome | Correct? |
@@ -524,26 +539,75 @@ Based on the strong states, we predict as follows:
 
 This gives us pattern NNTTNNTTNNTT... $(0011)^*$.
 
-> [!Info] 
+> [!Tip] 
 > An $N$-bit history counter can predict all patterns of length $\le N + 1$!
 
-Notice how while this works well, for patterns like these we're wasting counters! In the example above, we only needed 4 counters, but have 8!
-- If we take $K$ bits of the PC for the history table, we have $2^K$ entries.
-- If we store $N$ bits of history, we have total size of history table $2^K * N$.
-- The .. TODO
+While this works well, for many simpler patterns (like the above) we're wasting counters! In the example above, we only needed 4 counters, but have 8! This is wasted memory.
+- For the history table, if we take $K$ bits of the PC, and have $N$ bits of history, then our table will have size $2^K + N$ (one history entry for each hashable value).
+- For the pattern history table with a 2 bit counter, each entry has size $2^N * 2$, so thbe size of the table is $2^{N+1} * 2^K$
 
+This gives us total space usage
+$$
+2^K * N + 2^{N+1} * 2^K
+$$
 
-The next predictor tries to optimize the history predictor and minimize space use.
-
+The next predictor tries to optimize the history predictor by minimizing space use.
 
 ## Two-Level Adaptive Predictor
+One simple way to reduce the amount of space usage is by using hashing. If we hash different branches to the same entries in the PHT, then we'll take up less space overall!
+> There is a possibility of hash collisions, but with enough counters, we can hopefully reduce our conflicts!
+
+So, instead of multiple PHTs, we will have one large PHT that the history table indexes!
+- If we take the first $K$ bits of the PC to index the history table, with $2^K$ entries and $N$ bits of history, we have history table size $2^K * N$.
+- With only one PHT, and a 2 bit counter, we have size $2^N * 2$.
+
+This gives us less total size 
+$$
+2^K * N + 2^{N+1}
+$$
+
+While this predictor is space efficient, conflicts can happen!
 
 ## P-Share Predictor
+We can reduce the amount of conflicts in the previous table by **hashing** the index to the PHT as well. Hashing will (hopefully) distribute our indices more, reducing the amount of collisions!
+
+```mermaid
+flowchart LR
+0[Branch PC];
+1[History Table];
+2[Pattern History Table];
+
+0 -.-> Op1((Hash)) -.-> 1;
+Op1 & 1 -.-> Op2((Hash)) -.-> Op3((Index)) -.-> 2;
+```
+
+This still has the same total size of
+$$
+2^K * N + 2^{N+1}
+$$
+
+While lowering the amount of collisions!
 
 ## G-Share Predictor 
+In the previous predictors, we only looked at predictions on one branch with no relation to others. But in practice, the outcomes of branches are typically related to one another!
+
+The **G-Share** predictor implements this, by tracking a global history. We use **one global history register** (GHR) which indexes the pattern history table! This GHR records the direction taken by the most recent n conditional branches.
+1. 
+
+```mermaid
+flowchart LR
+0[Branch PC];
+1[Global History Register];
+2[Pattern History Table];
+
+0 -.-> 3((Hash));
+3 & 1 -.-> 4((XOR)) -.-> 2;
+```
 
 ## Tournament Predictor
-A predictor to predict predictors
+No predictor is perfect for all situations! So, it may be reasonable to have a predictor for predictors, called a **tournament predictor**.
+
+
 
 ---
 
@@ -555,3 +619,31 @@ A predictor to predict predictors
 - Cache coherence
 - Memory consistency
 - Many-core processors
+
+```mermaid
+flowchart LR
+subgraph IF/ID Latch
+IFID0[ ]; IFID1[ ];
+end
+
+subgraph ID/EX Latch
+IFEX0[ ]; IFEX1[ ];
+end
+
+IDEX[ID/EX Latch];
+EXMEM[EX/MEM Latch];
+MEMWB[MEM/WB Latch];
+
+subgraph IF
+PC; IM[Instruction Memory]; ADD;
+PC -.-> IM & ADD;
+ADD -.-> IFID0;
+IM -.-> IFID1;
+end
+
+subgraph ID
+RF[Register File]; SE;
+IFID0 -.-> IFEX0;
+IFID1 -.-> RF & SE -.-> IFEX1;
+end
+```

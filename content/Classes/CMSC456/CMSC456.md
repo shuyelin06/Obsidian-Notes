@@ -582,10 +582,11 @@ We say $F$ is **efficient** if there is a polynomial-time algorithm that can com
 > $F(\cdot, \cdot)$ is **public** and polynomial-time efficient.
 
 Let $D$ be a PPT distinguisher. We define the following experiment:
-1. $D$ gets access to an oracle $O$ which is either equal to $F_k$ or $f$, a random function from the set of all functions with the same domain and range ($D$ does not know which is the case). 
+1. $D$ gets access to an oracle $O$ which is either equal to $F_k$ ($k$ chosen at random) or $f : \{0,1\}^n \to \{0,1\}^n$, a uniformly chosen random function. ($D$ does not know which is the case). 
+   - $f$ is a function with input set $\{0,1\}^n$, and for each input one output in $\{0,1\}^n$. Then, to choose $f$ uniformly at random, uniformly assign one output from $\{0,1\}^n$ to each input. After being chosen, it then behaves deterministically.
 2. $D$ may query the oracle for any $x$, at which point the oracle returns $O(x)$.
    - Because the oracle computes a deterministic function, it returns the same result if queried twice on the same input.
-3. $D$ may interact freely with the oracle, choosing its queries based on the outputs (as long it runs in polynomial time).
+3. $D$ may interact freely with the oracle, denoted $D^{O(\cdot)} (1^n)$, choosing its queries based on the outputs (as long it runs in polynomial time).
 4. $D$ returns 1 if it thinks the oracle is our pseudorandom function $F_k(x)$, 0 otherwise.
 
 Then, a keyed function $F : \{0,1\}^* \times \{0,1\}^* \to \{0,1\}^*$ is **pseudorandom** if for all PPT distinguishers $D$, there exists a negligible function such that
@@ -595,4 +596,170 @@ $$
 In other words, for any polynomial-time distinguisher, the probability that the distinguisher guesses that our function is the pseudorandom function (1) is negligible.
 > $F_k$, for uniform key $k$, is indistinguishable from a function chosen uniformly at random from the set of all functions with the same domain and range ($f(\cdot)$). 
 
+To disprove that a function is a PRF, the question is: can we find a set of inputs whose outputs are correlated? 
 
+> [!Example] Example: Pseudo-Random Functions (Disproof)
+> Let $F$ be a PRF. For $F' : \{0,1\}^{n-1} \to \{0,1\}^{2n}$, show if $F'$ is a PRF.
+> $$
+> F'_k (x) = F_k (0||x) || F(x||1)
+> $$
+> Suppose we plug in the following values of $x$.
+> $$
+> \begin{align*}
+> F'_k (0^{n-1}) = F_k (0^n) || F(0^{n-1} 1) \\
+> F'_k (0^{n-2} 1) = F_k (O^{n-1} 1) || F_k (O^{n-2} 1^2)
+> \end{align*}
+> $$
+> 
+> Notice how the second half of the first input, and first half of the second input are the same! Thus, these two inputs have correlated outputs, and the distinguisher could use this fact to determine if it has the PRF or not. It can query these two inputs, and return 1 if these halves are the same!
+> 
+> With this attack,
+> $$
+> | Pr[D^{F_k(x)} (1^n) = 1] - Pr[D^{f(x)} (1^n) = 1] | = \left| 1 - \frac{1}{2^n} \right|
+> $$
+> > The probability for the truly random function comes from the fact that we need all $n$ bits of half of the second output to match the first, and under a uniform distribution, this is probability $1/2^n$.
+
+
+> [!Example] Example: Pseudo-Random Functions (Proof)
+> Let $F$ be a PRF. For $F' : \{0,1\}^{n-1} \to \{0,1\}^{2n}$, show if $F'$ is a PRF.
+>
+> $$
+> F'_k (x) = F_k (0||x) || F(1||x)
+> $$
+> This is a PRF! To see why, think of the input/output table for $F'_k$.
+> 
+> Because of the bit in front, we're partitioning the input space of $F_k$! So, there will never be any collision where the same query $x$ yields correlated outputs. Thus, this PRF is secure. 
+> > Show that the space of inputs to $F$ are partitioned, and as $F$ is a PRF there will be no collisions. An intuitive argument is acceptable for this course.
+
+
+### CPA-Security with PRFs
+Like with PRGs, we will now use PRFs to construct a CPA-secure scheme.
+
+Let `Gen` output a random key $k$, chosen uniformly randomly. Also, let $F_k (x)$ be a pseudorandom function.
+1. Choose a random string $r \in \{0,1\}^n$. 
+2. Use the random string $r$ with $F_k (x)$ to create a pad, $F_k (r) = w$. 
+3. With this pad, XOR it with our message to get $c_2$. Let $c_1$ be our random string. Then, our ciphertext is given as $c = c_1 || c_2$.
+   - We need the random string in the ciphertext to be able to decrypt our message.
+
+> Intuitively, this is secure because despite knowing $r$, we don't know $k$, and the security of PRFs guarantee that without knowing $k$, we cannot differentiate $F_k (x)$ from a random function!
+
+> [!Abstract] Theorem
+> If $F$ is a pseudorandom function, then the construction above is a CPA-secure private-key encryption scheme for messages of length $n$.
+>
+> > [!Note]- Proof
+> > 
+> > We will prove this via contrapositive (as typical of these proofs). Suppose the construction above is not CPA-secure. Then, $\exists$ some PPT $A$ and non-negligible function $\rho$ such that
+> > $$
+> > Pr[PrivK^{cpa}_{A,II} (n) = 1] \ge \frac{1}{2} + \rho(n)
+> > $$
+> > We wish to show that $F$ is not a pseudo-random function. In other words, that $\exists PPT$ distinguisher and non-negligible function $f'$ such that
+> > $$
+> > | Pr[D^{F_k'(\cdot)} (1^n) = 1] - Pr[D^{f'(\cdot)} (1^n) = 1] | \ge f'(n)
+> > $$
+> > 
+> > Define a distinguisher $D$, who has $A$ within it. $D$ is playing a PRF game; $A$ is playing a CPA-security game.
+> > - $D$ gets an oracle $O$, talks to the oracle, and returns 0/1 indicating if it thinks the oracle is the PRF.
+> > - $A$ can make queries to the oracle, sends $m_0, m_1$ to get $c$, makes queries again, and then guesses 0/1 indicating what message it thinks $c$ is from.
+> > 
+> > So, $D$ would do the following:
+> > 1. First, $D$ gets an oracle $O$ which is either $F_k$ or $f$.
+> > 2. $D$ will now choose a random string $r \in \{0,1\}^n$.
+> > 3. $A$ will be allowed to query the encryption scheme as needed. To query, $D$ will take $A$'s message, query $O(r)$, and return $(r || m \oplus O(r))$ to $A$.
+> > 4. $A$ now take $m_0, m_1$, and send them to $D$.
+> > 5. $D$ will randomly choose $b \in \{0,1\}$, choose a random message based on this, and encrypt this as shown above. It sends this back to $A$.
+> > 6. $A$ will return an answer $b'$. If $b' = b$, then output 1. Otherwise, output 0.
+> > 
+> > In the case that $O = F_k$, 
+> > $$
+> > Pr[D^{F_k} (1^n) = 1] = Pr[PrivK^{cpa}_{A,II} (n) = 1] \ge \rho(n)
+> > $$
+> > As it is the same probability as when $A$ guesses correctly.
+> > 
+> > In the case that $O = f$, 
+> > $$
+> > Pr[D^{f} (1^n) = 1] = Pr[Bad] + (1 - Pr[Bad]) \frac{1}{2} \le Pr[Bad] + \frac{1}{2} \le \frac{q(n)}{2^n} + \frac{1}{2}
+> > $$
+> > As this is the one-time pad game with probability 1/2, but there is exactly 1 case where $A$ can guess correctly, which is if the same $r$ is chosen when generating the challenger ciphertext and in a CPA-query. In this event, $A$ guesses correctly 100% of the time. 
+> > > $q(n)$ stands for the number of CPA queries, and gives us a bound on this event happening.
+> > 
+> > $$
+> > | Pr[D^{F_k} (1^n) = 1] - Pr[D^{f} (1^n) = 1] | \le \frac{1}{2} + \rho(n) - \frac{1}{2} - negl
+> > $$
+> > And as a non-negligible minus a negligible is non-negligible, this is $\le$ some non-negligible function. Thus, our function is not a PRF.
+
+### Pseudo-Random Permutations
+A **pseudorandom permutation** is exactly the same as a pseudorandom function, except that for every key $k$, $F_k$ must be a permutation and it must be indistinguishable from a random permutation.
+
+Permutation means, every function $F_k$ is a bijection! So, on the truth table, every input $x$ has a 1-1 mapping to a unique output, where every output has an input!
+
+So, for the input-output table, each output $y \in \{0,1\}^n$ appears exactly once!
+> This means that pseudo-random permutations are invertible! Furthermore, if you know the key, it should be possible to efficiently invert it!
+
+Using pseudo-random permutations, we can define the following scheme.
+
+1. The challenger chooses a random key $k$ from the key-space. This chooses a pseudo-random permutation.
+2. The adversary gets oracle $O$, which is either the pseudo-ranodm permutation $F_k$, or a truly random permutation $f(x)$. 
+   - A truly random permutation is one where for each output $y$, it randomly gets assigned to one input $x$!
+3. The adversary can query the oracle in the forward and backward direction, which is either $f(x), f^{-1} (y)$, or $F_k (x), f^{-1}_k (y)$. 
+4. The adversary guesses what function the oracle is. 
+
+A **strong pseudo-random permutation (PRP)** is one in which any efficient adversary cannot tell which world the oracle belongs to.
+$$
+| Pr[A^f () = 1] - Pr[A^{F_k ()} () = 1] | \le negl
+$$
+> There are $(2^n)!$ possible permutations from $\{0,1\}^n \to \{0,1\}^n$.
+
+Previously, we created a CPA-secure encryption scheme for 1 block messages. We can now use PRPs to create a scheme that can encrypt multiple blocks!
+
+Let message $m$ have the following blocks $m_1, m_2, m_\ell$. How can we encrypt this message?
+- One way we could do this is by running the 1-block scheme $\ell$ times! This is okay in terms of security, but wastes a lot of resources!
+   - We need to generate a random key every time, which could be costly
+   - Every block needs the random ciphertext concatenated with it, doubling the size of each ciphertext block! This uses a lot of data. 
+
+The various ways we can use PRPs to encrypt blocks of messages are known as **modes of operation**. They are described below.
+1. **Electronic Code Block (ECB)**: Encrypt each message block with the PRP, and concatenate them together.
+   $$
+   F_k (m_1) || F_k (m_2) || F_k (m_3) || \dots
+   $$
+   To decrypt, simply run the inverse of the function on each ciphertext block.
+   $$
+   F^{-1}_m (c_1) || F^{-1}_m (c_2) || F^{-1}_m (c_3) || \dots
+   $$
+   > This is not a secure scheme, as it will give us the same output for the same input. However, it is intuitive and makes a lot of sense!
+
+2. **Cipher Block Chaining (CBC)**: Start with some initialization vector $IV$, a truly random bit-string. Then, for every block, we can compute its ciphertext as 
+   $$
+   F_k (m_i \oplus c_{i-1}) = c_i \qquad c_0 = IV
+   $$
+   In other words, to get our next ciphertext, we XOR the block with the previous ciphertext and run it through the PRP. 
+   
+   To decrypt, run the inverse on the ciphertext, and XOR it with the previous ciphertext.
+   $$
+   F^{-1} (c_i) \oplus c_{i-1} = m_i
+   $$
+
+3. **Output Feedback (OFB)**: Start with some initialization vector $IV$. Then, to generate the ciphertext, we will first generate keys by repeatedly running the $IV$ through the PRP.
+   $$
+   F_k (z_{i-1}) = z_i \qquad z_0 = IV
+   $$
+   Then, we XOR the key with our message block to get our ciphertext.
+   $$
+   z_i \oplus m_i = c_i
+   $$
+   To decrypt, we repeat the key-stream and XOR each key with the ciphertext.
+   $$
+   z_i \oplus c_i = m_i
+   $$
+   
+4. **Counter (CTR)**: Start with some random number which will serve as a counter, $ctr$. Then, to generate the ciphertext, we will run $ctr + i$ through the PRP and XOR the output with the message. Increment counter after each message block.
+   $$
+   F_k (ctr + i) \oplus m_i = c_i
+   $$
+   To decrypt, we repeat the same process.
+   $$
+   F^{-1}_k (c_i) \oplus (ctr + i) = m_i
+   $$
+
+2,3,4 all achieve similar levels of security!
+
+> In looking at each mode, we should also think about if the mode is parallelizable!

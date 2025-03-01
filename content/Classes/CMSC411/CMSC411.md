@@ -291,8 +291,6 @@ Forwarding does not remove all possible pipeline stalls. Some stalls it cannot r
 - Control dependency or branch stalls
 
 
-
-# Branching / Branch Prediction
 **Hazards** are problems that reduce the performance of the pipeline. There are 3 kinds of hazards:
 - **Data Hazards**: Dependencies between instructions preventing their overlapped execution
 - **Structural Hazards**: There are not enough hardware resources for all combinations of instructions
@@ -300,34 +298,57 @@ Forwarding does not remove all possible pipeline stalls. Some stalls it cannot r
 
 ---
 
-We look at control hazards. The main issue with this is that after a branch, we don't know what command to execute next!
+# Branching / Branch Prediction
+## Problem Contextualized
+**Hazards** are problems that reduce the performance of the pipeline. There are 3 kinds of hazards:
+- **Data Hazards**: Dependencies between instructions preventing their overlapped execution
+- **Structural Hazards**: There are not enough hardware resources for all combinations of instructions
+- **Control Hazards**: A branch instruction may change the program counter (PC).
 
-Consider the following example.
+Here, we will look at control hazards. 
+
+Consider a set of instructions. Without any branches, the processor can pipeline the instructions and execute one after the next. 
+
+```bash
+Instr 1
+Instr 2
+Instr 3
+...
 ```
-  beq t4, t0, target
-  mul t5, t1, t3
-  sub t6, t0 t1
 
-target:
-  add t1, t0, t2
-```
-Because of our branch instruction, we don't know whether or not `mul` or `add` instruction will execute next! So, we do not know what instruction to fetch into the pipeline.
+But at a branch, we may jump somewhere else in the program! Because of this, the pipeline won't know what command to fecth next, creating a stall. 
 
-This is really bad! If our branch decision is finalized in the $N^{th}$ stage of the pipeline, then we won't know what to fetch for $~N$ cycles! This creates a major stall.
-> This is worsened by the fact that branches are approximately 20% of all instructions in a program!
+> [!Example] Example: Branching Issues
+> ```bash
+>   beq t4, t0, target
+>   mul t5, t1, t3
+>   sub t6, t0 t1
+> 
+> target:
+>   add t1, t0, t2
+> ```
+> 
+> Because of our branch instruction, we don't know whether or not `mul` or `add` instruction will execute next! So, we do not know what instruction to fetch into the pipeline.
 
-To minimize the effects of this hazard, let's try to **predict branches**, and predict them well! 
-- Given a branch, predict a path it will take.
-- Fetch, decode, ... on the predicted path. Different scenarios determine whether or not we execute or not on the predicted path.
-- If needed, recover from any mispredictions, reestarting the fetch from the correct path.
+This is pretty bad-- if our branch decision is finalized in the $N^{th}$ stage of the pipeline, then we won't know what instruction to fetch for about $N$ cycles! 
+> Exacerbating this is the fact that branches are approximately 20% of all instructions in a program.
 
-Branch prediction asks the following question. Given the PC of the current and previous instructions, we want to predict the PC of the next instruction to fetch. It must correctly guess:
+## Branch Prediction Overview
+To minimize the effects of stalling, let's try to **predict the branch**! We may not know where the branch will jump, but we can at least make a guess and pre-fetch our guess into the pipeline.
+
+Branch prediction asks the following question: *Given the PC of the current and previous instructions, what is the PC of the next instruction to fetch?*
 - Is the instruction a branch?
   - No: No action needed
-  - Yes: Then, is it taken? (WHETHER)
-    - Yes: Then, what is the target PC? (WHERE)
+  - Yes: Then, we must ask **WHETHER** the branch is taken ($T$) or not taken ($N$).
+    - Yes: Then, we must ask **WHERE** the target PC is.
 
-> For unconditional branches, we just need to predict WHERE the target is. For conditional branches, we need to predict WHETHER it's taken and WHERE it goes.
+In our basic pipeline architecture, branch prediction will work as follows:
+1. IF: Fetch the branch instruction
+2. ID: Identify the branch instruction. Use a branch predictor to guess where the branch will go, and fetch the predicted instruction into the pipeline.
+   - Because we just decoded the instruction, we don't know where the branch will go! We only know that we have a branch at some PC.
+3. EX: Execute and resolve the branch. If the prediction was right, do nothing. If the prediction was wrong, restart the fetch from the correct path. Update the predictor.
+
+Note that for unconditional branches, we just need to predict **WHERE** the target is (as we know we'll always take the branch). For conditional branches, however, we need to predict **WHETHER** it's taken and **WHERE** it goes.
 
 The below table illustrates the "difficulty" of predicting various branch types. 
 
@@ -339,14 +360,39 @@ The below table illustrates the "difficulty" of predicting various branch types.
 
 > **Direct** means the target address is in the instruction. Otherewise, if it is an **indirect** branch, the target address is either stored in memory, or we need to calculate it.
 
----
+Below we will describe various predictors, that will answer the WHETHER or WHERE question.
 
+## WHERE: Branch Target Buffer 
+Say we decode an instruction to find a branch. In the decode stage, we may not necessarily know where the branch will go, as the jump address could be in memory or a register.
+
+So, supposing we predict a branch taken, what instruction should the instruction fetch next? 
+
+We can make a guess on where the branch will jump to by referring to past branches! We can use a predictor table to store where past branches have jumped, to get the next address to fetch.
+
+This is the idea behind the **Branch Target Buffer (BTB)**, a simple implementation of this!
+1. Hash the PC address (often by taking the lowest $K$ bits). 
+2. This hash will index the BTB table. If we match a BTB entry, we use the entry's PC to predict where to fetch the next instruction.
+3. Once the branch resolves, update the value of the BTB if it jumped to the wrong location
+
+> We can also use the BTB to predict if a branch is taken or not (if the entry exists or not), in a very rudimentary way!
+
+We hash the PC to minimize storage costs. This is a very common theme; though note that hashing means we could get collisions as a result. 
+
+With the BTB, we can guess where a branch will jump; but how do we know if a branch is taken or not? This is called **direction prediction**, and is needed for conditional branches.
+> We will describe many forms of direction prediction below.
+
+- **Static Prediction**: Use a fixed rule / pattern to make the prediction
+- **Dynamic Prediction**: Use an up-to-date history to make the prediction.
+
+> Dynamic prediction is based off of the assumption that the predicted direction is likely to be the same as the last time!
+
+## WHETHER: Static Prediction
 **Static Prediction** means we always predict one outcome. This is easy to implement!
 - **NT**: We always predict the branch is not taken, we have 30-40% accuracy.
 - **T**: We always predict the branch is taken, we have 60-70% accuracy.
 - **Backward T, Forward NT (BTFNT)**: If we're in a loop, depending on the order of iteration we can predict if the branch is taken (since the loop will run more than a few iterations).
 
-Say we have a predictor that always predicts NT. This requires no extra memory, and requires we simply just increment PC (which we already do anyways)! Then,
+Say we have a predictor that always predicts NT. This requires no extra memory, and requires we simply just increment PC (which we already do anyways)! Then, if:
 - 80% of our instructions are not branches, so we're always accurate on those.
 - 20% of our instructions are branches, if 60% are taken, then we are accurate for an additional 8% of instructions.
 
@@ -359,39 +405,7 @@ $$
 Where $n$ denotes the number of instructions until we see a branch (the frequency of branches)
 > Penalty depends on the number of cycles we miss on an incorrect branch prediction.
 
----
-
-What if we use the history of branches? If we know what a branch has done in previous cycles, then we may be able to make a more educated guess!
-
-To do this, given a branch, we:
-- Look-up a predictor table
-- This table returns what we are looking for (for example, the next PC), based on the current PC.
-- Update the branch history
-
-The **Branch Target Buffer (BTB)** is a simple implementation of this.
-1. If address matches a BTB entry, we predict it to be a branch.
-2. After fetching instructions, we use the entry's PC to predict where to fetch the next instruction from.
-3. Once the branch resolves, update the BTB if needed.
-4. In the pipeline, if we find a misprediction, update the BTB entry.
-
-To do this, we can hash our PC! We store a table of $K$ entries, that PC's hash to. We look at the entry of the table to find the next PC to jump to.
-> Hash collisions can cause issues with this.
-
-1. Predict if the branch is happening or not
-2. Use BTB to know where to go to
-
----
-
-BTB stores target addresses; how do we use the BTB only to get the target addresses that we need the BTB for? 
-> This is needed for conditional branches!
-
-But how do we predict the outcome of the branch? This is called **Direction Prediction**.
-- Static Prediction: Use a fixed rule
-- Dynamic Prediction: Use history and keep history updated. This is based off the assumption that the predicted direction is likely to be the same as the last time!
-
-> By convention, we will say not taken is $N$, and taken is $T$.
-
-## 1-Bit Branch Prediction
+## WHETHER: 1-Bit Branch Prediction
 **One-Bit Branch Predictor**: Stores 1 bit per branch (hashed) to make predictions about the branch.
 
 For $K$ bits of the branch instruction address, the 1-bit branch predictor stores a **Branch History Table (BHT)** of $2^k$ bits, 1 bit per entry. This bit tells us to predict if the branch was taken (1) or not (0). 
@@ -647,3 +661,239 @@ IFID0 -.-> IFEX0;
 IFID1 -.-> RF & SE -.-> IFEX1;
 end
 ```
+
+---
+
+# Dependencies and Instruction Level Parallelism
+> Recall how branch prediction lets us reduce the negative impact of control dependencies on pipelining. What if want to execute more than one intruction per cycle? Well then, we'll also have issues of **data dependencies**!
+
+Here, we will talk about **instruction level parallelism**, which will let us execute several instructions in parallel. 
+
+Suppose we have the following 3 instructions, which we want to execute in parallel.
+| Instr | Cycle 1 | Cycle 2 | Cycle 3 | Cycle 4 | Cycle 5 |
+| :-: | :-: | :-: | :-: | :-: | :-: | 
+| `R1 = R2 + R3` | Fetch | Decode | Execute | | Write Back |
+| `R4 = R1 - R5` | Fetch | Decode | Execute | | Write Back |
+| `R6 = R5 x R9` | Fetch | Decode | Execute | | Write Back |
+
+We would be able to get a lot of performance, but this isn't possible right now! This is because of the data dependencies between the 1st and 2nd instruction.
+> Forwarding can't help either, since we can't forward in the same cycle!
+
+So, we need some way to determine if our instructions are independent. One simple way to do this could be:
+1. Read and decode a few instructions each cycle
+2. If our instructions are independent, then execute them at the same time
+3. If they are not, execute them one at a time
+
+> [!Tip]
+> This is in fact how the original Pentium processor worked, which fetched and executed up to 2 instructions at a time.
+> ```mermaid
+> flowchart LR
+> Fetch -.-> Decode1;
+> Decode1 -.-> 0[Decode2] -.-> 1[Execute] -.-> 2[Writeback];
+> Decode1 -.-> 4[Decode2] -.-> 5[Execute] -.-> 6[Writeback];
+> ```
+> 
+> The decode stage checks for multiple conditions:
+> - Is there a data dependency?
+> - Is there a resource conflict? 
+
+Typically, we're looking to execute 3-6 instructions at a time. A CPU that can ideally run $N$ instructions per cycle is called N-way **superscalar**, where $N$ is called the **issue width**.
+- **Scalar CPUs**: Execute one instruction at a time
+- **Vector CPUs**: Execute one instruction at a time, but on vector data
+- **Superscalar**: Can execute more than one unrelated instructions at a time
+
+Let's see why instruction-level parallelism is useful. Assume we already fetched and decoded the following instructions. If we want to execute **up to two instructions** at a time, then in program order, we would only have the following. 
+
+| | Instr | Cycle | 
+| :-: | :- | :- |
+| 1 | ADD R1 R2, R3 | Cycle 1| 
+| 2 | SUB R4, R1, R5 | Cycle 2 |
+| 3 | XOR R6, R7, R8 | Cycle 2 |
+| 4 | SW R6, 0(R4) | Cycle 3 | 
+| 5 | MUL R6, R5, R9 | Cycle 3 | 
+| 6 |  ADD R7, R1, R6 | Cycle 4 |
+| 7 | SLR R6, R1, R4 | Cycle 4 |
+> Note how the dependency between I1, I2 forces it so that I1 has to run in its own cycle.
+
+Here, we can execute 7 instructions in 4 cycles, giving us a CPI of 0.57.
+
+Intuitively, we may think that increasing the number of instructions we can execute would give us a higher CPI! But this is not necessarily the case. To see why, suppose we execute up to 3 at a time now.
+| | Instr | Cycle | 
+| :-: | :- | :- |
+| 1 | ADD R1 R2, R3 | Cycle 1| 
+| 2 | SUB R4, R1, R5 | Cycle 2 |
+| 3 | XOR R6, R7, R8 | Cycle 2 |
+| 4 | SW R6, 0(R4) | Cycle 3 | 
+| 5 | MUL R6, R5, R9 | Cycle 3 | 
+| 6 |  ADD R7, R1, R6 | Cycle 4 |
+| 7 | SLR R6, R1, R4 | Cycle 4 |
+
+Because of the data dependencies between I3/I4, I5/I6, we still only execute 7 instructions in 4 cycles! So, we gained nothing.
+
+What if we can reorder instructions? Well, if we 
+
+
+---
+
+
+## Data Dependencies
+To understandind why these limits are happening, let's first review the types of data dependencies. 
+- **Register Dependencies** occur due to data dependency conflicts with register numbers
+  - **Read-After-Write (RAW; True Dependency)**: $A$ writes to a location, and $B$ reads from the same location. 
+  - **Write-After-Read (WAR; Anti-Dependency)**: $A$ reads from a location, then $B$ writes to the location. If $B$ executes before $A$ has read its operand, then the operand will be lost. 
+  - **Write-After-Write (WAW)** $A$ writes to a location, then $B$ writes to the same location. Here, there is an output dependency, as the location's value depends on what executes last.
+- **Memory Dependencies** occur due the data dependency conflicts with memory addresses
+  > Memory dependencies are hard to minimize, as because register names are known at decode, memory addresses are not known until execute!
+
+### WAR, WAW Dependencies
+In terms of register dependencies, **WAR and WAW are false dependencies**; they only occur because we have a limited number of registers, so at some point we're forced to re-use registers. 
+
+A simple solution is to just add more registers! If we have more registers, and our compiler uses them, we'll have less false dependency issues. 
+
+However, this isn't very scalable.
+- If you write a value to a register in a loop body, then that same register will be reused every iteration. This introduces many false dependencies!
+- If you make function calls, you could have similar register reuse!
+
+We can address this using **hardware register renaming**. First, we're going to define different concepts of registers:
+- **Architecture Registers**: Registers that the programmers and compilers use
+- **Physical Registers**: Actual registers that the processor uses
+
+This abstracts the use of registers in the code we write from the physical registers. Then, if we dynamically map our architecture registers to the physical registers, we can avoid dependency issues!
+
+Consider the following set of instructions.
+```
+I1: ADD R1, R2, R3
+I2: SUB R2, R1, R5
+I3: AND R5, R11, R7
+I4: OR R8, R5, R2
+I5: XOR R2, R4, R11
+```
+
+To reduce the number of false dependencies, lets replace our registers with a temporary "name" for the values they contain / produce. So, after any write to a register, we will use the "same name" for all subsequent reads until the next write!
+```
+I1: ADD R1, R2, R3
+I2: SUB R2, R1, R5
+I3: AND S, R11, R7
+I4: OR R8, S, R2
+I5: XOR R2, R4, R11
+```
+
+This tells us what instructions depend on one another! We can rewrite this temporary name with another register to avoid a dependency. 
+
+So, we will rename every instruction, and anytime we decode an instruction that will write to a register, we will change the name of the register. We store the mapping between architectural / physical registers in a **register allocation table (RAT)**.
+
+After renaming, we won't have any false dependencies! We can use these renamed registers with physical registers at runtime, and select free registers to avoid conflicts.
+
+---
+
+# Dynamic Instruction Scheduling
+To calculate our maximum theoretical instruction level parallelism (ILP), we want to look at
+$$
+ILP = \text{\# Instructions} / \text{Longest Path}
+$$
+Where the longest path is determined by the number of true dependencies!
+> We ignore false dependencies, as we can assume that we've resolved them with other techniques.
+
+> [!Example] Example: ILP Calculation
+> ```bash
+> I1: ADD R10, R2, R3
+> I2: SUB R6, R7, R8
+> I3: XOR R5, R8, R9
+> I4: MUL R4, R8, R9
+> I5: XOR R11, R10, R5
+> ```
+> We have 5 instructions, and our longest path is 2 ($I_1/I_5$ and $I_4/I_5$). Thus, the ILP of this set of instructions is 2.5.
+>
+> > To do these, it helps to draw a dependency graph, and trace the longest path.
+
+ILP is a property of the program and compiler. No matter what processor you run the program on, the true dependencies restrict our maximum parallelism!
+
+Instructions Per Cycle (IPC), on the other hand, depends on the actual machine architecture. This is how much parallelism we can achieve practically!
+> ILP the upper bound on IPC that we can achieve!
+
+---
+
+To increase the number of instructions we run per cycle, we can use **scheduling**. Scheduling seeks to find instructions whose dependencies have been resolved, so that they can be executed! 
+> If the scheduling is **out of order**, then the instructions can be executed in any order, so long as their dependencies have already been resolved. 
+
+> [!Example] Example: Out-Of-Order Scheduling
+> Consider the following instructions. With out-of-order scheduling, 1 MUL unit and 1 ADD / SUB / XOR unit,  what is the ILP and IPC?
+> 
+> ```bash
+> I1: ADD R1, R2, R3
+> I2: SUB R4, R1, R5
+> I3: XOR R6, R7, R8
+> I4: MUL R5, R8, R9
+> I5: XOR R4, R8, R9
+> ```
+> 
+> We have 1 dependency between $I_1 / I2$, and 5 instructions. Thus, our ILP is $5/2 = 2.5$.
+> 
+> However, practically speaking, per cycle we can execute the instructions as follows:
+> 1. Cycle 1: I1 on ADD, I4 on MUL
+> 2. Cycle 2: I2 on ADD
+> 3. Cycle 3: I3 on ADD
+> 4. Cycle 4: I5 on ADD
+> 
+> So, our IPC is $5/4$! Even though we have scheduling, we're limited by our hardware! So, achieving ILP depends both on smart scheduling, and the power of our hardware.
+
+How do we practically implement this?
+
+## Tomasulo's Algorithm
+Tomasulo's Algorithm is a hardware algorithm that determines which instructions have inputs ready, and can be executed. The algorithm includes a form of register renaming to eliminate false dependencies.
+
+To implement this algorithm, we need the following hardware components:
+1. **Instruction Buffer / Queue**: Stores the instructions that we have available to us and can examine for parallelism. 
+2. **Reservation Stations**: Stores instructions that are pending execution, and which operands are ready. Every entry in the reservation tables has a unique identifier.
+3. **Register Allocation Table (RAT)**: Maps register names to reservation station IDs. If the value is 0, then it means the value is in the register file. Otherwise, the entry tells us what pending instruction (in one of the reservation stations) is writing to this register.
+4. **The Register File**: The register file that stores the values in each register.
+
+For the sake of example, let our tables store the following.
+
+| | Instruction Queue | | RAT Table | | Register File |
+| :-: | :- | :-: | :- | :-: | :- |
+| 3 | F1 = F2 + F3 | F1 | 0 | F1 | 3.141693
+| 2 | F4 = F1 - F2 | F2 | 1 | F2 | -1.00
+| 1 | F1 = F2 / F3 | F3 | 0 | F3 | 2.718282
+| | | F4 | 0 | F4 | 0.707107
+
+| | Adder Reservation Station | | Mul/Div Reservation Station |
+| :-: | :- | :-: | :- |
+| 1 | F2 = F4 + F1 ; 0.7071 ; 0.35 | 4 |
+| 2 | | 5 |
+| 3 | 
+
+To achieve parallelism, the algorithm has 3 stages. Each cycle, we run each stage to achieve parallelism.
+
+### Stage 1: Issue
+The **issue stage** takes an instruction and places it in the reservation station, with data telling us what instructions it depends on.
+
+Let's walk through an example of what the issue stage does. 
+
+1. **Get Next Instruction**: Pull from the instruction queue to get the next instruction `F1 = F2 / F3`. 
+2. **Find Free Reservation Spot**: Try to find a free spot in the corresponding reservation station, which in this case is the Mul/Div reservation station. We find open spot (4).
+3. **Write Reservation Entry**: Write this instruction to this spot. Check the operands of the instruction, `F2` and `F3`. Look at the RAT table to see if these operands are available or not.
+   1. Look at entry `F2`, which is 1. This means that the operand for `F2` is the output of the instruction in reservation table (1). Store this index (1) for the operand, to signify that we're waiting on this instruction.
+   2. Look at entry `F3`, which is 0. This means that the value is already in the register file. Pull the value from the register file, 2.718, and store it in the reservation table.
+
+4. **Update RAT**: Look at the instructions output, `F1`. Update the RAT table so that its entry points to the reservation index of this instruction, (4). This tells us that any subsequent instruction using register `F1`, needs to wait on instruction (4) in the reservation table.
+
+After the issue stage, our tables look as follows:
+
+| | Instruction Queue | | RAT Table | | Register File |
+| :-: | :- | :-: | :- | :-: | :- |
+| 3 | F1 = F2 + F3 | F1 | `4` | F1 | 3.141693
+| 2 | F4 = F1 - F2 | F2 | 1 | F2 | -1.00
+| 1 | `F1 = F2 / F3` | F3 | 0 | F3 | 2.718282
+| | | F4 | 0 | F4 | 0.707107
+
+| | Adder Reservation Station | | Mul/Div Reservation Station |
+| :-: | :- | :-: | :- |
+| 1 | F2 = F4 + F1 ; 0.7071 ; 0.35 | 4 | `F1 = F2 / F3 ; (1) ; 2.718`
+| 2 | | 5 |
+| 3 | 
+
+### Stage 2: Execute
+The **execute stage** is responsible for monitoring what instructions are ready to be executed, by updating reservation stations with results of computed instructions and executed instructions with no more dependencies.
+
+1. 

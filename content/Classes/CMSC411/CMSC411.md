@@ -897,3 +897,14 @@ After the issue stage, our tables look as follows:
 The **execute stage** is responsible for monitoring what instructions are ready to be executed, by updating reservation stations with results of computed instructions and executed instructions with no more dependencies.
 
 1. 
+
+
+---
+
+...
+
+
+---
+
+Even with our optimizations, our current algorithm still can only maintain 1 instruction / cycle! This is because our current design is a bit limited.
+1. We must be able to issue $>1$ IPC to the RS / ROB

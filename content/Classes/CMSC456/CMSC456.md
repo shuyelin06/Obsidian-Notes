@@ -60,6 +60,18 @@ Note that unlike security, this probability must be less than negligible probabi
 > In other words, the adversary is allowed to replay a message, as long as the tag is different.
 > > In practice, we don't worry about this too much as the schemes we use are deterministic, so there's only one valid tag per message (so strong security and normal security are the same).
 
+> [!Example]+ Example: MAC Disproof
+> Suppose we have a MAC, where for mesage $m = m_1 || \dots || m_\ell$, $m_i \in \{0,1\}^n$, choose $r \in \{0,1\}^n$ at random and compute $t = r || F_k (m_1 \oplus r) || \dots || F_k (m_\ell \oplus r)$.
+> 
+> This is, in fact, not a secure MAC. We can show this below. 
+> 
+> Let $A$ be an adversary which does the following:
+> 1. Suppose we have some message $m$ we want to authenticate. Query the oracle to get the tag $t$.
+> 2. From the tag $t$, take random bit-string $r$ in the beginning.
+> 3. Now create forgery, where $m'$ is the message where each block of the message is XORed with $r$ from above. Let $t'$ be the tag where $0$ is our random bit-string, with $t$ after. 
+> 
+> This is a valid forgery, which gives us a non-negligible probability of breaking the MAC!
+
 ## Constructing Secure MACs
 We can construct secure MACs using pseudorandom functions! 
 
@@ -104,5 +116,85 @@ Let $F$ be a pseudorandom function. We define a fixed-length MAC for messages of
 > > 
 > > Which is non-negligible. Thus, $F$ is not a PRF.
 
-### Variable Length Messages
-TODO...
+### Domain Extension for MACs
+Let's see how we can extend MACs for variable-length MACs.
+
+Suppose we have a MAC $\Pi$, which works for fixed-length messages of length $n$. For a message of any length,
+$$
+m = m_1 m_2 \dots m_\ell
+$$
+How can we generate a tag for this message?
+
+> [!Warning] Naive Extension
+> One way we could do this is by running each block of the message through the MAC to get a tag for each block. 
+>
+> Unfortunately, this is not secure. This is because there's nothing "tying" the blocks of the messages together-- so, an adversary can easily reorder the blocks to break the security of the scheme.
+
+Let's see some ways we can extend the MAC.
+
+---
+
+**CBC-MAC**: We generate one tag by running each message through $F_k$, XORing the result with the next message, and repeating this process. Formally, 
+$$
+\begin{align*}
+&c_1 = F_k (m_1) \\
+&c_2 = F_k (m_2 \oplus c_1) \\
+&c_3 = F_k (m_3 \oplus c_2) \\
+&\vdots \\
+&t = c_\ell = F_k (m_\ell \oplus c_{\ell - 1})
+\end{align*}
+$$
+
+This is secure only if the message and forgery are both required to have a fixed length $\ell$! If these conditions are relaxed, we can perform a **length extension attack** to break the security of the MAC-- let's see how below. 
+
+> [!Example] Example: Length Extension Attack
+> Suppose the message and forgery are not required to have block-length $\ell = 6$. Then, let $A$ be the adversary who queries two messages $m_1, m_2$ of length 3 blocks each. $A$ will use these messages to then generate a forgery on a 6 block message $m' = m_1' m_2' m_3' m_4' m_5' m_6'$.
+> 1. $A$ can query $m_1 = m_1' || m_2' || m_3'$, to get tag $t_1$.
+> 2. Then, $A$ can query $m_2 = (m_4' \oplus t_1) || m_5' || m_6'$ to get tag $t_2$.
+> 3. This tag is our forgery! Return forgery $(m', t')$ where $t' = t_2$.
+>
+> This creates a forgery that breaks the security of our MAC!
+
+> This happens because we're allowed to query the oracle on a prefix of the previous message. This relation breaks the security.
+
+To fix CBC-MAC, we will first instead start the MAC not on $m_1$, but on some **prefix-free encoding**. This is a scheme that maps an input message into a space of valid code-words, where for any two valid code-words, one does not prefix the other. 
+
+One easy way to do this is by encoding the length of the message! So, CBC-MAC would do the following:
+$$
+\begin{align*}
+&c_0 = \text{Length of m} \\
+&c_1 = F_k (m_1 \oplus c_0) \\
+&c_2 = F_k (m_2 \oplus c_1) \\
+&\vdots \\
+&t = c_\ell = F_k (m_\ell \oplus c_{\ell - 1})
+\end{align*}
+$$
+> The prefix-free encoding ensures that messages cannot prefix each other in the MAC scheme!
+
+
+# Authenticated Encryption
+## CCA Security
+We've seen a secure way to encrypt our message for security, and a secure way to authenticate our message for integrity. Now, let's tie the two together!
+
+**Chosen Ciphertext Attack (CCA) Security** is a standard security notion, which is even stronger than CPA security. We define the following game.
+
+Consider a private-key encryption scheme $\Pi$, some adversary $A$, and security parameter $n$. Define the following experiment
+$$
+PrivK^{cca}_{A,\Pi} (n)
+$$
+
+1. The challenger generates a key $Gen(1^n) = k$.
+2. The adversary gets oracle access to both the encryption and decryption algorithm, $A^{Enc_k, Dec_k}$. They can query messages to get ciphertexts, and ciphertexts to get messages.
+3. The adversary chooses 2 messages, $m_0, m_1$ and sends them to the challenger.
+4. The challenger chooses one of the messages at random, $b \in \{0,1\}$, encrypts it, and sends the ciphertext $c$ of $m_b$ back.
+5. The adversary can again query the encryption and decryption oracle. When ready, it returns $b'$ guessing what message was encrypted.
+   - To make sure this game is possible, in this step, the adversary is NOT allowed to query challenge ciphertext $c$ to the decryption oracle. It can query anything else though, as long as it is not $c$. We'll denote this slight limitation as $A^{Dec_k^*}$
+6. The experiment is 1 if $b' = b$, 0 otherwise.
+
+We say $\Pi$ has **indistinguishable encryptions under a chosen-ciphertext attack (CCA secure)** if $\forall$ PPT adversaries $A$, $\exists$ a negligible function $negl$ such that
+$$
+Pr[PrivK^{cca}_{A,\Pi} (n) = 1] \le negl
+$$
+> This is a really strong notion of security! 
+
+Authenticated encryption schemes satisfy this type of security, by using MACs to tag the ciphertext for authentication. Then, $Dec$ throws an error if it detects an invalid ciphertext. By doing this, the adversary can only decrypt the ciphertexts its seen, and can't make its own!

@@ -162,7 +162,7 @@ To fix CBC-MAC, we will first instead start the MAC not on $m_1$, but on some **
 One easy way to do this is by encoding the length of the message! So, CBC-MAC would do the following:
 $$
 \begin{align*}
-&c_0 = \text{Length of m} \\
+&c_0 = F_k (\text{Length of m}) \\
 &c_1 = F_k (m_1 \oplus c_0) \\
 &c_2 = F_k (m_2 \oplus c_1) \\
 &\vdots \\
@@ -170,6 +170,8 @@ $$
 \end{align*}
 $$
 > The prefix-free encoding ensures that messages cannot prefix each other in the MAC scheme!
+
+Essentially, what we are doing is prepending an extra message block to the message, which indicates its length.
 
 
 # Authenticated Encryption

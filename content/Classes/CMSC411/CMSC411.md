@@ -664,10 +664,11 @@ end
 
 ---
 
-# Dependencies and Instruction Level Parallelism
-> Recall how branch prediction lets us reduce the negative impact of control dependencies on pipelining. What if want to execute more than one intruction per cycle? Well then, we'll also have issues of **data dependencies**!
+Instruction Level Parallelism
 
-Here, we will talk about **instruction level parallelism**, which will let us execute several instructions in parallel. 
+# Context
+## Main Idea
+Let's now look at another way we can speed up our processor-- **instruction level parallelism (ILP)**. If we can execute more than one instruction at a time, then we'll get some massive performance gains! 
 
 Suppose we have the following 3 instructions, which we want to execute in parallel.
 | Instr | Cycle 1 | Cycle 2 | Cycle 3 | Cycle 4 | Cycle 5 |
@@ -676,15 +677,23 @@ Suppose we have the following 3 instructions, which we want to execute in parall
 | `R4 = R1 - R5` | Fetch | Decode | Execute | | Write Back |
 | `R6 = R5 x R9` | Fetch | Decode | Execute | | Write Back |
 
-We would be able to get a lot of performance, but this isn't possible right now! This is because of the data dependencies between the 1st and 2nd instruction.
+If we could execute all of these instructions at the same time, then we'd be able to save on a lot of time! However, this just isn't possible, because **instructions have data dependencies**. If we execute $I_1$ and $I_2$ at the same time, we'll get unexpected results because $I_2$ uses the output of $I_1$!
 > Forwarding can't help either, since we can't forward in the same cycle!
 
-So, we need some way to determine if our instructions are independent. One simple way to do this could be:
-1. Read and decode a few instructions each cycle
-2. If our instructions are independent, then execute them at the same time
-3. If they are not, execute them one at a time
+> [!Info] Instruction Level Parallelism
+> *Given a set of instructions, what instructions we can "legally" execute in parallel*?
 
-> [!Tip]
+Typically, we're looking to execute 3-6 instructions at a time. A CPU that can ideally run $N$ instructions per cycle is called N-way **superscalar**, where $N$ is called the **issue width**.
+- **Scalar CPUs**: Execute one instruction at a time
+- **Vector CPUs**: Execute one instruction at a time, but on vector data
+- **Superscalar**: Can execute more than one unrelated instructions at a time
+
+> [!Example]- Example: Simple Parallelism, Pentium Processors
+> The simplest way we can do this is: 
+> 1. Read and decode a few instructions each cycle
+> 2. If our instructions are independent, then execute them at the same time
+> 3. If they are not, execute them one at a time
+> 
 > This is in fact how the original Pentium processor worked, which fetched and executed up to 2 instructions at a time.
 > ```mermaid
 > flowchart LR
@@ -697,47 +706,39 @@ So, we need some way to determine if our instructions are independent. One simpl
 > - Is there a data dependency?
 > - Is there a resource conflict? 
 
-Typically, we're looking to execute 3-6 instructions at a time. A CPU that can ideally run $N$ instructions per cycle is called N-way **superscalar**, where $N$ is called the **issue width**.
-- **Scalar CPUs**: Execute one instruction at a time
-- **Vector CPUs**: Execute one instruction at a time, but on vector data
-- **Superscalar**: Can execute more than one unrelated instructions at a time
-
-Let's see why instruction-level parallelism is useful. Assume we already fetched and decoded the following instructions. If we want to execute **up to two instructions** at a time, then in program order, we would only have the following. 
-
-| | Instr | Cycle | 
-| :-: | :- | :- |
-| 1 | ADD R1 R2, R3 | Cycle 1| 
-| 2 | SUB R4, R1, R5 | Cycle 2 |
-| 3 | XOR R6, R7, R8 | Cycle 2 |
-| 4 | SW R6, 0(R4) | Cycle 3 | 
-| 5 | MUL R6, R5, R9 | Cycle 3 | 
-| 6 |  ADD R7, R1, R6 | Cycle 4 |
-| 7 | SLR R6, R1, R4 | Cycle 4 |
-> Note how the dependency between I1, I2 forces it so that I1 has to run in its own cycle.
-
-Here, we can execute 7 instructions in 4 cycles, giving us a CPI of 0.57.
-
-Intuitively, we may think that increasing the number of instructions we can execute would give us a higher CPI! But this is not necessarily the case. To see why, suppose we execute up to 3 at a time now.
-| | Instr | Cycle | 
-| :-: | :- | :- |
-| 1 | ADD R1 R2, R3 | Cycle 1| 
-| 2 | SUB R4, R1, R5 | Cycle 2 |
-| 3 | XOR R6, R7, R8 | Cycle 2 |
-| 4 | SW R6, 0(R4) | Cycle 3 | 
-| 5 | MUL R6, R5, R9 | Cycle 3 | 
-| 6 |  ADD R7, R1, R6 | Cycle 4 |
-| 7 | SLR R6, R1, R4 | Cycle 4 |
-
-Because of the data dependencies between I3/I4, I5/I6, we still only execute 7 instructions in 4 cycles! So, we gained nothing.
-
-What if we can reorder instructions? Well, if we 
-
-
----
-
-
 ## Data Dependencies
-To understandind why these limits are happening, let's first review the types of data dependencies. 
+One of the major bottlenecks for ILP is data dependencies. These prevent us from executing instructions in parallel, as we risk creating unexpected outputs.
+
+> [!Example]- Example: Data Dependency Bottlenecks
+> Let's see an example of this below. Assume we already fetched and decoded the following instructions. If we want to execute **up to two instructions** at a time, then in program order, we would only have the following. 
+> 
+> | | Instr | Cycle | 
+> | :-: | :- | :- |
+> | 1 | ADD R1 R2, R3 | Cycle 1| 
+> | 2 | SUB R4, R1, R5 | Cycle 2 |
+> | 3 | XOR R6, R7, R8 | Cycle 2 |
+> | 4 | SW R6, 0(R4) | Cycle 3 | 
+> | 5 | MUL R6, R5, R9 | Cycle 3 | 
+> | 6 |  ADD R7, R1, R6 | Cycle 4 |
+> | 7 | SLR R6, R1, R4 | Cycle 4 |
+> > Note how the dependency between I1, I2 forces it so that I1 has to run in its own cycle.
+> 
+> Here, we can execute 7 instructions in 4 cycles, giving us a CPI of 0.57.
+> 
+> Intuitively, we may think that increasing the number of instructions we can execute would give us a higher CPI! But this is not necessarily the case. To see why, suppose we execute up to 3 at a time now.
+> | | Instr | Cycle | 
+> | :-: | :- | :- |
+> | 1 | ADD R1 R2, R3 | Cycle 1| 
+> | 2 | SUB R4, R1, R5 | Cycle 2 |
+> | 3 | XOR R6, R7, R8 | Cycle 2 |
+> | 4 | SW R6, 0(R4) | Cycle 3 | 
+> | 5 | MUL R6, R5, R9 | Cycle 3 | 
+> | 6 |  ADD R7, R1, R6 | Cycle 4 |
+> | 7 | SLR R6, R1, R4 | Cycle 4 |
+> 
+> Because of the data dependencies between I3/I4, I5/I6, we still only execute 7 instructions in 4 cycles! So, we gained nothing. The data dependencies between the instructions are preventing us from executing more instructions at once. 
+
+To understand why these limits are happening, let's first review the types of data dependencies. 
 - **Register Dependencies** occur due to data dependency conflicts with register numbers
   - **Read-After-Write (RAW; True Dependency)**: $A$ writes to a location, and $B$ reads from the same location. 
   - **Write-After-Read (WAR; Anti-Dependency)**: $A$ reads from a location, then $B$ writes to the location. If $B$ executes before $A$ has read its operand, then the operand will be lost. 
@@ -745,16 +746,18 @@ To understandind why these limits are happening, let's first review the types of
 - **Memory Dependencies** occur due the data dependency conflicts with memory addresses
   > Memory dependencies are hard to minimize, as because register names are known at decode, memory addresses are not known until execute!
 
-### WAR, WAW Dependencies
+A lot of ILP revolves around addressing these dependencies, so we can maximize parallel execution of instructions. More on addressing register dependencies later.
+
+## Register Renaming (WAR, WAW)
 In terms of register dependencies, **WAR and WAW are false dependencies**; they only occur because we have a limited number of registers, so at some point we're forced to re-use registers. 
 
-A simple solution is to just add more registers! If we have more registers, and our compiler uses them, we'll have less false dependency issues. 
+So, a simple solution is to just add more registers! If we have more registers, and our compiler uses them, we'll have less false dependency issues. 
 
 However, this isn't very scalable.
 - If you write a value to a register in a loop body, then that same register will be reused every iteration. This introduces many false dependencies!
 - If you make function calls, you could have similar register reuse!
 
-We can address this using **hardware register renaming**. First, we're going to define different concepts of registers:
+Instead, we use **hardware register renaming**. The idea is to separate the physical registers from the registers in code: 
 - **Architecture Registers**: Registers that the programmers and compilers use
 - **Physical Registers**: Actual registers that the processor uses
 
@@ -783,18 +786,22 @@ This tells us what instructions depend on one another! We can rewrite this tempo
 So, we will rename every instruction, and anytime we decode an instruction that will write to a register, we will change the name of the register. We store the mapping between architectural / physical registers in a **register allocation table (RAT)**.
 
 After renaming, we won't have any false dependencies! We can use these renamed registers with physical registers at runtime, and select free registers to avoid conflicts.
-
----
+> More on implementing this later.
 
 # Dynamic Instruction Scheduling
-To calculate our maximum theoretical instruction level parallelism (ILP), we want to look at
+To actually create a processor that uses ILP, we need to use **dynamic instruction scheduling**. 
+
+## Theoretical Gains
+To calculate our maximum theoretical ILP gain, we want to look at
 $$
 ILP = \text{\# Instructions} / \text{Longest Path}
 $$
-Where the longest path is determined by the number of true dependencies!
-> We ignore false dependencies, as we can assume that we've resolved them with other techniques.
+Where the longest path is determined by the number of true dependencies, we cannot remove them.
+> We can however, ignore false dependencies, as we've (ideally) can assume that we've resolved them with other techniques.
 
-> [!Example] Example: ILP Calculation
+> [!Example]- Example: ILP Calculation
+> Suppose we have the following 5 instructions.
+> 
 > ```bash
 > I1: ADD R10, R2, R3
 > I2: SUB R6, R7, R8
@@ -802,21 +809,20 @@ Where the longest path is determined by the number of true dependencies!
 > I4: MUL R4, R8, R9
 > I5: XOR R11, R10, R5
 > ```
+> 
 > We have 5 instructions, and our longest path is 2 ($I_1/I_5$ and $I_4/I_5$). Thus, the ILP of this set of instructions is 2.5.
 >
 > > To do these, it helps to draw a dependency graph, and trace the longest path.
 
 ILP is a property of the program and compiler. No matter what processor you run the program on, the true dependencies restrict our maximum parallelism!
 
-Instructions Per Cycle (IPC), on the other hand, depends on the actual machine architecture. This is how much parallelism we can achieve practically!
+**Instructions Per Cycle (IPC)**, on the other hand, depends on the actual machine architecture. This is how much parallelism we can practically achieve!
 > ILP the upper bound on IPC that we can achieve!
 
----
-
-To increase the number of instructions we run per cycle, we can use **scheduling**. Scheduling seeks to find instructions whose dependencies have been resolved, so that they can be executed! 
+To increase the number of instructions we run per cycle, we use **scheduling**. Scheduling finds instructions whose dependencies have been resolved, so that they can be executed! 
 > If the scheduling is **out of order**, then the instructions can be executed in any order, so long as their dependencies have already been resolved. 
 
-> [!Example] Example: Out-Of-Order Scheduling
+> [!Example]- Example: Out-Of-Order Scheduling
 > Consider the following instructions. With out-of-order scheduling, 1 MUL unit and 1 ADD / SUB / XOR unit,  what is the ILP and IPC?
 > 
 > ```bash
@@ -837,10 +843,10 @@ To increase the number of instructions we run per cycle, we can use **scheduling
 > 
 > So, our IPC is $5/4$! Even though we have scheduling, we're limited by our hardware! So, achieving ILP depends both on smart scheduling, and the power of our hardware.
 
-How do we practically implement this?
+How do we practically implement a scheduler?
 
 ## Tomasulo's Algorithm
-Tomasulo's Algorithm is a hardware algorithm that determines which instructions have inputs ready, and can be executed. The algorithm includes a form of register renaming to eliminate false dependencies.
+**Tomasulo's Algorithm** is a hardware algorithm that determines which instructions have inputs ready, and can be executed. The algorithm includes a form of register renaming to eliminate false dependencies.
 
 To implement this algorithm, we need the following hardware components:
 1. **Instruction Buffer / Queue**: Stores the instructions that we have available to us and can examine for parallelism. 
@@ -859,24 +865,28 @@ For the sake of example, let our tables store the following.
 
 | | Adder Reservation Station | | Mul/Div Reservation Station |
 | :-: | :- | :-: | :- |
-| 1 | F2 = F4 + F1 ; 0.7071 ; 0.35 | 4 |
+| 1 | F2 = F4 + F1 \| 0.7071 \| 0.35 | 4 |
 | 2 | | 5 |
 | 3 | 
 
-To achieve parallelism, the algorithm has 3 stages. Each cycle, we run each stage to achieve parallelism.
+This algorithm has 3 stages, which are ran each cycle. Together, they let us achieve instruction level parallelism. 
 
 ### Stage 1: Issue
 The **issue stage** takes an instruction and places it in the reservation station, with data telling us what instructions it depends on.
 
 Let's walk through an example of what the issue stage does. 
+1. Pull from the instruction queue to get the next instruction.
+   - Here, we pull `F1 = F2 / F3`. 
+2. Find a free spot in a reservation station that can handle the instruction. 
+   - We find spot (4) in the `Mul/Div` reservation station. 
+3. Write this instruction to the free spot. Then, check the RAT table to see if the operands of the instruction are available or not.
+   1. If the RAT table entry is 0, then the value is in the register file. We pull this value and store it in the reservation station.
+   - For operand `F3`, the RAT table stores 0. So, pull the value, 2.718, from the register file, and store it in the reservation table. 
+   2. If the RAT table is not 0, then the value is the output of a reservation station. We store this reference for now.
+   - For operand `F2`, the RAT table stores 1. So, just store the reservation station spot for the operand to signify that we're waiting on this instruction.
 
-1. **Get Next Instruction**: Pull from the instruction queue to get the next instruction `F1 = F2 / F3`. 
-2. **Find Free Reservation Spot**: Try to find a free spot in the corresponding reservation station, which in this case is the Mul/Div reservation station. We find open spot (4).
-3. **Write Reservation Entry**: Write this instruction to this spot. Check the operands of the instruction, `F2` and `F3`. Look at the RAT table to see if these operands are available or not.
-   1. Look at entry `F2`, which is 1. This means that the operand for `F2` is the output of the instruction in reservation table (1). Store this index (1) for the operand, to signify that we're waiting on this instruction.
-   2. Look at entry `F3`, which is 0. This means that the value is already in the register file. Pull the value from the register file, 2.718, and store it in the reservation table.
-
-4. **Update RAT**: Look at the instructions output, `F1`. Update the RAT table so that its entry points to the reservation index of this instruction, (4). This tells us that any subsequent instruction using register `F1`, needs to wait on instruction (4) in the reservation table.
+4. Look at the instructions output register, and update the RAT table so that its entry points to this instruction's reservation station index. This tells subsequent instructions that the register output depends on this instruction. 
+   - Here, our output register is `F1`. We update the RAT entry for `F1` to (4).
 
 After the issue stage, our tables look as follows:
 
@@ -894,17 +904,118 @@ After the issue stage, our tables look as follows:
 | 3 | 
 
 ### Stage 2: Execute
-The **execute stage** is responsible for monitoring what instructions are ready to be executed, by updating reservation stations with results of computed instructions and executed instructions with no more dependencies.
+The **execute stage** executes instructions whose operands are ready, and broadcasts the results so they can be used in other instructions. 
+> To update reservation stations, the stage uses a **common data bus**, and broadcasts the output of the instruction.
 
-1. 
+Let's walk through an example of the execute stage. 
+1. First, find the instructions whose operands are all populated. These instructions are ready to be executed.
+   - We find that slot (1) is ready to be executed, standing for `F2 = F4 + F1`! 
+2. Execute this instruction, using the compute units.
+   - We execute `F2 = F4 + F1`, $0.7071 + \pi$!
+3. Load results of the instruction so they can update the other hardware components. 
 
+If several instructions are ready for one functional unit, we could use whichever instruction we want, with one exception-- **load/store instructions**. Load/store must be done in the correct order to avoid memory hazards.
+> More on addresing load/store hazards later.
 
----
+### Stage 3: Write
+The **write stage** takes the result of an instruction, and updates the hardware components necessary for continuing the algorithm.
 
-...
+Let's walk through an example of the execute stage. 
+1. Given the output of an instruction, broadcast it on the common data bus. Any reservation station depending on this output will pull and store this output.
+   - Recall that our instruction is `F2 = F4 + F1`, with result 3.8487, in reservation entry (1).
+   - Reservation station entry (4) depends on (1). So, it will overwrite (1) with the result, 3.8487. Now, this instruction is ready to execute in the next cycle!
+2. Check the RAT table for the instruction's output. If the table stores the current reservation station index, then update the RAT table (to 0) and RF file (to store theoutput).
+   - The RAT table for register `F2` is (1), which is our instruction! So, set this entry to 0, and update the RF file for `F2` to be 3.8487. 
 
+    > It's important we only update **if the RAT table entry matches**. This implements register renaming, as the RAT table only stores the mapping for the last write to a register!
 
----
+3. Free the reservation station entry for the instruction.
+   - Free reservation entry (1). 
 
-Even with our optimizations, our current algorithm still can only maintain 1 instruction / cycle! This is because our current design is a bit limited.
-1. We must be able to issue $>1$ IPC to the RS / ROB
+After the write stage, our components look like this:
+
+| | Instruction Queue | | RAT Table | | Register File |
+| :-: | :- | :-: | :- | :-: | :- |
+| 3 | F1 = F2 + F3 | F1 | 4 | F1 | 3.141693
+| 2 | F4 = F1 - F2 | F2 | `0` | F2 | `3.8487`
+| 1 | F1 = F2 / F3 | F3 | 0 | F3 | 2.718282
+| | | F4 | 0 | F4 | 0.707107
+
+| | Adder Reservation Station | | Mul/Div Reservation Station |
+| :-: | :- | :-: | :- |
+| 1 | | 4 | F1 = F2 / F3 ; `3.8487` ; 2.718
+| 2 | | 5 |
+| 3 | 
+
+> The reservation stations would likely have fetched more instructions by now, but for the sake of example we've committed this.
+
+Note how through the common data bus, the reservation stations take care of register dependencies!
+
+### The Reorder Buffer (ROB)
+Tomasulo's algorithm lets us execute instructions out of order to achieve instruction level parallelism! However, even if we reorder instructions, **we still must process instructions exactly in program order**! 
+
+This is mainly because of control flow-- in the real world, we could have exceptions, or branch mispredictions. These can cause us to update registers in the incorrect order! 
+
+> [!Example]+ Example: Branch Misprediction
+> ```bash
+> DIV R1 R3 R4
+> DEQ R1 R3 Label
+> ADD R3 R4 R5
+> ```
+> 
+> Suppose here, we predict that a branch is not taken, so we execute the ADD and update R3. 
+> 
+> Later, we realize that the branch should have been taken. By this time, we've already updated R3 with a new wrong value! This will cause incorrect program behaviors.
+
+To address this, we need to **deposit values to registers in order**! We do this using a **reorder buffer (ROB)**, which will:
+- Remember the program order
+- Keep the results of instructions until it is safe to write
+
+One entry in the ROB stores the following:
+- Type of instruction
+- Destination register of instruction
+- Result of instruction
+- A flag indicating if the instruction was finished
+
+Now, the register file will always store the "official" register state, which will only be updated in program order. 
+> The ROB will now be the one storing our register results in the correct order, and will ensure our register file is updated in the order the program gave.
+
+With the ROB, we modify our stages as follows. Now, the RAT table and reservation stations will store references to ROB entries, instead of reservation station entries:
+- **Issue**: 
+   1. Read the instruction from the buffer.
+   2. Check if there is a RS entry, **and a ROB entry** available. Stall if there are no open entries.
+   3. Read the RAT table, read available sources, and update RAT to point to the ROB entry.
+   4. Write to the RS and ROB.
+- **Execute**: No change
+- **Write**: 
+   1. Broadcast result on the data bus, for the reservation stations to grab.
+   2. **Write the result back to the ROB entry, and mark the entry as finished execution**.
+   3. Now that the ROB stores the results, free the reservation station.
+   
+   > We free the reservation station in execute! (?)
+
+We also add a new stage, **commit**. 
+1. For the oldest instruction in the ROB, check if instruction has been executed. 
+2. If it has, write the result to the register file, or memory, depending on what the instruction is. We **always update the register file**, no matter what the RAT file says. However, if the ROB is:
+   - Not the value in RAT, don't change the RAT entry.
+   - The value in RAT, clear the RAT entry to 0, indicating the value is in the register file.
+3. Advance the ROB-head to point to the next instruction.
+
+## Improving Tomasulo's Algorithm 
+Here, we discuss various ways we could potentially improve Tomasulo's algorithm (though they each come with their own tradeoffs). 
+
+### Unified Reservation Stations
+In the issue stage, we're forced to stall if there is no open RS. However, there could still be open RS slots for other compute units!
+
+Figuring out the right number of RS per compute unit is difficult, as different programs have different distributions of instructions.
+
+One way we could resolve this is by using a **unified reservation station**! Instead of different RS for different compute units, we just have 1 for every compute unit!
+> This does mean things get a bit more complex though!
+
+### Superscalar Processing
+The current implementation of Tomasulo's algorithm give us one instruction per cycle, but cannot give us more! We need a lot of the components to be superscalar in order to achieve higher than 1 IPC.
+- We need a superscalar fetch and decode
+- We need more than one CDB to write the results of instructions
+- We need a mechanism to dual-rename registers at the same time
+
+In practice, modern processors do this! However, it comes at a cost of area, logic, and power.

@@ -147,7 +147,7 @@ $$
 
 This is secure only if the message and forgery are both required to have a fixed length $\ell$! If these conditions are relaxed, we can perform a **length extension attack** to break the security of the MAC-- let's see how below. 
 
-> [!Example] Example: Length Extension Attack
+> [!Example]- Example: Length Extension Attack
 > Suppose the message and forgery are not required to have block-length $\ell = 6$. Then, let $A$ be the adversary who queries two messages $m_1, m_2$ of length 3 blocks each. $A$ will use these messages to then generate a forgery on a 6 block message $m' = m_1' m_2' m_3' m_4' m_5' m_6'$.
 > 1. $A$ can query $m_1 = m_1' || m_2' || m_3'$, to get tag $t_1$.
 > 2. Then, $A$ can query $m_2 = (m_4' \oplus t_1) || m_5' || m_6'$ to get tag $t_2$.
@@ -173,6 +173,41 @@ $$
 
 Essentially, what we are doing is prepending an extra message block to the message, which indicates its length.
 
+---
+
+**Hash-And-Mac**: Using a hash function to compress messages of arbitrary lengths to the MAC input size.  
+
+Formally, a **hash function** (with output length $\ell$) is a pair of PPT algorithms `Gen`, `H` satisfying the following:
+- `Gen` takes input security parameter $1^n$ and outputs a key $s$. 
+- `H` takes input key $s$, string $x \in \{0,1\}^*$ and outputs a string $H^s (x) \in \{0,1\}^{\ell(n)}$
+
+If $H^s$ is only defined for inputs $x \in \{0,1\}^{\ell'(n)}$ and $\ell'(n) > \ell(n)$, then we say that `Gen`, `H` is a fixed-length hash function for inputs of length $\ell'$. In this case, $H$ is also called a **compression function**.
+
+We define the following experiment, $Hashcoll_{A,II} (n)$. 
+1. Generate key $s$ by running $Gen(1^n)$.
+2. The adversary $A$ is given $s$ and outputs $x, x'$. 
+3. The output of the experiment is 1 if and only if $x \ne x'$, and $H^s (x) = H^s (x')$. 
+
+We say a hash function is **collision resistant** if for all PPT adversaries, there exists a negligible function such that
+$$
+Pr[Hashcoll_{A,II} (n) = 1] \le negl
+$$
+
+With hash functions, we can easily create MACs for variable length messages! We first hash our message into the MAC input domain, and then run the MAC algorithm
+$$
+Mac_k (m) = F_k (H^s (m))
+$$
+
+> [!Abstract] Theorem
+> If $\Pi$ is a secure MAC for messages of length $\ell$, and $\Pi_H$ is collision resistant, then the construction above is a secure MAC for arbitrary length messages.
+>
+> > [!Note] Proof (Sketch)
+> > 
+> > Suppose by way of contradiction there is an adversary breaking Hash-And-Mac. We show that under this assumption, this adversary can break either the securei MAC or the hash function.
+> > 
+> > If $A$ can break the scheme, then it can produce $m,t = Mac_k (H^s (m))$, $m \not\in Q$.
+> > 1. Case 1: We can check the list of queries to find $m'$, which will yield $H^s = H^s (m')$ for some $m' \in Q$ and $m \ne m'$. This will break the collision resistant hahs function.
+> > 2. Case 2: In all the queries in $Q$, they all correspond to different inputs $\tilde{m}$ to $Mac_k$. This will break the MAC.
 
 # Authenticated Encryption
 ## CCA Security
@@ -199,4 +234,60 @@ Pr[PrivK^{cca}_{A,\Pi} (n) = 1] \le negl
 $$
 > This is a really strong notion of security! 
 
-Authenticated encryption schemes satisfy this type of security, by using MACs to tag the ciphertext for authentication. Then, $Dec$ throws an error if it detects an invalid ciphertext. By doing this, the adversary can only decrypt the ciphertexts its seen, and can't make its own!
+Authenticated encryption schemes satisfy this type of security, by using MACs to tag the ciphertext for authentication. Then, $Dec$ throws an error (denoted $\bot$) if it detects an invalid ciphertext. By doing this, the adversary can only decrypt the ciphertexts its seen, and can't make its own!
+
+## Unforgeability for Encryption 
+To define an authenticated encryption scheme, we also need to define an additional experiment $EncForge_{A,II} (n)$:
+1. Run `Gen` to obtain key $k$
+2. The adversary $A$ is given input $1^n$, and access to the encryption oraacle $Enc_k (\cdot)$. The adversary outputs a ciphertext $c$.
+3. Let $m = Dec_k (c)$, and let $Q$ denote the set of all queries that $A$ queried from the oracle. The output of the experiment is 1 if and only if $m \ne \bot$ and $m \not\in Q$.
+
+We say a private-key encryption scheme is **unforgeable** if $\forall$ PPT adversaries $A$, there is a negligible function $negl$ such that
+$$
+Pr[EncForge_{A,II} (n) = 1] \le negl(n)
+$$
+
+## Authenticated Encryption Schemes
+We say a private-key encryption scheme is an **authenticated encryption scheme** if it is CCA-secure and unforgeable.
+> This is essentially a secure way of combining CPA-security and MACs!
+
+Here are some generic constructions.
+
+---
+
+**Encrypt-and-Authenticate**: We run encryption and message authentication independently, in parallel.
+$$
+Enc_{k_E} (m) = c \qquad Mac_{k_M} (m) = t \qquad \langle c,t \rangle
+$$
+> Do NOT use the same key for both schemes.
+
+$c$ preserves security, and $t$ preserves privacy, but combining them does not guarantee both! This is because the tag $t$ can leak info on $m$, which will break the security of the message.
+
+In fact, if the MAC is deterministic (which it often is in practice), then CPA-security does not hold for the combined $(c,t)$.
+
+---
+
+**Authenticate-then-Encrypt**: We first generate a tag, then compute our ciphertext by combining our message with the tag.
+$$
+Mac_{k_M} (m) = t \qquad Enc_{k_E} (m || t) = c \qquad c
+$$
+
+Now, because we're putting our tag into the ciphertext, this can provide privacy. However, this will not provide CCA-security!
+
+---
+
+**Encrypt-then-Authenticate**: We first encrypt the message, and then compute a tag on the result.
+$$
+Enc_{k_E} (m) = c \qquad Mac_{k_M} (c) = t \qquad \langle c, t \rangle
+$$
+
+This is secure as long as the MAC is strongly secure! Because only the encryption scheme sees the message, it provides CPA-security, and the use of the MAC preserves privacy, without compromising on security!
+
+This also gives us CCA-security, as it renders the decryption oracle useless, as it will only return $\bot$ unless a known ciphertext from CCA-security is given (and we're not allowed to query the challenge ciphertext $\langle c, \rangle t$).
+
+This is exactly what goes on in the internet after key establishment!
+
+---
+
+## Message Authentication with Hash Functions
+### Hash Functions

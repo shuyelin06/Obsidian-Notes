@@ -951,6 +951,97 @@ After the write stage, our components look like this:
 
 Note how through the common data bus, the reservation stations take care of register dependencies!
 
+### Example: Deep Dive
+> [!Example]- Example: Deep Dive
+> Let's run Tomasulo's Algorithm on an instruction set. We start with the following assumptions:
+> - All instructions are already in the instruction queue.
+> - Only one instruction can be issued per cycle.
+> - Only one instruction can be written per cycle (only one CDB). 
+> - The result of an instruction is written in the last cycle of its execution. A dependent instruction can (if selected) begin its execution in the cycle after that.
+> - The execution time of all instructions is two cycles, except for multiplication (which takes 4 cycles) and division (which takes 8 cycles).
+> - The processor has one multiply/divide unit and one add/subtract unit.
+> - The multiply/divide unit has two reservation stations and the add/subtract unit has four reservation stations.
+> - None of the execution units is pipelined – each can only be executing one instruction at a time.
+> - If a conflict for the use of an execution unit occurs when selecting which instruction should start to execute, the older instruction (the one that appears earlier in program order) has priority.
+> - If a conflict for use of the CBD occurs, the result of the add/subtract unit has priority over the result of the multiply/divide unit.
+> 
+> ```bash
+> Instruction          | Issue | Execute | Write
+> I1: MUL F2, F1, F1   |   1   |   2     |   5
+> I2: DIV F4, F4, F2   |   2   |   6     |   13
+> I3: ADD F1, F2, F3   |   3   |   6     |   7
+> I4: ADD F2, F1, F3   |   4   |   8     |   9
+> I5: DIV F1, F4, F2   |   6   |   14    |   21
+> I6: SUB F4, F4, F2   |   7   |   14    |   15
+> I7: ADD F3, F1, F2   |      |        |
+> I8: MUL F1, F2, F1   |      |        |
+> I9: ADD F3, F3, F4   |      |        |
+> I10: SUB F4, F5, F6  |      |        |
+> ```
+> 
+> The general process is as follows:
+> - When issuing an instruction, find the cycle when a reservation station is open. Find the cycle after the last issue. Take the max. 
+> - When executing an instruction, (1) find the cycle after the issue, (2) find the cycles after dependencies write-back, (3) find the cycles the execution unit is available. Choose the closest cycle to (3), given that that cycle is greater than the max of 1,2.
+> 
+> 1. `I1: MUL F2, F1, F1`
+>    - Issue: Issue I1 in C1.
+>    - Execute / Write: C2 to C5, with writing in C5.
+>      - I1 is issued in C1 -- it can only start executing in C2.
+>      - All dependencies are resolved.
+>      - An execution unit is available. 
+> 2. `I2: DIV F4, F4, F2`
+>    - Issue: Issue I2 in C2. Last issue was C1 (need C2 or later)
+>      - There is an open RS entry for DIV, as only one slot is filled by I1.
+>    - Execute / Write: C6 to C13, with writing in C13.
+>      - I2 is issued in C2 -- it can only execute on C3 or later.
+>      - I2 has a dependency on I1 -- it can only execute on C6 or later (I1 finishes Write)
+>      - An execution unit will not be available until C6 (I1 using it).
+> 3. `I3: ADD F1, F2, F3`
+>    - Issue: C3.
+>      - No ADD RS slots are filled. Last issue was C2 (need C3 or later)
+>    - Execute / Write: C6 to C7, write in C7.
+>      - I3 is issued in C3 -- it can only execute on C4 or later.
+>      - I3 depends on I1 -- it can only execute on C6 or later.
+>      - An execution unit is available.
+> 4. `I4: ADD F2, F1, F3`
+>    - Issue: C4.
+>      - Only 1 ADD RS slot is filled by I3. Last issue was C3 (need C4 or later)
+>    - Execute / Write: C8 to C9, write in C9
+>      - I4 is issued in C4 -- it can only execute on C5 or later.
+>      - I4 depends on I1 -- it can only execute on C6 or later
+>      - An execution unit will not be available until C8 (I3 using it)
+>  5. `I5: DIV F1, F4, F2`
+>     - Issue: C6.
+>       - Both RS slots filled by I1, I2 until C6, C14. Last issue was C4 (need C5 or later)
+>     - Execute / Write: C14 to C21, write in C21
+>       - I5 issued in C6 (C7 or later)
+>       - I5 depends on I2 (C14 or later), I4 (C10 or later)
+>       - Execution unit being used by I2 until C14.
+> 6. `I6: SUB F4, F4, F2`
+>    - Issue: C7
+>      - Only 2 RS slots filled by I3, I4. Last issue was C6 (need C7 or later)
+>    - Execute / Write: C14 to C15, write on C15
+>      - I6 issued on C7 (C8 or later)
+>      - I6 depends on I2 (C14 or later), I4 (C10 or later)
+>      - Execution unit being used by I4 until C10
+> 
+> ... This process continues. The final table should be
+> 
+> ```bash
+> Instruction          | Issue | Execute | Write
+> I1: MUL F2, F1, F1   |   1   |   2     |   5
+> I2: DIV F4, F4, F2   |   2   |   6     |   13
+> I3: ADD F1, F2, F3   |   3   |   6     |   7
+> I4: ADD F2, F1, F3   |   4   |   8     |   9
+> I5: DIV F1, F4, F2   |   6   |   14    |   21
+> I6: SUB F4, F4, F2   |   7   |   14    |   15
+> I7: ADD F3, F1, F2   |   8   |   22    |   23
+> I8: MUL F1, F2, F1   |   14  |   22    |   26
+> I9: ADD F3, F3, F4   |   15  |   24    |   25
+> I10: SUB F4, F5, F6  |   16  |   17    |   18
+> ```
+> > Note that I8 and I9 both write on C25-- because there is only one CDB, I9 writes first and forces I8 to execute after because of our assumptions.
+
 ### The Reorder Buffer (ROB)
 Tomasulo's algorithm lets us execute instructions out of order to achieve instruction level parallelism! However, even if we reorder instructions, **we still must process instructions exactly in program order**! 
 
@@ -992,7 +1083,7 @@ With the ROB, we modify our stages as follows. Now, the RAT table and reservatio
    2. **Write the result back to the ROB entry, and mark the entry as finished execution**.
    3. Now that the ROB stores the results, free the reservation station.
    
-   > We free the reservation station in execute! (?)
+   > Some architectures free the instruction's reservation station in execute, as the data will be in the ROB table after anyways. 
 
 We also add a new stage, **commit**. 
 1. For the oldest instruction in the ROB, check if instruction has been executed. 
@@ -1000,6 +1091,8 @@ We also add a new stage, **commit**.
    - Not the value in RAT, don't change the RAT entry.
    - The value in RAT, clear the RAT entry to 0, indicating the value is in the register file.
 3. Advance the ROB-head to point to the next instruction.
+
+> Commit MUST be in order. An instruction cannot commit until all prior instructions have committed.
 
 ## Improving Tomasulo's Algorithm 
 Here, we discuss various ways we could potentially improve Tomasulo's algorithm (though they each come with their own tradeoffs). 

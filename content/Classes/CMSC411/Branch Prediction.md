@@ -162,7 +162,7 @@ subgraph Branch History Table
 3[...];
 end
 
-0[Branch PC] -. Hash .-> 1 & 2 & 3;
+0[Branch PC] -.-> Op1((Hash)) -.-> 1 & 2 & 3;
 ```
 
 | Prediction Bit | Conviction Bit | Description | State |
@@ -231,7 +231,7 @@ subgraph Pattern History Table 2
 9[...];
 end
 
-0[Branch PC] -. Hash .-> 1 & 2 & 3;
+0[Branch PC] -.-> Op1((Hash)) -.-> 1 & 2 & 3;
 1 -.-> 4 & 5 & 6;
 2 -.-> 7 & 8 & 9;
 ```
@@ -322,6 +322,26 @@ One simple way to reduce the amount of space usage is by using hashing. If we on
 So, instead of multiple PHTs, we will have one large PHT that the history table indexes!
 - If we take the first $K$ bits of the PC to index the history table, with $2^K$ entries and $N$ bits of history, we have history table size $2^K * N$.
 - With only one PHT, and a 2 bit counter, we have size $2^N * 2$.
+
+```mermaid
+graph LR 
+subgraph History Table
+1[History 1];
+2[History 2];
+3[...];
+end
+
+subgraph Pattern History Table
+4[Counter 1];
+5[Counter 2];
+6[Counter 3];
+7[...];
+end
+
+0[Branch PC]  -.-> Op1((Hash)) -.-> 1 & 2;
+1 -.-> 4 & 5 & 6;
+2 -.-> 4 & 5 & 6;
+```
 
 This gives us less total size 
 $$

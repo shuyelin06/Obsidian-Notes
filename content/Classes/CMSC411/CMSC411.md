@@ -391,7 +391,7 @@ Note how through the common data bus, the reservation stations take care of regi
 > > Note that I8 and I9 both write on C25-- because there is only one CDB, I9 writes first and forces I8 to execute after because of our assumptions.
 
 ### The Reorder Buffer (ROB)
-Tomasulo's algorithm lets us execute instructions out of order to achieve instruction level parallelism! However, even if we reorder instructions, **we still must process instructions exactly in program order**! 
+Tomasulo's algorithm lets us execute instructions out of order to achieve instruction level parallelism! However, even if we reorder instructions, **we still must process instructions exactly in program order**!
 
 This is mainly because of control flow-- in the real world, we could have exceptions, or branch mispredictions. These can cause us to update registers in the incorrect order! 
 
@@ -410,11 +410,22 @@ To address this, we need to **deposit values to registers in order**! We do this
 - Remember the program order
 - Keep the results of instructions until it is safe to write
 
-One entry in the ROB stores the following:
+It does this by storing entries, which contain
 - Type of instruction
 - Destination register of instruction
 - Result of instruction
 - A flag indicating if the instruction was finished
+
+And a head, tail indicating what instructions have yet to be "committed" in order (more on that later).
+
+| | Type | Dest. | Value | Finished |
+| :-: | - | - | - | - |
+| ROB1 | DIV | R2 | 9 | Yes |
+| ROB2 - HEAD | MUL | R1 | 12 |
+| ROB3 | ADD | R3 | 3 | Yes |
+| ROB4 - TAIL | MUL | R1 | 36 | Yes | 
+| ROB5 | | | | |
+
 
 Now, the register file will always store the "official" register state, which will only be updated in program order. 
 > The ROB will now be the one storing our register results in the correct order, and will ensure our register file is updated in the order the program gave.
@@ -422,7 +433,8 @@ Now, the register file will always store the "official" register state, which wi
 With the ROB, we modify our stages as follows. Now, the RAT table and reservation stations will store references to ROB entries, instead of reservation station entries:
 - **Issue**: 
    1. Read the instruction from the buffer.
-   2. Check if there is a RS entry, **and a ROB entry** available. Stall if there are no open entries.
+   2. Check if there is a RS entry **and a ROB entry** available. 
+      - Stall if there are no open entries.
    3. Read the RAT table, read available sources, and update RAT to point to the ROB entry.
    4. Write to the RS and ROB.
 - **Execute**: No change
@@ -434,13 +446,58 @@ With the ROB, we modify our stages as follows. Now, the RAT table and reservatio
    > Some architectures free the instruction's reservation station in execute, as the data will be in the ROB table after anyways. 
 
 We also add a new stage, **commit**. 
-1. For the oldest instruction in the ROB, check if instruction has been executed. 
-2. If it has, write the result to the register file, or memory, depending on what the instruction is. We **always update the register file**, no matter what the RAT file says. However, if the ROB is:
-   - Not the value in RAT, don't change the RAT entry.
-   - The value in RAT, clear the RAT entry to 0, indicating the value is in the register file.
-3. Advance the ROB-head to point to the next instruction.
+- **Commit**:
+  1. For the oldest instruction in the ROB, check if instruction has been executed.
+  2. If it has, write the result to the register file, or memory, depending on what the instruction is. We **always update the register file**, no matter what the RAT file says. However, if the ROB is:
+     - Not the value in RAT, don't change the RAT entry.
+     - The value in RAT, clear the RAT entry to 0, indicating the value is in the register file.
+  3. Advance the ROB-head to point to the next instruction.
 
 > Commit MUST be in order. An instruction cannot commit until all prior instructions have committed.
+
+With the ROB in place, we can now use it to recover from branch mispredictions and exceptions **by flushing** all data after the instruction where the misprediction / exception occurred. If the exception occurred on instruction I, then we:
+- Flush the ROB for all entries after instruction I
+- Point all RAT entries to their corresponding RFs
+- Clear all of the RS entries and anything in the execution units
+
+Then, resume execution with the correct instructions!
+
+### The Load-Store Queue (LSQ)
+So, we used the ROB to fix exceptions and branch mispredictions. 
+
+What about memory dependencies? Memory instructions such as **store** only write to memory at commit. If this is the case, how do out-of-order loads know what their data is? 
+
+This is the purpose of the **Load-Store Queue (LSQ)**. This queue stores the load, store instructions in order, so that loads can be populated with the results of stores before a commit takes place. 
+> LD will denote a load instruction, and ST will denote a store instruction.
+
+For example, an LSQ could look like the following:
+| L/S | ADDR | VAL | | 
+| :-: | :-: | :-: | - |
+| LD | 104 | | |
+| ST | 204 | 15 | done |
+| LD | 204 | `15` |
+
+For every LD we add to the queue, we check to see if its address match any ST addresses. 
+- If there is a matching ST, we do not go to memory, and can pull the value from the LSQ. 
+  
+  > Here, LD on 204 can pull value 15 from ST on 204.
+
+- If there is not a matching ST, we have a few options:
+  1. We do not allow a LD to execute until all previous instructions have been completed.
+  2. We do not allow a LD to execute until all previous ST's have been completed, to match addresses
+  3. Let the LD fetch from memory! 
+
+Modern processors do option 3. If we later realize that the LD loaded the wrong value, we recover!
+
+We incorporate the LSQ into Tomasulo's algorithm by adding onto the following stages as so:
+- **Issue**: Allocate an LSQ entry for each LD/ST, in addition to the ROB entry and RS.
+- **Execute**: Generate an address for the LD/ST instruction, and update the LSQ / look-up the LSQ for previous values.
+- **Commit**: If ST, write value to memory. Free the LSQ entry in addition to the ROB entry.
+
+> What the LSQ essentially does is track addresses for values.
+
+... TODO
+
 
 ## Improving Tomasulo's Algorithm 
 Here, we discuss various ways we could potentially improve Tomasulo's algorithm (though they each come with their own tradeoffs). 
@@ -460,3 +517,8 @@ The current implementation of Tomasulo's algorithm give us one instruction per c
 - We need a mechanism to dual-rename registers at the same time
 
 In practice, modern processors do this! However, it comes at a cost of area, logic, and power.
+
+
+
+- Exceptions / Branch Mispredictions -- Recovering from Control Dependencies
+- Out of Order Memory Dependencies

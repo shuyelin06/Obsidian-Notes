@@ -520,5 +520,252 @@ In practice, modern processors do this! However, it comes at a cost of area, log
 
 
 
+TODO
+
 - Exceptions / Branch Mispredictions -- Recovering from Control Dependencies
 - Out of Order Memory Dependencies
+
+
+# Compiler ILP Techniques
+Previously, we've seen ways we can achieve ILP on the hardware. However, it's not easy to do this, and it's costly to implement all of these optimizations in the hardware! 
+
+To help with this, we can also use the compiler! The compiler can make changes in how the code is generated so that the hardware has an easier time achieving ILP.
+- Shortening dependency chains
+- Moving dependent instructions further apart
+- Improving the opportunity for parallelism
+
+Below, we'll discuss some of the various ways our compiler can optimize our code.
+
+> [!Example]+ Optimization: Tree Height Reduction
+> Using the principle of associativity, it may be possible to reduce critical paths. For example, suppose we have code
+> ```bash
+> R8 = R2 + R3 + R4 + R5
+> ```
+> 
+> If we evaluate this left to right, we'll generate code that'll yield a dependency graph with a length 3 path!
+> ```bash
+> R8 = ((R2 + R3) + R4) + R5
+> 
+> I1: ADD R6, R2, R3
+> I2: ADD R7, R6, R4
+> I3: ADD R8, R7, R5
+> ```
+> 
+> However, we don't have to do the addition in the given order because it's associative! We can actually reduce this so that our longest dependency path is only length 2.
+> ```bash
+> R8 = (R2 + R3) + (R4 + R5)
+> 
+> I1: ADD R6, R2, R3
+> I2: ADD R7, R4, R5
+> I3: ADD R8, R7, R6
+> ```
+
+## Instruction Scheduling
+Outside of Tomasulo's Algorithm, it's possible for the compiler to reduce dependency chains. It can do this by reordering our instructions!
+
+### Instruction Reordering
+Suppose we have the following loop.
+```c
+for (i = 1000; i > 0; i--)
+    x[i] = x[i] + s;
+```
+
+Directly translating this loop, we'd have assembly code
+```bash
+Loop: 
+    LD F0, 0(R1)
+    ADD F0, F0, F2
+    ST F0, 0(R1)
+    ADD R1, R1, #-8
+    
+    BNE R1, R2, LOOP
+```
+
+Now suppose we have a single-issue processor, where `LD` takes 2 cycles, `ADD` takes 3 cycles, and other instructions take 1 cycle. Factoring in these stalls, we would execute these instructions as follows:
+```bash
+Loop: 
+    LD F0, 0(R1)
+    stall
+    ADD F0, F0, F2
+    stall
+    stall
+    ST F0, 0(R1)
+    ADD R1, R1, #-8
+    stall
+    stall
+    
+    BNE R1, R2, LOOP
+```
+
+The compiler can optimize this to reduce the number of stalls! In fact, there's no reason to decrement the pointer at the end-- what if we do it earlier to spread out the dependencies?
+```bash
+Loop: 
+    LD F0, 0(R1)
+    ADD R1, R1, #-8
+    ADD F0, F0, F2
+    stall
+    stall
+    ST F0, 8(R1) # Note the change in offset
+    BNE R1, R2, LOOP
+```
+
+### Loop Unrolling
+When possible, the compiler can reduce the number of branches in the code to make scheduling easier! One notable example of this is **loop unrolling**.
+
+Using loop unrolling, a compiler can transform an M iteration loop into a loop with M / N iterations.
+> In this case, we say the loop has been unrolled $N$ times.
+
+Suppose we have the following loop. We can unroll 4 times as follows:
+```c
+// Original
+for (i = 1000 ; i > 0 ; i--)
+    x[i] = x[i] + s;
+    
+// Unrolled 1 Time
+for (i = 1000; i > 0 ; i -= 2) {
+    x[i] = x[i] + s;
+    x[i - 1] = x[i - 1] + s;
+}
+
+// Unrolled 4 Times
+for (i = 1000; i > 0 ; i -= 4) {
+    x[i] = x[i] + s;
+    x[i - 1] = x[i - 1] + s;
+    x[i - 2] = x[i - 2] + s;
+    x[i - 3] = x[i - 3] + s;
+}
+```
+
+Let's see the various reasons why loop unrolling helps.
+
+---
+
+**Less Loop Overhead**: Loop unrolling can reduce the number of total instructions, by reducing the number of times we need to update the index. Looking at the assembly of our loop,
+
+```bash
+# Original
+Loop: 
+    LD R2, 0[R1]
+    ADD R2, R2, R3
+    ST R2, 0[R1]
+    ADD R1, R1, -4
+    BNE R1, R5, LOOP
+
+# Unrolled 1 Time
+Loop:
+    LD R2, 0[R1]
+    ADD R2, R2, R3
+    ST R2, 0[R1]
+    LD R2, -4[R1]
+    ADD R2, R2, R3
+    ST R2, -4[R1]
+    ADD R1, R1, -8
+    BNE R1, R5, LOOP
+```
+
+While our assembly is longer, our unrolled loop actually executes less total instructions! Our original loop executes $5 \times 1000 = 5000$ instructions, whereas our unrolled loop executes $8 \times 500 = 4000$ instructions. 
+
+---
+
+**Better Scheduling**: Spreading out our loop lets us schedule our instructions better.
+1. We are able to execute instructions for the next iteration of the loop earlier (as there are less overall dependencies).
+2. Lets us hide load latencies by adding more instructions per iteration.
+
+Loop unrolling can even eliminate small loops, letting us remove the branch in the loop entirely! 
+> The less branches, the easier it is to schedule things.
+
+> [!Info] Function Inlining
+> This idea can even be applied to functions! Compilers can "inline" functions, by "copying" the function code directly into where it is called! This lets us avoid the function call overhead.
+
+---
+
+Loop unrolling is not without consequences. Some issues related to unrolling include:
+- Larger code size leads to increased register pressure
+- Less readable code
+- Difficulties in unrolling-- what if N is not known at compile time?
+
+### Software Pipelining
+Recall instruction pipelining, where we perform a different operation on a different operation. We can also apply this general idea in the compiler as well! 
+
+**Software Pipelining** is a technique that lets us write code in a way that makes it easier for our hardware to schedule instructions. Let's see an example of this below.
+
+Consider the following loop, with stages `Load`, `Multiply`, and `Add`.
+```c
+for (i = 0 ; i < 100 ; i++)
+    sum += a[i] * b[i];
+```
+
+First, let's break up our instruction into these different stages, so we have independent operations.
+```mermaid
+graph LR
+subgraph Load Stage
+0["Load a[i]"]; 1["Load b[i]"];
+end
+
+subgraph Mul Stage 
+2[x];
+end
+
+subgraph Add Stage
+3[+=];
+end
+
+0 & 1 -.-> 2 -.-> 3;
+```
+
+Now, let's update our code to separate these different stages.
+```c
+for (i = 0; i < 100; i++) {
+    // Load Stage
+    ai = a[i];
+    bi = b[i];
+    
+    // Mul Staage
+    prod = ai * bi;
+    
+    // Add Stage
+    sum += prod;
+}
+```
+
+So for any "instruction" (body of the loop), we need to run `LOAD`, `MUL`, then `ADD` on it. Now, for a pipeline, we want to execute our instructions so that at each iteration (analogous to cycle), each stage is executing a different "instruction"! So, we want something like:
+1. In Iteration 2 ("Cycle 2"), run `LOAD` on `a[2], b[2]`, run `MUL` for `a[1] * b[1]`, and run ADD for `sum = a[0] + b[0]`.
+2. In Iteration 3 ("Cycle 3"), run `LOAD` on `a[3], b[3]`, run `MUL` for `a[2] * b[2]`, and run ADD for `sum = a[1] + b[1]`.
+3. ...
+
+> This separates our "stages" so that there is less overlap, giving our processor an easier time scheduling our instructions!
+
+Like in the instruction pipeline, we need some way to connect these stages together! We can do this with memory.
+- Between `LOAD/MUL`, we need memory to store the `ai`, `bi` values fetched from load.
+- Between `MUL/ADD`, we need memory to store the result of the product `ai * bi`.
+
+So, our code will look as follows:
+```c
+// --- Prologue ---
+// Memory for MUL/ADD
+prod = a[0] * b[0];
+// Memory for LOAD/MUL
+ai = a[1]; bi = b[1];
+// ---
+
+// --- Pipeline ---
+// BE CAREFUL ABOUT INDICES
+for (i = 2; i < 100; i++) {
+    // Add Stage: Adds Product of Index i - 2
+    sum += prod; 
+    
+    // Mul Stage: Multiplies Load of Index  i - 1
+    prod = ai * bi;
+    
+    // Load Stage: Loads Index i
+    ai = a[i];
+    bi = b[i];
+}
+// ---
+
+// --- Epilogue ---
+// Finish by adding the results of indices 98 and 99
+sum += prod;
+sum += ai * bi;
+// ---
+```

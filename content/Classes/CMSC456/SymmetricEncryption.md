@@ -925,7 +925,7 @@ Formally, a **hash function** (with output length $\ell$) is a pair of PPT algor
 - `Gen` takes input security parameter $1^n$ and outputs a key $s$. 
 - `H` takes input key $s$, string $x \in \{0,1\}^*$ and outputs a string $H^s (x) \in \{0,1\}^{\ell(n)}$
 
-If $H^s$ is only defined for inputs $x \in \{0,1\}^{\ell'(n)}$ and $\ell'(n) > \ell(n)$, then we say that `Gen`, `H` is a fixed-length hash function for inputs of length $\ell'$. In this case, $H$ is also called a **compression function**.
+If $H^s$ is only defined for inputs $x \in \{0,1\}^{\ell'(n)}$ and $\ell'(n) > \ell(n)$, then we say that `Gen`, `H` is a fixed-length hash function for inputs of length $\ell'$. In this case, $H$ is also called a **compression function** (shrinks the size of the input).
 
 We define the following experiment, $Hashcoll_{A,II} (n)$. 
 1. Generate key $s$ by running $Gen(1^n)$.
@@ -945,13 +945,64 @@ $$
 > [!Abstract] Theorem
 > If $\Pi$ is a secure MAC for messages of length $\ell$, and $\Pi_H$ is collision resistant, then the construction above is a secure MAC for arbitrary length messages.
 >
-> > [!Note] Proof (Sketch)
+> > [!Note]- Proof (Sketch)
 > > 
 > > Suppose by way of contradiction there is an adversary breaking Hash-And-Mac. We show that under this assumption, this adversary can break either the securei MAC or the hash function.
 > > 
 > > If $A$ can break the scheme, then it can produce $m,t = Mac_k (H^s (m))$, $m \not\in Q$.
 > > 1. Case 1: We can check the list of queries to find $m'$, which will yield $H^s = H^s (m')$ for some $m' \in Q$ and $m \ne m'$. This will break the collision resistant hahs function.
 > > 2. Case 2: In all the queries in $Q$, they all correspond to different inputs $\tilde{m}$ to $Mac_k$. This will break the MAC.
+
+Given a compression function with fixed input-output lengths, we can extend it to accept variable-length inputs using the **Merkle-Damgard Transform** (used by SHA-1 and SHA-256):
+1. Split the message into blocks of equal length: $X_1, X_2, \dots, X_B$. 
+2. Take an initialization vector, $Z_0 = IV$.
+3. Hash $Z_i = H^s (Z_{i-1} || X_i)$ for every $1 \le i \le B$ to get $Z_B$. 
+   $$
+   Z_1 = H^s (Z_0 || X_1) \quad Z_2 = H^s (Z_1 || X_0) \dots
+   $$
+4. Finally, hash $H^s (Z_B || L)$, where $L$ is the length of the message.
+
+> In practice, the initialization vector is something hard-set, like $0^n$.
+
+This works as long as our function is a compression function (output is smaller than the input)! 
+
+We need to pad with the length, to distinguish messages that aren't perfectly aligned with the blocks. If we were to pad these messages with 0s instead, we could easily create a collision.
+
+> [!Abstract] Theorem: Security of Merkle-Damgard
+> If the underlying compression function $h$ is collision resistant, then so is $H$, the Merkle-Damgard Transform of this function.
+>
+> > [!Note] Proof (Sketch)
+> > 
+> > We wish to show (by contrapositive) that if we can find a collision in $H$, say $x, x'$, we can generate a collision for $h$.
+> > 1. Case 1: If the length of the two messages are not equal, we can easily create a collision on $h$ by taking the last inputs to $H^s$ in the transform. So, our collision is given by $Z_B || L$ and $Z_B' || L'$. 
+> > 2. Case 2: If the lengths are equal, check if $Z_B = Z_B'$. If they're equal, repeat this case for $Z_{B-1}$ and $Z_{B-1}'$. If they are not, we have two messages generating a collision. 
+> > 
+> > > There must be some $Z_i \ne Z_i'$, as otherwise, the messages are the same (which is a contradiction).
+
+> Merkle-Damgard is not a secure MAC.
+
+> [!Info] Constructing a $h$ for Merkle Damgard
+> For a hash function outputting $\ell$ bits, to get a collision with 100% probability, we need to try $2^\ell + 1$ inputs (by pigeon hole principle).
+>
+> However, we don't need 100% probability of success to make the function insecure! By the **birthday bound**, we really only need $2^{\ell / 2}$ to find a collision with a reasonable
+
+---
+
+**Sponge**: Recently, a new paradigm has emerged for domain extension. Let $f$ be a completely random permutation on $\{0,1\}^{r+c} \to \{0,1\}^{r+c}$.
+> This is the paradigm used in SHA-3.
+
+Using $f$, we will first **absorb** the input in one stage, then **squeeze** out the output in another (this is why it's known as a sponge).
+1. Absorb:
+   1. Start with an internal state of all 0's, split into an $r$ section and a $c$ section. In other words, our state starts as $0^r || 0^c$. 
+   2. For every block of the message $p_i$, XOR it with $r$, and run $f(r \oplus p_i || c)$. The first $r$ bits is our new $r$ section, with the rest being the $c$ section.
+   3. Repeat this for all blocks of the message, until the entire input is absorbed.
+2. Squeeze:
+   1. Take the first $r$ bits of the state, and output them.
+   2. If more bits are needed, run the state through $f$ and output the next $r$ bits.
+
+> $r$ is our **bitrate**, how fast we can absorb / squeeze data; $c$ is our **capacity**, how secure our method is.
+
+It can be shown that if $p_0$ is our key $k$, and the remaining are our message blocks, this sponge method can be used directly as a MAC; it is indifferentiable from a random oracle, if $f$ is a truly random permutation.
 
 # Authenticated Encryption
 ## CCA Security

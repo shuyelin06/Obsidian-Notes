@@ -299,8 +299,7 @@ Under the computational approach, schemes now have an additional parameter calle
 Prior to running our scheme, we can set our security parameter, which tells us the run time of the adversary and its success probability as functions of $n$. This gives a sort of guarantee against adversaries running in polynomial time. 
 > We can think of the security parameter as the length of the key.
 
----
-
+### Efficient Adversaries
 An adversary is **efficient** if they are in polynomial time (PPT). To be in polynomial time means that there exists some polynomial $p$, such that the adversary runs for time at most $p(n)$ when the security parameter is $n$.
 
 > [!Example] Example: Polynomial Time Functions
@@ -312,8 +311,7 @@ An adversary is **efficient** if they are in polynomial time (PPT). To be in pol
 > 
 > Given a security parameter $n$, to say an adversary is running in time $p(n) = n^2$ means that for $n$, the adversary has that amount of time to run.
 
----
-
+### Negligible Probability
 A small probability of success means we have a **negligible probability**. A function $f$ is **negligible** if for every polynomial $p$, and sufficienly large $n$, it holds that
 $$
 f(n) < \frac{1}{p(n)}
@@ -346,6 +344,7 @@ $$
 >
 > > This makes it really easy to adjust schemes to the adversary time! As adversary capabilities increase, we can shift our security parameter so that they will continue to be unable to break our scheme!
 
+### Private Key Encryption
 A **private-key encryption scheme** is a tuple of probabilistic polynomial-time algorithms `Gen, Enc, Dec` such that:
 1. `Gen` takes security parameter $1^n$ (1 repeated $n$ times), and outputs a key $k$ denoted $k \leftarrow Gen(1^n)$. WLOG, assume $|k| \ge n$.
 2. `Enc` takes a key $k$, message $m \in \{0,1\}^*$, and outpus a ciphertext $c$, $Enc_k (m) \to c$.
@@ -705,6 +704,8 @@ $$
 $$
 > There are $(2^n)!$ possible permutations from $\{0,1\}^n \to \{0,1\}^n$.
 
+PRPs are also known as **block ciphers**.
+
 Previously, we created a CPA-secure encryption scheme for 1 block messages. We can now use PRPs to create a scheme that can encrypt multiple blocks!
 
 Let message $m$ have the following blocks $m_1, m_2, m_\ell$. How can we encrypt this message?
@@ -759,6 +760,35 @@ The various ways we can use PRPs to encrypt blocks of messages are known as **mo
 2,3,4 all achieve similar levels of security!
 
 > In looking at each mode, we should also think about if the mode is parallelizable!
+
+### Practical Constructions for Block Ciphers
+How do we construct strong PRPs (block ciphers) in practice?
+
+Below, we'll discuss some various ideas that were uesd to define PRPs. Suppose we're working with a 128-bit input and 128-bit output.
+> By the end, we'll end on how AES-128 works.
+
+For each idea, we'll ask the questions:
+- Does the construction give us a permutation (does each input have a unique output)?
+- Is the construction indistinguishable from a random permutation (secure)?
+
+> [!Info] Construction 1 (FAILS)
+> The first construction revolves around the idea that random permutations over small domains are efficient. If we only need to generate a random permutation table for an 8 bit output, we only need to generate $2^8 = 256$ entries!
+>
+> So, what if we could extend this? For a 128-bit input, let our key $k$ specify 16 permutations $f_1, \dots f_{16}$ on 8-bit blocks. Then, for an input $x$, break it into 8-bit blocks $x_1 x_2 \dots x_{16}$, and generate ciphertext
+> $$
+> c = f_1 (x_1) || f_2 (x_2) || \dots || f_{16} (x_{16})
+> $$
+> - This is a permutation, as we can invert ciphertext $c = y_1 || y_2 || \dots || y_{16}$ by taking $f_1^{-1} (y_1) || \dots || f_{16} (y_{16})$.
+> - This is not indistinguishable from a truly random permutation. To see why, query two messages, where only one block $x_i$ is different. Then, every output block between the two messages should be the same except block $i$. 
+
+This idea is good, but fails because the order of the blocks is fixed which exposes information. 
+
+The **Shannon Confusion-Diffusion Paradigm** fixes this. It has the following stages: (TODO NEXT LECTURE)
+- **Confusion**: The blocks of the message are ran through **S-Boxes**, which are fixed and public permutations on 4-bit input and 4-bit output.
+- **Diffusion**: The order of the message's blocks are randomized. 
+- **Key Mixing**: ?? 
+
+These stages are ran multiple times, to completely randomize the output.
 
 # Message Integrity
 In the previous section, we discussed how to create a secure encryption scheme. However, security is not everything! Even without knowing the original message in the previous schemes, attackers can still modify the message with no way for the sender / receiver to tell.
@@ -816,10 +846,9 @@ Note that unlike security, this probability must be less than negligible probabi
 > 
 > This is a valid forgery, which gives us a non-negligible probability of breaking the MAC!
 
-## Constructing Secure MACs
+## Constructing Secure MACs (Fixed-Length)
 We can construct secure MACs using pseudorandom functions! 
 
-### Fixed-Length Messages
 Let $F$ be a pseudorandom function. We define a fixed-length MAC for messages of length $n$ as follows:
 - `Gen`: Outputs a random key $k$.
 - `Mac`: For key $k$ and message $m$, output $F_k (m) = t$.
@@ -860,8 +889,8 @@ Let $F$ be a pseudorandom function. We define a fixed-length MAC for messages of
 > > 
 > > Which is non-negligible. Thus, $F$ is not a PRF.
 
-### Domain Extension for MACs
-Let's see how we can extend MACs for variable-length MACs.
+## Constructing Secure MACs (Variable-Length)
+Let's see how we can extend MACs for variable-length MACs, known as **domain extension for MACs**.
 
 Suppose we have a MAC $\Pi$, which works for fixed-length messages of length $n$. For a message of any length,
 $$
@@ -876,8 +905,7 @@ How can we generate a tag for this message?
 
 Let's see some ways we can extend the MAC.
 
----
-
+### CBC MAC
 **CBC-MAC**: We generate one tag by running each message through $F_k$, XORing the result with the next message, and repeating this process. Formally, 
 $$
 \begin{align*}
@@ -917,9 +945,8 @@ $$
 
 Essentially, what we are doing is prepending an extra message block to the message, which indicates its length.
 
----
-
-**Hash-And-Mac**: Using a hash function to compress messages of arbitrary lengths to the MAC input size.  
+### Hash and MAC
+**Hash-And-Mac**: Using a hash function to compress messages of arbitrary lengths to the MAC input size. We use the hsah function to compress the message, then create a mac from the fixed-size output.
 
 Formally, a **hash function** (with output length $\ell$) is a pair of PPT algorithms `Gen`, `H` satisfying the following:
 - `Gen` takes input security parameter $1^n$ and outputs a key $s$. 
@@ -953,7 +980,22 @@ $$
 > > 1. Case 1: We can check the list of queries to find $m'$, which will yield $H^s = H^s (m')$ for some $m' \in Q$ and $m \ne m'$. This will break the collision resistant hahs function.
 > > 2. Case 2: In all the queries in $Q$, they all correspond to different inputs $\tilde{m}$ to $Mac_k$. This will break the MAC.
 
-Given a compression function with fixed input-output lengths, we can extend it to accept variable-length inputs using the **Merkle-Damgard Transform** (used by SHA-1 and SHA-256):
+But how do we create a compression function in practice?
+
+> [!Info] Creating a Compression Function in Practice
+> One way we can create a compression function is by using the **Davies-Meyer Construction**.
+>
+> Let $F$ be a block cipher with $n$-bit key and $\ell$-bit block length. Then, for $n + \ell$ bit message $k || m$, we can compress the message as
+> $$
+> h(k || x) = F_k (m) \oplus m
+> $$
+> > Note that the XOR with $x$ is necessary, as without it, we could easily generate a collision ($F$'s key is known, so we can decrypt on a different key to find a different message, key pair).
+>
+> Intuitively, this works because the output of $F_k (m)$ looks "random", so it serves as a bit-mask on $m$. This will modify $m$ arbitrarily, giving us a "random" looking output.
+>
+> Security is guaranteed only if we assume $F$ is not a PRP, but an **ideal cipher**, meaning that queries are allowed only on **different keys** that are not $k$.
+
+Given a compression function with fixed input-output lengths, we can then extend it to accept variable-length inputs using the **Merkle-Damgard Transform** (used by SHA-1 and SHA-256):
 1. Split the message into blocks of equal length: $X_1, X_2, \dots, X_B$. 
 2. Take an initialization vector, $Z_0 = IV$.
 3. Hash $Z_i = H^s (Z_{i-1} || X_i)$ for every $1 \le i \le B$ to get $Z_B$. 
@@ -971,7 +1013,7 @@ We need to pad with the length, to distinguish messages that aren't perfectly al
 > [!Abstract] Theorem: Security of Merkle-Damgard
 > If the underlying compression function $h$ is collision resistant, then so is $H$, the Merkle-Damgard Transform of this function.
 >
-> > [!Note] Proof (Sketch)
+> > [!Note]- Proof (Sketch)
 > > 
 > > We wish to show (by contrapositive) that if we can find a collision in $H$, say $x, x'$, we can generate a collision for $h$.
 > > 1. Case 1: If the length of the two messages are not equal, we can easily create a collision on $h$ by taking the last inputs to $H^s$ in the transform. So, our collision is given by $Z_B || L$ and $Z_B' || L'$. 
@@ -984,10 +1026,12 @@ We need to pad with the length, to distinguish messages that aren't perfectly al
 > [!Info] Constructing a $h$ for Merkle Damgard
 > For a hash function outputting $\ell$ bits, to get a collision with 100% probability, we need to try $2^\ell + 1$ inputs (by pigeon hole principle).
 >
-> However, we don't need 100% probability of success to make the function insecure! By the **birthday bound**, we really only need $2^{\ell / 2}$ to find a collision with a reasonable
+> However, we don't need 100% probability of success to make the function insecure! By the **birthday bound**, we really only need $2^{\ell / 2}$ to find a collision with a reasonable probability. So, regardless of how good our collision function is, an attacker only needs about $2^{\ell / 2}$ samples to break the security!
+>
+> Because of this, $\ell$ has to be pretty large. 
+> > For example, as SHA-1 outputs length $\ell = 160$, someone could break it in time $2^{160 / 2}$ queries.
 
----
-
+### Sponge Construction
 **Sponge**: Recently, a new paradigm has emerged for domain extension. Let $f$ be a completely random permutation on $\{0,1\}^{r+c} \to \{0,1\}^{r+c}$.
 > This is the paradigm used in SHA-3.
 
@@ -1003,6 +1047,7 @@ Using $f$, we will first **absorb** the input in one stage, then **squeeze** out
 > $r$ is our **bitrate**, how fast we can absorb / squeeze data; $c$ is our **capacity**, how secure our method is.
 
 It can be shown that if $p_0$ is our key $k$, and the remaining are our message blocks, this sponge method can be used directly as a MAC; it is indifferentiable from a random oracle, if $f$ is a truly random permutation.
+
 
 # Authenticated Encryption
 ## CCA Security
@@ -1048,8 +1093,7 @@ We say a private-key encryption scheme is an **authenticated encryption scheme**
 
 Here are some generic constructions.
 
----
-
+## Encrypt and Authenticate
 **Encrypt-and-Authenticate**: We run encryption and message authentication independently, in parallel.
 $$
 Enc_{k_E} (m) = c \qquad Mac_{k_M} (m) = t \qquad \langle c,t \rangle
@@ -1060,8 +1104,7 @@ $c$ preserves security, and $t$ preserves privacy, but combining them does not g
 
 In fact, if the MAC is deterministic (which it often is in practice), then CPA-security does not hold for the combined $(c,t)$.
 
----
-
+## Authenticate then Encrypt
 **Authenticate-then-Encrypt**: We first generate a tag, then compute our ciphertext by combining our message with the tag.
 $$
 Mac_{k_M} (m) = t \qquad Enc_{k_E} (m || t) = c \qquad c
@@ -1069,8 +1112,7 @@ $$
 
 Now, because we're putting our tag into the ciphertext, this can provide privacy. However, this will not provide CCA-security!
 
----
-
+## Encrypt then Authenticate
 **Encrypt-then-Authenticate**: We first encrypt the message, and then compute a tag on the result.
 $$
 Enc_{k_E} (m) = c \qquad Mac_{k_M} (c) = t \qquad \langle c, t \rangle

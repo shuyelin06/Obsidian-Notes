@@ -923,6 +923,40 @@ To exploit this, we can use **caches**. A **cache** is a fast but small memory s
 
 > Caches optimize the **average** memory access latency for the processor, by utilizing the principle of locality.
 
-In terms of size, we typically have several levels of cache with different sizes:
-- **L1 Cache**: Roughly 16KB - 64KB, is directly read from / written to by the processor. Large enough to get ~90% hit rate, and small enough to get a hit in 1-3 cycles
-- ... TODO ...
+In terms of size, we typically have several levels of cache with different sizes. The smaller the cache, the closer it is to the processor (and the faster it is to access).
+> For example, **L1 Cache**: Roughly 16KB - 64KB, is directly read from / written to by the processor. Large enough to get ~90% hit rate, and small enough to get a hit in 1-3 cycles
+
+One cache consists of block-sized **lines**, which typically have a size that is a power of 2. Typically, 1 line is 16 to 128 bytes in size.
+
+Given a memory address, we can access a cache by using the upper bits to select the cache block, and the lower bits as an offset into that block. For example, if our block size is 128 bytes, then the lower 7 ($2^7 = 128$) bits are used as an offset, and the rest are used to select the block.
+```
+Memory Address
+Block # | Offset into Block
+```
+> Caches will save the block number (or a part of it) as a tag in the cache.
+
+When designing a cache, we have to make some important decisions:
+1. **Placement**: Where in the cache can a block go?
+2. **Identification**: How do we find a block in a cache (how quickly can we find a hit or a miss?)
+3. **Replacement**: On miss, what do we kick out of a cache to make room?
+4. **Write Policy**: What do we do about data stores?
+
+## Placement 
+**Placement** refers to the decision of what memory blocks are allowed to go into what cache lines. We have the following placement policies:
+
+### Direct Mapped
+**Direct Mapped**: A block can go to only one line.
+
+**Pros:**
+- Fast, since we only look in one place
+- Cheap, since finding a hit/miss is simple
+- Energy efficient, easy comparison
+
+**Cons:**
+- High miss rate, one block can only go to one location
+
+### TODO
+TODO...
+
+- **Fully Associative**: A block can go to any line
+- **Set-Associative**: A block can go to one of $N$ lines

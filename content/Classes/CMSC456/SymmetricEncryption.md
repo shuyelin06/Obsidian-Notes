@@ -761,7 +761,7 @@ The various ways we can use PRPs to encrypt blocks of messages are known as **mo
 
 > In looking at each mode, we should also think about if the mode is parallelizable!
 
-### Practical Constructions for Block Ciphers
+## Practical Constructions for Block Ciphers
 How do we construct strong PRPs (block ciphers) in practice?
 
 Below, we'll discuss some various ideas that were uesd to define PRPs. Suppose we're working with a 128-bit input and 128-bit output.
@@ -771,31 +771,76 @@ For each idea, we'll ask the questions:
 - Does the construction give us a permutation (does each input have a unique output)?
 - Is the construction indistinguishable from a random permutation (secure)?
 
-> [!Info] Construction 1 (FAILS)
-> The first construction revolves around the idea that random permutations over small domains are efficient. If we only need to generate a random permutation table for an 8 bit output, we only need to generate $2^8 = 256$ entries!
+### Substitution-Permutation Networks (SPNs)
+Here's an idea:
+
+> [!Info] Shannon Confusion Paradigm
+> Over small enough domains, random permutations are efficient. For example, if we only need to generate a random permutation table for an 8 bit output, we only need to generate $2^8 = 256$ entries!
 >
 > So, what if we could extend this? For a 128-bit input, let our key $k$ specify 16 permutations $f_1, \dots f_{16}$ on 8-bit blocks. Then, for an input $x$, break it into 8-bit blocks $x_1 x_2 \dots x_{16}$, and generate ciphertext
 > $$
 > c = f_1 (x_1) || f_2 (x_2) || \dots || f_{16} (x_{16})
 > $$
 > - This is a permutation, as we can invert ciphertext $c = y_1 || y_2 || \dots || y_{16}$ by taking $f_1^{-1} (y_1) || \dots || f_{16} (y_{16})$.
-> - This is not indistinguishable from a truly random permutation. To see why, query two messages, where only one block $x_i$ is different. Then, every output block between the two messages should be the same except block $i$. 
+> 
+> This is good, but is not indistinguishable from a truly random permutation. To see why, query two messages, where only one block $x_i$ is different. Then, every output block between the two messages should be the same except block $i$. 
+>
+> This fails because the order of the blocks is fixed which exposes information. We add an additional step to address this, where we permute the ordering of the blocks. 
+>
+> This is known as the **Shannon Confusion-Diffusion Paradigm**! The first step is known as **confusion**, and the block re-ordering step is known as **diffusion**.
 
-This idea is good, but fails because the order of the blocks is fixed which exposes information. 
+A practical implementation of this paradigm is known as the **Substitution-Permutation Network (SPN)**. An SPN applies the following operations, in what's known as a **round**:
+- **Key Mixing**: The message is XORed with key $k_i$, which is derived from the master key. 
+  - A different key is used each round, and is derived from the master key using a **key schedule** (which often just takes different subsets of the master key's bits).
+- **Substitution**: The message is split into blocks, and each block is ran through an **S-Box**, fixed and public permutations on some $n$-bit input and $n$-bit output.
+- **Permutation**: The bits are permuted through a public mixing function. 
 
-The **Shannon Confusion-Diffusion Paradigm** fixes this. It has the following stages: (TODO NEXT LECTURE)
-- **Confusion**: The blocks of the message are ran through **S-Boxes**, which are fixed and public permutations on 4-bit input and 4-bit output.
-- **Diffusion**: The order of the message's blocks are randomized. 
-- **Key Mixing**: ?? 
+The SPN runs multiple of these rounds to obtain an output that looks random. **After running each round, the network will always finish by running one more final key-mixing step**. 
+> Note that the substitution and permutation functions are completely public! The security comes from the keys that are XORed with the message at the key mixing steps.
 
-These stages are ran multiple times, to completely randomize the output.
+How many rounds are needed for this to be secure?
 
-# Message Integrity
+> [!Abstract] Theorem: The Avalanche Effect
+> For a random permutation, when a single input bit is changed, we should expect each bit of $f(x)$ should be changed with probability 1/2. So,
+> - We design S-boxes so that changing a single bit of the input to an S-box changes at least 2 bits in the output of the S-box
+> - We design the mixing function so that the output bits of any given S-box are used as input to multiple S-boxes in the next round
+>
+> Because of this, on round $i$, if 1 bit of the input is changed, we can expect it to influence $2^i$ bits of the output. So, for AES-128, we need at least 7 rounds ($2^7 = 128$) for this to hold / give us the security we need!
+
+In the case that we don't have enough rounds, it's possible to break SPN with a key-recovery attack. Suppose we have oracle access to our SPN.
+
+> [!Example]- Example: Key Recovery Attack vs. 1-Round SPN
+> Suppose we have a 1-round SPN on 16-bit messages, using 4-bit S-boxes, where our key is length 32-bit $k = k_1 || k_2$ ($k_1$ used for the first mix, $k_2$ used for the second).
+>
+> Using a brute-force approach, there are $2^{32}$ possible key values! However, we can actually significantly reduce this.
+> 
+> To understand why, suppose we queried the oracle to get input output pair $(x,y)$. For any $k_2$, there exists 1 unique $k_1$ that gives us $(x,y)$.  So, an attacker could do the following:
+> 1. Query the oracle for $(x,y)$.
+> 2. For a 16-bit block of $k_2$, guess one of the $2^{16}$ combinations.
+> 3. Invert the SPN for our message (XOR y with $k_2$, inverse mix, inverse S-box, then XOR with x) to find the corresponding $k_1$ for this $k_2$.
+> 4. Now, query the oracle for another message, and see if our $(k_1 || k_2)$ pair gives us the correct message. 
+> 
+> This means we only need to evaluate the SPN $2 * 2^{16}$ times! This is a lot more efficient than our original brute-force approach.
+>
+> However, we could actually do even better than this! The key to this is realizing that we can actually compute our $(k_1, k_2)$ combinations for each S-box block at a time.
+> 1. Take some S-box block, say the block for $x_1$ to $x_4$.
+> 2. Figure out the bits of the output (and $k_2$) which are the output of this S-box block (XOR these bits of $y$ with the guess, inverse S-box, then XOR with the block for $x$). 
+> 3. Now, for any given block, we need to guess $2^4$ possible bit combinations of $k_2$ to find the corresponding $k_1$ for that block!
+> 
+> Repeating this for each of the 4 blocks, we now only evaluate our SPN $4 * 2^4$ times to get 4 lists, which represent all possible outputs of $(k_1, k_2)$! We can run this on extra messages to determine which key combination is correct.
+
+
+
+### Feistel Networks
+... TODO
+
+
+
+# Message Authentication Codes (MAC)
 In the previous section, we discussed how to create a secure encryption scheme. However, security is not everything! Even without knowing the original message in the previous schemes, attackers can still modify the message with no way for the sender / receiver to tell.
 
 In other words, there's secrecy, but not **integrity**! In this section, we will discuss how we can create schemes that maintain integrity.
 
-# Message Authentication Codes (MAC)
 ## Secure MACs
 Suppose we have a sender, receiver, and eavesdropper, where only the sender and receiver have knowledge of the $k$. Say the sender doesn't care about security, and just wants the receiver to be able to verify that the message came from them, and was not modified in transit. How can they do this?
 

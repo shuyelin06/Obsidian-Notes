@@ -935,28 +935,184 @@ Block # | Offset into Block
 ```
 > Caches will save the block number (or a part of it) as a tag in the cache.
 
+## Cache Design
 When designing a cache, we have to make some important decisions:
 1. **Placement**: Where in the cache can a block go?
 2. **Identification**: How do we find a block in a cache (how quickly can we find a hit or a miss?)
 3. **Replacement**: On miss, what do we kick out of a cache to make room?
 4. **Write Policy**: What do we do about data stores?
 
-## Placement 
+### Placement 
 **Placement** refers to the decision of what memory blocks are allowed to go into what cache lines. We have the following placement policies:
+> Generally, as we increase the set size, we have a lower chance of getting a miss, but finding a hit / miss takes longer!
 
-### Direct Mapped
-**Direct Mapped**: A block can go to only one line.
+**Direct Mapped Cache**: A block can go to only one line.
 
-**Pros:**
-- Fast, since we only look in one place
-- Cheap, since finding a hit/miss is simple
-- Energy efficient, easy comparison
+> [!Example]- Example: Direct Mapped Cache
+> Say we have a direct mapped cache with 8 lines ($2^3$). 
+> 
+> To use this cache, we will use 3-bits of the memory address as an index into our cache, usually as so:
+> ```
+> Memory Address
+> Tag | Index | Block Offset
+> ```
+> 
+> This way, every memory address has only one cache line it's data can be cached in.
+>
+> When we access the cache:
+> 1. Use the index bits to find the line of the cache the address is at.
+> 2. Compare the tags for a match.
+> 3. If no match, fetch the block from memory.
+> 4. If match, use the offset to fetch the appropriate byte we want. 
 
-**Cons:**
-- High miss rate, one block can only go to one location
+**Set-Associative Cache**: A single block can go to one of $N$ lines. This is accomplished by grouping the cache lines into **sets**, which are composed of $N$ lines each. A memory address can then be hashed to these sets. 
+> Direct-Mapped Caches are essentially 1-way set associative caches, and Fully-Associative Caches are $N$-way set associative caches (where $N$ is the number of total cache lines).
 
-### TODO
-TODO...
+> [!Example]- Example: 2-Way Set Associative Cache
+> Say we have a 2-way set-associative cache with 8 lines.
+> 
+> Because ouf cache is 2-way, two lines defines a single **set**! This means we have $8 / 2 = 4$ sets, meaning we will use 2 bits of our memory address to access these sets. 
+> 
+> When we check the cache for a given memory address, we'll have to check every line in the set (compare the tags) to see if the data is in the cache. 
 
-- **Fully Associative**: A block can go to any line
-- **Set-Associative**: A block can go to one of $N$ lines
+**Fully Associative**: A single block can go to any line in the cache. To determine if a memory address is in the cache, we need to check every line for the address' tag.
+
+> [!Example]- Example: Fully Associative Cache
+> Say we have a fully-associative cache of size 1024 bytes, with 16-byte lines.
+> - Since a line is 16-bytes, the block offset needs 4 bits ($2^4 = 16$).
+> - We have $1024 / 16 = 64$ lines total.
+> - Since we have a fully associative cache, all 64 lines are in the same set!
+>
+> When we access the cache: 
+> 1. We will use the tag bits to check **all lines** for a match. 
+> 2. If no match, fetch the block from memory.
+> 3. If there is a match, use the offset bits to get the byte from the matched line. 
+
+### Identification
+**Identification** refers to how we find a block in a cache. The faster we can find a block, the faster we can determine if we have a hit or a miss!
+
+When we reference an address, we need to perform a **cache lookup** where we check if the data is in the cache, and if so, where in the cache it is. To do this, every cache line must have:
+- A **valid** bit, indicating if the line has data (1) or not (0).
+- A **tag**, identifying what block is in the line.
+
+The process of finding a block is as follows:
+1. Access the set of lines that a block could be in.
+2. Compare the block's tag with the lines to try to find a match.
+3. If no match (miss), fetch the block from memory.
+4. If match (hit), use the block offset to access the data we need from the line. 
+
+### Replacement
+Suppose we need to fetch a block from memory, but our cache is full. **Replacement** refers to how we determine what cache lines to kick out to load our new block!
+
+There are several replacement strategies. The goal of each is to choose a line to kick out of the cache:
+- **Random**: Randomly select a line to kick out
+- **FIFO**: Line that has been in the cache the longest
+- **LRU**: Line that is least recently used
+- **NMRU**: Anything but LRU
+- **LFU**: Least frequently used
+
+---
+
+**Least Recently Used (LRU)** is a very popular choice, and what we will focus on here. 
+
+To implement LRU, we need to track an **LRU Counter** for each line in a set. These will **always have different values**, with larger values indicating that the line was most recently used.
+> If we have an $N$-way set-associative cache, we'll need $\log_2 N$ bit counters! This can be costly.
+
+When we load a line into the cache:
+1. Get the old value $X$ of the LRU counter
+2. Set its counter to the max value
+3. For every other line in the set, **if the counter is larger than $X$ (the original value), decrement it**.
+
+When we need to replace a line in the cache:
+1. Select the line whose counter is 0.
+
+> [!Example]- Example: LRU Cache
+> Suppose we have the following cache:
+> | Data | Tag | Valid Bit | LRU Counter |
+> | :-: | :-: | :-: | :-: |
+> | | | 0 |
+> | | | 1 |
+> | | | 2 |
+> | | | 3 |
+> 
+> Say we put data $A$ into the cache, into cache line 1.
+> 1. Check the original value, $X = 0$. Set the counter to the max value (3).
+> 2. For any other line with value larger than $X$, decrement the counter.
+> 
+> | Data | Tag | Valid Bit | LRU Counter |
+> | :-: | :-: | :-: | :-: |
+> | A | | 3 |
+> | | | 0 |
+> | | | 1 |
+> | | | 2 |
+> 
+> Now say we access the data in line 3 of the cache, $B$.
+> 1. Check the original value, $X = 1$. Set the counter to the max value (3).
+> 2. For any other line with value larger than 1, decrement. 
+> 
+> | Data | Tag | Valid Bit | LRU Counter |
+> | :-: | :-: | :-: | :-: |
+> | A | | 2 |
+> | | | 0 |
+> | B | | 3 |
+> | | | 1 |
+> > Notice how cache line 2 was not changed!
+
+---
+
+Because we may need to access and update all counters in a set per access, LRU can be really costly! Sometimes, we might need something that is simpler and faster, that's close to LRU.
+
+One such policy is the **Not Most Recently Used (NMRU)**. 
+- Every set will only have **one MRU pointer**, which points to the last accessed line in the set. 
+- During replacement, we randomly select any non-NMRU line to kick out!
+
+This may not be as good as LRU, but is a lot faster and cheaper!
+
+### Write Policy
+**Write** refers to what we do, when we write back to memory on a store instruction. During a write, we ask the following key questions below.
+
+**Do we allocate cache lines on a write?**
+- **Write-Allocate**: Allocate a cache line for the data written to memory. Commonly done because of data locality. 
+- **No-Write-Allocate**: Don't allocate a cache line for the data written to memory.
+
+**Do we update memory on writes**?
+- **Write-Through**: Immediately update memory on each write
+- **Write-Back**: Update values in the cache, only updating memory when the cahce line is replaced. Commonly done to avoid excessive memory writes. 
+  - For write-back caches, every line needs a **dirty** bit indicating if the line has more recent data than memory. This bit is flipped on any write to it.
+  - When the line is replaced, it is written back to memory if the dirty bit is flipped!
+  
+> [!Example]- Example: Write-Back Cache
+> Suppose we have the following direct-map write-back cache.
+> | Data | Tag | V | Dirty | 
+> | :-: | :-: | :-: | :-: |
+> | | | 0 |
+> | | | 0 |
+> | | | 0 |
+> | | | 0 |
+> 
+> Now say we `Write A`. We will update the data in the cache, and mark the line as dirty.
+> | Data | Tag | V | Dirty | 
+> | :-: | :-: | :-: | :-: |
+> | A | | 1 | 1
+> | | | 0 |
+> | | | 0 |
+> | | | 0 |
+> 
+> > Any reads to A will still be valid, as the most recent data is in the cache!
+> 
+> Now say we `Read B`. We will move this into the cache, but keep the dirty bit 0 as we aren't updating the data.
+> | Data | Tag | V | Dirty | 
+> | :-: | :-: | :-: | :-: |
+> | A | | 1 | 1
+> | B | | 1 | 0
+> | | | 0 |
+> | | | 0 |
+> 
+> Now say we `Read E`, which maps to the same location as $A$. Because of E, we need to kick out $A$. Because the dirty bit is set, we will write the line's memory back to data before kicking out A. 
+> | Data | Tag | V | Dirty | 
+> | :-: | :-: | :-: | :-: |
+> | E | | 1 | 0
+> | B | | 1 | 0
+> | | | 0 |
+> | | | 0 |
+

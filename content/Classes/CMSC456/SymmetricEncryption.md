@@ -829,12 +829,15 @@ In the case that we don't have enough rounds, it's possible to break SPN with a 
 > 
 > Repeating this for each of the 4 blocks, we now only evaluate our SPN $4 * 2^4$ times to get 4 lists, which represent all possible outputs of $(k_1, k_2)$! We can run this on extra messages to determine which key combination is correct.
 
+> [!Info] AES
+> **Advanced Encryption Standard (AES)** essentially uses the SPN paradigm for security.
 
+### Feistel Network
+**Feistel Networks** are another way we can generate block ciphers, though we will not cover it in the sake of time.
+> Feistel networks essentially take a PRF, and convert it into a secure PRP.
 
-### Feistel Networks
-... TODO
-
-
+> [!Info] DES
+> **Data Encryption Standard (DES)** uses the Feistel Network.
 
 # Message Authentication Codes (MAC)
 In the previous section, we discussed how to create a secure encryption scheme. However, security is not everything! Even without knowing the original message in the previous schemes, attackers can still modify the message with no way for the sender / receiver to tell.

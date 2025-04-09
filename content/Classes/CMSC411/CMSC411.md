@@ -1116,3 +1116,161 @@ This may not be as good as LRU, but is a lot faster and cheaper!
 > | | | 0 |
 > | | | 0 |
 
+## Cache Performance
+How do we measure how performant our cache is?
+
+A good cache will have a low **Average Memory Access Time (AMAT)**, which measures the time it takes to access the data needed. It is given by the following formula:
+$$
+\text{AMAT} = \text{Hit Time} + \text{Miss Rate} * \text{Miss Penalty}
+$$
+
+To promote AMAT, we can:
+- **Reduce Hit Time**, by having a small and fast cache.
+- **Reduce Miss Rate**, by having a large or smart cache.
+- **Reduce Miss Penalty**, by having a fast / large main memory access.
+
+Below, we'll discuss various ways we can reduce AMAT.
+
+### Reducing Hit Time
+One way we could reduce our hit time is by making our cache smaller. But this will increase our miss rate!
+
+Here are some techniques that may help:
+
+---
+
+**Pipelined Cache**: We can pipeline our cache so that multiple accesses can be processed at once! 
+> In an unpipelined-cache, if we access the cache in cycle $N$, then accesses in later cycles will have to wait until our first access is done. 
+
+1. Reading out the tags
+2. Determining the hit by comparing values
+3. Selecting data within the line (using an offset)
+
+---
+
+**Overlapping TLB and Cache Access**: We can combine access of our TLB with our cache access to avoid repeating expensive computations.
+
+- **Physically Indexed, Physically Tagged Cache (PIPT)**: The cache stores data according to physical addresses, and uses the TLB to translate the addresses.
+- **Virtually Index, Virtually Tagged (VIVT)**: The cache stores data according to virtual memory addresses. This means the cache doesn't need to use the TLB.
+  > However, there are sitations where we still need to access the TLB on hit! (ex. we need to read permissions).
+  
+- **Virtually Indexed, Physically Tagged (VIPT)**: The cache indexes data using virtual addresses, but stores tags in physical addresses. This lets us quickly determine hits, while keeping the tag that can be checked with the TLB.
+
+
+TODO...
+
+
+---
+
+**Way Prediction**: Before comparing all of our tags, we will first **guess** what line in our cache is more likely to hit. If wrong, we'll check all of the lines as normal. 
+> If our guess is right, we'll get a really fast hit!
+
+There are a few ways we can make this guess:
+- **Random**: Randomly guess a line. Gives us potentially fast hits, but at a very high miss rate.
+- **LRU**: Use the LRU to guess a line. Has a low miss rate, but updating the counters makes our hits slower.
+
+---
+
+**Replacement Policy**: Smartly replacing our cache lines on misses will give us a higher chance of getting hits later.
+
+- **Not Most Recently Used (NMRU)**: Track the most recently used block in a set, and randomly remove any other block on replacement.
+- **Pseudo-LRU (PLRU)**: Keep 1-bit per line in a set, and on every line access, set the bit to 1. On replacement, replace any line with bit set to 0, and set it to 1. If this is the last line that gets bit 1, reset the bit for all other lines.
+
+### Reduce Miss Rate
+To reduce the miss rate, we first need to understand why misses occur. There are 3 types of misses:
+- **Compulsory Miss**: Miss the first time each block is accessed.
+- **Capacity Miss**: Miss because the cache size is limited.
+- **Conflict Miss**: Miss because of limited associativity.
+
+The following ways can help us reduce miss rates.
+
+---
+
+**Prefetching**: We can guess what blocks will be accessed soon, and bring them into the cache ahead of time. This will let us avoid a miss!
+> If we guess incorrectly though, we'll get higher misses, since we brought something useless into the cache (**cache pollution**)!
+
+1. **Software**: One way to implement prefetching is to add prefetech instructions to the instruction set, and let the compiler figure out when to request them.
+2. **Hardware**: Another way is to implement it in hardware, which guesses that will be accessed soon. This includes:
+   - Stream buffers
+   - Stride prefetchers
+   - Correlating prefetchers
+
+---
+
+**Loop Interchange**: A compiler optimization where we change the order of iteration to match memory layout better.
+
+For example, suppose we had the following loop:
+```cpp
+for (int j = 0; j < 10000; j++)
+    for (int i = 0; i < 40000; i++)
+        c[i][j] = a[i][j] + b[i][j];
+```
+As we iterate through i, we find that `a[i][j]` and `a[i+1][j]` are thousands of elements apart! This means we'll get a lot of cache misses.
+
+Instead, if we rewrote the loop as so, we'd be able to use our cache a lot better.
+```cpp
+for (int j = 0; j < 10000; j++)
+    for (int i = 0; i < 40000; i++)
+        c[i][j] = a[i][j] + b[i][j];
+```
+
+### Reduce Miss Penalty
+The following methods may help us reduce the miss penalty.
+
+---
+
+**Overlap Misses**: On a cache miss, we can continue to perform other operations during the miss so that we're still performing work. 
+- Find other independent instructions to execute
+- Overlap cache misses and process other requests during the miss.
+
+The latter is only possible in a **non-blocking cache**, a cache that allows other requests to be processed while a miss is being serviced. 
+> A **blocking cache** will service one access at a time, so during a miss, other accesses are blocked.
+
+With non-blocking caches, we can do:
+- **Hit Under a Miss**: Allow cache hits while one miss is in progress, but block other misses.
+- **Miss Under Miss**: Allow hits and misses while a miss is in progress.
+  - This requires that the memory system allows multiple requests, called **Memory Level Parallelism (MLP)**.
+  
+To track pending misses for the **miss under miss** policy, we use a **Miss Status Handling Register (MSHR)**. The MSHR tracks the status / data of misses that are currently being handled.
+- On a cache miss, search the MSHR for a pending access to the same block.
+  - If **found**, allocate a load/store entry in the same MSHR entry
+  - If **not found**, allocate a new MSHR entry
+  - If the MSHR has no free entries, stall
+- When the data returns from memory,
+  1. Check what loads/stores are waiting on the data, and forward the data to the load/stores. Then, deallocate the load/store entry. 
+  2. Write data in the cache, and deallocate the MSHR entry after writing to the cache
+
+---
+
+**Cache Hierarchy**: Maintain multiple caches of varying size. As the cache gets smaller, it generally gets faster-- and we store them in order of L1, L2, L3... (in order of increasing size / decreasing speed).
+
+Cache hierarchies reduce the chance we need to fetch data from memory, as a miss in one cache may still yield a hit in a slower cache. 
+$$
+\begin{align*}
+\text{AMAT} = \text{HitTime}_{L1} + \text{MissRate}_{L1} \text{MissPenalty}_{L1} \\
+\text{MissPenalty}_{L1} = \text{HitTime}_{L2} + \text{MissRate}_{L2} \text{MissPenalty}_{L2} \\
+\text{MissPenalty}_{L2} = \text{HitTime}_{L3} + \text{MissRate}_{L3} \text{MissPenalty}_{L3} \\
+\end{align*}
+$$
+
+Because we now have a hierarchy of caches, any hits in one cache are not propagated into the lower caches. Given this, how do we measure the miss rate of our caches?
+- **Global Miss Rate**: \# Misses Divided by All Memory References
+- **Local Miss Rate**: \# Misses Divided by \# Misses of Previous Cache
+
+We may also use **Misses per 1000 Instructions (MPKI)**, which similar to global miss rate, but also normalizes misses to the number of total instructions as well (not just memory references).
+
+
+----
+
+
+Memory
+
+# Memory
+In the ideal world, we often consider memory that is **large**, **fast**, and **cheap** at the same time. But in the real world, this often is not the case due to resource limitations.
+
+There are two types of memory technology:
+- **Dynamic RAM (DRAM)**: Memory that will lose data over time if we don't refresh it, even if we're connected to a power source. A refresh means that we need to read the data and write it back on a regular basis.
+- **Static Ram (SRAM)**: Memory that retains its data while power stays supplied.
+
+Generally, SRAM is faster, but DRAM is cheaper (both in resource costs and area costs). 
+
+TODO: How DRAM Works.

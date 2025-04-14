@@ -1273,4 +1273,68 @@ There are two types of memory technology:
 
 Generally, SRAM is faster, but DRAM is cheaper (both in resource costs and area costs). 
 
-TODO: How DRAM Works.
+## DRAM
+Let's first talk about how **DRAM** works. 
+
+### DRAM Banks
+To represent 1 bit, DRAM uses 1 transistor with an embedded capacitor, called a **trench cell**. The bit is encoded in the capacitor's charge. These cells are composed in 2D arrays called **banks**.
+> DRAM typically forms the physical main memory on our devices (our hard-drives), as it is cheap and dense.
+
+For read / write operations, a bank will store a **row buffer**, which will store the most recently read row. Suppose we read / write from the bank with address `<row, column>`:
+1. Read the row to the row buffer.
+2. Use the column addresses to find the row bits we want. 
+3. (If writing) Modify the bits we want.
+4. Write the results back to the DRAM row. 
+   
+> Note that (4) needs **needs to be done regardless of read and write**. Because cells are made from capacitors, reads destroy the contents of the cells-- thus, we need to rewrite the contents back to preserve the row for future reads. 
+
+Because the cells are capacitors, a bank will also need to occassionally read and rewrite cells, as they will slowly lose charge over time. This is known as a **refresh**. 
+
+---
+
+Some DRAMS support **Fast Page Mode**, where the most recently row can be reused. After every read / write, the row is kept open for the next operation. If the next operation's row address is the same as the previous one, then we can reuse the contents of the row buffer!
+> This is similar to caching!
+
+This can be faster, but not always. To see why, let's define the following timing terminology:
+- **Row Address Strobe (RAS)**: Minimum number of clock cycles required between opening a row of memory and accessing columns within it.
+- **Column Addres Strobe (CAS)**: Number of cycles between sending a column address to the memory and the beginning of the response data.
+- **Row Precharge Time (PRE)**: Minimum number of clock cycles required between issuing the precharge command and opening the next row.
+
+### DRAM Memory Organization
+So far, we've seen how banks work, which compose the actual memory that DRAMs store. Let's see how banks are grouped together to form a single DRAM memory module.
+
+1. A group of banks is known as a **chip**. These can be seen as the black boxes on the memory module.
+2. A group of **chips** (typically 8) forms a rank, which are the chip groups on one side of the memory module.
+3. A group of ranks forms a **DIMM (Dual In-Line Memory Module)**, a single memory module.
+4. A group of **DIMMs** forms a **channel**. A processor works with channels (sometimes, more than one if the processor has channel-level parallelism).
+
+All of the channels together form the **memory system** that a processor works with.
+
+
+---
+
+
+CACHE COHERENCE
+
+# Cache Coherence
+## Definition
+So far, we've looked at a single processor and how caching makes it much faster. However, we don't always just have one processor, and when we have multiple processors, we need a way to make all caches behave as a single memory!
+> If Core A writes $x = 15$, then Core B must be able to read $x = 15$.
+
+The mechanism of doing this is known as **cache coherence**. This is defined by 3 properties:
+1. **Read What is Written**: A read from address X on Core1 returns the value written by the most recent write to X on Core2, if **no other processor has written to X between that time**.
+2. **Writes Happen Eventually**: If Core1 writes to X and Core2 reads X after sufficient time, and there are no other writes to X between, Core2's read returns the value written by Core1.
+3. **Casuality of Writes**: Writes to the same location are serialized; two writes to location X are seen in the same order by all processors.
+
+## Maintaining Cache Coherence
+Let's look at a few ways we can maintain cache coherence.
+> One way we can easily enforce this is by **sharing caches**, but this does not give good performance and is not scalable.
+
+The basic premise is to force reads in one cache to see writes in another.
+- **Write-Update Coherence**: After every write, we update the other caches.
+- **Write-Invalidate Coherence**: After every write, we prevent hits to other caches.
+
+We also have different ways to broadcast these writes to other caches:
+- **Snooping**: Writes are broadcasted on a shared bus.
+- **Directory** Each block of memory is assigned an ordering point.
+

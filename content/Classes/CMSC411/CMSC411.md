@@ -1332,9 +1332,75 @@ Let's look at a few ways we can maintain cache coherence.
 
 The basic premise is to force reads in one cache to see writes in another.
 - **Write-Update Coherence**: After every write, we update the other caches.
-- **Write-Invalidate Coherence**: After every write, we prevent hits to other caches.
+- **Write-Invalidate Coherence**: After every write, we prevent hits to other caches by invalidating all other lines of the same address. This way, they retrieve data only when needed.
+
+> Write-Invalidate Coherence is more commonly used.
 
 We also have different ways to broadcast these writes to other caches:
 - **Snooping**: Writes are broadcasted on a shared bus.
 - **Directory** Each block of memory is assigned an ordering point.
 
+> [!Tip] Write-Update Optimization: Dirty Bits
+> For write-update, use write-back caches so that the memory is not responsible for every write. Now, when the dirty bit of a cache line is set, it tells us that:
+> 1. The memory is not updated for what's stored in that cache line
+> 2. This line has the responsibility of keeping memory updated at the replacement.
+>
+> At any given moment, only one line should have its dirty bit set for any given memory block.
+> 
+> Now, on a cache write:
+> - Write the line into the cache.
+> - For any other caches with the same line, update their value.
+> - Set the dirty bit to 1 (most recent data), and set all other dirty bits for the same line to 0 to signal that this cache is responsible for updating memory.
+
+> [!Tip] Write-Update Optimization: Shared Bits
+> Another optimization is to reduce the number of bus writes. The more writes we have in the bus, the more of a bottleneck our bus becomes.
+> 
+> To do this, we will add a **shared bit** to cache lines, to signal if this data is in other caches. If the shared bit is not set (0), then the cache does not need to broadcast the data to the other caches.
+>
+> So, for any read/write:
+> - Check if any other cache has the memory address. If so, set all shared bits to 1.
+>
+> > If this is done for Write-Invalidate, then we shold also check if we can toggle off the shared bit. This will let us minimize bus usage.
+
+
+## MSI Snoopy Protocol
+Let's define a protocol to present how this will all work.
+
+For any cache block, it can have the following states:
+- **Invalid (I)**:
+  - To read or write, a request must be made on the bus. Equivalent to the valid bit being set to 0 (doesn't matter what dirty is)
+- **Modify (M)**: Valid 1, Dirty 1
+  - The cache has the block, and its dirty (memory not updated).
+  - No other cache has the block
+  - When replacing block, memory must be updated
+  - Read or writes to the block can be done without the bus.
+- **Shared (S()**: Valid 1, Dirty 0
+  - The block is shared with others.
+  - The cache has the block and its clean (updated with memory).
+  - When replacing the block, no memory update is needed.
+  - Reads from the block can be done without the bus
+  - To write, an upgrade request must be sent
+
+Based on these states, the MSI Snoopy Protocol defines the following state machine. We split it among **local** read/writes (to the cache itself) and **snoop** read/writes (to other caches) to make things more readable.
+
+```mermaid
+graph LR
+0[Invalid];
+1[Shared];
+2[Modified];
+
+2 -. Local Read, Write .-> 2;
+0 & 1 -. Local Write .-> 2;
+0 & 1 -. Local Read .-> 1;
+```
+
+```mermaid
+graph LR
+0[Invalid];
+1[Shared];
+2[Modified];
+
+2 & 1 -. Snoop Write .-> 0;
+2 & 1 -. Snoop Read .-> 1;
+0 -. Snoop Read, Write .-> 0;
+```

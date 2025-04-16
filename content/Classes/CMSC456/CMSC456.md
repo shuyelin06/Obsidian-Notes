@@ -152,7 +152,7 @@ This theorem can be generalized to any finite group!
 > g^m = 1
 > $$
 
-### Group: Modular Arithmetic (Multiplication), N Composite
+## Group: Modular Multiplication, N Composite
 What about multiplicative groups modulo $N$, where $N$ is composite? 
 
 For numbers $\{1, \dots, N - 1\}$, only numbers $a$ such that $gcd(a,N) = 1$ have a multiplicative inverse by the Extended Euclidean Algorithm. All others do not have a multiplicative inverse, so because of this, to obtain a group, we must disclude these values from our group.
@@ -214,3 +214,73 @@ Let $G$ be a finite group and $g \in G$. The **order** of $g$ i the smallest pos
 > 1. Let $G$ be a finite group, $g \in G$ with order $i$. Then, for any integer $x$, we have $g^x = g^{x \mod i}$.
 > 2. Let $G$ be a finite group and $g \in G$ with order $i$. Then, $g^x = g^y$ if and only if $x \equiv y \mod i$.
 > 3. Let $G$ be a finite group of order $m$, and $g \in G$ with order $i$. Then, $i | m$.
+
+Thus, if we have a prime order group, then the only orders that we can get for $i$ are 1 and $p$! Because $i = 1$ is only possible with the identity element, this means all other elements are generators of $G$. **We want to find these prime order groups, as they give us a basis for cryptographic problems**.
+
+> [!Abstract] Theorem
+> If $p$ is prime, then $Z^*_p$ is a **cyclic group of order** $p - 1$. 
+
+Using the above theorem, we will construct a subgroup of $Z^*_p$ to construct a prime order group. 
+
+> [!Note] Prime Order Cyclic Groups
+> Let $Z^*_p$, where $p$ is a strong prime: $p = 2q + 1$, where $q$ is also prime. By the above theorem, $Z^*_p$ is a cyclic group of order $p - 1 = 2q$. 
+> > We will cleverly take 1/2 of the elements of $Z^*_p$, to get a group of order $q$, which is prime!
+>
+> Take the subgroup of perfect squares in $Z^*_p$ (quadratic residues): $i^2 \mod 2q$. This will yield the prime order group we want.
+>
+> Because $Z^*_p$ is cyclic, it has a generator $g$. For this generator, every even power of $g$ yields a perfect square! As the order of the group is $2q$, we take every other power of $g$ to give us a subgroup of order $q$. This gives us a prime order group!
+
+## Cyclic Group Problems
+There are 3 main problems on cyclic groups.
+
+### Discrete Logarithm Problem
+We define the **Discrete-Log Experiment** $DLog_{A,G} (n)$ as follows:
+1. Run $G(1^n)$ to get $(G,q,g)$, where $G$ is a cyclic group of order $q$, and generator $g$.
+2. Choose a uniform $h \in G$.
+3. Adversary $A$ is given $G,q,g,h$, and outputs $x \in Z_q$.
+4. The output of the experient is 1 if $g^x = h$ and 0 otherwise.
+   - The adversary has to guess the exponent $x$ to get $g^x = h$.
+
+> As $q$ is typically on the magnitude of $2^{2048}$ or $2^{1024}$, it would be extremely inefficient to do a brute force attack. 
+
+We say the **Discrete-Logarithm Problem** is hard relative to $G$ if for all PPT algorithms $A$, there exists a negligible function such that
+$$
+Pr[Dlog_{A,G} (n) = 1] \le negl(n)
+$$
+> This is the hardest problem, that all of the Diffie-Hellman problems are based off of.
+
+### Diffie-Hellman Problems
+We define the **Computational Diffie-Hellman (CDH)** problem as follows. 
+
+*Given $(G,q,g)$ and uniform $h_1 = g^{x_1}$, $h_2 = g^{x_2}$, compute $g^{x_1 \cdot x_2}$.*
+> Note that $h_1 \cdot h_2 = g^{x_1 + x_2}$, which won't solve our problem.
+
+This problem is based on the Discrete Logarithm problem, as if we could solve Discrete Log, we could solve for $x_1, x_2$ in PPT time and compute our result. However, because Discrete Log is a hard problem, this is also hard. 
+
+---
+
+We define the **Decisional Diffie-Hellman (DDH)** problem as follows.
+1. Define a distinguisher $D$, who gets one the group $G$, order $q$, generator $g$, and one of the following:
+   - **Ideal World**: $g^x, g^y, g^z$, 3 independent group elements with no correlation to each other.
+   - **Real World**: $g^x, g^y, g^{xy}$, 3 group elements where the 3rd is related to the first two through the CDH problem.
+2. The distinguisher gets one of the worlds, and has to guess the world that they're in.
+
+We say that the DDH problem is hard if for all PPT adversaries $A$, they can only guess what world they're in with a negligible probability.
+$$
+| Pr[D(G,q,g,g^x,g^y,g^z) = 1] - Pr[D(G,q,g,g^x,g^y,g^{xy}) = 1] | \le negl
+$$
+
+Note that DDH is **NOT HARD** over $Z^*_p$ for for prime $p$. This is because for $a$ \in Z^*_p, we can compute the **Zegendre symbol**
+$$
+\frac{a}{p}
+$$
+Which is 1 if $a$ is a perfect square in the group (if $a = b^2 \mod p$, then $(b^2)^{(p-1)/2} \equiv b^{p-1} \equiv 1 \mod p$), and -1 if $a$ is not. There exists an algorithm to do this efficiently to distinguish the ideal and real world.
+
+> [!Note] Attack
+> Note that if we compute the Zegendre symbol on the 3 group elements we're given, then:
+> - For $g^x, g^y, g^z$, we can get any of the 8 patterns by computing the Zegendre symbol on them.
+> - For $g^x, g^y, g^{xy}$, there are some patterns we cannot get. If $g^{xy}$'s symbol is 1, then at least $g^x$ or $g^y$ must have a symbol of 1. If $g^{xy}$'s symbol is -1, then $g^x$ and $g^y$ must have a symbol of -1.
+>
+> If we compute these patterns and match one of the patterns that is possible in the $g^x g^y g^{xy}$ case, we return that we're in the real world. This gives us a distinguishing algorithm with constant probability. 
+
+...

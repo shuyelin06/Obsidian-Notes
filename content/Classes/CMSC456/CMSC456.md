@@ -270,7 +270,7 @@ $$
 | Pr[D(G,q,g,g^x,g^y,g^z) = 1] - Pr[D(G,q,g,g^x,g^y,g^{xy}) = 1] | \le negl
 $$
 
-Note that DDH is **NOT HARD** over $Z^*_p$ for for prime $p$. This is because for $a$ \in Z^*_p, we can compute the **Zegendre symbol**
+Note that DDH is **NOT HARD** over $Z^*_p$ for for prime $p$. This is because for $a \in Z^*_p$, we can compute the **Zegendre symbol**
 $$
 \frac{a}{p}
 $$
@@ -283,4 +283,77 @@ Which is 1 if $a$ is a perfect square in the group (if $a = b^2 \mod p$, then $(
 >
 > If we compute these patterns and match one of the patterns that is possible in the $g^x g^y g^{xy}$ case, we return that we're in the real world. This gives us a distinguishing algorithm with constant probability. 
 
-...
+## Elliptic Curves
+### Setup
+A **finite field** is a set of elements that can be viewed as a group with respect to two operations: addition and multiplication.
+> In fields, the identity element for addition (0)is not required to have a multiplicative inverse.
+
+With fields, we now define whole polynomials over the elements in the group! 
+
+Let $Z_p$ be a finite field for prime $p \ge 5$. Now consider equation $E$ in variables $x,y$ of the form:
+$$
+y^2 = x^3 + Ax + B \mod p
+$$
+Where $A,B$ are constants such that $4A^3 + 27B^2 \ne 0$ (ensuring the cubic polynomial has no repeated roots).
+
+Define $E(Z_p)$ as the set of pairs $(x,y)$ satisfying the above equation as well as a special value of $O$.
+$$
+E(Z_p) = \{ (x,y) : x,y \in Z_p \land y^2 = x^3 + Ax + B \mod p \} \cup \{O\}
+$$
+These elements are called the **points on the Elliptic Curve $E$**, where the special value $O$ is called the **point at infinity**.
+
+> [!Example]+ Example: Finding Elliptic Curve Points
+> To find the points on an Elliptic Curve:
+> 1. First, find the quadratic residues (squares) over $Z_p$.
+> 2. Now, take $y^2 = f(x) = x^3 + Ax + B$. Plug in all values for $x$.
+>    - Every value of $x$ such that $f(x)$ is a non-zero quadratic residue yields 2 points on our curve. 
+>    - Every value of $x$ such that $f(x)$ is a non-quadratic residue are not on the curve
+>    - Every value of $x$ such that $f(x) \equiv 0 \mod p$ give 1 point on the curve.
+>
+> Consider $y^2 = x^3 + 3x + 3 \mod 7$. First, we find our quadratic residues as $\{0,1,2,4\}$.
+> - Take $f(0) = 3 \mod 7$. This is a not a quadratic residue.
+> - Take $f(1) = 0 \mod 7$. This gives us 1 point on the curve $(1,0)$.
+> - Take $f(2) = 3 \mod 7$. This is not a quadratic residue.
+> - Take $f(3) = 4 \mod 7$. This is a quadratic residue with roots 2,5, giving us points $(3,2), (3,5)$. 
+
+For any elliptic curve, we will guarantee the property that every line intersecting $E(Z_p)$ in 2 points, intersects it in exactly 3 points:
+1. A point $P$ is counted 2 times if the line is tangent to the curve at $P$.
+2. The point at infinity is counted when the line is vertical.
+
+With this property, we will define a group on the Elliptic Curve elements. We define the binary operation **addition ($+$)** as follows:
+- For any two points $P_1 + P_2$, the result is the 3rd point intersecting the curve from the line between $P_1, P_2$. 
+- We say $O$ is the additive identity, $P + O = O + P = P$.
+
+Under this operation, we can find that for two points $P_1, P_2 \ne 0$, we can calculate their addition as:
+1. If $x_1 \ne x_2$, then $P_1 + P_2 = (x_3, y_3)$ with
+   $$
+   x_3 = [m^2 - x_1 - x_2 \mod p], y_3 = [m - (x_1 - x_3) - y_1 \mod p]
+   $$
+   for $m = \frac{y_2 - y_1}{x_2 - x_1} \mod p$
+2. If $x_1 = x_2$ but $y_1 \ne y_2$, then $P_1 = -P_2$ and so $P_1 + P_2 = O$.
+3. If $P_1 = P_2$ and $y_1 = 0$, then $P_1 + P_2 = 2P_1 = O$
+4. If $P_1 = P_2$ and $y_1 \ne 0$, then $P_1 + P_2 = 2P_1 = (x_3, y_3)$ with
+   $$
+   x_3 = [m^2 - 2x_1 \mod p], y_3 = [m - (x_1 - x_3) - y_1 \mod p]
+   $$
+   Where $m = \frac{3x_1^2 + A}{2y_1 } \mod P$.
+
+### DDH Over Elliptic Curves
+Under this, we can perform Decisional Diffie Hellman over Elliptic Curves. In other words, we want to distinguish $(aP, bP, abP)$ from $(aP, bP, cP)$, where 
+
+---
+
+Size and Hasse BOund
+
+---
+
+Using this, we define the following key-exchange experiment $KE^{eav}_{A,\Pi} (n)$.
+1. Two parties holding $1^n$ execute $\Pi$. This gives a transcript containing all messages sent by the parties, and a key $k$ output by each of the parties.
+2. A uniform $b = \{0,1\}$ is chosen. If $b = 0$, set $\hat{k} = k$, and if $b = 1$ then choose $\hat{k}$ uniformly at random.
+3. Adversary $A$ is given $trans$ and $\hat{k}$, and outputs a bit $b'$ distinguishing what $\hat{k}$ is.
+4. The output of the experiment is 1 if $b' = b$, and 0 otherwise.
+
+We say a key-exchange protocol $\Pi$ is secure in the presence of an eavesdropped if for all PPT adversaries $A$, there exists a negligible function $negl$ such that
+$$
+Pr[KE^{eav}_{A,\Pi} (n) = 1] \le \frac{1}{2} + negl(n)
+$$

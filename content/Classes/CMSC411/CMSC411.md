@@ -1404,3 +1404,65 @@ graph LR
 2 & 1 -. Snoop Read .-> 1;
 0 -. Snoop Read, Write .-> 0;
 ```
+
+To change between states, a cache will send **coherence requests** so that other caches can snoop and update themselves accordingly:
+- **GetS Request**: Issued on a read miss; requests data with the intent to share.
+- **GetM (GetX) Request**: Issued on a write; requests data with the intent to modify.
+
+### Cache to Cache Transfers
+Suppose one core has block $B$ in state $M$, and another core wants to read $B$. To do this, it will put a `GetS` on the bus.
+
+Because core 1 has the most recent data for $B$, it has to somehow provide this data! But how?
+1. **(1) Abort / Retry**: Core1 can cancel (abort) the `GetS` request, and write the data back. Core2 can then later retry `GetS` to get the data from memory.
+   > This can be really slow, since memory becomes a bottleneck!
+2. **(2) Intervention**: Core1 can submit an **intervention** bus signal, indicating it will supply the data. Then, when writing the data back to memory, Core2 can snoop the data transfered by Core1 during the write-back.
+
+```mermaid
+graph LR
+0[Invalid];
+1[Shared];
+2[Modified];
+
+1 -. See GetM .-> 0;
+1 -. See GetS .-> 1;
+2 -. See GetM, Writeback Data .-> 0;
+2 -. See GetS, Writeback Data .-> 1;
+```
+
+This works, as the data is in the $M$ state, so it is clear that nobody else has the correct data. But what if a cache has requested data that is shared? Then, who should supply the data? 
+
+A good way to handle this case is by introducing a new state, **Owner (O)**! This will indicate that there may be others who have the block in the $S$ state, but if anyone asks for the data, the "owner" cache should supply it.
+- If we are in $M$ and snoop a read, provide data and move to $O$ state. 
+- If we are in $O$ state and snoop a read, we provide data.
+
+## MOSI and MESI Protocols
+The addition of the owner state into our model is called the **MOSI** model. For a single block, we have the following state machine:
+![[Classes/CMSC411/Resources/MOSI.png]]
+
+But we can do better than this! Right now, if a core reads a block, it goes intothe shared state. Then, if the core wants to modify the block, it needs to issue a `GetM` on the bus. But if no other core has the block, this request doesn't need to be issued! 
+
+To address this, we can add yet another state, the **Exclusive (E)** state, meaning that Core1 has the only clean copy besides memory. Cores in this state can silently upgrade to $M$ without using the bus, if desired.
+![[Classes/CMSC411/Resources/MESI.png]]
+> On a `GetS`, to know that our block is exclusive, we also add a **Share** bus signal. If another core snoops the request, it can pull this signal to 1 to indicate if other cores have the same block or not.
+
+When we combine these states together, we get the **MOESI Model**.
+- $M$: Modified
+  - I have the only copy, and it's dirty (memory is not updated).
+- $O$: Owned
+  - I have the most up-to-date copy, but others may have copies too.
+  - I am responsible for supplying data and updating memory.
+- $E$: Exclusive
+  - I have the only copy, and its clean
+- $S$: Shared
+  - There are multiple copies present, all of which are clean
+- $I$: Invalid
+
+We can define these states with 3 bits: a valid bit, a dirty bit, and a shared bit.
+
+| | I | E | S | M | O |
+| :- | :-: | :-: | :-: | :-: | :-: |
+| Valid | 0 | 1 | 1 | 1 | 1 |
+| Dirty | X | 0 | 0 | 1 | 1 | 
+| Shared | X | 0 | 1 | 0 | 1 | 
+
+![[Classes/CMSC411/Resources/MOESI.png]]

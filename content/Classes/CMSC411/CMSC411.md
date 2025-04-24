@@ -1466,3 +1466,18 @@ We can define these states with 3 bits: a valid bit, a dirty bit, and a shared b
 | Shared | X | 0 | 1 | 0 | 1 | 
 
 ![[Classes/CMSC411/Resources/MOESI.png]]
+
+> [!Info] Coherence Cache Misses
+> With multiple caches, we now have a new additional type of miss, the **coherence  miss**. These happen when writes to one block in a cache invalidate blocks in another cache (causing a miss).
+> - **True Sharing** occurs when different cores access the same data, so a coherence miss is inevitable.
+> - **False Sharing** occurs when different cores access different data in the same block, so a coherence miss only occurred because of the granularity of the blocks.
+
+## Directory-Based Coherence
+One of the drawbacks of snooping is that the reliance on the bus can quickly become a bottleneck if we scale our processor up to several cores. Here, instead, we'll consider non-broadcast networks.
+
+**Directory-Based Coherence** instead relies on a directory data-structure, which is distributed across cores. 
+- Directories are made up of **slices**, each of which serves a set of blocks. 
+- Different blocks are served by multiple slices in different places, with order of accesses determined by the **home slice** (which receives the request first). 
+- For any directory entry, it has a **dirty bit**, indicating if the block is dirty, and 1 bit per processor, indicating the presence in the cache of that processor.
+
+> By tracking what processors have the block, the directory tracks what caches need to be notified on an update (without wasting bandwidth). 

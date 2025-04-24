@@ -347,6 +347,7 @@ Size and Hasse BOund
 
 ---
 
+## Diffie Hellman Key Exchange
 Using this, we define the following key-exchange experiment $KE^{eav}_{A,\Pi} (n)$.
 1. Two parties holding $1^n$ execute $\Pi$. This gives a transcript containing all messages sent by the parties, and a key $k$ output by each of the parties.
 2. A uniform $b = \{0,1\}$ is chosen. If $b = 0$, set $\hat{k} = k$, and if $b = 1$ then choose $\hat{k}$ uniformly at random.
@@ -357,3 +358,84 @@ We say a key-exchange protocol $\Pi$ is secure in the presence of an eavesdroppe
 $$
 Pr[KE^{eav}_{A,\Pi} (n) = 1] \le \frac{1}{2} + negl(n)
 $$
+
+One protocol satisfying this is the **Diffie Hellman Key Exchange**. It works as follows.
+1. Both parties agree ahead of time on some group $G$, order $q$, and generator $g$.
+2. Alice will randomly choose $x \in \mathbb{Z}_q$, and take $h_1 = g^x$ (apply the group operation $x$ times). Alice sends $h_1$ to Bob.
+3. Bob will randomly choose $y \in \mathbb{Z}_q$, and similarly compute $h_2 = g^y$. Bob sends $h_2$ to Alice.
+4. Alice computes $k_A = h_2^x$, and Bob computes $k_B = h_1^y$. This gives them the same key.
+   - This is secure, as the adversary cannot see $x,y$! So, even if the adversary sees $h_1, h_2$, it cannoy easily compute $g^{xy}$ as they need to reverse engineer $x,y$ (which is a hard problem).
+
+> This is a protocol used everywhere! Typically, we use ECDH, Elliptic Curve Diffie Hellman.
+
+> [!Abstract] Theorem: Security of Diffie Hellman Key Exchange
+> If the DDH problem is hard relative to $G$, then the Diffie-Hellman key exchange protocol $\Pi$ is secure in the presence of an eavesdropper.
+>
+> > [!Note]- Proof (Sketch)
+> > 
+> > Intuitively, this is because if the DDH is hard, then a distinguisher has no PPT way of finding $g^{xy}$ given $g^x, g^y$. 
+
+### Man in the Middle Attack
+Diffie-Hellman Key Exchange works well, but it assumes that the adversary is only eavesdropping on the communications. If the adversary had the ability to modify the messages in transit, they can perform a **man in the middle attack**.
+1. Given $A,B$, an adversary can complete a key-exchange protocol with both $A$,$B$.
+2. Later, when $A$ and $B$ try to communicate, the adversary can decrypt the messages, and re-encrypt them before sending them to the other party. 
+
+The reason this happens is because there's no way for a client to know who they're communicating with! 
+
+One way we can prevent this is with **public key encryption**. A public key encryption scheme is a triple of PPT algorithms such that:
+- `Gen` takes a security parameter and outputs a pair of keys $pk, sk$ called the public key, and secret key, respectively. 
+- `Enc` encrypts the message $m$ under the public key $pk$
+- `Dec` decrypts the ciphertext $c$ under the secret key $sk$.
+
+For a public key encryption scheme, we define the CPA experiment $PubK^{cpa}_{A,\Pi} (n)$:
+1. `Gen` is ran to obtain the keys
+2. The adversary is given $pk$, and outputs a pair of equal length messages $m_0, m_1$ in the message space
+3. A uniform bit is chosen, and a challenge ciphertext is randomly chosen and sent back to $A$
+4. $A$ guesses which ciphertext they received.
+
+We say the scheme is **CPA-Secure** if for all PPT adversaries $A$, there is a negligible function such that
+$$
+Pr[PubK^{cpa}_{A,\Pi} (n) = 1] \le \frac{1}{2} + negl
+$$
+
+Under a public key encryption scheme, we can send an encrypted message to the other party using $pk$. They can then verify their identity by decrypting with the secret key, which only they have.
+
+Furthermore, with any key exchange, we can convert it to a public key encryption scheme! Below, we show how we can us Diffie-Hellman Key Exchange, converting it to a public key scheme called **El Gamal**:
+- In Diffie-Hellman, $R$ sends $h_1$ to $S$, who sends $h_2$ to $R$ for both parties to generate a shared key.
+  - $h_1 = g^x$ is the public key in the scheme.
+- However, after receiving $h_1$, $S$ can already generate the shared key! So, $S$ can generate the shared key, and encrypt the message with this shared key. It then sends $h_2$ and this ciphertext to $R$.
+  - $h_2 = g^y$ is the secret key, and $S$'s ciphertext is the encryption.
+- $R$ can then generate the shared key, decrypting the ciphertext to get the message. 
+  - The resultant message by $R$ is the decryption process.
+  
+> [!Abstract] Theorem: Security of El Gamal
+> If the DDH problem is hard relative to $G$, then the El Gamal encryption scheme is CPA-secure.
+
+
+Using public key encryption, we can define a signature scheme. We define a **digital signature scheme** as follows:
+1. `Gen`: Takes a security parameter $1^n$, and outputs a public key $pk$ and secret key $sk$. 
+2. `Sign`: A signing algorithm that takes a private key $sk$, and a message $m$ from some message space. It outputs a signature $Sign_{sk} (m) = \sigma$.
+3. `Vrfy`: Takes the public key $pk$, a message $m$, and a signature $\sigma$, and output a $b$ that is 1 if we have validity, 0 otherwise. 
+
+We now define the $SigForge_{A,\Pi} (n)$ experiment:
+1. `Gen` is ran to obtain $pk,sk$.
+2. The adversary is given $pk$ and access to an oracle $Sign_{sk} (\cdot)$.
+3. The adversary outputs $(m, \sigma)$. Let $Q$ denote the set of all queries that $A$ asked the oracle.
+4. $A$ succeeds if and only if $Vrfy(m, \sigma) = 1$ and $m \not\in Q$ (not queried before).
+5. If $A$ succeeds, the experiment is 1.
+
+We say the scheme is secure if
+$$
+Pr[SigForge_{A,\Pi} (n) = 1] \le negl
+$$
+
+To construct a signature from the discrete logarithm, we first construct an **identification scheme**. This is a scheme which we can use to prove knowledge of a secret key without revealing the secret key.
+> Then, we can perform a **Fiat-Shamir Transform** to covert an identification scheme into a signature scheme.
+
+The **Schnorr Identification Scheme** works as follows:
+1. The prover has $x$, and the verifier has $y = g^x$.
+2. The prover first chooses a $k \in Z_q$, and compute $g^k$. It sends this to the verifier. 
+3. The verifier will then compute $r \in Z_q$. It sends this to the prover.
+4. The prover computes $s = [rx + k \mod q]$, and sends this to the verifier.
+5. The verifier now checks whether $g^s \cdot y^{-r} = g^k$. 
+   - If the prover is legitimate, then the verifier will find that $g^s \cdot y^{-r} = g^{rx + k} \cdot g^{-rx} = g^k$. 

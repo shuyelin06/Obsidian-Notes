@@ -270,7 +270,7 @@ $$
 | Pr[D(G,q,g,g^x,g^y,g^z) = 1] - Pr[D(G,q,g,g^x,g^y,g^{xy}) = 1] | \le negl
 $$
 
-Note that DDH is **NOT HARD** over $Z^*_p$ for for prime $p$. This is because for $a \in Z^*_p$, we can compute the **Zegendre symbol**
+Note that DDH is **NOT HARD** over $Z^*_p$ for for prime $p$. This is because for $a \in Z^*_p$, we can compute the **Legendre symbol**
 $$
 \frac{a}{p}
 $$
@@ -433,9 +433,52 @@ To construct a signature from the discrete logarithm, we first construct an **id
 > Then, we can perform a **Fiat-Shamir Transform** to covert an identification scheme into a signature scheme.
 
 The **Schnorr Identification Scheme** works as follows:
-1. The prover has $x$, and the verifier has $y = g^x$.
-2. The prover first chooses a $k \in Z_q$, and compute $g^k$. It sends this to the verifier. 
-3. The verifier will then compute $r \in Z_q$. It sends this to the prover.
+1. The prover has secret key $x$, and the verifier has $y = g^x$.
+2. The prover first chooses a $k \in Z_q$, and computes $I = g^k$. It sends this to the verifier. 
+3. The verifier will compute challenge $r \in Z_q$ and send this to the prover.
 4. The prover computes $s = [rx + k \mod q]$, and sends this to the verifier.
 5. The verifier now checks whether $g^s \cdot y^{-r} = g^k$. 
    - If the prover is legitimate, then the verifier will find that $g^s \cdot y^{-r} = g^{rx + k} \cdot g^{-rx} = g^k$. 
+
+This scheme is secure, and does not actually leak what $x$ is. To see why, we show that:
+
+> [!Note] Proof: Prover Knows $x$
+> Let's first show that under this scheme, we know that the prover knows $x$. To do this, suppose we have a "knowledge extractor". Take a prover who won the scheme with non-negligible probability. Then, we can use this prover to find the discrete log of $y = g^x$ in polynomial time.
+
+> [!Note] Proof: No Information is Leaked about $x$
+> We also wish to show that under this scheme, no information is leaked about $x$. To do this, we will show that we can take a polynomial-time simulation, which, given $y$, can simulate transcripts of identification protocols. 
+
+---
+
+There's a fraction of the first message, such that there's a fraction of the second message, for which the prover is accepted.
+> Knowledge extractor tries to find two paths, starting with $I$, that yield an acceptance.
+
+After finding this, we have $I, r_1, s_1, I, r_2, s_2$, such that
+$$
+\begin{align*}
+g^{s_1} * y^{-r_1} = g^{s_2} * y^{-r_2} \\
+g^{s_1 - s_2} = g^{r_1 - r_2} \\
+g^{\frac{s_1 - s_2}{r_1 - r_2}} = y
+\end{align*}
+$$
+> This is called the Forking Lemma. We can get 2 accepting transcripts in polynomial time using rewinding.
+
+---
+
+Construct a simulator that outputs correctly distributed transcripts $(I,r,s)$. 
+1. Sample from the marginal distribution over $(r,s)$, both selected randomly. 
+2. Sample consistent $I$ from the space of $g$, dependent on $r,s$, which we can compute as $g^s * y^{-r} = I$.
+   - By definition of the scheme, we have exactly 1 possible $I$ value that works!
+   
+These are all successful transcripts of identification protocols.
+> This is called Honest Verifier Zero Knowledge.
+
+---
+
+Given an identification scheme, we can then apply the **Fiat-Shamir Transform** to it to obtain a signature scheme. 
+1. Prover sends $r = H(I || m)$. This is our signature. 
+2. The verifier sends a random message to the prover.
+3. The prover sends $s$ back. The verifier computes $I = g^s y^{-r}$ and checks if the hash is equal!
+
+
+

@@ -1481,3 +1481,86 @@ One of the drawbacks of snooping is that the reliance on the bus can quickly bec
 - For any directory entry, it has a **dirty bit**, indicating if the block is dirty, and 1 bit per processor, indicating the presence in the cache of that processor.
 
 > By tracking what processors have the block, the directory tracks what caches need to be notified on an update (without wasting bandwidth). 
+
+
+
+---
+
+
+# Reliability and Storage
+## Dependability
+Any system has two notions of service:
+- A **specified service** is what the behavior should be
+- A **delivered service** is the actual behavior of the system
+
+If the specified service meets the delivered service, then the system is **dependeable**. Here, we propose definitions to describe the dependability of systems. 
+For any system:
+- A **fault** occurs when a module in a system works incorrectly
+- An **error** occurs when a fault causes an incorrect behavior in a system
+- A **failure** occurs when the high-level behavior of the behavior deviates from the system specified behavior.
+
+> [!Info] Fault Classifications
+> There are various ways we can classify faults.
+> 
+> One way is **by cause**:
+> - **Hardware Faults**: A hardware device fails to perform as expected
+> - **Design Faults**: A fault in software or hardware that occurs during system designing
+> - **Operation Faults**: Operation / user mistakes
+> - **Environmental Faults**: Environmental factors, such as fire, power failure, sabotage, etc.
+> 
+> Another way is **by duration**: 
+> - **Transient Faults**: Last for a limited time and are not recurring
+> - **Intermittent Faults**: Last for a limited time but are recurring
+> - **Permanent Faults**: Do not get correced when time passes
+
+When a failure occurs, an error took place, and when an error takes place, a fault took place. However, no all faults cause errors, and not all errors cause failures. 
+
+> [!Example] Example: Fault, Error, Failure
+> Say we have an `add()` function that tries to add 5+3, but returns 7. This is a fault.
+>
+> If we call our function, and it returns 7 for 5+3, then we have an error.
+>
+> If this function causes us to schedule a meeting on the 7th instead of the 8th, then we have a failure. 
+> > If we never use the result of the function, then we don't have any failure!
+
+To concretely define a system's dependability, we define **reliability** metrics that we can measure or calculate. One common measure is **mean time to failure (MTTF)**, which measures the average time of continuous service accomplishment before a failure.
+
+Using MTTF, and the **mean time to repair (MTTR)**, we can define **availability**! This is the fraction of overall time the system is operational.
+$$
+\text{Availability} = \frac{MTTF}{MTTF + MTTR}
+$$
+
+## Improving Reliability
+Knowing that faults can occur, we have ways to improve reliability.
+- One way is **fault avoidance**, where we prevent the occurrence of faults.
+- Another way is **fault tolerance**, where we prevent faults from becoming failures through redundancy.
+
+Fault tolerance is very important, as it's nearly impossible to completely prevent faults from occurring. Fault tolerance includes techniques such as:
+- **Detection**: Use 2-way redundancy, where two modules do the same work, and compare their results. If the results are different, then do a roll back. 
+- **Recover**: Periodically save state, and on detection of an error, restore this state.
+- **Correct**: Have $N$ modules do the same work, then vote for the correct result. 
+  - This is also called **N-Module Redunancy**.
+  
+Another way of implementing redundancy is through **data redundancy**.
+- **Error Detection Code (EDC)**: Codes we add to data to detect if an error exists.
+  - **Parity Bit**: Use a bit to track if the number of 1s is odd or even. Lets us detect if an odd number of bit flips took place.
+  - **Checksum Code**: Split the data into equal sized words, and XOR them together. This essentially is a generalization of a parity bit check into more bits.
+  - **Berger Code**: Stores the number of 1s in the data.
+- **Error Correction Code** Codes we add to data to correct and remove errors that exist (can both detect and correct errors).
+  - **Hamming Code**: Based on **hamming distance**, which is how many bit flips are neded to change the current number to another one.
+  
+> [!Example] Example: Hamming Code
+> Let's see how to generate a hamming code. First, number each of our bit positions in binary.
+
+| | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 
+| :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| Binary | 111 | 110 | 101 | 100 | 011 | 010 | 001 |
+
+Now, for any power-of-two position, make it a parity bit. All others are data bits.
+
+| | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 
+| :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| Binary | 111 | 110 | 101 | 100 | 011 | 010 | 001 |
+| Parity / Data | d4 | d3 | d2 | p3 | d1 | p2 | p1 |
+
+Now, set the parity bits, based on the data elements where the $n^{th}$ bit is set to 1. 

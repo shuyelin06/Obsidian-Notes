@@ -1548,19 +1548,53 @@ Another way of implementing redundancy is through **data redundancy**.
   - **Berger Code**: Stores the number of 1s in the data.
 - **Error Correction Code** Codes we add to data to correct and remove errors that exist (can both detect and correct errors).
   - **Hamming Code**: Based on **hamming distance**, which is how many bit flips are neded to change the current number to another one.
-  
-> [!Example] Example: Hamming Code
-> Let's see how to generate a hamming code. First, number each of our bit positions in binary.
 
+### Deep Dive: Hamming Code (7,4)
+One way we can make our data more reliable is by using Hamming Codes.
+
+Let's see how to generate a hamming code. In particular, we will generate a hamming code (7,4) (7 bits total for 4 data bits). 
+
+First, number each of our bit positions in binary.
 | | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 
 | :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | Binary | 111 | 110 | 101 | 100 | 011 | 010 | 001 |
 
 Now, for any power-of-two position, make it a parity bit. All others are data bits.
-
 | | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 
 | :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | Binary | 111 | 110 | 101 | 100 | 011 | 010 | 001 |
 | Parity / Data | d4 | d3 | d2 | p3 | d1 | p2 | p1 |
 
-Now, set the parity bits, based on the data elements where the $n^{th}$ bit is set to 1. 
+Now, set the parity bits based on the data elements where the $n^{th}$ bit is set to 1. For example, parity bit `p1` will track the parity of the data elements whose address has the first bit set.
+> Note that instead of operating on bits, we typically give the data bits and code bits in separate chunks: `<data><code>`.
+
+This gives the hamming code!
+
+> [!Example] Example: Hamming Code
+> Suppose we have data `0110`. Then, our hamming code is 0110011`.
+
+Hamming Codes help us detect and fix errors, as our bits are placed in a way such that all $2^4 = 16$ configurations of data are possible, **but the minimum distance between any two configurations is 3+**! Thus, if we know tat our data + code is invalid, we can correct by finding the closest valid word.
+
+The Hamming Code is arranged in a way such that it can represnet all 16 possible data words, but they are given in a way such that the minimum distnace between any two words is at least 3. So, if we find an error, we correct to the closest word by smallest distance!
+
+But what if we have more than 1 error? Well, we can add 1 more parity bit that tracks the party of the code plus data! This adds +1 to the distance between each valid codeword, so now they all have distance 4! This lets us correct single errors, and detect double errors (SECDED).
+
+### Deep Dive: Disk Fault Tolerance (RAID)
+Another way we can improve reliability is by using RAID. This defines ways we can group disk hardware together to increase performance.
+
+**RAID 0** distributes data across multiple disks, instead of keeping all of the data on 1 disk. 
+- **Pros**: This shares the load across disks, which can now work in parallel (increasing throughput and reducing latency!).
+- **Cons**: If we do not duplicate any data, our reliability is actually lower! This is because any one of our disks could fail and produce a problem.
+
+**RAID 1** improves this with **disk mirroring**. Here, disks are paired and share identical data. On any write, both copies are updated, and on a read, either copies can be read from.
+- This improves both performance and reliability! We can do more reads at once (same amount of writes though), and if one disk fails, its mirror still has the data!
+
+> [!Info] Combining RAID 0 and 1
+> If we have more than 2 disks, we can combine RAID 0 and 1!
+> - With **Striped Mirrors**, we can pair disks for mirroring, and then stripe (distribute) across the 4 pairs.
+> - With **Mirrored Stripes**, we can distribute across 2 disks, and then mirror them. 
+
+**RAID 4** inter-leaves blocks between disks, and keeps an extra disk purely for parity blocks. On read, we access only the data disk, and on write, we access both the data block and parity block.
+- RAID 4 lets us detect and recover from an error on any one disk, using the parity and other data disks. However, write performance is lower than with one disk, as all writes must use the parity disk.
+
+**RAID 5** extends the concept of RAID 4, by distributing the parity blocks across the disks. Now, while reads and writes are the same, the parity block a write affects changes depending on the block we're writing to. This shares the parity update load across all of the blocks!

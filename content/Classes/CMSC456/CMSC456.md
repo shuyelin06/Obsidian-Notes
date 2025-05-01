@@ -481,4 +481,39 @@ Given an identification scheme, we can then apply the **Fiat-Shamir Transform** 
 3. The prover sends $s$ back. The verifier computes $I = g^s y^{-r}$ and checks if the hash is equal!
 
 
+---
 
+
+# Post Quantum Cryptography
+
+
+# Lattice Based Cryptography
+An $n$-dimensional lattice $L$ is an additive discrete subgroup of $\mathbb{R}^n$. Given a basis forming $\mathbb{R}^n$, we can use it to define a lattice as 
+$$
+L(B) = \{ v \in \mathbb{R}^n : v = Bz, z \in \mathbb{Z}^n \}
+$$
+In other words, the integer linear combinations of the basis vectors.
+> This forms a grid of points in space!
+
+Lattices have many interesting properties, which can be used to form hard problems.
+- For any lattice, we have the **shortest vector**, the vector in the lattice closest to the origin. This is unique to the lattice, and the length of the shortest vector is $\gamma_1$.
+- For any lattice we also have the the **shortest basis**, the vectors in the lattice closest to the origin that together form the lattice. This is not unique.
+- For any lattice, we have the **parallel pipet**, which is the fundamental region formed by adjacent lattice points. The volume of this region is always the same regardless of the basis.
+
+Given two bases $B, B'$, they define the same lattice if and only if $B' = BU$, where $U$ is a **uni-modular matrix**: an integer matrix with determinant equal to $\pm 1$.
+
+With lattices, we have the following hard problems. Given "approximation factor" $\gamma > 1$:
+1. **Shortest Vector Problem (SVP)**: Given a basis $B$, find a non-zero vector in the lattice whose length is at most $\gamma * \lambda_1 (L(B))$.
+2. **Shortest Independent Vector Problem (SIVP)**: Given a basis $B$, find a linearly independent set $\{v_1, \dots v_n\}$ such that all vectors have length at most $\gamma * \lambda_n (L(B))$. 
+3. **Gap Shortest Vector Problem (GapSVP)**: Given a basis $B$, and a radius $r > 0$, 
+   - Return YES if $\lambda_1 (L(B)) \le r$
+   - Return NO otherwise.
+
+Since lattices are often hard to work with, we have a simplified representation. Now, many of us use the intermediate problem **Learning with Errors (LWE)**.
+
+LWE has the following setup: Take $A$ with random entries, $e$ with random (small) noise. Now, given $A, u = As + e$ (under $\mathbb{Z}_p$), compute $s$ (where $e$ is chosen randomly).
+> In our case, we will consider $e$'s entries to take on values $(-1, 0, 1)$ with $1/3$ probability each.
+
+There is also a decisional problem. Given $(A,u)$ or $(A,v)$, $v$ chosen at randomly, try to distinguish which one you got.
+
+Both search and decision LWE are equally hard.

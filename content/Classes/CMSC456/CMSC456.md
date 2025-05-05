@@ -517,3 +517,54 @@ LWE has the following setup: Take $A$ with random entries, $e$ with random (smal
 There is also a decisional problem. Given $(A,u)$ or $(A,v)$, $v$ chosen at randomly, try to distinguish which one you got.
 
 Both search and decision LWE are equally hard.
+
+---
+
+### Shortest Integer Solution (SIS)
+Consider the following scheme called the **Shortest Integer Solution (SIS)** problem.
+
+Given a random public matrix $A$, find vector $z$ such that
+$$
+A z = 0 
+$$
+In other words, find a vector that is in the null-space of $A$.
+
+### Regev's Cryptosystem
+Consider the following post-quantum scheme called **Regev's Cryptosystem**. 
+
+First, choose a random public matrix $A$ from $\mathbb{Z}_p$, and a random secret vector $s$. Then, use LWE to compute
+$$
+u = As + e
+$$
+Where $e$ is small.
+> For our purposes, we will say that $e \in \{-1,0,1\}^n$.
+
+1. **Encryption**: For $r \in \{0,1\}^m$ chosen at random, compute $c_1 = r^T \times A$. Then, compute $c_2 = \text{dot}(r, u) + m * \lfloor \frac{p}{2} \rfloor$. Our ciphertext is $(c_1, c_2)$. 
+   - Here, we choose the size of $r$ to be larger than the output size, so that we cannot recover $r$ (since we lose information)
+2. **Decryption**: Compute $c_2 - c_1 * s$ to get
+   $$
+   c_2 - c_1 * s = r(As + e) + m * \frac{p}{2} - rAs = \text{dot}(r,e) + m * \frac{p}{2}
+   $$
+   And because $e$ is small, we will locally be close to a single message point, letting us unambiguously determine what our message is. This requires we set things up so that $|r \cdot e| \le m < \frac{p}{4}$.
+
+    > In the case that our setup is secure, then $\text{dot}(r,e)$ essentially functions as a one-time pad, as it yields a random result.
+    
+### Rejection Sampling
+Suppose we sample from a distribution $D_f$ with probability density function $f$, given draws from a distribution $D_g$ with probability density function $g(x)$.
+
+To do this, if we assume that $f(x) \le M * g(x)$, then
+- For $x$, sample from $D_g$.
+- Accept $x$ with probability $\frac{f(x)}{M * g(x)}$.
+
+This will give us a scaled version of $f$. This is because
+$$
+Pr[\text{x Accepted}] = g(x) * \frac{f(x)}{M * g(x)} = \frac{f(x)}{M}
+$$
+
+This lets us create a lattice-based signature scheme, known as **Lyubashevsky's Scheme**.
+- **Prover**:
+  1. Compute $A \times S = T$, where $S$ has small entries. Then, our public key is $A,T$, and our secret key is $S$.
+  2. Now, compute $y$ from the Gaussian distribution. Compute $A \times y = d$.
+  3. Hash this to get $H(d || m) = c$, and compute $S \times c + y = z$. Output $(c,z)$.
+- **Verifier**:
+  1. A verifier can compute $A \times z - T \times c = d$. Now, check that $c = H(d || m)$ and $z$ is short.

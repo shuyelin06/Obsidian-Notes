@@ -27,11 +27,12 @@ With lattices, we have the following hard problems. Given "approximation factor"
 ## Shortest Integer Solution (SIS)
 Consider the following scheme called the **Shortest Integer Solution (SIS)** problem.
 
-Given a random public matrix $A$, find vector $z$ such that
+Given a random public matrix $A$, find the shortest vector $z$ such that
 $$
 A z = 0 
 $$
-In other words, find a vector that is in the null-space of $A$.
+In other words, find the shortest vector that is in the null-space of $A$.
+> Finding vectors in the nullspace is not hard. However, finding the **shortest** vector in a space is hard!
 
 ## Learning with Errors (LWE)
 Since lattices are often hard to work with, we have a simplified representation. Now, many of us use the intermediate problem **Learning with Errors (LWE)**.

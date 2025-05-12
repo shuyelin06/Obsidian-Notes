@@ -1076,6 +1076,11 @@ We need to pad with the length, to distinguish messages that aren't perfectly al
 >
 > However, we don't need 100% probability of success to make the function insecure! By the **birthday bound**, we really only need $2^{\ell / 2}$ to find a collision with a reasonable probability. So, regardless of how good our collision function is, an attacker only needs about $2^{\ell / 2}$ samples to break the security!
 >
+> The birthday bound states that for $q$ uniform, independent, random samples of $N$, we have collision probability bounded by
+> $$
+> \frac{q (q-1)}{4N} \le \text{Coll}(q,N) \le \frac{q^2}{2N}
+> $$
+>
 > Because of this, $\ell$ has to be pretty large. 
 > > For example, as SHA-1 outputs length $\ell = 160$, someone could break it in time $2^{160 / 2}$ queries.
 

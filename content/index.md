@@ -31,7 +31,7 @@ Notes for the Fall 2024 semester are given below
 Notes for the Spring 2025 semester are given below
 - [[Classes/CMSC456/CMSC456]]
 - [[Classes/CMSC411/CMSC411]]
-- [[Classes/CMSC427/CMSC427]]
+- [[Graphics/CMSC427/CMSC427]]
 
 Other miscellaneous notes are given below.
 - [[Miscellaneous/Emacs]]

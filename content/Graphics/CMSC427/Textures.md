@@ -37,7 +37,7 @@ In 3D space, we can also represent $(x,y,z)$ coordinates in spherical coordinate
 
 ## Mip-Mapping
 When using textures, we can sometimes get aliasing artifacts for texture coordinates sufficiently far from the camera. For example, consider the following checkerboard pattern.
-![[Graphics/CMSC427/Resources/MipmapE1.png]]
+![[Graphics/CMSC427/Resources/MipMapE1.png]]
 
 As we get far from the camera, we start seeing these "C" patterns. Why is this? 
 

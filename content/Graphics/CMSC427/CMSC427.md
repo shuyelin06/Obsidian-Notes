@@ -102,7 +102,7 @@ Where $v$ is the viewing direction, $r$ is the refracted direction, and $n$ is t
 
 Between mediums, light can also totally reflect. If the angle of the refracted ray is given as
 $$
-\theta_2 = \arcsin (\theta_1 \frac{n_1}{n_2})
+\theta_2 = \arcsin (\sin(\theta_1) \frac{n_1}{n_2})
 $$
 Then, for critical angle 
 $$
@@ -114,3 +114,60 @@ The relationship between reflection and refraction is given by the **Freshnel Eq
 $$
 f = \frac{(1 - \frac{n_1}{n_2})^2}{(1 + \frac{n_1}{n_2})^2}
 $$
+
+
+# Ray-Shape Intersections 
+## Ray Definition
+Let our ray be parameterized as
+$$
+p(t) = \vec{o} + t \vec{v}
+$$
+Where $\vec{o}$ is our ray origin, and $\vec{v}$ is our directional vector.
+
+We can compute ray surface intersections as follows.
+
+## Ray-Sphere Intersections
+Let a sphere have center $\vec{c}$, and radius $r$. If $p$ is our point, we can parameterize the points on our sphere as
+$$
+\begin{align*}
+|| p - c || = r \\
+|| p - c ||^2 = r^2 \\
+(p - c) \cdot (p - c) = r^2
+\end{align*}
+$$
+
+Now, plugging in our ray, we can solve for $t$. 
+$$
+\begin{align*}
+(\vec{o} + t \vec{v} - c) \cdot (\vec{o} + t \vec{v} - c) = r^2 \\
+\vec{d} = \vec{o} - \vec{c} \Longrightarrow (t \vec{v} - \vec{d}) \cdot (t \vec{v} - \vec{d}) = r^2 \\
+t^2 (\vec{v} \cdot \vec{v}) - 2t (\vec{v} \cdot \vec{d}) + (\vec{d} \cdot \vec{d}) = r^2
+\end{align*}
+$$
+This is a quadratic equation! We can solve for the roots using the quadratic formula to find our intersection points.
+$$
+\begin{align*}
+at^2 + bt + c = 0 \\
+a = \vec{v} \cdot \vec{v} \\
+b = 2 (\vec{v} \cdot \vec{d}) \\
+c = \vec{d} \cdot \vec{d} - r^2
+\end{align*}
+$$
+
+## Ray-Plane Intersections
+Let a plane have a point $\vec{q}$, and normal $\vec{n}$. If $p$ is our point, then the points on our plane are given as
+$$
+(\vec{p} - \vec{q}) \cdot \vec{n} = 0
+$$
+
+Let's solve for our intersection.
+$$
+\begin{align*}
+(\vec{o} + t\vec{v} - \vec{q}) \cdot \vec{n} = 0 \\
+t (\vec{v} \cdot \vec{n}) + (\vec{o} - \vec{q}) \cdot \vec{n} = 0 \\
+t = \frac{(\vec{o} - \vec{q}) \cdot \vec{n}}{\vec{v} \cdot \vec{n}}
+\end{align*}
+$$
+
+Note that this result is undefined when $\vec{v} \cdot \vec{n} = 0$. This is because when this dot product is 0, then our ray is parallel to our plane (so no intersection is possible).
+

@@ -6,18 +6,16 @@ tags:
 
 Behind all 3D graphics programs is the **graphics rendering pipeline**. This is the underlying tool which is used to render a two-dimensional image from a scene.
 
-In this section, we discuss what this pipeline is and its various stages. 
+Here, we discuss what this pipeline is and its various stages. 
 
-# An Overview of the Pipeline
+# Overview 
 ## Pipeline Stages
-Like other pipelines, the rendering pipeline describes the process in which we take a 3D scene, and transform its data to produce a 2D image. It consists of multiple stages, which collectively work together to render a scene!
+The rendering pipeline describes the process in which we take a 3D scene, and transform its data to produce a 2D image. This pipeline not only provides a conceptual model for how rendering takes place, but a practical one! Many graphics APIs let you program these stages to customize your own rendering. 
 
 > [!Warning] Variety of Rendering Pipelines
 > While this describes a general model for rendering, this is not the only possible rendering pipeline! 
 > 
 > This pipeline is mostly used in real-time rendering, and offline rendering pipelines have evolved a lot differently.
-
-This pipeline not only provides a conceptual model for how rendering takes place, but a practical one! Many graphics APIs let you program these stages to customize your own rendering. 
 
 The graphics pipeline is roughly divided into 4 stages:
 1. **Application Stage**: The program that runs on the CPU, including tasks such as input handling, collision detection, animation, and others.
@@ -25,17 +23,18 @@ The graphics pipeline is roughly divided into 4 stages:
 3. **Rasterization Stage**: Finds all pixels that are considered inside the input triangles.
 4. **Pixel Processing Stage**: Executes a program per pixel to determine its color, and other per-pixel operations.
 
+Each of these stages are described more later. 
+> Note that each of these stages is typically a pipeline in itself with several substages.
+
 ```mermaid
 graph LR
     1[Application Stage] -.-> 2[Geometry Processing Stage] -.-> 3[Rasterization Stage] -.-> 4[Pixel Processing Stage];
 ```
 
-Each of these stages are described more later. Note that each of these stages is typically a pipeline in itself with several substages.
-
 > [!Tip] Parallelism in the Graphics Pipeline
-> One of the major advantages of the graphics pipeline is that it is **highly parallelizable**! With the advent of the modern GPU, we can execute stages in parallel, letting us process huge quantities of data in real time (which is absolutely necessary for rendering).
+> One of the major advantages of the graphics pipeline is that it is **highly parallelizable**! With the modern GPU, we can execute stages in parallel, letting us process huge quantities of data in real time (which is absolutely necessary for rendering).
 >
-> More information about this is covered in [[Parallelization With GPUs]]
+> More information about this is covered in [[Parallelization With GPUs]].
 
 Substages in the pipeline all have varying levels of programmability. They range from fully programmable ($P$), to configurable but not programmable ($C$), to completely fixed ($F$). 
 > We will use these symbols to denote their programmability.

@@ -2,11 +2,14 @@
 title: Computer Graphics
 tags:
 - graphics
-- wip
 ---
 
-Welcome to Computer Graphics!
+Welcome to Computer Graphics! Note are given below
+- [[Noise]]
+- [[Quaternions]]
 
+
+--- Old Notes ---
 # Introduction
 ## Defining Computer Graphics
 When we think about computer graphics, we will often think of some animated film like the one below. 

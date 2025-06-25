@@ -1,15 +1,11 @@
 ---
-title: Computer Graphics
+title: GraphicsMisc
 tags:
 - graphics
 ---
 
-Welcome to Computer Graphics! Note are given below
-- [[Noise]]
-- [[Quaternions]]
+A collection of my miscellaneous notes.
 
-
---- Old Notes ---
 # Introduction
 ## Defining Computer Graphics
 When we think about computer graphics, we will often think of some animated film like the one below. 

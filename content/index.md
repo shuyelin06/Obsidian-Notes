@@ -17,7 +17,9 @@ These are a collection of my notes on Computer Graphics. As I begin a career in 
   - [[Graphics/Noise]]
   - [[Graphics/Quaternions]]
   - [[Graphics/Fourier Transform]]
-
+- Random Thoughts / Blog
+  - [[Graphics/Blog/6-27-25 | 6-27-25, Terrain Rendering with Vertex Pulling]]
+  
 # Notes (College)
 These are notes I wrote during my time at the University of Maryland, College Park.
 

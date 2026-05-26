@@ -20,6 +20,8 @@ These are a collection of my notes on Computer Graphics. As I begin a career in 
 - Random Thoughts / Blog
   - [[Graphics/Blog/6-27-25 | 6-27-25, Terrain Rendering with Vertex Pulling]]
   
+  ... more to follow!
+
 # Notes (College)
 These are notes I wrote during my time at the University of Maryland, College Park.
 

@@ -1,3 +1,9 @@
+---
+title: Morton Ordering
+tags:
+  - graphics
+---
+
 # Summary
 **Morton Ordering** is a technique that maps a multi-dimensional space into a single dimension (it effectively "linearizes" a higher order space). Importantly, it does this by maintaining a sense of **spatial locality** between points in space. This is useful in practice as keeping items spatially coherent in a program will often lead to better cache performance.
 

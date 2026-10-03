@@ -1,7 +1,7 @@
 ---
 title: SIMD Programming
 tags:
-- up-to-date
+  - graphics
 ---
 
 > [!Info] Handy Links

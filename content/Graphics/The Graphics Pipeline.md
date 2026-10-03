@@ -1,7 +1,7 @@
 ---
 title: The Graphics Pipeline
 tags:
-- graphics
+  - graphics
 ---
 
 Behind all 3D graphics programs is the **graphics rendering pipeline**. This is the underlying tool which is used to render a two-dimensional image from a scene.

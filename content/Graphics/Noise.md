@@ -1,7 +1,7 @@
 ---
 title: Noise
 tags:
-- graphics
+  - graphics
 ---
 
 Notes from the book "Noise is Beautiful".

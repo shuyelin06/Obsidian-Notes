@@ -1,8 +1,7 @@
 ---
 title: Parallelization With GPUs
 tags:
-- graphics
-- wip
+  - graphics
 ---
 
 One of the biggest advantages of the graphics pipeline is it's ability to be massively parallelized for efficiency. Over recent years, dedicated graphics hardware has significantly advanced, incorporating more and more parts of the rendering pipeline for significant speed-ups.

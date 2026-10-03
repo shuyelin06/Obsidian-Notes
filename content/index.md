@@ -9,7 +9,7 @@ This Quartz space really just serves as a place to host my notes publicly, so I 
 If curious as to what Quartz is, I encourage you to look at its [documentation](https://quartz.jzhao.xyz)!
 
 # Notes (Graphics)
-These are a collection of my notes on Computer Graphics. As I begin a career in the field, I plan to expand this collection of notes.
+These are a collection of my notes on Computer Graphics. As I begin a career in the field, I plan to expand this collection of notes
 
 - [[Graphics/The Graphics Pipeline]]
 - [[Graphics/Parallelization With GPUs]]
